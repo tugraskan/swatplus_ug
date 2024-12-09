@@ -78,7 +78,7 @@
               fertdb(ifrt)%forgn * 10.
           soil1(j)%hs(l)%n = soil1(j)%hs(l)%n + xx * frt_kg *            &
               fertdb(ifrt)%forgn
-          soil1(j)%hp(l)%p = soil1(j)%hs(l)%p + xx * frt_kg *            &
+          soil1(j)%hs(l)%p = soil1(j)%hs(l)%p + xx * frt_kg *            &
               fertdb(ifrt)%forgp
         end if
 
