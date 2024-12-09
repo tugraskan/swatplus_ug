@@ -11,7 +11,7 @@
         real :: p = 0.              !kg/ha      |organic phosphorus mass
       end type organic_mass
       type (organic_mass) :: orgz
-
+      
       type organic_mixing_mass
         type (organic_mass) :: tot       !       |total organic pool
         type (organic_mass) :: rsd       !       |fresh residue-all plants in one pool - layer 1 = surface residue
@@ -155,7 +155,7 @@
       type (organic_mass) :: stem_drop                              !kg/ha      |stem that dies at dormancy
       type (organic_mass) :: seed_drop                              !kg/ha      |seed that dies at dormancy
       type (organic_mass) :: plt_mass_z
-
+      
       type mineral_mass
         real :: m = 0.          !kg or kg/ha      |total object mass
         real :: no3 = 0.        !kg or kg/ha      |nitrate mass
@@ -307,7 +307,7 @@
                    
       interface operator (+)
         module procedure pmin_add
-        end interface 
+      end interface 
                   
       interface operator (*)
         module procedure nmin_mult_const
@@ -315,14 +315,14 @@
                   
       interface operator (+)
         module procedure nmin_add
-        end interface 
+      end interface 
 
       interface operator (*)
         module procedure pmin_mult_const
       end interface 
 
     contains
-
+      
       !! add mineral n
       function nmin_add (nmin_m1, nmin_m2) result (nmin_m3)
         type (mineral_nitrogen), intent (in) :: nmin_m1
