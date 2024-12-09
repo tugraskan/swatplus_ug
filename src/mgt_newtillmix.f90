@@ -78,6 +78,10 @@
       frac_non_mixed = 0.
       emix = 0.
       dtil = 0.
+      mix_clay = 0.
+      mix_silt = 0.
+      mix_sand = 0.
+      
       if (bmix > 1.e-6) then
         !! biological mixing
         emix = bmix !bmix MJW (rev 412)
@@ -186,7 +190,7 @@
             !  cs_soil(jj)%ly(l)%pest(k) = cs_soil(jj)%ly(l)%pest(k) * frac_non_mixed + smix(20+k) * frac_dep(l)
             !end do
 
-      end do
+          end do
     
         if (bsn_cc%cswat == 1) then
             call mgt_tillfactor(jj,bmix,emix,dtil)

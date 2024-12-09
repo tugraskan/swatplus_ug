@@ -1,7 +1,7 @@
       subroutine soil_nutcarb_write(out_freq)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine writes HRU output to the output.hru file
+!!    this subroutine writes daily HRU output to the output.hru file
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition
@@ -77,8 +77,8 @@
           else
             soil_prof_rsd = soil_prof_rsd + soil1(j)%rsd(ly)
             soil_prof_meta = soil_prof_meta + soil1(j)%meta(ly)
-          soil_prof_str = soil_prof_str + soil1(j)%str(ly)
-          soil_prof_lig = soil_prof_lig + soil1(j)%lig(ly)
+            soil_prof_str = soil_prof_str + soil1(j)%str(ly)
+            soil_prof_lig = soil_prof_lig + soil1(j)%lig(ly)
           end if
           soil_prof_man = soil_prof_man + soil1(j)%man(ly)
           soil_prof_hs = soil_prof_hs + soil1(j)%hs(ly)
@@ -86,7 +86,7 @@
           soil_prof_microb = soil_prof_microb + soil1(j)%microb(ly)
           soil_prof_water = soil_prof_water + soil1(j)%water(ly)
         end do
-        soil1(j)%tot_org = soil_prof_hs + soil_prof_hp + soil_prof_microb
+        soil1(j)%tot_org = soil_prof_hs + soil_prof_hp + soil_prof_microb + soil_prof_meta
         
         !write all organic carbon for the plant community
         write (4560,*) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, &
@@ -102,7 +102,7 @@
         write (4562,*) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, &
             soil1(j)%tot_org%c, soil_prof_hs%c, soil_prof_hp%c, soil_prof_microb%c,               &
             soil_prof_meta%c, soil_prof_str%c, soil_prof_lig%c, soil_prof_man%c
-
+      
         if (pco%csvout == "y") then
           write (4565,'(*(G0.3,:,","))') time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, &
               soil1(j)%tot_org%c, soil_prof_str%c, soil_prof_lig%c, soil_prof_meta%c,               &
