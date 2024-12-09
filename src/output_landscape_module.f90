@@ -39,12 +39,12 @@
         real :: satex = 0.            !mm H2O        |saturation excess flow developed from high water table !rtb gwflow
         real :: satex_chan = 0.       !mm H2O        |saturation excess flow reaching main channel !rtb gwflow
         real :: delsw = 0.            !mm H2O        |change in soil water volume !rtb gwflow
-        real :: lagsurf = 0.          !mm H2O        |surface runoff in transit to channel
-        real :: laglatq = 0.          !mm H2O       |lateral flow in transit to channel
-        real :: lagsatex = 0.         !mm H2O       |saturation excess flow in transit to channel
-        real :: wet_evap = 0.         !mm H2O       |evaporation from wetland surface
-        real :: wet_out = 0.          !mm H2O       |outflow (spill) from wetland
-        real :: wet_stor = 0.         !mm H2O       |volume stored in wetland at end of time period
+        real :: lagsurf = 0.		  !mm H2O        |surface runoff in transit to channel
+        real :: laglatq = 0.          !mm H2O	     |lateral flow in transit to channel
+        real :: lagsatex = 0.         !mm H2O	     |saturation excess flow in transit to channel
+        real :: wet_evap = 0.         !mm H2O	     |evaporation from wetland surface
+        real :: wet_out = 0.          !mm H2O	     |outflow (spill) from wetland
+        real :: wet_stor = 0.         !mm H2O	     |volume stored in wetland at end of time period
       end type output_waterbal
        
       type (output_waterbal), pointer :: h
@@ -463,7 +463,7 @@
         character (len=6) :: yrc        =  "    yr"
         character (len=8) :: isd        =  "   unit "
         character (len=8) :: id         =  " gis_id "
-        character (len=16) :: name      =  " name      "
+        character (len=16) :: name      =  " name               "        
         character (len=12) :: sedyld    =  "      sedyld"
         character (len=12)  :: sedorgn  =  "     sedorgn"
         character (len=12)  :: sedorgp  =  "     sedorgp"
@@ -488,7 +488,7 @@
         character (len=6) :: yrc        =  "      "
         character (len=8) :: isd        =  "        "
         character (len=8) :: id         =  "        "
-        character (len=16) :: name      =   "                "
+        character (len=16) :: name      =   "                    "      
         character (len=12)  :: sedyld    =  "         tha"
         character (len=12)  :: sedorgn   =  "        kgha"
         character (len=12)  :: sedorgp   =  "        kgha"
@@ -815,7 +815,7 @@
       
 !! NEW RESIDUE CARBON STAT OUTPUT
       
-     type output_resc_header     
+     type output_rsdc_header     
          character (len=11) :: day           =    "       jday"
          character (len=11) :: mo            =    "        mon"
          character (len=11) :: day_mo        =    "        day"
@@ -823,15 +823,19 @@
          character (len=16) :: isd           =    "            unit"
          character (len=21) :: id            =    "              gis_id "
          character (len=16) :: name          =    "    name        "
-         character(len=15)  :: tot_c    =    "          tot_c"
-         character(len=15)  :: meta_c   =    "         meta_c"
-         character(len=15)  :: str_c    =    "          str_c"
-         character(len=15)  :: lig_c    =    "          lig_c"
+         character(len=15)  :: tot_surf_c    =    "     tot_surf_c"
+         character(len=15)  :: meta_surf_c   =    "     meta_surf_c"         
+         character(len=15)  :: str_surf_c    =    "     str_surf_c"  
+         character(len=15)  :: lig_surf_c    =    "     lig_surf_c"      
+         character(len=15)  :: tot_soil_c    =    "     tot_soil_c"
+         character(len=15)  :: meta_soil_c   =    "     meta_soil_c"         
+         character(len=15)  :: str_soil_c    =    "     str_soil_c"  
+         character(len=15)  :: lig_soil_c    =    "     lig_soil_c"
 
-         end type output_resc_header       
-      type (output_resc_header) :: resc_hdr
+         end type output_rsdc_header       
+      type (output_rsdc_header) :: rsdc_hdr
       
-      type output_resc_header_units      
+      type output_rsdc_header_units      
          character (len=11) :: day          =    "           "
          character (len=11) :: mo           =    "           "
          character (len=11) :: day_mo       =    "           "
@@ -839,12 +843,16 @@
          character (len=16)  :: isd         =  "           "
          character (len=21) :: id           =  "                "
          character (len=16) :: name         =  "           "
-         character(len=15)  :: tot_c     =    "          kg/ha"
+         character(len=15)  :: tot_c     =    "     kg/ha"
          character(len=15)  :: meta_c    =    "          kg/ha"
          character(len=15)  :: str_c     =    "          kg/ha"
          character(len=15)  :: lig_c     =    "          kg/ha"
-        end type output_resc_header_units         
-      type (output_resc_header_units) :: resc_hdr_units
+         character(len=15)  :: tot_soil_c     =    "          kg/ha"
+         character(len=15)  :: meta_soil_c    =    "          kg/ha"         
+         character(len=15)  :: str_soil_c     =    "          kg/ha"  
+         character(len=15)  :: lig_soil_c     =    "          kg/ha"
+        end type output_rsdc_header_units         
+      type (output_rsdc_header_units) :: rsdc_hdr_units
 
 !!! NEW RESIDUE CARBON STAT OUTPUT
       
@@ -1032,7 +1040,7 @@
         character (len=9) :: name      =  " name    "
         character (len=17) :: sedyld    =  "           sedyld"
         character (len=17)  :: usle     =  "             usle"
-        character (len=17) :: sedorgc  =  "          sedorgc"
+        character (len=17) ::  sedorgc  =  "          sedorgc"
         character (len=17)  :: sedorgn  =  "          sedorgn"
         character (len=17)  :: sedorgp  =  "          sedorgp"
         character (len=17)  :: surqno3  =  "          surqno3"
@@ -1109,7 +1117,7 @@
         character (len=6) :: yrc        =  "    yr"
         character (len=8) :: isd        =  "   unit "
         character (len=8) :: id         =  " gis_id "
-        character (len=16) :: name      =  " name           "
+        character (len=16) :: name      =  " name              "        
         character (len=13) :: lai       =  "          lai"
         character (len=12) :: bioms     =  "       bioms"
         character (len=12) :: yield     =  "       yield"
@@ -1147,18 +1155,18 @@
         character (len=6) :: yrc        =  "      "
         character (len=8) :: isd        =  "        "
         character (len=8) :: id         =  "        "
-        character (len=16) :: name      =  "                "
+        character (len=16) :: name      =  "                   " 
         character (len=13) :: lai       =  "    m**2/m**2"
         character (len=12) :: bioms     =  "        kgha"
         character (len=12) :: yield     =  "        kgha"
         character (len=12) :: residue   =  "        kgha"
         character (len=12) :: sol_tmp   =  "        degc"
-        character (len=12) :: strsw     =  "        ----"
-        character (len=12) :: strsa     =  "        ----"
-        character (len=12) :: strstmp   =  "        ----"
-        character (len=12) :: strsn     =  "        ----"
-        character (len=12) :: strsp     =  "        ----"
-        character (len=12) :: strss     =  "        ----"
+        character (len=12) :: strsw     =  "         ----"
+        character (len=12) :: strsa     =  "         ----"
+        character (len=12) :: strstmp   =  "         ----"
+        character (len=12) :: strsn     =  "         ----"
+        character (len=12) :: strsp     =  "         ----"
+        character (len=12) :: strss     =  "         ----"
         character (len=12) :: nplnt     =  "        kgha"
         character (len=12) :: percn     =  "        kgha"
         character (len=12) :: pplnt     =  "        kgha"

@@ -436,22 +436,20 @@
             end if
         endif
         
-        if (bsn_cc%cswat == 2) then
-          if (pco%nb_hru%a == "y") then
-            open (4553,file="hru_scf_aa.txt", recl = 1500)
-            write (4553,*)  bsn%name, prog
-            write (4553,*) hscf_hdr
-            write (4553,*) hscf_hdr_units
-            write (9000,*) "HRU                       hru_scf_aa.txt"
-              if (pco%csvout == "y") then
-                open (4557,file="hru_scf_aa.csv", recl = 1500)
-                write (4557,*)  bsn%name, prog
-                write (4557,'(*(G0.3,:,","))') hscf_hdr
-                write (4557,'(*(G0.3,:,","))') hscf_hdr_units
-                write (9000,*) "HRU                       hru_scf_aa.csv"
-              end if
-          endif
-        end if
+        if (pco%nb_hru%a == "y") then
+          open (4553,file="hru_scf_aa.txt", recl = 1500)
+          write (4553,*)  bsn%name, prog
+          write (4553,*) hscf_hdr
+          write (4553,*) hscf_hdr_units
+          write (9000,*) "HRU                       hru_scf_aa.txt"
+            if (pco%csvout == "y") then
+              open (4557,file="hru_scf_aa.csv", recl = 1500)
+              write (4557,*)  bsn%name, prog
+              write (4557,'(*(G0.3,:,","))') hscf_hdr
+              write (4557,'(*(G0.3,:,","))') hscf_hdr_units
+              write (9000,*) "HRU                       hru_scf_aa.csv"
+            end if
+        endif
         
  !!!NEW SOIL TRANSFORMATIONS CARBON OUTPUT     
        
@@ -479,18 +477,18 @@
             end if
         endif
     
-        open (4561,file = "hru_resc_stat.txt", recl = 1500)
         if (pco%nb_hru%a == "y") then
+          open (4561,file = "hru_rsdc_stat.txt", recl = 1500)
           write (4561,*)  bsn%name, prog
-          write (4561,*) resc_hdr
-          write (4561,*) resc_hdr_units
-          write (9000,*) "HRU                       hru_resc_stat.txt"
+          write (4561,*) rsdc_hdr
+          write (4561,*) rsdc_hdr_units
+          write (9000,*) "HRU                       hru_rsdc_stat.txt"
             if (pco%csvout == "y") then
-              open (4564,file="hru_resc_stat.csv", recl = 1500)
+              open (4564,file="hru_rsdc_stat.csv", recl = 1500)
               write (4564,*)  bsn%name, prog
-              write (4564,'(*(G0.3,:,","))') resc_hdr
-              write (4564,'(*(G0.3,:,","))') resc_hdr_units
-              write (9000,*) "HRU                       hru_resc_stat.csv"
+              write (4564,'(*(G0.3,:,","))') rsdc_hdr
+              write (4564,'(*(G0.3,:,","))') rsdc_hdr_units
+              write (9000,*) "HRU                       hru_rsdc_stat.csv"
             end if
         endif
         
@@ -506,21 +504,6 @@
               write (4565,'(*(G0.3,:,","))') soilc_hdr
               write (4565,'(*(G0.3,:,","))') soilc_hdr_units
               write (9000,*) "HRU                       hru_soilc_stat.csv"
-            end if
-        endif
-
-        open (4567,file = "hru_cflux_stat.txt", recl = 1500)
-        if (pco%nb_hru%a == "y") then
-          write (4567,*)  bsn%name, prog
-          write (4567,*) soil_org_flux_hdr
-          write (4567,*) soil_org_flux_hdr_units
-          write (9000,*) "HRU                       hru_cflux_stat.txt"
-            if (pco%csvout == "y") then
-              open (4568,file="hru_cflux_stat.csv", recl = 1500)
-              write (4568,*)  bsn%name, prog
-              write (4568,'(*(G0.3,:,","))') soil_org_flux_hdr
-              write (4568,'(*(G0.3,:,","))') soil_org_flux_hdr_units
-              write (9000,*) "HRU                       hru_cflux_stat.csv"
             end if
         endif
         
@@ -1440,7 +1423,8 @@
       !! headers for annual crop yields
       if (pco%crop_yld == "a" .or. pco%crop_yld == "b") then
         open (4008,file="crop_yld_aa.txt", recl = 1500)
-        write (4008,*) bsn%name, prog
+        write (4008,*) bsn%name
+		write (4008,*) prog
         write (4008,1000)
         write (9000,*) "CROP                      crop_yld_aa.txt"
         if (pco%csvout == "y") then
