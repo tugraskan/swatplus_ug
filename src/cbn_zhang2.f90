@@ -97,7 +97,7 @@
        
        integer :: j = 0          !                     |number of hru
        integer :: k = 0          !none                 |counter
-       integer :: kk = 0         !                     |
+       integer :: kk = 0         !                     |counter
        integer :: lmnta = 0      !                     |      
        integer :: min_n_ppm = 0  !                     |
        integer :: lslncat = 0    !                     |
