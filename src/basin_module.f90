@@ -62,7 +62,7 @@
                                  !! 1 = new soil P model in Vadas and White (2010)
         integer :: gampt = 0     !! 0 = curve number; 1 = Green and Ampt 
         character(len=1) :: atmo = "a"   !! not used
-        integer :: smax = 0      !! not used
+        integer :: smax = 0      !! not used; 0 = user run; 1 = NAM run
         integer :: qual2e = 0    !! 0 = instream nutrient routing using QUAL2E 
                                  !! 1 = instream nutrient routing using QUAL2E - with simplified nutrient transformations
         integer :: gwflow = 0       !!   0 = gwflow module not active; 1 = gwflow module active
