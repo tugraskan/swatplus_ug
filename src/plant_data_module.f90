@@ -4,6 +4,7 @@
       
       character(len=40), dimension (:), allocatable :: plts_bsn     !none      |plant names simulated in current run
       character(len=25), dimension(:), allocatable :: pl_class      !none      |plant class - row crop, tree, grass, etc
+      character(len=40), dimension(:), allocatable :: pl_desc       !none      |plant plant description
       type plant_db
         character(len=40) :: plantnm = ""  !none              |crop name
         character(len=18) :: typ = ""    !none              |plant category
