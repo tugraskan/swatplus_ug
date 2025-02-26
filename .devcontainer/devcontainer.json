@@ -1,0 +1,7 @@
+{
+  "name": "ug",
+  "image": "mcr.microsoft.com/devcontainers/cpp:1-ubuntu",
+  "features": {
+    "ghcr.io/devcontainers/features/cmake:1": {}
+  }
+}
