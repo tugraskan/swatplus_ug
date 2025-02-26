@@ -1,12 +1,7 @@
 {
   "name": "ug",
-  "image": "mcr.microsoft.com/devcontainers/cpp:ubuntu-22.04",
-  "customizations": {
-    "vscode": {
-      "extensions": [
-        "ms-vscode.cmake-tools"
-      ]
-    }
-  }
+  "image": "mcr.microsoft.com/devcontainers/cpp:1-ubuntu",
+  "postCreateCommand": "sudo apt update && sudo apt install -y cmake"
 }
+
 
