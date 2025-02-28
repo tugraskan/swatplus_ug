@@ -4,7 +4,7 @@
     "features": {
         "ghcr.io/devcontainers/features/common-utils:1": {},
         "ghcr.io/devcontainers/features/git:1": {},
-        "ghcr.io/devcontainers-community/features/cmake": {},
+        "ghcr.io/devcontainers-community/features/cmake:2.0.1": {},
         "ghcr.io/devcontainers/features/fortran:1": {}
     },
     "postCreateCommand": "bash .devcontainer/setup.sh",
