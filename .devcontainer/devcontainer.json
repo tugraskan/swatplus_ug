@@ -1,10 +1,10 @@
 {
-    "name": "SWAT+ Development Environment",
+    "name": "SWATPlus_UG Development Environment",
     "image": "mcr.microsoft.com/devcontainers/base:ubuntu", 
     "features": {
         "ghcr.io/devcontainers/features/common-utils:1": {},
         "ghcr.io/devcontainers/features/git:1": {},
-        "ghcr.io/devcontainers/features/cmake:1": {},
+        "ghcr.io/devcontainers-extra/features/cmake:1": {},
         "ghcr.io/devcontainers/features/fortran:1": {}
     },
     "postCreateCommand": "bash .devcontainer/setup.sh",
