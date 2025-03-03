@@ -215,7 +215,7 @@
             enddo
           endif
           write (4567,*) freq_label, -1, time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, &
-                        soil1(j)%org_flx_tot 
+                        soil1(j)%org_flx_cum_tot 
           if (pco%csvout == "y") then
             if (layer_output) then
               do ly = 1, soil(j)%nly
@@ -224,7 +224,7 @@
               enddo 
             endif
             write (4568,'(*(G0.7,:,","))') freq_label, -1,time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, &
-                            soil1(j)%org_flx_tot 
+                            soil1(j)%org_flx_cum_tot 
           endif 
 
           !write soil carb mass balance for the soil profile file = "hru_soilcarb_mb_stat.txt/csv"
@@ -239,7 +239,7 @@
           write (4570,*) freq_label, -1, time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, &
                         soil1(j)%tot_org%c, soil_prof_hs%c, soil_prof_hp%c, soil_prof_microb%c,               &
                         soil_prof_meta%c, soil_prof_str%c, soil_prof_lig%c, soil_prof_man%c,                  &
-                        soil1(j)%org_flx_tot 
+                        soil1(j)%org_flx_cum_tot 
           if (pco%csvout == "y") then
             if (layer_output) then
               do ly = 1, soil(j)%nly
@@ -252,7 +252,7 @@
             write (4571,'(*(G0.7,:,","))') freq_label, -1, time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, &
                         soil1(j)%tot_org%c, soil_prof_hs%c, soil_prof_hp%c, soil_prof_microb%c,               &
                         soil_prof_meta%c, soil_prof_str%c, soil_prof_lig%c, soil_prof_man%c,                  &
-                        soil1(j)%org_flx_tot 
+                        soil1(j)%org_flx_cum_tot 
           endif 
 
           !write carbon pool for the soil profile file = "hru_cpool_stat.txt/csv"

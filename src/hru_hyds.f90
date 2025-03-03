@@ -151,8 +151,6 @@
       !surface runoff temperature
       if (snomlt > 0.1) then
         ob(icmd)%hd(3)%temp = w_temp%sno_mlt
-      else
-        ob(icmd)%hd(3)%temp = w_temp%sur_lat
       end if
       !lateral soil flow temperature
       ob(icmd)%hd(4)%temp = w_temp%sur_lat
