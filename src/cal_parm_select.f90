@@ -253,11 +253,11 @@
                       
       !! SOL  
       case ("anion_excl")
-        soil(isol)%anion_excl = chg_par(soil(isol)%anion_excl,         &
+        soil(ielem)%anion_excl = chg_par(soil(ielem)%anion_excl,         &
                          chg_typ, chg_val, absmin, absmax)
          
       case ("crk")
-         soil(isol)%crk = chg_par(soil(isol)%crk,                      &
+         soil(ielem)%crk = chg_par(soil(ielem)%crk,                      &
                          chg_typ, chg_val, absmin, absmax)
          
       case ("z")
@@ -336,6 +336,7 @@
       case ("ph")
            soil(ielem)%ly(ly)%ph = chg_par(soil(ielem)%ly(ly)%ph,        &
                          chg_typ, chg_val, absmin, absmax)
+         
       case ("cmn_h")
         hru(ielem)%nut%cmn = chg_par(hru(ielem)%nut%cmn,           &
                          chg_typ, chg_val, absmin, absmax)
@@ -343,19 +344,23 @@
       case ("nperco_h")
         hru(ielem)%nut%nperco = chg_par(hru(ielem)%nut%nperco,                  &
                          chg_typ, chg_val, absmin, absmax)
-       
+        
       case ("pperco_h")
         hru(ielem)%nut%pperco = chg_par(hru(ielem)%nut%pperco,                  &
                          chg_typ, chg_val, absmin, absmax)
+        
       case ("phoskd_h")
         hru(ielem)%nut%phoskd = chg_par(hru(ielem)%nut%phoskd,                  &
                          chg_typ, chg_val, absmin, absmax)
+        
       case ("psp_h")
         hru(ielem)%nut%psp = chg_par(hru(ielem)%nut%psp,                        &
                          chg_typ, chg_val, absmin, absmax)
+        
       case ("nperco_lchtile_h")
         hru(ielem)%nut%nperco_lchtile = chg_par(hru(ielem)%nut%nperco_lchtile,  &
                          chg_typ, chg_val, absmin, absmax)                      
+
        !! BSN
       case ("plaps")
         bsn_prm%plaps = chg_par(bsn_prm%plaps,                         &
@@ -531,37 +536,7 @@
         case ("bc4")
           ch_nut(ielem)%bc4 = chg_par(ch_nut(ielem)%bc4,                &
                          chg_typ, chg_val, absmin, absmax)
-        case ("rch_dox")
-          ch(ielem)%rch_dox = chg_par(ch(ielem)%rch_dox,                &
-                         chg_typ, chg_val, absmin, absmax)
-        
-        case ("rch_cbod")
-          ch(ielem)%rch_cbod = chg_par(ch(ielem)%rch_cbod,              &
-                         chg_typ, chg_val, absmin, absmax)
-        
-        case ("algae")
-          ch(ielem)%algae = chg_par(ch(ielem)%algae,                    &
-                         chg_typ, chg_val, absmin, absmax)
-        
-        case ("organicn")
-          ch(ielem)%organicn = chg_par(ch(ielem)%organicn,              &
-                         chg_typ, chg_val, absmin, absmax)
-        
-        case ("ammonian")
-          ch(ielem)%ammonian = chg_par(ch(ielem)%ammonian,              &
-                         chg_typ, chg_val, absmin, absmax) 
-        
-        case ("nitriten")
-          ch(ielem)%nitriten = chg_par(ch(ielem)%nitriten,              &
-                         chg_typ, chg_val, absmin, absmax)
-        
-        case ("organicp")
-          ch(ielem)%organicp = chg_par(ch(ielem)%organicp,              &
-                         chg_typ, chg_val, absmin, absmax) 
-        
-        case ("disolvp")
-          ch(ielem)%disolvp = chg_par(ch(ielem)%disolvp,                &
-                         chg_typ, chg_val, absmin, absmax)
+
           
 !!     PST
         case ("pst_koc")
@@ -771,9 +746,11 @@
          case ("soln_stl_fr")
            res_prm(ielem)%soln_stl_fr = chg_par(res_prm(ielem)%soln_stl_fr,           &
                          chg_typ, chg_val, absmin, absmax)
+           
          case ("solp_stl_fr")
            res_prm(ielem)%solp_stl_fr = chg_par(res_prm(ielem)%solp_stl_fr,           &
                          chg_typ, chg_val, absmin, absmax)
+           
          case ("sed_stlr")
            res_prm(ielem)%sed%sed_stlr = chg_par(res_prm(ielem)%sed%sed_stlr,           &
                          chg_typ, chg_val, absmin, absmax)
