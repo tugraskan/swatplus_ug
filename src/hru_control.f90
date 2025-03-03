@@ -354,15 +354,15 @@
         !! compute residue decomposition and nitrogen and phosphorus mineralization
         if (bsn_cc%cswat == 0) then
           call nut_nminrl
+          call nut_nitvol
         end if
 
         !! compute residue decomposition and nitrogen and phosphorus mineralization
         if (bsn_cc%cswat == 2) then
-          call cbn_rsd_decomp      ! added by JC and FG, modified from nut_minrln.f90
           call cbn_zhang2
         end if
 
-        call nut_nitvol
+        !call nut_nitvol
 
         if (bsn_cc%sol_P_model == 1) then  
           call nut_pminrl2
@@ -623,7 +623,10 @@
         if (xx > 1.e-6) then
           call hru_urb_bmp
         end if
-      
+        
+        ! write no3 to output file
+        
+        
       ! compute outflow objects (flow to channels, reservoirs, or landscape)
       ! if flow from hru is directly routed
       iob_out = iob

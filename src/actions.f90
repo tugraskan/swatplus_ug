@@ -39,7 +39,6 @@
       integer :: iac = 0                   !none     |counter
       integer :: ial = 0                   !none     |counter
       !integer :: jj                        !none     |counter
-      !this is the answer to the greatest question
       integer :: iburn = 0                 !none     |burn type from fire data base
       integer :: idtill = 0                !none     |tillage type
       integer :: ifertop = 0               !         |surface application fraction from chem app data base
@@ -93,9 +92,6 @@
       character(len=1) :: action = ""      !         |
       character(len=40) :: lu_prev = ""    !         |
 
-      yield = 0.
-      sumpst = 0.
-
       do iac = 1, d_tbl%acts
         action = "n"
         do ial = 1, d_tbl%alts
@@ -132,7 +128,7 @@
               hru(j)%irr_hmax = d_tbl%act(iac)%const !mm target ponding depth
               hru(j)%irr_hmin = d_tbl%act(iac)%const2 !mm threshold ponding depth for irrigation
               
-              wet_ob(j)%depth = wet_ob(j)%depth + irrig(j)%applied / 1000. !mm irrigation by wro already happened for today Jaehak 2023
+              wet_ob(j)%depth = wet_ob(j)%depth + irrig(j)%applied / 1000. !mm irrigation by wro already happend for today Jaehak 2023
 
               if (wet_ob(j)%depth*1000.<hru(j)%irr_hmin) then
                 irrig(j)%demand = max(0.,d_tbl%act(iac)%const-wet_ob(j)%depth*1000.) * hru(j)%area_ha * 10.       ! m3 = mm * ha * 10.
@@ -152,14 +148,14 @@
               
                 !set organics and constituents from irr.ops ! irrig(j)%water =  cs_irr(j) = 
                 if (pco%mgtout == "y") then
-                  write (2612, *) j, time%yrc, time%mo, time%day_mo, d_tbl%act(iac)%name, "IRRIGATE", phubase(j),  &
+                  write (2612, *) j, time%yrc, time%mo, time%day_mo, "        ", "IRRIGATE", phubase(j),  &
                       pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,pl_mass(j)%tot(ipl)%m, soil1(j)%rsd(1)%m, &
                       sol_sumno3(j), sol_sumsolp(j), irrig(j)%applied
                 end if
               else
                 !! set demand for irrigation from channel, reservoir or aquifer
                 if (pco%mgtout == "y") then
-                  write (2612, *) j, time%yrc, time%mo, time%day_mo, d_tbl%act(iac)%name, "IRRIG_DMD", phubase(j), &
+                  write (2612, *) j, time%yrc, time%mo, time%day_mo, "        ", "IRRIG_DMD", phubase(j), &
                       pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,pl_mass(j)%tot(ipl)%m, soil1(j)%rsd(1)%m, &
                       sol_sumno3(j), sol_sumsolp(j), irrop_db(irrop)%amt_mm
                 end if
@@ -247,9 +243,8 @@
             end select
                   
             if (pco%mgtout == "y") then
-              ! write (2612, *) j, time%yrc, time%mo, time%day_mo, "        ", "IRRIGATE", phubase(j),  &
-              write (2612, *) j, time%yrc, time%mo, time%day_mo, d_tbl%act(iac)%name, "IRRIGATE", phubase(j),  &
-                  pcom(j)%plcur(ipl)%phuacc, soil(j)%sw, pl_mass(j)%tot(ipl)%m, soil1(j)%rsd(1)%m, &
+              write (2612, *) j, time%yrc, time%mo, time%day_mo, "        ", "IRRIGATE", phubase(j),  &
+                  pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,pl_mass(j)%tot(ipl)%m, soil1(j)%rsd(1)%m, &
                   sol_sumno3(j), sol_sumsolp(j), irrig(j)%demand
             end if
             
@@ -760,7 +755,7 @@
                 
             end select
             
-            ! set inflow hydrograph fraction of receiving objects - used for dtbl flow fractions
+            ! set inflow hydrograph fraction of recieving objects - used for dtbl flow fractions
             ! set first object hyd fractin as defined in decision table
             inhyd = dtbl_flo(idtbl)%act(iac)%ob_num
             ihyd_in = ob(ob_num)%rcvob_inhyd(inhyd)
@@ -786,7 +781,7 @@
               else
                 frac = d_tbl%act(iac)%const / hwb_d(j)%qtile
               end if
-              ! set inflow hydrograph fraction of receiving objects - used for dtbl flow fractions
+              ! set inflow hydrograph fraction of recieving objects - used for dtbl flow fractions
               ! set first object hyd fractin as defined in decision table
               inhyd = dtbl_flo(idtbl)%act(iac)%ob_num
               ihyd_in = ob(ob_num)%rcvob_inhyd(inhyd)
@@ -1011,7 +1006,7 @@
               end if
             end do
             
-            !! set parameters for structural land use/management
+            !! set parameters for structural land use/managment
             if (d_tbl%act(iac)%file_pointer /= "null") then
               call structure_set_parms("tiledrain       ", istr1, j)
             end if
@@ -1032,7 +1027,7 @@
               end if
             end do
                   
-            !! set parameters for structural land use/management
+            !! set parameters for structural land use/managment
             if (d_tbl%act(iac)%file_pointer /= "null") then
               call structure_set_parms("septic          ", istr1, j)
             end if
@@ -1051,7 +1046,7 @@
               end if
             end do
             
-            !! set parameters for structural land use/management
+            !! set parameters for structural land use/managment
             if (d_tbl%act(iac)%file_pointer /= "null") then
               call structure_set_parms("fstrip         ", istr1, j)
             end if
@@ -1071,7 +1066,7 @@
               end if
             end do
             
-            !! set parameters for structural land use/management
+            !! set parameters for structural land use/managment
             if (d_tbl%act(iac)%file_pointer /= "null") then
               call structure_set_parms("grassww         ", istr1, j)
             end if
@@ -1097,7 +1092,7 @@
               end if
             end do
             
-            !! set parameters for structural land use/management
+            !! set parameters for structural land use/managment
             if (d_tbl%act(iac)%file_pointer /= "null") then
               call structure_set_parms("user_def        ", istr1, j)
             end if
@@ -1123,7 +1118,7 @@
               end do
                         
               if (pco%mgtout == "y") then
-                write (2612, *) j, time%yrc, time%mo, time%day_mo, d_tbl%act(iac)%name, "    BURN", phubase(j),    &
+                write (2612, *) j, time%yrc, time%mo, time%day_mo, "        ", "    BURN", phubase(j),    &
                     pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,pl_mass(j)%tot(ipl)%m, soil1(j)%rsd(1)%m,   &
                     sol_sumno3(j), sol_sumsolp(j)
               end if
@@ -1143,7 +1138,7 @@
             
             if (pco%mgtout == "y") then
               ipl = 1
-              write (2612, *) j, time%yrc, time%mo, time%day_mo, d_tbl%act(iac)%name, "    CNUP", phubase(j),    &
+              write (2612, *) j, time%yrc, time%mo, time%day_mo, "        ", "    CNUP", phubase(j),    &
                 pcom(j)%plcur(ipl)%phuacc, soil(j)%sw, pl_mass(j)%tot(ipl)%m, soil1(j)%rsd(1)%m,       &
                 sol_sumno3(j), sol_sumsolp(j), cn_prev, cn2(j)
             end if

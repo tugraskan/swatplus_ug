@@ -310,7 +310,7 @@
 
             !print irrigation applied
             if (pco%mgtout == "y") then
-              write (2612, *) j, time%yrc, time%mo, time%day_mo, irrop_db(irrop)%name, "IRRIGATE ", phubase(j),   &
+              write (2612, *) j, time%yrc, time%mo, time%day_mo, "        ", "IRRIGATE ", phubase(j),   &
                   pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,pl_mass(j)%tot(ipl)%m, soil1(j)%rsd(1)%m,      &
                   sol_sumno3(j), sol_sumsolp(j), irrig(j)%applied, irrig(j)%runoff
             end if
@@ -374,7 +374,7 @@
             graze = grazeop_db(mgt%op1)
 
             if (pco%mgtout == "y") then
-              write (2612, *) j, time%yrc, time%mo, time%day_mo, mgt%op_char, "    GRAZE ",         &
+              write (2612, *) j, time%yrc, time%mo, time%day_mo, "         ", "    GRAZE ",         &
                 phubase(j), pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,pl_mass(j)%tot(ipl)%m,        &
                 soil1(j)%rsd(1)%m, sol_sumno3(j), sol_sumsolp(j), grazeop_db(mgt%op1)%eat, grazeop_db(mgt%op1)%manure
             endif
@@ -399,7 +399,7 @@
             end do
                         
             if (pco%mgtout == "y") then
-              write (2612, *) j, time%yrc, time%mo, time%day_mo, mgt%op_char, "    BURN ", phubase(j),   &
+              write (2612, *) j, time%yrc, time%mo, time%day_mo, "        ", "    BURN ", phubase(j),   &
                   pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,pl_mass(j)%tot(ipl)%m, soil1(j)%rsd(1)%m,      &
                   sol_sumno3(j), sol_sumsolp(j)
             end if
@@ -411,7 +411,7 @@
             fr_curb = sweepop%fr_curb
                   
             if (pco%mgtout == "y") then
-              write (2612, *) j, time%yrc, time%mo, time%day_mo, mgt%op_char, "STREET_SWEEP ", phubase(j),    &
+              write (2612, *) j, time%yrc, time%mo, time%day_mo, "        ", "STREET SWEEP ", phubase(j),    &
                   pcom(j)%plcur(ipl)%phuacc, soil(j)%sw, pl_mass(j)%tot(ipl)%m, soil1(j)%rsd(1)%m,          &
                   sol_sumno3(j), sol_sumsolp(j)
             end if
@@ -467,7 +467,7 @@
             
           !print irrigation COMMAND
             if (pco%mgtout == "y") then
-              write (2612, *) j, time%yrc, time%mo, time%day_mo, mgt%op_char, "BEGIN_PADDY_IRRIGATION ", phubase(j),   &
+              write (2612, *) j, time%yrc, time%mo, time%day_mo, "        ", "BEGIN PADDY IRRIGATION ", phubase(j),   &
                   pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,pl_mass(j)%tot(ipl)%m, soil1(j)%rsd(1)%m,      &
                   sol_sumno3(j), sol_sumsolp(j), mgt%op3, mgt%op4
             end if
@@ -481,7 +481,7 @@
 
             !print irrigation applied
             if (pco%mgtout == "y") then
-              write (2612, *) j, time%yrc, time%mo, time%day_mo,  mgt%op_char, "IRRIGATE ", phubase(j),   &
+              write (2612, *) j, time%yrc, time%mo, time%day_mo, "        ", "IRRIGATE ", phubase(j),   &
                   pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,pl_mass(j)%tot(ipl)%m, soil1(j)%rsd(1)%m,      &
                   sol_sumno3(j), sol_sumsolp(j), irrig(j)%applied, irrig(j)%runoff
             end if
@@ -518,7 +518,7 @@
 
       end select
 
-      if (mgt%op /= "skip") hru(j)%cur_op = hru(j)%cur_op + 1  !don't increment if skip year
+      if (mgt%op /= "skip") hru(j)%cur_op = hru(j)%cur_op + 1  !don't icrement if skip year
       if (hru(j)%cur_op > sched(isched)%num_ops) then
         hru(j)%cur_op = 1
       end if

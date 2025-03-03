@@ -11,7 +11,6 @@
       use time_module
       use reservoir_module
       use climate_module, only : pcp, tmp
-      
       use landuse_data_module
       
       implicit none
@@ -62,7 +61,7 @@
               if (res_ob(ielem)%pvol <= 10000 * cal_upd(ichg_par)%val1 .or.     &
                       res_ob(ielem)%pvol >= 10000 * cal_upd(ichg_par)%val2) then
                 cond_met = "n"
-              end if    
+              end if
             case ("hsg")
               if (cal_upd(ichg_par)%cond(ic)%targc /= soil(ielem)%hydgrp) then
                 cond_met = "n"
@@ -81,40 +80,21 @@
                 if (cal_upd(ichg_par)%cond(ic)%targc == pcom(ielem)%pl(ipl)) then
                   pl_find = "y"
                 end if
-                  if (pl_find == "n") cond_met = "n"
-                  exit
-              end do
-            case ("pl_class")
-                
-              do ipl = 1, pcom(ielem)%npl
-                icom = pcom(ielem)%pcomdb
-                if (cal_upd(ichg_par)%cond(ic)%targc /= lum(icom)%cal_group) then 
-                  cond_met = "n"
-                end if
+                if (pl_find == "n") cond_met = "n"
                 exit
               end do
-              
-              !do ipl = 1, pcom(ielem)%npl
-                !icom = pcom(ielem)%pcomdb
-                !idp = pcomdb(icom)%pl(ipl)%db_num
-                !pl_find = "n"
-                !if (cal_upd(ichg_par)%cond(ic)%targc == pl_class(idp)) then
-                  !pl_find = "y"
-                !end if
-                !if (pl_find == "n") cond_met = "n"
-                !exit
-              !end do
-              
+            case ("pl_class")
+              if (cal_upd(ichg_par)%cond(ic)%targc /= pl_class(ielem)) then 
+                cond_met = "n"
+              end if
             case ("landuse")    !for hru
               if (cal_upd(ichg_par)%cond(ic)%targc /= hru(ielem)%land_use_mgt_c) then 
                 cond_met = "n"
                 exit
               end if
-              
             case ("cal_group")     !for hru    
               if (cal_upd(ichg_par)%cond(ic)%targc /= hru(ielem)%cal_group) then 
                 cond_met = "n"
-                exit
               end if
             end select
           end do    ! ic - conditions

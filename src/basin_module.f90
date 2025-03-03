@@ -65,12 +65,7 @@
         integer :: smax = 0      !! not used
         integer :: qual2e = 0    !! 0 = instream nutrient routing using QUAL2E 
                                  !! 1 = instream nutrient routing using QUAL2E - with simplified nutrient transformations
-        integer :: gwflow = 0    !!   0 = gwflow module not active; 1 = gwflow module active
-        integer :: idc_till = 3  !! 1 = Use dssat tillage method to use if cswat = 2 
-                                 !! 2 = Use epic tillage method to use if cswat = 2
-                                 !! 3 = Use Kemanian tillage method to use if cswat = 2
-                                 !! 4 = Use dndc tillage method to use if cswat = 2
-
+        integer :: gwflow = 0       !!   0 = gwflow module not active; 1 = gwflow module active
       end type basin_control_codes
       type (basin_control_codes) :: bsn_cc
 
@@ -106,7 +101,7 @@
         real :: nperco_lchtile = .5 !! n concentration coeff for tile flow and leach from bottom layer
         real :: evrch = 0.60        !! reach evaporation adjustment factor
         real :: scoef = 1.0         !! channel storage coefficient (0-1)
-        real :: cdn = 1.40          !! denitrification exponential rate coefficient        
+        real :: cdn = 1.40          !! denitrification expoential rate coefficient        
         real :: sdnco = 1.30        !! denitrification threshold frac of field cap
         real :: bact_swf = 0.15     !! frac of manure containing active colony forming units
         real :: tb_adj = 0.         !! adjustment factor for subdaily unit hydrograph basetime
@@ -120,9 +115,9 @@
         real :: urb_init_abst = 1.  !! maximum initial abstraction for urban areas when using Green and Ampt
         real :: petco_pmpt = 100.0  !! PET adjustment (%) for Penman-Montieth and Preiestly-Taylor methods
         real :: uhalpha = 1.0       !! alpha coeff for est unit hydrograph using gamma func
-        real :: eros_spl = 0.       !! coeff of splash erosion varying 0.9-3.1 
+        real :: eros_spl = 0.       !! coeff of splash erosion varing 0.9-3.1 
         real :: rill_mult = 0.      !! rill erosion coefficient
-        real :: eros_expo = 0.      !! exponential coefficient for overland flow
+        real :: eros_expo = 0.      !! exponential coeffcient for overland flow
         real :: c_factor = 0.       !! scaling parameter for cover and management factor for 
                                     !!  overland flow erosion
         real :: ch_d50 = 0.         !! median particle diameter of main channel (mm)
@@ -140,7 +135,6 @@
         character(len=1) :: m = "n"
         character(len=1) :: y = "n"
         character(len=1) :: a = "n"
-        logical :: already_read_in
       end type print_interval
       
       type basin_print_codes
@@ -152,7 +146,7 @@
         character (len=1)  :: day_print = "n"
         character (len=1)  :: day_print_over = "n"
         integer :: nyskip = 0                           !!  number of years to skip output summarization
-        character (len=1)  :: sw_init = "n"             !!  n=sw not initialized, y=sw initialized for output (when hit nyskip)
+        character (len=1)  :: sw_init = "n"             !!  n=sw not initialized, y=sw intialized for output (when hit nyskip)
       ! DAILY START/END AND INTERVAL
         integer :: day_start = 0                        !!  julian day to start printing output
         integer :: day_end = 0                          !!  julian day to end printing output
@@ -203,7 +197,6 @@
         type(print_interval) :: nb_hru          !!  nutrient balance HRU output
         type(print_interval) :: ls_hru          !!  losses HRU output
         type(print_interval) :: pw_hru          !!  plant weather HRU output
-        type(print_interval) :: cb_hru          !!  plant weather HRU output
         ! HRU-LTE
         type(print_interval) :: wb_sd           !!  water balance SWAT-DEG output 
         type(print_interval) :: nb_sd           !!  nutrient balance SWAT-DEG output
@@ -396,17 +389,5 @@
           character (len=16) :: yield_tha =  " yld(t/ha)      "
       end type basin_yld_header
       type (basin_yld_header) :: bsn_yld_hdr
-
-      contains
-
-      function print_prt_error(name) result (r)
-         character (len=16), intent (in) :: name
-         integer :: r
-         r = 1
-         write(*, fmt="(a,a,a)", advance="no") "Error: ", name, "print object is duplicated in the input file print.prt.  Aborting"
-         print*; print*
-         error stop
-      end function
-
       
       end module basin_module

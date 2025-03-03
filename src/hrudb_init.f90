@@ -34,6 +34,6 @@
         hru(ihru)%nut%cmn = bsn_prm%cmn
         hru(ihru)%nut%nperco_lchtile = bsn_prm%nperco_lchtile
       end do
-
+ 
       return
       end subroutine hrudb_init

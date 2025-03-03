@@ -6,7 +6,7 @@
         use organic_mineral_mass_module
         use carbon_module
         use output_landscape_module
-        use time_module, only : time
+        use time_module
         
         implicit none
         
@@ -96,12 +96,12 @@
        !prmt_51 !coef adjusts microbial activity function in top soil layer (0.1_1.)
        
        integer :: j = 0          !                     |number of hru
-       integer :: k = 0          !none                 |counte
+       integer :: k = 0          !none                 |counter
        integer :: kk = 0         !                     |
        integer :: lmnta = 0      !                     |      
        integer :: min_n_ppm = 0  !                     |
        integer :: lslncat = 0    !                     |
-       integer :: min_n = 0      !                     |
+       real :: min_n = 0         !                     |
        real :: sol_mass = 0.     !                     |
        real :: sol_min_n = 0.    !                     |
        real :: fc = 0.           !mm H2O               |amount of water available to plants in soil layer at field capacity (fc - wp),Index:(layer,HRU)
@@ -180,7 +180,6 @@
        real :: rto = 0.          !none                 |cloud cover factor
        real :: rspc = 0.         !                     |
        real :: xx = 0.           !varies    |variable to hold calculation results
-
 
        !! initialize local variables
        deltawn = 0.
@@ -284,20 +283,17 @@
        
         
       !calculate tillage factor using dssat
-      ! The following is commented out because it is not used. FG
-      ! if (tillage_switch(j) .eq. 1 .and. tillage_days(j) .le. 30) then
-      !    tillage_factor(j) = 1.6
-      ! else
-      !    tillage_factor(j) = 1.0
-      ! end if	
+      if (tillage_switch(j) .eq. 1 .and. tillage_days(j) .le. 30) then
+         tillage_factor(j) = 1.6
+      else
+         tillage_factor(j) = 1.0
+      end if	
 
       !!calculate c/n dynamics for each soil layer
       !!===========================================
-      soil1(j)%org_flx_tot = org_flux_zero
       do k = 1, soil(j)%nly
         !! mm / 1000 * 10000 m2 / ha * ton/m3 * 1000 kg/ha -> kg/ha; rock fraction is considered
         sol_mass = 10000. * soil(j)%phys(k)%thick * soil(j)%phys(k)%bd * (1 - soil(j)%phys(k)%rock / 100.)
-      
          
         ! if k = 1, then using temperature, soil moisture in layer 2 to calculate decomposition factor
         if (k == 1) then
@@ -325,40 +321,21 @@
  
           !compute tillage factor (till_eff) from armen
           till_eff = 1.0
-
-          select case (bsn_cc%idc_till)
-
-            case(1)
-              !calculate tillage factor using dssat
-              if (tillage_switch(j) .eq. 1 .and. tillage_days(j) .le. 30) then
-                if (k == 1) then
-                  till_eff = 1.6
-                else
-                  if (soil(j)%phys(k)%d .le. tillage_depth(j)) then
-                    till_eff = 1.6
-                  else if (soil(j)%phys(k-1)%d .lt. tillage_depth(j)) then
-                    till_eff = 1.0 + 0.6 * (tillage_depth(j) - soil(j)%phys(k-1)%d) / (soil(j)%phys(k)%d - soil(j)%phys(k-1)%d)
-                  end if		         
-                end if
-              else
-                till_eff = 1.0
-              end if	
-            
-            case(2)
-              ! place holder for epic method to compute till_eff
-
-            case(3)
-              if (tillage_switch(j) .eq. 1 .and. tillage_days(j) .le. 30) then
-                ! Kemanian method    ----having modi
-                till_eff = 1. + soil(j)%ly(k)%tillagef 
-              else
-                till_eff = 1.0
-              endif
-
-            case(4)
-              ! place holder for dndc method
-
-          end select
+          
+          !calculate tillage factor using dssat
+          if (tillage_switch(j) .eq. 1 .and. tillage_days(j) .le. 30) then
+            if (k == 1) then
+              till_eff = 1.6
+            else
+              if (soil(j)%phys(k)%d .le. tillage_depth(j)) then
+                till_eff = 1.6
+              else if (soil(j)%phys(k-1)%d .lt. tillage_depth(j)) then
+                till_eff = 1.0 + 0.6 * (tillage_depth(j) - soil(j)%phys(k-1)%d) / (soil(j)%phys(k)%d - soil(j)%phys(k-1)%d)
+              end if		         
+            end if
+          else
+            till_eff = 1.0
+          end if	
 
           !!compute soil temperature factor - when sol_tep is larger than 35, cdg is negative?
           org_con%cdg = soil(j)%phys(k)%tmp / (soil(j)%phys(k)%tmp + exp(5.058459 - 0.2503591 * soil(j)%phys(k)%tmp))
@@ -386,7 +363,6 @@
           soil1(j)%mn(k)%no3 = max(0.0001,soil1(j)%mn(k)%no3 - wdn)
           hnb_d(j)%denit = hnb_d(j)%denit + wdn
           sol_min_n = soil1(j)%mn(k)%no3 + soil1(j)%mn(k)%nh4
-          ! print*, "1. in cbn_zhang2", k, soil1(j)%mn(k)%no3
               
           !lignin content in structural litter (fraction)          
           rlr = min(0.8, soil1(j)%lig(k)%m / (soil1(j)%str(k)%m + 1.e-5))  
@@ -644,7 +620,7 @@
                   sum = sum1 + sum2 + sum3 + sum4 + sum5
                   wmin = max(1.e-5, soil1(j)%mn(k)%no3 + soil1(j)%mn(k)%nh4 + sum)
                   
-                  !total demand for potential tranformaiton of som
+                  !total demand for potential tranformation of som
                   dmdn = cpn1 + cpn2 + cpn3 + cpn4 + cpn5              
 
               !supply - demand
@@ -653,14 +629,13 @@
         !     update
               if (rnmn > 0.) then
                 soil1(j)%mn(k)%nh4 = soil1(j)%mn(k)%nh4 + rnmn     
-                min_n = soil1(j)%mn(k)%no3 + rnmn
-                if (min_n < 0.) then
-                  rnmn = -soil1(j)%mn(k)%no3
-                  soil1(j)%mn(k)%no3 = 1.e-10
-                else
-                  soil1(j)%mn(k)%no3 = min_n
+	            min_n = soil1(j)%mn(k)%no3 - rnmn
+	            if (min_n < 0.) then
+	              rnmn = -soil1(j)%mn(k)%no3
+	              soil1(j)%mn(k)%no3 = 1.e-10
+	            else
+	              soil1(j)%mn(k)%no3 = min_n
                 end if   
-                ! print*, "2. in cbn_zhang2", k, soil1(j)%mn(k)%no3, rnmn
               end if
               
 	          ! calculate p flows
@@ -747,7 +722,7 @@
               !!!=================================
               !!transformation processes from lignin structural (str) and metabolic (met) and  pools to s2 (slow humus)
 
-                      !!str (structural litter) to s2 (slow humus)
+                      !!str (structrual litter) to s2 (slow humus)
                       org_flux%cfstrs2 = .7 * lslcta              
                       call nut_np_flow (&
                              soil1(j)%str(k)%c, soil1(j)%str(k)%n,       & !input
@@ -863,15 +838,13 @@
                 soil1(j)%meta(k)%c = soil1(j)%meta(k)%c - lmcta
               end if
               
-              !! set residue decomposition for printing
+              !! set residue decompostion for printing
               if (k == 1) then
                 !! surface residue
                 hrc_d(j)%rsd_surfdecay_c = lmcta + lscta
-                ! soil1(j)%rsd(1)%c = soil1(j)%rsd(1)%c - hrc_d(j)%rsd_surfdecay_c
               else
                 !! subsurface and root residue
                 hrc_d(j)%rsd_rootdecay_c = lmcta + lscta
-                ! soil1(j)%rsd(k)%c = soil1(j)%rsd(k)%c - hrc_d(j)%rsd_rootdecay_c
               end if 
               
               soil1(j)%meta(k)%n = max(.001, soil1(j)%meta(k)%n - org_flux%efmets1 & !subtract n flow from met (metabolic litter) to s1 (microbial biomass)
@@ -879,8 +852,8 @@
 
               soil1(j)%str(k)%n = max(.001, soil1(j)%str(k)%n - org_flux%efstrs1 & !subtract n flow from str (structural litter) to s1 (microbial biomass)
                             - org_flux%efstrs2                     &!subtract n flow from str (structural litter) to s2 (slow humus)
-                            - org_flux%mnrstrs1                    &!subtract mineralization during transformation from str (structural litter) to s1 (microbial biomass)
-                            - org_flux%mnrstrs2)                    !subtract mineralization during transformation from str (structural litter) to s2 (slow humus)
+                            - org_flux%mnrstrs1                    &!subtract mineralization during tansformation from str (structural litter) to s1 (microbial biomass)
+                            - org_flux%mnrstrs2)                    !subtract mineralization during tansformation from str (structural litter) to s2 (slow humus)
 
               soil1(j)%microb(k)%n = soil1(j)%microb(k)%n + org_flux%efmets1         & !add n flow from met (metabolic litter) to s1 (microbial biomass)
                     + org_flux%efstrs1                            & !add n flow from str (structural litter) to s1 (microbial biomass)
@@ -888,8 +861,8 @@
                     - org_flux%efs1s3                             & !subtract n flow from s1 (microbial biomass) to s3 (passive humus)
                     + org_flux%efs2s1                             & !add n flow from s2 (slow humus) to  s1 (microbial biomass)
                     + org_flux%efs3s1                             & !add n flow from s3 (passive humus) to s1 (microbial biomass)                  
-                    - org_flux%mnrs1s2                            & !subtract mineralization during transformation from s1 (microbial biomass) to s2 (slow humus)
-                    - org_flux%mnrs1s3                            & !subtract mineralization during transformation from s1 (microbial biomass) to s3 (passive humus)                   
+                    - org_flux%mnrs1s2                            & !subtract mineralization during tansformation from s1 (microbial biomass) to s2 (slow humus)
+                    - org_flux%mnrs1s3                            & !subtract mineralization during tansformation from s1 (microbial biomass) to s3 (passive humus)                   
                     + org_flux%immmets1                           & !add immobilization during transformaiton from met (metabolic litter) to s1 (microbial biomass)
                     + org_flux%immstrs1                           & !add immobilization during transformaiton from str (structural litter) to s1 (microbial biomass)
                     + org_flux%imms2s1                            & !add immobilization during transformaiton from s2 (slow humus) to  s1 (microbial biomass)
@@ -899,17 +872,17 @@
                     org_flux%efs1s2                               & !add n flow from s1 (microbial biomass) to s2 (slow humus)
                     - org_flux%efs2s1                             & !subtract n flow from s2 (slow humus) to  s1 (microbial biomass)
                     - org_flux%efs2s3                             & ! subtract n flow from s2 (slow humus) to  s3 (passive humus)                  
-                    - org_flux%mnrs2s1                            & !subtract mineralization during transformation from s2 (slow humus) to  s1 (microbial biomass)
-                    - org_flux%mnrs2s3                            & !subtract mineralization during transformation from s2 (slow humus) to  s3 (passive humus)                   
-                    + org_flux%immstrs2                           & !add immobilization during transformation from str (structural litter) to s2 (slow humus)
-                    + org_flux%imms1s2                              !add immobilization during transformation from s1 (microbial biomass) to s2 (slow humus)
+                    - org_flux%mnrs2s1                            & !subtract mineralization during tansformation from s2 (slow humus) to  s1 (microbial biomass)
+                    - org_flux%mnrs2s3                            & !subtract mineralization during tansformation from s2 (slow humus) to  s3 (passive humus)                   
+                    + org_flux%immstrs2                           & !add immobilization during tansformation from str (structural litter) to s2 (slow humus)
+                    + org_flux%imms1s2                              !add immobilization during tansformation from s1 (microbial biomass) to s2 (slow humus)
               
               soil1(j)%hp(k)%n = soil1(j)%hp(k)%n + org_flux%efs1s3 +        & !add n flow from s1 (microbial biomass) to s3 (passive humus)
                     org_flux%efs2s3                               & !add n flow from s2 (slow humus) to s3 (passive humus)                   
                     - org_flux%efs3s1                             & !subtract n flow from s3 (passive humus) to s1 (microbial biomass)
                     - org_flux%mnrs3s1                            & !subtract mineralization.
-                    + org_flux%imms1s3                            & !add immobilization during transformation from s1 (microbial biomass) to s3 (passive humus)
-                    + org_flux%imms2s3                              !add immobilization during transformation from s2 (slow humus) to s3 (passive humus)
+                    + org_flux%imms1s3                            & !add immobilization during tansformation from s1 (microbial biomass) to s3 (passive humus)
+                    + org_flux%imms2s3                              !add immobilization during tansformation from s2 (slow humus) to s3 (passive humus)
               
               !!update soil respiration
               !!===============================
@@ -919,22 +892,19 @@
               !!rspc_da is accounting variable summarizing co2 emissions from all soil layers
               hsc_d(j)%rsp_c = hsc_d(j)%rsp_c +  rspc 
               
-              ! Save the the org_flux for each layer and a total per day
-              soil1(j)%org_flx_lr(k) = org_flux     
-              soil1(j)%org_flx_tot = soil1(j)%org_flx_tot + soil1(j)%org_flx_lr(k) 
+              ! Save the the org_flux for each layer
+              soil1(j)%org_flx_lr(k) = org_flux     ! Org flux for current day for soil layer k
+              soil1(j)%org_flx_cum_lr(k) = soil1(j)%org_flx_cum_lr(k) + soil1(j)%org_flx_lr(k) !cumulative org flux for layer k
+
+              !total cumulative org flux soil profile
+              soil1(j)%org_flx_cum_tot = soil1(j)%org_flx_cum_tot + soil1(j)%org_flx_lr(k) 
               
-              !!update other variables used in swat
+              !!update other vairables used in swat
               !!==================================
               !soil1(j)%tot(k)%m = soil1(j)%str(k)%m + soil1(j)%meta(k)%m
               !soil1(j)%tot(k)%c = 100. * (soil1(j)%hs(k)%c + soil1(j)%hp(k)%c + soil1(j)%microb(k)%c) / sol_mass 
-              ! soil1(j)%tot(k)%c = soil1(j)%hs(k)%c + soil1(j)%hp(k)%c + soil1(j)%microb(k)%c
-              soil1(j)%tot(k)%c = soil1(j)%str(k)%c + soil1(j)%meta(k)%c + soil1(j)%hp(k)%c + soil1(j)%hs(k)%c + soil1(j)%microb(k)%c 
-              if (k == 1 ) then
-                soil1(j)%seq(k)%c = 0.0
-              else
-                soil1(j)%seq(k)%c = soil1(j)%hp(k)%c + soil1(j)%hs(k)%c + soil1(j)%microb(k)%c 
-              endif
-
+              soil1(j)%tot(k)%c = soil1(j)%hs(k)%c + soil1(j)%hp(k)%c + soil1(j)%microb(k)%c
+              soil1(j)%rsd(k)%c = soil1(j)%meta(k)%c + soil1(j)%str(k)%c
         end if  !soil temp and soil water > 0.
 
       end do      !soil layer loop

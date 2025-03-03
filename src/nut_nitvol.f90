@@ -76,9 +76,8 @@
                rnit = rnit + soil1(j)%mn(k)%nh4
                soil1(j)%mn(k)%nh4 = 0.
              endif
+             !rnit = 0.
              soil1(j)%mn(k)%no3 = soil1(j)%mn(k)%no3 + rnit
-             ! print*, " ine nut_nitvol.f90", k, soil1(j)%mn(k)%no3, rnit 
-
 
              !! calculate ammonia volatilization
              soil1(j)%mn(k)%nh4 = Max(1.e-6, soil1(j)%mn(k)%nh4 - rvol)

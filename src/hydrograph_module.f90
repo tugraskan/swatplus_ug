@@ -171,10 +171,10 @@
       type (hyd_output) :: chomz
 
       type object_output
-        character (len=3) :: name = ""
-        character (len=3) :: obtyp = ""  !! object type: hru,hlt,hs,rxc,dr,out,sdc
+        character (len=10) :: name = ""
+        character (len=10) :: obtyp = ""  !! object type: hru,hlt,hs,rxc,dr,out,sdc
         integer :: obtypno = 0         !! object type number: 1=hru, 2=hru_lte, 3=channel
-        character (len=6) :: hydtyp = "" !! hydrograph type: tot,rhg,sur,lat,til
+        character (len=20) :: hydtyp = "" !! hydrograph type: tot,rhg,sur,lat,til
         integer :: objno = 0           !! object number
         integer :: hydno = 0           !! code computes from hydtyp
         character (len=26) :: filename = ""!! file with hydrograph output from the object
@@ -220,7 +220,7 @@
         character(len=16) :: name = ""
         real :: sno_mlt = 1.        ! none          |coefficient influencing snowmelt temperature contributions
         real :: gw = .97            ! none          |coefficient influencing groundwater temperature contributions
-        real :: sur_lat = 1.        ! none          |coefficient influencing surface and lateral flow temperature contributions
+        real :: sur_lat = 1.        ! none          |coefficient influencing suface and lateral flow temperature contributions
         integer :: airlag_d = 6     ! days          |average air temperature lag
         real :: hex_coef1 = .67     ! 1/hour        |heat transfer coefficient 1
         real :: hex_coef2 = 1.16    ! 1/hour        |heat transfer coefficient 2
@@ -301,7 +301,7 @@
         character (len=3), dimension(:), allocatable :: htyp_in     !inflow hyd type (ie 1=tot, 2= recharge, 3=surf, etc)
         integer, dimension(:), allocatable :: ihtyp_in
         real, dimension(:), allocatable :: frac_in
-        integer, dimension(:), allocatable :: rcvob_inhyd           !inflow hydrograph number of receiving object - used for dtbl flow fractions
+        integer, dimension(:), allocatable :: rcvob_inhyd           !inflow hydrograph number of recieving object - used for dtbl flow fractions
         type (flow_duration_curve) :: fdc                                   !use for daily flows and then use to get median of annual fdc"s
         type (sorted_duration_curve), dimension(:),allocatable :: fdc_ll    !linked list of daily flow for year - dimensioned to 366
         type (sorted_duration_curve), dimension(:),allocatable :: fdc_lla   !linked list of annual flow for simulation - dimensioned to nbyr
@@ -1279,7 +1279,7 @@
         hyd3%lag = hyd1%lag + hyd2%lag
         hyd3%grv = hyd1%grv + hyd2%grv
         if (hyd1%flo + hyd2%flo > 1.e-6) then
-          hyd3%temp = (hyd1%flo * hyd2%temp + hyd2%flo + hyd2%temp) / (hyd1%flo + hyd2%flo)
+          hyd3%temp = (hyd1%flo * hyd1%temp + hyd2%flo * hyd2%temp) / (hyd1%flo + hyd2%flo)
         else
           hyd3%temp = 0.
         end if
