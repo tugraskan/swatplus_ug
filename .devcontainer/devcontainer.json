@@ -1,0 +1,25 @@
+{
+    "name": "SWATPlus_UG Development Environment",
+    "image": "mcr.microsoft.com/devcontainers/base:ubuntu", 
+    "features": {
+        "ghcr.io/devcontainers/features/common-utils:1": {},
+        "ghcr.io/devcontainers/features/git:1": {},
+        "ghcr.io/devcontainers/features/cmake:2.0.1": {},
+        "ghcr.io/devcontainers/features/fortran:1": {}
+    },
+    "postCreateCommand": "bash .devcontainer/setup.sh",
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "cmake.cmakePath": "/usr/bin/cmake",
+                "cmake.configureSettings": {
+                    "CMAKE_Fortran_COMPILER": "/opt/intel/oneapi/compiler/2025.0/bin/ifx"
+                }
+            },
+            "extensions": [
+                "ms-vscode.cmake-tools",
+                "ms-vscode.cpptools"
+            ]
+        }
+    }
+}
