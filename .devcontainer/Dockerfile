@@ -1,4 +1,4 @@
-# Use an official Ubuntu base image as the starting point
+## Use an official Ubuntu base image as the starting point
 FROM ubuntu:20.04
 
 # Set environment variables to avoid interactive prompts
