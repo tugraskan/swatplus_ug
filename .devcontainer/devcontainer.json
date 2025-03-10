@@ -7,3 +7,4 @@
         "ghcr.io/devcontainers-extra/features/cmake:1": {},
         "ghcr.io/devcontainers/features/python:1": {}
     }
+}
