@@ -32,7 +32,9 @@
 !7778  format (9x,'DAY',8x,'YEAR',10x,'RES',7x,'VOL m^3',4x,'INFLO m^3',5x,'OUTFLO m^3',5x,'PREC m^3',7x,'EVAP m^3',  &
 !        8x,'AREA ha')
  !!!! for Luis only
-      
+       
+      call xwalk_head
+
       call proc_bsn   
       call proc_date_time
       call proc_db
