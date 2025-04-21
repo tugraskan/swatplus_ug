@@ -26,6 +26,7 @@
         cla_ppm = 1.e-6
       else
 
+
         !! compute concentrations
         sed_ppm = 1000000. * wbody%sed / wbody%flo
         sed_ppm = Max(1.e-6, sed_ppm)
@@ -36,6 +37,7 @@
         
         !! compute change in sediment concentration due to settling 
         if (sed_ppm > wbody_prm%sed%nsed) then
+
           sed_ppm = (sed_ppm - wbody_prm%sed%nsed) * wbody_prm%sed_stlr_co + wbody_prm%sed%nsed
           sed_ppm = Max (sed_ppm, wbody_prm%sed%nsed)
           !! update wetland sediment after settling
@@ -43,6 +45,7 @@
           !! calculate sediment in the outflow and subtract from wetland
           ht2%sed = sed_ppm * ht2%flo / 1000000.
           wbody%sed = Max(0.,wbody%sed - ht2%sed)
+
           
           !! assume all sand aggregates and gravel settles
           wbody%sil = 0.

@@ -22,6 +22,7 @@
       
       character*10 b(3) 
       !water balance and solute balance output file headers
+
       character(len=13) :: gwflow_hdr(19) = ""
       character(len=13) :: gwflow_hdr_day(24) = ""
       character(len=13) :: gwflow_hdr_yr(18) = ""
@@ -32,6 +33,7 @@
       character(len=13) :: sol_hdr_yr(20) = ""
       character(len=13) :: sol_hdr_aa(20) = ""
       character(len=16) :: hydsep_hdr(10) = ""
+
       !general variables
       character(len=13) :: header = ""
       character(len=30) :: read_type = ""
@@ -40,6 +42,7 @@
       character(len=13) :: name = ""
       logical  i_exist                !          |
       logical  i_exist2               !          |
+
       integer :: date_time(8) = 0
       integer :: i = 0                !          |
       integer :: j = 0                !          |
@@ -72,6 +75,7 @@
       integer :: in_res_cell = 0      !          |
       integer :: in_canal_cell = 0    !          |
       integer :: in_gw_minl = 0       !          |
+
       !aquifer and streambed properties
       integer :: K_zone = 0           !          |
       integer :: Sy_zone = 0          !          |
@@ -84,12 +88,15 @@
       real, dimension (:), allocatable :: zones_strK
       real, dimension (:), allocatable :: zones_strbed
       !external pumping information
+
       integer :: pumpex_cell = 0
+
       !reservoir information
       integer :: res_cell = 0         !          |
       integer :: res_id = 0           !          |
       real :: res_stage = 0.          !          |
       !canal information
+
       integer :: canal_out(5000) = 0  !          |flag (0,1) indicating if canal receives water from outside the model domain
       integer :: day_beg = 0          !          |beginning day (of year)  of active canals
       integer :: day_end = 0          !          |ending day (of year) of active canals
@@ -99,6 +106,7 @@
       real :: width = 0.              !m         |width of canal
       real :: length = 0.             !m         |length of canal in cell
       real :: stage = 0.              !m         |stage of canal
+
       !HRU-cell, LSU-cell linkage
       integer :: num_unique = 0       !          |
       integer :: cell = 0             !          |
@@ -599,8 +607,10 @@
       enddo
 
       !for boundary cells: store id of the closest active cell
+
       allocate (gw_bound_near(ncell), source = 0)
       allocate (gw_bound_dist(ncell), source = 0.)
+
       gw_bound_near = 0
       gw_bound_dist = 0.
       do i=1,ncell
@@ -640,8 +650,10 @@
       allocate (gw_obs_cells(gw_num_obs_wells), source = 0)
       !check to see if there are USGS well names (for the national model)
       inquire(file='usgs_annual_head',exist=i_exist)
+
       if(usgs_obs == 1) then
         allocate (usgs_id(gw_num_obs_wells), source = 0.d0)
+
       endif
       !loop through the observation well locations
       do k=1,gw_num_obs_wells
@@ -952,10 +964,12 @@
         open(in_gw,file='gwflow.pumpex')
         read(in_gw,*) header
         read(in_gw,*) gw_npumpex !number of pumps
+
         allocate (gw_pumpex_cell(gw_npumpex), source = 0)
         allocate (gw_pumpex_nperiods(gw_npumpex), source = 0)
         allocate (gw_pumpex_dates(gw_npumpex,2,1000), source = 0)
         allocate (gw_pumpex_rates(gw_npumpex,1000), source = 0.)
+
         gw_pumpex_cell = 0
         gw_pumpex_nperiods = 0
         gw_pumpex_rates = 0.
@@ -1109,7 +1123,9 @@
         !flux output file
         open(out_gw_res,file='gwflow_flux_resv')
         write(out_gw_res,*) 'Annual groundwater-reservoir exchange (m3/day)' 
+
       else
+
         write(out_gw,*) '          gwflow.rescells not found (groundwater-res exchange not simulated)'
       endif
       endif !end reservoir exchange
@@ -1181,7 +1197,9 @@
         !flux output file
         open(out_gw_fp,file='gwflow_flux_floodplain')
         write(out_gw_fp,*) 'Annual floodplain seepage (m3/day)'  
+
       else
+
         write(out_gw,*) '          gwflow.floodplain not found (groundwater-fp exchange not simulated)'
       endif
       endif !end floodplain exchange
@@ -1340,7 +1358,9 @@
         !flux output file
         open(out_gw_canal,file='gwflow_flux_canl')
         write(out_gw_canal,*) 'Annual canal seepage (m3/day)' 
+
       else
+
         write(out_gw,*) '          gwflow.canals not found (canal seepage not simulated)'
       endif
       endif !end canal seepage
@@ -1447,9 +1467,11 @@
             read(in_gw_minl,*) header
             read(in_gw_minl,*) gw_nminl
             !allocate arrays based on number of salt minerals
+
             allocate (gwsol_minl_state(ncell))
             do i=1,ncell
               allocate (gwsol_minl_state(i)%fract(gw_nminl), source = 0.)
+
             enddo
             !read in initial salt minerals fractions
             read(in_gw_minl,*) header
@@ -1585,7 +1607,9 @@
         !allocate all mass arrays for sources and sinks
         allocate (gwsol_ss(ncell))
         do i=1,ncell
+
           allocate (gwsol_ss(i)%solute(gw_nsolute))
+
         enddo
         !allocate all mass arrays for sums of sources and sinks
         allocate (gwsol_ss_sum(ncell))
@@ -2066,7 +2090,9 @@
       gwflow_hdr_huc12_mo = [character(len=18) :: "year","month","  HUC12","rech","gwet","gwsw","swgw","satex",  &
           "gwsoil","lateral","pump_ag","pump_ex","tile","res","wet","canal","fplain","pump_def"]
       write(out_huc12wb_mo,122) (gwflow_hdr_huc12_mo(j),j=1,18)
+
       allocate (gw_huc12_wb_mo(15,sp_ob%outlet), source = 0.)
+
       gw_huc12_wb_mo = 0.
       endif
       
@@ -2075,6 +2101,7 @@
       if (gw_solute_flag == 1) then
       
         !allocate yearly and total arrays
+
         allocate (sol_grid_chng_yr(gw_nsolute), source = 0.)
         allocate (sol_grid_rech_yr(gw_nsolute), source = 0.)
         allocate (sol_grid_gwsw_yr(gw_nsolute), source = 0.)
@@ -2113,6 +2140,7 @@
         allocate (sol_grid_wetl_tt(gw_nsolute), source = 0.)
         allocate (sol_grid_canl_tt(gw_nsolute), source = 0.)
         allocate (sol_grid_fpln_tt(gw_nsolute), source = 0.)
+
         
         !loop through the solutes
         do n=1,gw_nsolute
@@ -2428,8 +2456,8 @@
       write(out_hyd_sep,*) 'chan_satexsw:  channel flow contributed from saturation excess runoff' 
       write(out_hyd_sep,*) 'chan_tile:     channel flow contributed from tile drain flow' 
       write(out_hyd_sep,*)
-      hydsep_hdr = [character(len=16) :: "  year","   day","channel","chan_surf","chan_lat","chan_gwsw","chan_swgw",  &
-            "chan_satexgw","chan_satexsw","chan_tile"]
+      hydsep_hdr = [character(len=10) :: "  year","   day","channel","chan_surf","chan_lat","chan_gwsw","chan_swgw",  &
+               "chan_satexgw","chan_satexsw","chan_tile"]
       write(out_hyd_sep,121) (hydsep_hdr(j),j=1,10)      
       
       !gwflow record file (skip line)
@@ -2457,4 +2485,7 @@
 123   format(a10,1000(i12))   
 130   format(10000(f12.3))
 
-      end subroutine gwflow_read      
+      end subroutine gwflow_read
+      
+           
+      

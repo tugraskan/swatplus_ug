@@ -12,6 +12,7 @@
       implicit none
 
       integer, intent (in) :: chan_id    !       |channel number
+
       integer :: k = 0                   !       |counter
       integer :: s = 0                   !       |solute counter
       integer :: cell_id = 0             !       |cell in connection with the channel
@@ -33,6 +34,7 @@
       real :: chan_volume = 0.           !m3     |water volume in channel before groundwater exchange occurs
       real :: chan_csol(100) = 0.        !g/m3   |solute concentration in channel water
       real :: solmass(100) = 0.          !g      |solute mass transferred
+
       
       
       !current channel storage (m3)

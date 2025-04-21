@@ -17,6 +17,7 @@
       implicit none
       
       !counters and general information
+
       integer :: i = 0                !           |counter
       integer :: j = 0                !           |counter
       integer :: k = 0                !           |counter
@@ -39,6 +40,7 @@
       real :: sat_thick1 = 0.         !m          |saturated thickness of connected cell
       real :: sat_thick2 = 0.         !m          |saturated thickness of cell
       real :: face_sat = 0.           !m          |saturated thickness at cell interface
+
       !storage calculations
       real :: stor_change = 0.        !m3         |daily change in groundwater storage for a cell
       real :: sat_change = 0.         !m          |daily change in saturated thickness for a cell
@@ -51,6 +53,7 @@
       !water balance analysis       
       real :: mass_error = 0.         !           |mass error in groundwater balance and solute mass balance
       !tile drainage outflow
+
       real :: sum_tile(50) = 0.       !m3         |summation of flow from tile cell groups
       real :: sum_mass(50,100) = 0.   !g          |total solute mass in tile cell groups
       real :: c_tile(50,100) = 0.     !g/m3       |average concentration of solute mass in tile cell groups
@@ -106,6 +109,7 @@
       real :: sol_grid_wetl = 0.
       real :: sol_grid_canl = 0.
       real :: sol_grid_fpln = 0.
+
       !usgs observation wells
       real :: head_sum = 0.
       real :: head_avg = 0.
@@ -242,7 +246,9 @@
                 do s=1,gw_nsolute !loop through the solutes
                   c_tile(i,s) = sum_mass(i,s) / sum_tile(i) !g/m3
                 enddo
+
               else
+
                 do s=1,gw_nsolute !loop through the solutes
                   c_tile(i,s) = 0. !g/m3
                 enddo
@@ -355,7 +361,9 @@
           !only proceed if the cell is active
           if(gw_state(i)%stat > 0) then
             
+
             !if the cell is interior (not a boundary cell)
+
             if(gw_state(i)%stat == 1) then
               
               !loop through the cells connected to the current cell
@@ -367,9 +375,11 @@
                 !calculate groundwater flow between the cells, using Darcy's Law
                 if(gw_state(cell_id)%stat == 0) then
                   Q_cell = 0.
+
                 elseif(gw_state(cell_id)%stat == 2 .and. bc_type == 2) then !boundary cell
                   Q_cell = 0.
                 else
+
                   !length of connection between the two cells
                   area1 = gw_state(cell_id)%area !area of connected cell
                   area2 = gw_state(i)%area !area of current cell
@@ -520,7 +530,9 @@
                   do s=1,gw_nsolute !loop through the solutes
                     gwsol_state(i)%solute(s)%cnew = gwsol_state(i)%solute(s)%mass / gw_volume_inter
                   enddo
+
                 else
+
                   do s=1,gw_nsolute !loop through the solutes
                     gwsol_state(i)%solute(s)%cnew = 0.
                     gwsol_state(i)%solute(s)%mass = 0.
@@ -1707,6 +1719,7 @@
         if (gw_solute_flag == 1) then !solute mass flux
           do s=1,gw_nsolute
             write(out_sol_rcti,*) gwsol_nm(s),'chem. reaction flux for year (kg/day):',time%yrc
+
             if(grid_type == "structured") then
               grid_val = 0.
               do i=1,grid_nrow
@@ -1729,21 +1742,26 @@
         if(gw_solute_flag == 1) then !solute mass flux
           do s=1,gw_nsolute
             write(out_sol_rcto,*) gwsol_nm(s),'chem. reaction flux for year (kg/day):',time%yrc
+
             if(grid_type == "structured") then
               grid_val = 0.
               do i=1,grid_nrow
                 do j=1,grid_ncol
                   if(cell_id_usg(i,j) > 0) then
+
                     grid_val(i,j) = gwsol_ss_sum(cell_id_usg(i,j))%solute(s)%rcto
+
                   endif
                 enddo
               enddo
               do i=1,grid_nrow
+
                 write(out_sol_rcto,101) (grid_val(i,j),j=1,grid_ncol)
               enddo
             else
               write(out_sol_rcto,121) (gwsol_ss_sum(i)%solute(s)%rcto,i=1,ncell)
             endif
+
             write(out_sol_rcto,*)  
           enddo
         endif
@@ -1884,7 +1902,9 @@
             if(gwflag_yr.eq.1) then
               write(out_solbal_yr+s,105) time%yrc, &
                                          sol_grid_chng_yr,sol_grid_rech_yr,sol_grid_gwsw_yr,sol_grid_swgw_yr,sol_grid_satx_yr, &
+
                                                                          sol_grid_soil_yr,sol_grid_advn_yr,sol_grid_disp_yr, &
+
                                          sol_grid_rcti_yr,sol_grid_rcto_yr,sol_grid_minl_yr,sol_grid_sorb_yr, &
                                          sol_grid_ppag_yr,sol_grid_ppex_yr,sol_grid_tile_yr,sol_grid_resv_yr,sol_grid_wetl_yr, &
                                          sol_grid_canl_yr,sol_grid_fpln_yr
@@ -2192,7 +2212,9 @@
                   stream_nse(i,1) = 1 - (sum_resi_nse / sum_diff_nse)
                   stream_nse1(i,1) = 1 - (sum_resi_nse1 / sum_diff_nse1)
                   stream_nnse(i,1) = 1 / (2 - stream_nse(i,1))
+
                 endif
+
                 !calculate PBIAS
                 sum_num = 0.
                 sum_den = 0.
@@ -2529,9 +2551,13 @@
 !121   format(<out_cols>(e12.3))
 120   format(f12.3)
 121   format(e12.3)
+
 125   format(3x,i8,2x,i8,7x,f15.1,50(e13.4)) 
+
       
 
       return
       end subroutine gwflow_simulate
+
             
+
