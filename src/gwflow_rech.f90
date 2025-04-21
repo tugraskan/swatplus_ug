@@ -11,6 +11,7 @@
       
       implicit none
 
+
       integer :: i = 0                !           |counter
       integer :: j = 0                !           |counter for number of HRUs within an LSU
       integer :: k = 0                !           |counter
@@ -33,6 +34,7 @@
       real :: huc12_cell_total = 0.   !m3         |summation of recharge from a huc12 catchment
       real :: sub_recharge = 0.       !m3         |summation of recharge for subbasin
       real :: sub_solmass(100) = 0.   !g          |total solute mass in recharge, for the subbasin
+
       
 
       !calculate recharge and solute mass to the water table
@@ -94,7 +96,9 @@
           enddo
         enddo !go to next LSU
         
+
       else !proceed with HRU-cell connection
+
       
       !map recharge from the HRUs to the grid cells
       if (nat_model == 1) then !national model application

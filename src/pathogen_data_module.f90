@@ -22,7 +22,9 @@
         real :: gr_stream = 0.     !! 1/day         |growth factor for persistent pathogen in streams
         real :: do_res = 0.        !! 1/day         |Die-off factor for less persistent pathogen in reservoirs
         real :: gr_res = 0.        !! 1/day         |growth factor for less persistent pathogen in reservoirs
+
         real :: conc_min = 0.      !!               |minimum pathogen concentration
+
       end type pathogen_db
       type (pathogen_db), dimension(:), allocatable  :: path_db
       

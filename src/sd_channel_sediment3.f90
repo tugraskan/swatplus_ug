@@ -11,6 +11,7 @@
     
       implicit none     
     
+
       integer :: iob = 0            !               |object number
       integer :: ihru = 0
       integer :: iihru = 0
@@ -54,6 +55,7 @@
       real :: wet_fill = 0.
       real :: ave_rate
       !!
+
       
       ich = isdch
       iob = sp_ob1%chandeg + jrch - 1
@@ -72,14 +74,17 @@
       !! calculate channel sed and nutrient processes if inflow > 0
       if (ht1%flo > 1.e-6) then
       
+
       !! calculate peak daily flow
       pk_rto = sd_ch(ich)%pk_rto * (1. + 2.66 * (ob(icmd)%area_ha / 100.) ** (-.3))
+
       peakrate = pk_rto * ht1%flo / 86400.     !m3/s
         
       !! interpolate rating curve using peak rate
       call rcurv_interp_flo (ich, peakrate)
       !! use peakrate as flow rate
       h_rad = rcurv%xsec_area / rcurv%wet_perim
+
       vel = h_rad ** .6666 * Sqrt(sd_ch(ich)%chs) / (sd_ch(ich)%chn + .001)
       vel = peakrate / rcurv%xsec_area
       rttime = sd_ch(ich)%chl / (3.6 * vel)
@@ -94,6 +99,7 @@
       ht1%flo = ht1%flo + precip
       
       !! compute flood plain deposition
+
       ave_rate = ht1%flo / 86400.     !m3/s
       bf_flow = sd_ch(ich)%bankfull_flo * ch_rcurv(ich)%elev(2)%flo_rate
       florate_ob = ave_rate - bf_flow
@@ -115,12 +121,14 @@
         exp_co = 0.0003 * fp_m2 / florate_ob
         trap_eff = sd_ch(ich)%fp_inun_days * (florate_ob / ave_rate) * (1. - exp(-exp_co))
         trap_eff = Min (1., trap_eff)
+
         fp_dep%sed = trap_eff * ht1%sed
         
         !! deposit Particulate P and N in the floodplain
         fp_dep%orgn = trap_eff * sd_ch(ich)%n_dep_enr * ht1%orgn
         fp_dep%sedp = trap_eff * sd_ch(ich)%p_dep_enr * ht1%sedp
         !! trap nitrate and sol P in flood plain - when not simulating flood plain interactions?
+
         fp_dep%no3 = 0.         !trap_eff * ht1%no3
         fp_dep%solp = 0.        !trap_eff * ht1%solp
         
@@ -154,6 +162,7 @@
         end do
             
       end if     ! florate_ob > 0.
+
       
       !! add sediment deposition to calculate mm of deposition over the flood plain later
       ch_morph(ich)%fp_mm = ch_morph(ich)%fp_mm + fp_dep%sed
@@ -166,8 +175,10 @@
       bd_fac = Max (0.001, 0.03924 * sd_ch(ich)%ch_bd * 1000. - 1000.)
       cohes_fac = 0.021 * cohesion + veg
       vel_cr = log10 (2200. * sd_ch(ich)%chd) * (0.0004 * (bd_fac + cohes_fac)) ** 0.5
+
       !sd_ch(ich)%vcr_coef = 1.
       vel_cr = sd_ch(ich)%vcr_coef * vel_cr
+
       
       !! calculate radius of curvature
       rad_curv = ((12. * sd_ch(ich)%chw) * sd_ch(ich)%sinu ** 1.5) /               &
@@ -198,8 +209,10 @@
       !arc_len = 0.66 *  (12. * sd_ch(ich)%chw) * sd_ch(ich)%sinu
       arc_len = 0.25 * sd_ch(ich)%chl
       prot_len = arc_len * sd_ch(ich)%arc_len_fr
+
       !ebank_t = ebank_m * sd_ch(ich)%chd * sd_ch(ich)%arc_len_fr * prot_len * sd_ch(ich)%ch_bd
       ebank_t = 1000. * ebank_m * sd_ch(ich)%chd * arc_len * sd_ch(ich)%ch_bd
+
       bank_ero%sed = ebank_t
       !! calculate associated nutrients
       bank_ero%orgn = bank_ero%sed * sd_ch(ich)%n_conc / 1000.

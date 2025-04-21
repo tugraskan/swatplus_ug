@@ -470,6 +470,7 @@
           !if ((time%yrc == 2007 .AND. time%day == 213) .OR. (time%yrc == 2010 .AND. time%day == 319)            &
           !                                              .OR.(time%yrc == 2011 .AND. time%day == 324)) then 
 
+
           ! the following was moved to soil_nutcarb_write.f90 by FG.
           ! if (ihru == 1) then
           !   if (bsn_cc%cswat /= 2) then
@@ -480,6 +481,7 @@
           !   write (9999,*) time%day, time%mo, time%day_mo, time%yrc, ob(ihru)%typ, ob(ihru)%name,           &
           !                                          (soil1(ihru)%tot(ly)%c/1000.0, ly = 1, soil(ihru)%nly)
           ! end if
+
                                                         
         if (pco%cb_hru%d == "y") call soil_nutcarb_write(" d")
         if (pco%cb_hru%d == "l") call soil_nutcarb_write("dl")

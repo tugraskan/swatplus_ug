@@ -3,6 +3,7 @@
       implicit none
 
       !general variables ----------------------------------------------------------------------------------------------
+
       integer :: ncell = 0      !               !number of gwflow cells
       integer :: num_active = 0 !               !number of active cells
       real    :: gw_time_step = 0.!days           !flow solution time step
@@ -19,6 +20,7 @@
       character*15 :: grid_type                               !"structured" or "unstructured" (usg)
       integer :: grid_nrow = 0                                !number of rows in structured grid
       integer :: grid_ncol = 0                                !number of columns in structured grid
+
       integer, dimension (:,:), allocatable :: cell_id_usg    !usg cell number, for cell in structured grid (array)
       integer, dimension (:), allocatable :: cell_id_list     !usg cell number, for cell in structured grid (list)
       integer, dimension (:,:), allocatable :: grid_status    !cell status for structured grid
@@ -54,7 +56,9 @@
       
       !variables for HRU (and LSU) linkage to grid cells --------------------------------------------------------------
       !variables for linking HRUs to grid cells
+
       integer :: hru_cells_link = 0                                          !        |
+
       integer, dimension (:), allocatable :: hru_num_cells                   !        |
       integer, dimension (:), allocatable :: cell_num_hrus                   !        |
       integer, dimension (:,:), allocatable :: hru_cells                     !        |
@@ -63,8 +67,10 @@
       real, dimension (:,:), allocatable :: cells_fract                      !        |
       real, dimension (:,:), allocatable :: cell_hrus_fract                  !        |
       !variables for linking LSUs (landscape units) to grid cells
+
       integer :: lsu_cells_link = 0                                          !        |
       integer :: in_lsu_cell = 0                                             !        |
+
       integer, dimension (:), allocatable :: lsu_num_cells                   !        |
       integer, dimension (:,:), allocatable :: lsu_cells                     !        |
       real, dimension (:,:), allocatable :: lsu_cells_fract                  !        |
@@ -146,7 +152,9 @@
       real, dimension (:), allocatable :: gw_delay          !           |
       real, dimension (:), allocatable :: gw_rech           !           |
       real, dimension (:), allocatable :: delay             !           |
+
             
+
       !gwet: variables for groundwater evapotranspiration -----------------------------------------
       integer :: gw_et_flag = 0                             !           |
       real, dimension (:), allocatable :: etremain          !           |
@@ -162,7 +170,9 @@
       real, dimension (:), allocatable :: gw_chan_elev      !           |
       real, dimension (:), allocatable :: gw_chan_K         !           |
       real, dimension (:), allocatable :: gw_chan_thick     !           |
+
       real :: gw_bed_change = 0.                            !           |
+
       !channel-cell connection
       type cell_channel_info
         integer :: ncon = 0                                 !           |number of cells connected to the channel
@@ -178,8 +188,10 @@
       integer :: gw_satx_flag = 0                           !           |
       integer :: satx_count = 0                             !           |for each day: number of cells that are saturated
       type satx_channel_info
+
         integer :: ncon = 0                                 !           |number of cells connected to the channel
         integer, allocatable :: cells (:)                   !           |cells connected to the channel
+
       endtype satx_channel_info
       type (satx_channel_info), dimension(:), allocatable :: gw_satx_info
       
@@ -311,7 +323,9 @@
         integer :: daye = 0
       end type cell_canal_out_info
       type (cell_canal_out_info), dimension (:), allocatable :: gw_canl_out_info
+
       integer :: gw_canal_ncells_out = 0                 !     |number of cells connected to canals that receive outside water
+
       real, allocatable :: canal_out_info(:,:)           !     |characteristics for canals that receive outside water
       real, allocatable :: canal_out_conc(:)             !     |solute concentration in canals that receive outside water
       
@@ -369,6 +383,7 @@
       !variables for groundwater solute transport ---------------------------------------------------------------------
       
       !general solute variables
+
       integer :: gw_solute_flag = 0                           !    |main flag
       integer :: gw_nsolute = 0                               !    |number of solutes
       integer :: num_ts_transport = 0                         !    |number of transport time steps per day
@@ -377,6 +392,7 @@
       integer :: gwsol_cons = 0              !    |flag for simulating constituent groundwater transport (seo4,seo3,boron)
       integer :: gwsol_minl = 0                               !    |flag for simulating salt mineral precipitation-dissolution
       integer :: gw_nminl = 0                                 !    |number of salt minerals (set to 5)
+
        
       !main attributes of solutes
       character (len=16) :: gwsol_nm(100) = ""
@@ -400,7 +416,9 @@
       type (object_solute_state), dimension (:), allocatable :: gwsol_state
 
       !salt mineral cell state variables
+
       real :: mass_min(100) = 0.                         !g       |solute mass added/removed from cell via precipitation-dissolution
+
       type minl_state
         real, dimension (:), allocatable :: fract        !        |fraction of cell that is the salt mineral
       end type minl_state
@@ -483,6 +501,7 @@
       real, dimension (:,:), allocatable :: gw_rechsol             !kg/ha    |solute mass in daily recharge (reaching water table)
       
       !grid mass for year and total (kg)
+
       real, dimension (:), allocatable :: sol_grid_chng_yr
       real, dimension (:), allocatable :: sol_grid_rech_yr
       real, dimension (:), allocatable :: sol_grid_gwsw_yr
@@ -523,6 +542,7 @@
       real, dimension (:), allocatable :: sol_grid_fpln_tt
       
       !solute concentrations at observation cells
+
       real, dimension (:,:), allocatable :: gw_obs_solute          !         |                                 
                                           
       
@@ -607,5 +627,5 @@
       integer :: out_solbal_aa = 7300
       !solute observation cell concentrations
       integer :: out_gwobs_sol = 1305
-       
-      end module gwflow_module  
+        
+      end module gwflow_module     

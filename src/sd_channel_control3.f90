@@ -482,6 +482,7 @@
       chsd_d(isdch)%sed_in = ob(icmd)%hin%sed
       chsd_d(isdch)%sed_out = ob(icmd)%hd(1)%sed
       chsd_d(isdch)%sed_stor = ch_stor(isdch)%sed
+
       ch_sed_bud(isdch)%bed_ero = bed_ero%sed
       chsd_d(isdch)%washld = ob(icmd)%hd(1)%sed
       chsd_d(isdch)%bedld = ch_dep%sed

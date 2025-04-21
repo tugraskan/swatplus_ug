@@ -70,6 +70,7 @@
       integer :: ipest = 0           !none          |counter
       integer :: date_time(8) = 0    !              | 
       character*10 b(3)              !              |
+
       real :: crop_yld_t_ha = 0.     !t/ha          |annual and ave annual basin crop yields
       real :: sw_init = 0.
       real :: sno_init = 0.
@@ -81,6 +82,7 @@
       integer :: imallo = 0
       integer :: ires = 0
       
+
       time%yrc = time%yrc_start
       
       !! generate precip for the first day - %precip_next
@@ -371,6 +373,7 @@
         ch_morph(ich)%fp_mm = ch_morph(ich)%fp_mm / (3. * sd_ch(ich)%chw *           &
                                          sd_ch(ich)%chl * 1000.) / time%yrs_prt
         iob = sp_ob1%chandeg + ich - 1
+
         write (7778,*) ich, ob(iob)%name, ob(iob)%area_ha, ch_morph(ich)%w_yr,       &
                                            ch_morph(ich)%d_yr, ch_morph(ich)%fp_mm
       end do
@@ -380,6 +383,7 @@
         !res_trap(ires) = res_out_a(ires) / res_in_a(ires)
         !iob = sp_ob1%res + ires - 1
         !write (7778,*) ires, ob(iob)%name, ob(iob)%area_ha, res_trap(ires)
+
       end do
           
       !! ave annual calibration output and reset time for next simulation

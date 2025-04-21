@@ -67,7 +67,7 @@
           !! new lag to smooth condition jumps (volume or month conditions)
           alpha_up = Exp(-res_ob(jres)%lag_up)
           alpha_down = Exp(-res_ob(jres)%lag_down)
-          !! lag outflow when flows are receding
+
           if (res_ob(jres)%prev_flo < ht2%flo) then
             ht2%flo = ht2%flo * alpha_up + res_ob(jres)%prev_flo * (1. - alpha_up)
           else
@@ -181,10 +181,12 @@
       end if
 
   !!!! for Luis only    
+
       !if (jres == 1) then
       !  write (7777,*) time%day, time%yrc, jres, res(jres)%flo, ht1%flo, ht2%flo,   &
       !                                           res(jres)%sed, ht1%sed, ht2%sed
       !end if
+
   !!!! for Luis only
       
       return

@@ -11,6 +11,7 @@
       
       implicit none
 
+
       integer, intent (in) :: hru_id     !       |hru number
       integer :: k = 0                   !       |counter
       integer :: s = 0                   !       |solute counter
@@ -27,6 +28,7 @@
       real :: layer_fraction = 0.        !       |fraction of saturated soil profile within the layer
       real :: layer_transfer = 0.        !       |amount of water and solute transferred to the soil layer
       real :: hru_area_m2 = 0.           !m2     |surface area of the hru
+
       
 
 

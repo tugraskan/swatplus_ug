@@ -20,6 +20,7 @@
 
       implicit none
       
+
       integer :: i = 0
       integer :: m = 0
       integer :: ob_ctr = 0
@@ -40,6 +41,7 @@
       real :: sum_load = 0.
       real :: avg_load(11) = 0.
       real :: salt_basin(28) = 0.
+
 
       
       !basin-wide salt mass balance -------------------------------------------------------------------------------------------------------
@@ -499,7 +501,9 @@
               gwsol_ss(i)%solute(2+m)%rcti = 0.
               gwsol_ss(i)%solute(2+m)%rcto = 0.
               gwsol_ss(i)%solute(2+m)%minl = 0.
+
                       enddo
+
           enddo
         endif
       endif

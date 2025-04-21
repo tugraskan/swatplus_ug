@@ -14,6 +14,7 @@
 
       implicit none
       
+
       integer :: iaqu = 0
       integer :: icha = 0
       integer :: ires = 0
@@ -48,6 +49,7 @@
       !209 format (6xA8, 1xA8, 16x,*(A8,6x))                        ! format of res_dr.swf headers
   
       
+
       !! check for file_cio.swf to determine if SWIFT folder exist
       inquire (file="SWIFT/file_cio.swf", exist=i_exist)
       if (.not. i_exist) then   ! if not use system-specific command to create SWIFT folder
