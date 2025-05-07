@@ -24,14 +24,14 @@
           write (3110,100) time%day, time%mo, time%day_mo, time%yrc, idmd, wallo(iwallo)%dmd(idmd)%ob_typ,                &
               wallo(iwallo)%dmd(idmd)%ob_num, wallo(iwallo)%dmd(idmd)%dmd_src_obs,                                        &
               wallo(iwallo)%dmd(idmd)%rcv_ob, wallo(iwallo)%dmd(idmd)%rcv_num,                                            &
-              (wallo(iwallo)%dmd(idmd)%src_ob(isrc)%ob_typ, wallo(iwallo)%dmd(idmd)%src_ob(isrc)%ob_num,                  &
+              (wallo(iwallo)%dmd(idmd)%src(isrc)%src_typ, wallo(iwallo)%dmd(idmd)%src(isrc)%src_num,                  &
               wallod_out(iwallo)%dmd(idmd)%src(isrc), isrc = 1, wallo(iwallo)%dmd(idmd)%dmd_src_obs)
 
            if (pco%csvout == "y") then
           write (3114,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, idmd, wallo(iwallo)%dmd(idmd)%ob_typ,   &
               wallo(iwallo)%dmd(idmd)%ob_num, wallo(iwallo)%dmd(idmd)%dmd_src_obs,                                        &
               wallo(iwallo)%dmd(idmd)%rcv_ob, wallo(iwallo)%dmd(idmd)%rcv_num,                                            &
-              (wallo(iwallo)%dmd(idmd)%src_ob(isrc)%ob_typ, wallo(iwallo)%dmd(idmd)%src_ob(isrc)%ob_num,                  &
+              (wallo(iwallo)%dmd(idmd)%src(isrc)%src_typ, wallo(iwallo)%dmd(idmd)%src(isrc)%src_num,                  &
               wallod_out(iwallo)%dmd(idmd)%src(isrc), isrc = 1, wallo(iwallo)%dmd(idmd)%dmd_src_obs)
            end if
         end if
@@ -52,14 +52,14 @@
           write (3111,100) time%day, time%mo, time%day_mo, time%yrc, idmd, wallo(iwallo)%dmd(idmd)%ob_typ,                &
               wallo(iwallo)%dmd(idmd)%ob_num, wallo(iwallo)%dmd(idmd)%dmd_src_obs,                                        &
               wallo(iwallo)%dmd(idmd)%rcv_ob, wallo(iwallo)%dmd(idmd)%rcv_num,                                            &
-              (wallo(iwallo)%dmd(idmd)%src_ob(isrc)%ob_typ, wallo(iwallo)%dmd(idmd)%src_ob(isrc)%ob_num,                  &
+              (wallo(iwallo)%dmd(idmd)%src(isrc)%src_typ, wallo(iwallo)%dmd(idmd)%src(isrc)%src_num,                  &
               wallom_out(iwallo)%dmd(idmd)%src(isrc), isrc = 1, wallo(iwallo)%dmd(idmd)%dmd_src_obs)
  
               if (pco%csvout == "y") then
           write (3115,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, idmd, wallo(iwallo)%dmd(idmd)%ob_typ,   &
               wallo(iwallo)%dmd(idmd)%ob_num, wallo(iwallo)%dmd(idmd)%dmd_src_obs,                                        &
               wallo(iwallo)%dmd(idmd)%rcv_ob, wallo(iwallo)%dmd(idmd)%rcv_num,                                            &
-              (wallo(iwallo)%dmd(idmd)%src_ob(isrc)%ob_typ, wallo(iwallo)%dmd(idmd)%src_ob(isrc)%ob_num,                  &
+              (wallo(iwallo)%dmd(idmd)%src(isrc)%src_typ, wallo(iwallo)%dmd(idmd)%src(isrc)%src_num,                  &
               wallom_out(iwallo)%dmd(idmd)%src(isrc), isrc = 1, wallo(iwallo)%dmd(idmd)%dmd_src_obs)
           end if
         end if
@@ -82,14 +82,14 @@
           write (3112,100) time%day, time%mo, time%day_mo, time%yrc, idmd, wallo(iwallo)%dmd(idmd)%ob_typ,                &
               wallo(iwallo)%dmd(idmd)%ob_num, wallo(iwallo)%dmd(idmd)%dmd_src_obs,                                        &
               wallo(iwallo)%dmd(idmd)%rcv_ob, wallo(iwallo)%dmd(idmd)%rcv_num,                                            &
-              (wallo(iwallo)%dmd(idmd)%src_ob(isrc)%ob_typ, wallo(iwallo)%dmd(idmd)%src_ob(isrc)%ob_num,                  &
+              (wallo(iwallo)%dmd(idmd)%src(isrc)%src_typ, wallo(iwallo)%dmd(idmd)%src(isrc)%src_num,                  &
               walloy_out(iwallo)%dmd(idmd)%src(isrc), isrc = 1, wallo(iwallo)%dmd(idmd)%dmd_src_obs)
   
               if (pco%csvout == "y") then
           write (3116,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, idmd, wallo(iwallo)%dmd(idmd)%ob_typ,   &
               wallo(iwallo)%dmd(idmd)%ob_num, wallo(iwallo)%dmd(idmd)%dmd_src_obs,                                        &
               wallo(iwallo)%dmd(idmd)%rcv_ob, wallo(iwallo)%dmd(idmd)%rcv_num,                                            &
-              (wallo(iwallo)%dmd(idmd)%src_ob(isrc)%ob_typ, wallo(iwallo)%dmd(idmd)%src_ob(isrc)%ob_num,                  &
+              (wallo(iwallo)%dmd(idmd)%src(isrc)%src_typ, wallo(iwallo)%dmd(idmd)%src(isrc)%src_num,                  &
               walloy_out(iwallo)%dmd(idmd)%src(isrc), isrc = 1, wallo(iwallo)%dmd(idmd)%dmd_src_obs)
           end if
         end if
@@ -111,14 +111,14 @@
         write (3113,100) time%day, time%mo, time%day_mo, time%yrc, idmd, wallo(iwallo)%dmd(idmd)%ob_typ,                  &
               wallo(iwallo)%dmd(idmd)%ob_num, wallo(iwallo)%dmd(idmd)%dmd_src_obs,                                        &
               wallo(iwallo)%dmd(idmd)%rcv_ob, wallo(iwallo)%dmd(idmd)%rcv_num,                                            &
-              (wallo(iwallo)%dmd(idmd)%src_ob(isrc)%ob_typ, wallo(iwallo)%dmd(idmd)%src_ob(isrc)%ob_num,                  &
+              (wallo(iwallo)%dmd(idmd)%src(isrc)%src_typ, wallo(iwallo)%dmd(idmd)%src(isrc)%src_num,                  &
               walloa_out(iwallo)%dmd(idmd)%src(isrc), isrc = 1, wallo(iwallo)%dmd(idmd)%dmd_src_obs)
 
         if (pco%csvout == "y") then
         write (3117,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, idmd, wallo(iwallo)%dmd(idmd)%ob_typ,     &
               wallo(iwallo)%dmd(idmd)%ob_num, wallo(iwallo)%dmd(idmd)%dmd_src_obs,                                        &
               wallo(iwallo)%dmd(idmd)%rcv_ob, wallo(iwallo)%dmd(idmd)%rcv_num,                                            &
-              (wallo(iwallo)%dmd(idmd)%src_ob(isrc)%ob_typ, wallo(iwallo)%dmd(idmd)%src_ob(isrc)%ob_num,                  &
+              (wallo(iwallo)%dmd(idmd)%src(isrc)%src_typ, wallo(iwallo)%dmd(idmd)%src(isrc)%src_num,                  &
               walloa_out(iwallo)%dmd(idmd)%src(isrc), isrc = 1, wallo(iwallo)%dmd(idmd)%dmd_src_obs)
         end if
        end if

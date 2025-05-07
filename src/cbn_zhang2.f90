@@ -185,7 +185,9 @@
        real :: xx = 0.           !varies    |variable to hold calculation results
        logical :: ufc = .false. !Use File Coefficients (ufc) from carbon_coef.cbn file
 
+
        ufc = carbon_coef_file
+
 
        !! initialize local variables
        deltawn = 0.
