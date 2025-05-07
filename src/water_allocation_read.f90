@@ -21,6 +21,8 @@
       integer :: isrc = 0             !none       |counter
       integer :: iwro = 0             !none       |number of water allocation objects
       integer :: num_objs = 0
+      integer :: num_src = 0
+      integer :: num_rcv = 0
       integer :: idmd = 0
       integer :: idb = 0
       integer :: idb_irr = 0
@@ -55,7 +57,8 @@
           read (107,*,iostat=eof) header
           if (eof < 0) exit
           read (107,*,iostat=eof) wallo(iwro)%name, wallo(iwro)%rule_typ, wallo(iwro)%src_obs, &
-                                                    wallo(iwro)%dmd_obs, wallo(iwro)%cha_ob
+                                                    wallo(iwro)%dmd_obs
+          
           if (eof < 0) exit
           read (107,*,iostat=eof) header
           if (eof < 0) exit
@@ -74,27 +77,8 @@
             wallo(iwro)%src(i)%num = i
             if (eof < 0) exit
             backspace (107)
-            read (107,*,iostat=eof) k, wallo(iwro)%src(i)%ob_typ
-            backspace (107)
-            !! if source is diversion into the basin, read the recall name
-            if (wallo(iwro)%src(i)%ob_typ == "div_in") then
-              read (107,*,iostat=eof) k, wallo(iwro)%src(i)%ob_typ, wallo(iwro)%src(i)%div_rec
-              !! xwalk with recall.rec
-              do idb = 1, db_mx%recall_max
-                if (wallo(iwro)%src(i)%div_rec == recall(idb)%name) then
-                  wallo(iwro)%src(i)%rec_num = idb
-                  exit
-                end if
-              end do
-            else
               read (107,*,iostat=eof) k, wallo(iwro)%src(i)%ob_typ, wallo(iwro)%src(i)%ob_num,    &
                                                                   wallo(iwro)%src(i)%limit_mon
-              !! call wallo_control from channel
-              if (wallo(iwro)%src(i)%ob_typ == "cha") then
-                sd_ch(wallo(iwro)%src(i)%ob_num)%wallo = iwro
-                wallo(iwro)%cha = wallo(iwro)%src(i)%ob_num
-              end if
-            end if
           end do
           
           !! read demand object data
@@ -106,15 +90,16 @@
             if (eof < 0) exit
             backspace (107)
             read (107,*,iostat=eof) k, wallo(iwro)%dmd(i)%ob_typ, wallo(iwro)%dmd(i)%ob_num,            &
-              wallo(iwro)%dmd(i)%withdr, wallo(iwro)%dmd(i)%amount, wallo(iwro)%dmd(i)%right,           &
-              wallo(iwro)%dmd(i)%treat_typ, wallo(iwro)%dmd(i)%treatment,  wallo(iwro)%dmd(i)%rcv_ob,   &
-              wallo(iwro)%dmd(i)%rcv_num, wallo(iwro)%dmd(i)%rcv_dtl, num_objs
-            allocate (wallo(iwro)%dmd(i)%src(num_objs))
-            allocate (wallo(iwro)%dmd(i)%src_ob(num_objs))
-            allocate (wallod_out(iwro)%dmd(i)%src(num_objs))
-            allocate (wallom_out(iwro)%dmd(i)%src(num_objs))
-            allocate (walloy_out(iwro)%dmd(i)%src(num_objs))
-            allocate (walloa_out(iwro)%dmd(i)%src(num_objs))
+              wallo(iwro)%dmd(i)%dmd_typ, wallo(iwro)%dmd(i)%dmd_typ_name, wallo(iwro)%dmd(i)%amount,   &
+              wallo(iwro)%dmd(i)%right, wallo(iwro)%dmd(i)%src_num, wallo(iwro)%dmd(i)%rcv_num
+            num_src = wallo(iwro)%dmd(i)%src_num
+            allocate (wallo(iwro)%dmd(i)%src(num_src))
+            allocate (wallod_out(iwro)%dmd(i)%src(num_src))
+            allocate (wallom_out(iwro)%dmd(i)%src(num_src))
+            allocate (walloy_out(iwro)%dmd(i)%src(num_src))
+            allocate (walloa_out(iwro)%dmd(i)%src(num_src))
+            num_rcv = wallo(iwro)%dmd(i)%rcv_num
+            allocate (wallo(iwro)%dmd(i)%rcv(num_rcv))
             
             !! for hru irrigation, need to xwalk with irrigation demand decision table
             if (wallo(iwro)%dmd(i)%ob_typ == "hru") then
@@ -157,17 +142,13 @@
                 end if
               end do
             end if
-          
-            !! for municipal treatment - treatment option for fraction of flow and ppm
-            if (wallo(iwro)%dmd(i)%treat_typ == "treat") then
-              !! xwalk with recall database
-              do idb = 1, db_mx%trt_om
-                if (wallo(iwro)%dmd(idmd)%treatment == trt_om_name(idb)) then
-                  wallo(iwro)%dmd(i)%trt_num = idb
-                  exit
-                end if
-              end do
-            end if
+            
+            read (107,*,iostat=eof) k, wallo(iwro)%dmd(i)%ob_typ, wallo(iwro)%dmd(i)%ob_num,            &
+              wallo(iwro)%dmd(i)%dmd_typ, wallo(iwro)%dmd(i)%dmd_typ_name, wallo(iwro)%dmd(i)%amount,   &
+              wallo(iwro)%dmd(i)%right, wallo(iwro)%dmd(i)%src_num, 
+              (wallo(iwro)%dmd(i)%src(isrc), isrc = 1, num_objs), wallo(iwro)%dmd(i)%rcv_num,           &
+              wallo(iwro)%dmd(i)%rcv_ob, wallo(iwro)%dmd(i)%rcv_num, wallo(iwro)%dmd(i)%rcv_dtl,        &
+              (wallo(iwro)%dmd(i)%src(isrc), isrc = 1, num_objs)
             
             backspace (107)
             read (107,*,iostat=eof) k, wallo(iwro)%dmd(i)%ob_typ, wallo(iwro)%dmd(i)%ob_num,    &

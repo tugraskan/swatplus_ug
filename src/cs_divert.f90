@@ -53,8 +53,8 @@
       do isrc=1,nsource
         
         !determine the object type and object number
-        obj_type = wallo(iwallo)%dmd(idmd)%src_ob(isrc)%ob_typ
-        obj_num = wallo(iwallo)%dmd(idmd)%src_ob(isrc)%ob_num
+        obj_type = wallo(iwallo)%dmd(idmd)%src(isrc)%src_typ
+        obj_num = wallo(iwallo)%dmd(idmd)%src(isrc)%src_num
         
         !total water volume removed from source object
         obj_vol = wallod_out(iwallo)%dmd(idmd)%src(isrc)%withdr
