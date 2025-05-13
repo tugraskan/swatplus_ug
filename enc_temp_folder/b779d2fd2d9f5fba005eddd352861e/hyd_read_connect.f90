@@ -61,7 +61,7 @@
               open (107,file=con_file)
               read (107,*,iostat=eof) titldum
               if (eof < 0) exit
-              read (107,pvar,iostat=eof) header
+              read (107,*,iostat=eof) header
               if (eof < 0) exit
               
               if (nspu > 0) then
@@ -221,7 +221,6 @@
                     ob(i)%uh = 0.
                     ob(i)%hyd_flo = 0.
                   !end if
-                      if (hmap%is_correct) then
                       read (107,*,iostat=eof) ob(i)%num, ob(i)%name, ob(i)%gis_id, ob(i)%area_ha, ob(i)%lat, ob(i)%long, &
                         ob(i)%elev, ob(i)%props, ob(i)%wst_c, ob(i)%constit, ob(i)%props2, ob(i)%ruleset, ob(i)%src_tot
 
