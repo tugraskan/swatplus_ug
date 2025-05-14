@@ -33,20 +33,10 @@
         allocate (plcp(0:0))
         allocate (pl_class(0:0))
       else
-      
-          !! check if header flag exist, if so then get column mapping    
-          if (mapping_avail) then
-            hmap => get_map_by_tag(in_parmdb%plants_plt)
-            ! check if mapping is used
-              if ( hmap%meta%used == 'y' ) then
-                ! set the parse to 'A"
-                pvar = '(A)'
-            end if
-            ! if 'header_map.cio' option is on but input header map is not found error out
-            if (.not. associated(hmap)) stop 'No mapping found for '//trim(in_parmdb%plants_plt)
-          end if
 
           do
+            tag = trim(in_parmdb%plants_plt)
+            hmap => get_map_by_tag(tag)
             open (104,file=in_parmdb%plants_plt)
             read (104,*,iostat=eof) titldum
             if (eof < 0) exit
@@ -66,25 +56,26 @@
             if (eof < 0) exit
             read (104,pvar,iostat=eof) header            
             if (eof < 0) exit
-            if (mapping_avail) then
-                call check_headers(header, hmap)
-            end if
+            !if (mapping_avail) then
+                !call check_headers(header, hmap)
+            !end if
         
           
             do ic = 1, imax
               if (bsn_cc%nam1 /= 0) then
-                  if (mapping_avail .and. .not. hmap%is_correct) then
+                  !if (mapping_avail .and. .not. hmap%is_correct) then
+                      !print *, 'k'
                     !— read raw text line —
-                    read(104,pvar,iostat=ios) raw_line
-                    if (ios /= 0) exit
+                    !read(104,pvar,iostat=ios) raw_line
+                    !if (ios /= 0) exit
                     !— reorder into fmt_line using the map for this file —
-                        call reorder_line(raw_line, hmap%expected, hmap%default_vals, &
-                            hmap%col_order, fmt_line)
+                        !call reorder_line(raw_line, hmap%expected, hmap%default_vals, &
+                            !hmap%col_order, fmt_line)
                     !— unpack into your derived type —
-                    read(fmt_line,*,iostat=eof) pldb(ic)
-                else
+                    !read(fmt_line,*,iostat=eof) pldb(ic)
+                !else
                     read (104,*,iostat=eof) pldb(ic)
-                endif
+                !endif
               else
                 read (104,*,iostat=eof) pldb(ic), pl_class(ic)
               end if

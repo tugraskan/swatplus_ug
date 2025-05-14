@@ -48,6 +48,7 @@
       integer             :: ios
       character(len=3) :: pvar = '*'
       
+      
       eof = 0
       imax = 0
       cmd_prev = 0
@@ -56,13 +57,18 @@
       !! read hru spatial data
       inquire (file=con_file, exist=i_exist)
       if (i_exist ) then
-        call fetch_header_map(mapping_avail, con_file, hmap, pvar)
+        tag = con_file
+        call nget_map_by_tag(tag, hmap, pvar)
             do
               open (107,file=con_file)
               read (107,*,iostat=eof) titldum
               if (eof < 0) exit
               read (107,pvar,iostat=eof) header
+              
               if (eof < 0) exit
+              if (mapping_avail) then
+                  call check_headers(header, hmap)
+              endif
               
               if (nspu > 0) then
                 ob1 = nspu1
@@ -222,8 +228,16 @@
                     ob(i)%hyd_flo = 0.
                   !end if
                       if (hmap%is_correct) then
-                      read (107,*,iostat=eof) ob(i)%num, ob(i)%name, ob(i)%gis_id, ob(i)%area_ha, ob(i)%lat, ob(i)%long, &
-                        ob(i)%elev, ob(i)%props, ob(i)%wst_c, ob(i)%constit, ob(i)%props2, ob(i)%ruleset, ob(i)%src_tot
+                          read(107,pvar,iostat=ios) raw_line
+                          if (ios /= 0) exit
+                          call reorder_line(raw_line, hmap%expected, hmap%default_vals, &
+                            hmap%col_order, fmt_line)
+                          read(fmt_line,*,iostat=eof) ob(i)%num, ob(i)%name, ob(i)%gis_id, ob(i)%area_ha, ob(i)%lat, ob(i)%long, &
+                            ob(i)%elev, ob(i)%props, ob(i)%wst_c, ob(i)%constit, ob(i)%props2, ob(i)%ruleset, ob(i)%src_tot
+                      else
+                        read (107,*,iostat=eof) ob(i)%num, ob(i)%name, ob(i)%gis_id, ob(i)%area_ha, ob(i)%lat, ob(i)%long, &
+                            ob(i)%elev, ob(i)%props, ob(i)%wst_c, ob(i)%constit, ob(i)%props2, ob(i)%ruleset, ob(i)%src_tot
+                      end if
 
               
                       !! initialize area to calculate drainage areas in hyd_connect

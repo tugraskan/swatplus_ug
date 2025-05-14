@@ -5,6 +5,8 @@ module input_read_module
   implicit none
 
   logical :: mapping_avail = .false.   !! mapping selected flag
+  character(len=60) :: tag
+  integer :: hblocks
     
     type :: map_meta
       character(len=30) :: tag   = ''    !! mapping identifier
@@ -31,7 +33,7 @@ contains
   subroutine init_mappings
     implicit none
     character(len=*), parameter :: master_file = 'header_map.cio'
-    integer :: unit, ios, hblocks, blk, eof, imax, num_columns, max_lines
+    integer :: unit, ios, blk, eof, imax, num_columns, max_lines
     character(len=1024) :: line
     logical :: i_exist
 
@@ -92,42 +94,52 @@ contains
     endif
   end subroutine init_mappings
   
-  subroutine fetch_header_map(mapping_avail, tag, hmap, pvar)
-    implicit none
+subroutine nget_map_by_tag(search_tag, pm, pvar)
+  implicit none
 
-    !— Caller inputs:
-    logical, intent(in)          :: mapping_avail
-    character(len=*), intent(in) :: tag
+  character(len=60), intent(in)       :: search_tag
+  type(header_map), pointer           :: pm
+  character(len=3), intent(out)       :: pvar
+  type(header_map), pointer           :: hdr_map2(:)
+  integer                             :: i
 
-    !— Outputs:
-    type(header_map), pointer    :: hmap
-    character(len=*), intent(inout) :: pvar
+  if (mapping_avail) then
+      hdr_map2 => hdr_map
+      pm => null()
+      pvar = '*'  ! default to blank
 
-    !— Locals:
-    integer :: i
-
-    !— 1) Initialize pointer to “not found”
-    hmap => null()
-
-    !— 2) Only do work if mapping is enabled
-    if (mapping_avail) then
-
-      !— 2a) Search through your global hdr_map array
-      do i = 1, size(hdr_map)
-        if (trim(hdr_map(i)%meta%tag) == trim(tag)) then
-          hmap => hdr_map(i)            ! point to the matching map
-          if (hmap%meta%used == 'y') then
-            pvar = '(A)'                ! switch to character read
-          end if
-          return                        ! we’re done
+      do i = 1, hblocks
+        if (trim(hdr_map2(i)%meta%tag) == trim(search_tag)) then
+          pm => hdr_map2(i)
+          pvar = '(A)'  ! set flag when found
+          return
         end if
       end do
+    endif
+end subroutine nget_map_by_tag
+  
+  function get_map_by_tag(search_tag) result(pm)
 
-      !— 2b) If we fall out of the loop, we never found it
-      stop 'No mapping found for '//trim(tag)
+      implicit none
+      
+      character(len=60), intent(in)       :: search_tag
+      type(header_map), pointer           :: pm
+      type(header_map), pointer     :: hdr_map2(:)
+      integer                              :: i
+      
+      hdr_map2 => hdr_map
 
-    end if
-  end subroutine fetch_header_map
+      pm => null()
+      do i = 1, hblocks
+        if (trim(hdr_map2(i)%meta%tag) == trim(search_tag)) then
+          pm => hdr_map2(i)
+          return
+        end if
+      end do
+end function get_map_by_tag
+
+
+
          
 
 subroutine split_by_multispace(line, tokens, count)
@@ -179,6 +191,8 @@ subroutine split_by_multispace(line, tokens, count)
       logical,        allocatable     :: matched(:)
       integer                          :: ntok, i, j, imax
       integer                          :: miss_cnt, extra_cnt
+      
+      j = 0
 
       !— 1) split the incoming header line
       call split_by_multispace(header_line, headers, ntok)
@@ -190,13 +204,16 @@ subroutine split_by_multispace(line, tokens, count)
       hmap%is_correct = .true.
       do i = 1, imax
         hmap%col_order(i) = 0
-        do j = 1, ntok
-          if (trim(headers(j)) == trim(hmap%expected(i))) then
+        do j = j+1, ntok
+            print *, trim(headers(j))
+            print *, trim(hmap%expected(i))
+          if (adjustl(trim(headers(j))) == adjustl(trim(hmap%expected(i)))) then
             hmap%col_order(i) = j
             matched(j)        = .true.
             exit
           end if
         end do
+        !j = j+1
 
         !— if it wasn’t found at all, or was found at j /= i, mark false
         if (hmap%col_order(i) /= i) then
@@ -244,22 +261,7 @@ subroutine split_by_multispace(line, tokens, count)
 
 
 
-  !!> \brief Retrieve mapping by tag
-  function get_map_by_tag(tag) result(pm)
-    implicit none
-    character(len=*), intent(in) :: tag
-    type(header_map), pointer :: pm
-    integer :: i
-
-    pm => null()
-    do i = 1, size(hdr_map)
-      if (trim(hdr_map(i)%meta%tag) == trim(tag)) then
-        pm => hdr_map(i)
-        return
-      end if
-    end do
-  end function get_map_by_tag
-
+  
 
   
 
