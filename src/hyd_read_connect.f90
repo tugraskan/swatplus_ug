@@ -44,10 +44,10 @@
       integer :: ncs = 0              !           |constituent counter
       integer :: aqu_found = 0        !           |rtb gwflow
       
-      logical :: use_hdrmap
-      character(len=2000) :: fmt_line
-      character(len=2000) :: raw_line
-      character(len=3) :: pvar = '*'
+      logical :: use_hdrmap = .false.     !! flag to indicate if header map is used
+      character(len=2000) :: raw_line = "" !! stores the raw line read from file
+      character(len=2000) :: fmt_line = "" !! stores the formatted line after reordering
+      character(len=3) :: pvar = '*'      !! format specifier for reading header line
       
       
       eof = 0
@@ -227,6 +227,8 @@
                     ob(i)%uh = 0.
                     ob(i)%hyd_flo = 0.
                   !end if
+                      !! check to see if hdrmap is used, if so reorder the line and read it to the proper format
+                      !! else use default read
                       if (use_hdrmap) then
                           call reorder_line(107, hmap, fmt_line)
                           read(fmt_line,*,iostat=eof) ob(i)%num, ob(i)%name, ob(i)%gis_id, ob(i)%area_ha, ob(i)%lat, ob(i)%long, &
