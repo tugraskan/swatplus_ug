@@ -43,9 +43,10 @@
       integer :: nsalts = 0           !           |salts counter
       integer :: ncs = 0              !           |constituent counter
       integer :: aqu_found = 0        !           |rtb gwflow
+      
+      logical :: use_hdrmap
       character(len=2000) :: fmt_line
       character(len=2000) :: raw_line
-      integer             :: ios
       character(len=3) :: pvar = '*'
       
       
@@ -57,8 +58,9 @@
       !! read hru spatial data
       inquire (file=con_file, exist=i_exist)
       if (i_exist ) then
+        ! get the file name and see if it has a corresponding header map  
         tag = con_file
-        call nget_map_by_tag(tag, hmap, pvar)
+        call get_map_by_tag(tag, hmap, pvar, use_hdrmap)
             do
               open (107,file=con_file)
               read (107,*,iostat=eof) titldum
@@ -66,10 +68,8 @@
               read (107,pvar,iostat=eof) header
               
               if (eof < 0) exit
-              if (mapping_avail) then
-                  call check_headers(header, hmap)
-              endif
-              
+              ! check if headers are already in correct order
+              call check_headers(header, hmap, use_hdrmap)
               if (nspu > 0) then
                 ob1 = nspu1
                 ob2 = nspu1 + nspu - 1
@@ -227,11 +227,8 @@
                     ob(i)%uh = 0.
                     ob(i)%hyd_flo = 0.
                   !end if
-                      if (hmap%is_correct) then
-                          read(107,pvar,iostat=ios) raw_line
-                          if (ios /= 0) exit
-                          call reorder_line(raw_line, hmap%expected, hmap%default_vals, &
-                            hmap%col_order, fmt_line)
+                      if (use_hdrmap) then
+                          call reorder_line(107, hmap, fmt_line)
                           read(fmt_line,*,iostat=eof) ob(i)%num, ob(i)%name, ob(i)%gis_id, ob(i)%area_ha, ob(i)%lat, ob(i)%long, &
                             ob(i)%elev, ob(i)%props, ob(i)%wst_c, ob(i)%constit, ob(i)%props2, ob(i)%ruleset, ob(i)%src_tot
                       else
