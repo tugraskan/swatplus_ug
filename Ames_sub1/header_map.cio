@@ -1,0 +1,13 @@
+example headermap
+file: hru.con used: y 
+ID     NAME   GIS_ID        AREA       LAT        LON   ELEV         HRU           WST         CST        OVFL        RULE     OUT_TOT  obj_typ1  obj_id1  hyd_typ1  frac1
+-99    NA     -99           -99.9      -99.9      -99.9  -99         -99          -99         -99         -99         -99       -99.9    NA        -99      NA        -99.9
+file: hyd.wet used: n 
+NAME    HRU_PS  DP_PS   HRU_ES  DP_ES    K      EVAP  VOL_AREA_CO  VOL_DP_A  VOL_DP_B  HRU_FRAC
+NA      -99.9   -99.9   -99.9   -99.9    -99.9  -99.9 -99.9        -99.9     -99.9     -99.9
+file: aqu_ini used: y 
+NAME    ORG_MIN      PEST        PATH        HMET        SALT
+NA      NA           NA          NA          NA          NA
+plants.plt y Manualy made 2-4-25
+NAME PLNT_TYP TRIG NFIX_CO DAYS_MAT BM_E HARV_IDX LAI_POT FRAC_HU1 LAI_MAX1 FRAC_HU2 LAI_MAX2 HU_LAI_DECL DLAI_RATE CAN_HT_MAX RT_DP_MAX TMP_OPT TMP_BASE FRAC_N_YLD FRAC_P_YLD FRAC_N_EM FRAC_N_50 FRAC_N_MAT FRAC_P_EM FRAC_P_50 FRAC_P_MAT HARV_IDX_WS USLE_C_MIN STCON_MAX VPD FRAC_STCON RU_VPD CO2_HI BM_E_HI PLNT_DECOMP LAI_MIN BM_TREE_ACC YRS_MAT BM_TREE_MAX EXT_CO LEAF_TOV_MIN LEAF_TOV_MAX BM_DIEOFF RT_ST_BEG RT_ST_END PLNT_POP1 FRAC_LAI1 PLNT_POP2 FRAC_LAI2 FRAC_SW_GRO AERATION RSD_PCTCOV RSD_COVFAC CLASS DESCRIPTION
+NA NA NA -99 -99 -99 -99.9 -99 -99.9 -99.9 -99.9 -99.9 -99.9 -99.9 -99.9 -99.9 -99 -99 -99.9 -99.9 -99.9 -99.9 -99.9 -99.9 -99.9 -99.9 -99.9 -99.9 -99.9 -99.9 -99.9 -99.9 -99.9 -99.9 -99.9 -99.9 -99 -99.9 -99.9 -99.9 -99.9 -99.9 -99.9 -99.9 -99.9 -99.9 -99.9 -99.9 -99.9 -99.9 -99.9 -99.9 -99.9 NA NA

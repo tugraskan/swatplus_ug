@@ -35,8 +35,8 @@
       else
 
           do
-            tag = trim(in_parmdb%plants_plt)
-            hmap => get_map_by_tag(tag)
+            !tag = trim(in_parmdb%plants_plt)
+            !hmap => get_map_by_tag(tag)
             open (104,file=in_parmdb%plants_plt)
             read (104,*,iostat=eof) titldum
             if (eof < 0) exit
@@ -65,13 +65,13 @@
               if (bsn_cc%nam1 /= 0) then
                   !if (mapping_avail .and. .not. hmap%is_correct) then
                       !print *, 'k'
-                    !— read raw text line —
+                    !ï¿½ read raw text line ï¿½
                     !read(104,pvar,iostat=ios) raw_line
                     !if (ios /= 0) exit
-                    !— reorder into fmt_line using the map for this file —
+                    !ï¿½ reorder into fmt_line using the map for this file ï¿½
                         !call reorder_line(raw_line, hmap%expected, hmap%default_vals, &
                             !hmap%col_order, fmt_line)
-                    !— unpack into your derived type —
+                    !ï¿½ unpack into your derived type ï¿½
                     !read(fmt_line,*,iostat=eof) pldb(ic)
                 !else
                     read (104,*,iostat=eof) pldb(ic)
