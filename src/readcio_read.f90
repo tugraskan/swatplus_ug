@@ -1,6 +1,7 @@
        subroutine readcio_read 
     
        use input_file_module
+       use input_read_module
 
        implicit none
            
@@ -84,6 +85,11 @@
       enddo
       endif
 
-       close (107)     
+       close (107) 
+       
+      !! call init_mappings to check for the existence of the master mapping file &
+      !! build header maps 
+      call init_mappings
+       
        return
       end subroutine readcio_read  

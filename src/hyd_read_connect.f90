@@ -12,6 +12,7 @@
       use climate_module
       use maximum_data_module
       use gwflow_module, only: nat_model
+      use input_read_module
       
       implicit none
       
@@ -20,7 +21,7 @@
       integer, intent(in) :: nspu     !           | 
       integer, intent(in) :: nspu1    !           |
       character (len=80) :: titldum = ""!           |title of file
-      character (len=80) :: header = "" !           |header of file
+      character (len=2000) :: header = "" ! |header of file
       integer :: eof = 0              !           |end of file
       integer :: imax = 0             !none       |determine max number for array (imax) and total number in file
       logical :: i_exist              !none       |check to determine if file exists
@@ -43,6 +44,11 @@
       integer :: ncs = 0              !           |constituent counter
       integer :: aqu_found = 0        !           |rtb gwflow
       
+      logical :: use_hdr_map = .false.     !! flag to indicate if header map is used
+      character(len=2000) :: raw_line = "" !! stores the raw line read from file
+      character(len=2000) :: fmt_line = "" !! stores the formatted line after reordering
+      
+      
       eof = 0
       imax = 0
       cmd_prev = 0
@@ -55,8 +61,10 @@
           open (107,file=con_file)
           read (107,*,iostat=eof) titldum
           if (eof < 0) exit
-          read (107,*,iostat=eof) header
+          read (107,'(A)',iostat=eof) header
           if (eof < 0) exit
+          ! check if headers tag exist and if headers are already in correct order
+          call check_headers_by_tag(con_file, header, hmap, use_hdr_map)
 
           if (nspu > 0) then
             ob1 = nspu1
@@ -215,8 +223,17 @@
                 ob(i)%uh = 0.
                 ob(i)%hyd_flo = 0.
               !end if
-              read (107,*,iostat=eof) ob(i)%num, ob(i)%name, ob(i)%gis_id, ob(i)%area_ha, ob(i)%lat, ob(i)%long, &
-                ob(i)%elev, ob(i)%props, ob(i)%wst_c, ob(i)%constit, ob(i)%props2, ob(i)%ruleset, ob(i)%src_tot
+                !! check to see if hdrmap is used, if so reorder the line and read it to the proper format
+                      
+                if (use_hdr_map) then
+                          call reorder_line(107, hmap, fmt_line)
+                          read(fmt_line,*,iostat=eof) ob(i)%num, ob(i)%name, ob(i)%gis_id, ob(i)%area_ha, ob(i)%lat, ob(i)%long, &
+                            ob(i)%elev, ob(i)%props, ob(i)%wst_c, ob(i)%constit, ob(i)%props2, ob(i)%ruleset, ob(i)%src_tot
+                !! else use default read
+                else
+                    read (107,*,iostat=eof) ob(i)%num, ob(i)%name, ob(i)%gis_id, ob(i)%area_ha, ob(i)%lat, ob(i)%long, &
+                    ob(i)%elev, ob(i)%props, ob(i)%wst_c, ob(i)%constit, ob(i)%props2, ob(i)%ruleset, ob(i)%src_tot
+                end if
               
               !! initialize area to calculate drainage areas in hyd_connect
               if (ob(i)%typ == "hru" .or. ob(i)%typ == "ru" .or. ob(i)%typ == "recall") then
