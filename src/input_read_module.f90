@@ -20,7 +20,7 @@ module input_read_module
     character(len=90), allocatable :: expected(:)  !! |column headers desired order
     character(len=90), allocatable :: default_vals(:) !! |defaults for missing columns
     integer, allocatable           :: col_order(:) !! |column order
-    logical                        :: is_correct = .false. !!  |flag for perfect header match
+    logical                        :: is_correct = .true. !!  |flag for perfect header match
     character(len=90), allocatable :: missing(:)   !! |missing columns
     character(len=90), allocatable :: extra(:)     !! |extra columns
   end type header_map
@@ -405,5 +405,54 @@ end subroutine header_read_n_reorder
 
   if (count < size(tokens)) tokens = tokens(1:count)
   end subroutine split_by_multispace
+  
+!  Write missing columns, extra columns, and mapping information to a file
+  subroutine write_mapping_info
+  implicit none
+  integer :: unit = 1942 !! Unit number to write to
+  integer :: i, ii
+  type(header_map), pointer          :: hdr_map2(:)
+
+  !> \brief Writes mapping information to a file
+  !!>
+  !!> This subroutine writes information about header mappings that are not a perfect match.
+  !!> For each mapping, if there are missing or extra columns, it writes the tag, missing columns,
+  !!> and extra columns to the file "use_hdr_map.fin".
+  !!>
+  !!> - Only writes information for mappings where is_correct is .false.
+  !!> - Outputs the tag, missing columns, and extra columns for each such mapping.
+  !!> - Skips writing if mapping_avail is .false.
+  !!>
+
+  ! Lookup the tag in available mappings
+  hdr_map2 => hdr_map
+  
+  ! Return early if no mapping is available
+  if (.not. mapping_avail) return
+  
+  ! Print message to standard output
+  write(*,*) 'Alt mapping may have been used see Mapping information:'
+  ! Open the output file for writing
+  open (unit,file="use_hdr_map.fin")
+  
+  ! Loop over all header blocks
+  do ii = 1, hblocks
+      ! Only process mappings that are not a perfect match
+      if (.not. hdr_map2(ii)%is_correct) then
+        ! Write the tag for the mapping
+        write(unit,*) trim(hdr_map2(ii)%meta%tag)
+        ! Write missing columns, if any
+        if (size(hdr_map2(ii)%missing) > 0) then
+          write(unit,*) 'Missing columns: ', (trim(hdr_map2(ii)%missing(i)), ' ', i=1, size(hdr_map2(ii)%missing))
+        end if
+        ! Write extra columns, if any
+        if (size(hdr_map2(ii)%extra) > 0) then
+          write(unit,*) 'Extra columns: ', (trim(hdr_map2(ii)%extra(i)), ' ', i=1, size(hdr_map2(ii)%extra))
+        end if
+      end if
+  end do
+  ! Close the output file
+  close(unit)
+  end subroutine write_mapping_info
 
 end module input_read_module
