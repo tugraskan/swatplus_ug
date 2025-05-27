@@ -86,6 +86,7 @@
         ht5 = hz
         hcs1 = hin_csz
         delrto = hz
+        hcs1 = hin_csz
         
         sumfrac = sumfrac + ru_elem(ise)%frac
         sumarea = sumarea + ob(iob)%area_ha
