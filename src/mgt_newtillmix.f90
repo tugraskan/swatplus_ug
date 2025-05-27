@@ -32,6 +32,7 @@
       use soil_module
       use constituent_mass_module
       use plant_module
+	    use tillage_data_module
       use time_module, only : time
       
       implicit none
@@ -43,17 +44,15 @@
       integer :: k = 0                 !none           |counter
       integer :: kk = 0                !               |
       integer :: npmx = 0              !               |
-      integer :: ipl = 0
+      integer :: prev_depth = 0
       real :: emix = 0.                !none           |mixing efficiency
       real :: dtil = 0.                !mm             |depth of mixing
       real :: frac_mixed = 0.          !               |
       real :: frac_non_mixed = 0.      !               |
-      real :: sol_mass(soil(jj)%nly)    !              |mass of the soil layer
-      real :: sol_msm(soil(jj)%nly)     !              |sol_mass mixed
-      real :: sol_msn(soil(jj)%nly)     !              |sol_mass not mixed 
-      real :: frac_dep(soil(jj)%nly)    !              |fraction of soil layer in tillage depth
-      real :: frac1 = 0.
-      real :: frac2 = 0.
+      real, dimension(:), allocatable :: sol_mass    !              |mass of the soil layer
+      real, dimension(:), allocatable :: sol_msm     !              |sol_mass mixed
+      real, dimension(:), allocatable :: sol_msn     !              |sol_mass not mixed 
+      real, dimension(:), allocatable :: frac_dep    !              |fraction of soil layer in tillage depth
       real :: mix_clay
       real :: mix_silt
       real :: mix_sand
@@ -91,14 +90,44 @@
       mix_clay = 0.
       mix_silt = 0.
       mix_sand = 0.
-      
+
+      allocate (sol_mass(soil(jj)%nly), source = 0.)    
+      allocate (sol_msm(soil(jj)%nly), source = 0.)    
+      allocate (sol_msn(soil(jj)%nly), source = 0.)    
+      allocate (frac_dep(soil(jj)%nly),source = 0.)    
+
       if (bmix > 1.e-6) then
-        !! biological mixing
-        emix = bmix !bmix MJW (rev 412)
+        bio_mix_event = .true.
+        tillage_event = .false.
+        emix = bmix 
         kk = soil(jj)%nly
-        dtil = Min(soil(jj)%phys(kk)%d, 50.) ! it was 300.  MJW (rev 412)
+        if (bsn_cc%cswat == 2) then                                       
+          dtil = Min(soil(jj)%phys(kk)%d, bmix_depth) ! bmix_depth as read from tillage.till
+        else
+          dtil = Min(soil(jj)%phys(kk)%d, 50.) ! it was 300.  MJW (rev 412)
+        endif
+
+        ! if Test soil layers down to dtil are above freezing
+        if (bsn_cc%cswat == 2) then                                       
+          prev_depth = 0
+          do l = 1, soil(jj)%nly
+            if ( prev_depth < dtil) then
+              if (soil(jj)%phys(l)%tmp > 0.) then
+                bio_mix_event = .true.
+              else 
+                bio_mix_event = .false.
+                exit
+              endif
+            else 
+              exit
+            endif
+            prev_depth = soil(jj)%phys(l)%d
+          enddo
+        endif
       else 
         !! tillage operation
+        tillage_event = .true.
+        bio_mix_event = .false.
         emix = tilldb(idtill)%effmix
         dtil = tilldb(idtill)%deptil
       end if
@@ -106,29 +135,38 @@
       !!by zhang DSSAT tillage
       !!=======================
       if (bsn_cc%cswat == 2) then
-          tillage_days(jj) = 0
-          tillage_depth(jj) = dtil
-          tillage_switch(jj) = 1
-      end if
+        if (bio_mix_event .eqv. .true.) then
+          if (tillage_switch(jj) .eq. 1 .and. tillage_days(jj) .le. 30) then
+            if (bio_mix_event) then
+              dtil = 0.
+              bio_mix_event = .false.
+            endif
+          endif
+        endif
+      endif
+      if (tillage_event .eqv. .true.) then
+        tillage_days(jj) = 0
+        tillage_depth(jj) = dtil
+        tillage_switch(jj) = 1
+      endif
+
       !!by zhang DSSAT tillage
       !!=======================
-
-      sol_mass = 0.
-      sol_msm = 0.
-      sol_msn = 0.
 
       !! incorporate pathogens - no mixing - lost from transport
       if (dtil > 10.) then     
         !! incorporate pathogens
       end if
 
-      do l = 1, soil(jj)%nly
-        sol_mass(l) = (soil(jj)%phys(l)%thick / 1000.) * 10000. *                    &
-            soil(jj)%phys(1)%bd * 1000. * (1.- soil(jj)%phys(l)%rock/ 100.)
-      end do
-
       if (dtil > 0.) then
+        if (bio_mix_event .or. tillage_event) then
+          do l = 1, soil(jj)%nly
+            sol_mass(l) = (soil(jj)%phys(l)%thick / 1000.) * 10000. *                    &
+                soil(jj)%phys(1)%bd * 1000. * (1.- soil(jj)%phys(l)%rock/ 100.)
+          end do
+
         ! added by Armen 09/10/2010 next line only
+
         if (dtil < 10.0) dtil = 11.0
         do l = 1, soil(jj)%nly
 
@@ -175,8 +213,10 @@
         end do
      
           do l = 1, soil(jj)%nly
+
             ! reconstitute each soil layer 
             frac_non_mixed = sol_msn(l) / sol_mass(l)
+            frac_mixed = 1. - frac_non_mixed
             
             soil1(jj)%mn(l) = frac_non_mixed * soil1(jj)%mn(l) + frac_dep(l) * mix_mn
             ! print*, "in mgt_newtill_mix", l, soil1(jj)%mn(l)%no3
@@ -194,6 +234,7 @@
             soil1(jj)%man(l) = frac_non_mixed * soil1(jj)%man(l) + frac_dep(l) * mix_org%man
             soil1(jj)%water(l) = frac_non_mixed * soil1(jj)%water(l) + frac_dep(l) * mix_org%water
             
+
             soil(jj)%phys(l)%clay = frac_non_mixed * soil(jj)%phys(l)%clay + frac_mixed * mix_clay
             soil(jj)%phys(l)%silt = frac_non_mixed * soil(jj)%phys(l)%silt + frac_mixed * mix_silt
             soil(jj)%phys(l)%sand = frac_non_mixed * soil(jj)%phys(l)%sand + frac_mixed * mix_sand
@@ -201,16 +242,20 @@
             soil(jj)%phys(l)%bd = frac_non_mixed * soil(jj)%phys(l)%bd + frac_mixed * mix_bd
             soil(jj)%phys(l)%rock = frac_non_mixed * soil(jj)%phys(l)%rock + frac_mixed * mix_rock
 
+
             !do k = 1, npmx
             !  cs_soil(jj)%ly(l)%pest(k) = cs_soil(jj)%ly(l)%pest(k) * frac_non_mixed + smix(20+k) * frac_dep(l)
             !end do
-
           end do
-    
-        if (bsn_cc%cswat == 1 .or. bsn_cc%cswat == 2) then
-            call mgt_tillfactor(jj,bmix,emix,dtil)
-        end if
-      end if
 
+          deallocate (sol_mass)    
+          deallocate (sol_msm)    
+          deallocate (sol_msn)    
+          deallocate (frac_dep)    
+      
+          call mgt_tillfactor(jj,bio_mix_event,emix,dtil)
+
+        endif
+      end if
       return
       end subroutine mgt_newtillmix

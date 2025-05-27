@@ -84,6 +84,7 @@
         ht3 = hz
         ht4 = hz
         ht5 = hz
+        hcs1 = hin_csz
         delrto = hz
         hcs1 = hin_csz
         

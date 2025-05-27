@@ -564,6 +564,7 @@
               write (9000,*) "HRU                       hru_cpool_stat.csv"
             end if
 
+
             open (4580,file = "hru_org_trans_vars.txt", recl = 1500)
             write (4580,*)  bsn%name, prog
             write (4580,*) org_trans_hdr
