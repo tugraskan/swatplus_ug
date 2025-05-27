@@ -103,7 +103,8 @@
        real :: min_n_ppm = 0  !                     |
        real :: lslncat = 0    !                     |
        real :: min_n = 0      !                     |
-       integer :: cf_lyr         !                     |which layer of coefs to use in carbon_coef.cbn
+       integer :: cf_lyr         !                     |hich layer of coefs to use in carbon_coef.cbn
+       real :: bmix_depth     !mm                   !depth of biological
        real :: soil_lyr_thickness !mm
        real :: sol_mass = 0.     !                     |
        real :: sol_min_n = 0.    !                     |
