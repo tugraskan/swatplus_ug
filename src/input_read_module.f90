@@ -190,6 +190,35 @@ contains
 
 
 
+  ! Resize hdr_map array
+  subroutine resize_hdr_map(new_size)
+    integer, intent(in) :: new_size
+    type(header_map), allocatable :: tmp(:)
+    integer :: old
+    old = new_size - 1
+    allocate(tmp(old)); tmp = hdr_map
+    deallocate(hdr_map)
+    allocate(hdr_map(new_size)); hdr_map(1:old) = tmp
+  end subroutine resize_hdr_map
+
+  ! Extend expected and default_vals arrays for a map
+  subroutine extend_maps(idx, new_size)
+    integer, intent(in) :: idx, new_size
+    character(len=90), allocatable :: texp(:), tdef(:)
+    integer :: old
+    old = size(hdr_map(idx)%expected)
+    allocate(texp(old)); texp = hdr_map(idx)%expected
+    allocate(tdef(old)); tdef = hdr_map(idx)%default_vals
+    deallocate(hdr_map(idx)%expected, hdr_map(idx)%default_vals)
+    allocate(hdr_map(idx)%expected(new_size))
+    allocate(hdr_map(idx)%default_vals(new_size))
+    hdr_map(idx)%expected(1:old)     = texp
+    hdr_map(idx)%default_vals(1:old) = tdef
+  end subroutine extend_maps
+
+
+
+
 subroutine check_headers_by_tag(search_tag, header_line, use_hdr_map)
   implicit none
 
