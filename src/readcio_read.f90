@@ -88,7 +88,7 @@
        close (107) 
        
       !! call init_mappings to check for the existence of the master mapping file &
-      !! build header maps 
+      !! build header maps
       call init_mappings
        
        return
