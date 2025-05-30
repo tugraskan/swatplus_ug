@@ -64,7 +64,7 @@
           read (107,'(A)',iostat=eof) header
           if (eof < 0) exit
           ! check if headers tag exist and if headers are already in correct order
-          call check_headers_by_tag(con_file, header, hmap, use_hdr_map)
+          call check_headers_by_tag(con_file, header, use_hdr_map)
 
           if (nspu > 0) then
             ob1 = nspu1
@@ -226,7 +226,7 @@
                 !! check to see if hdrmap is used, if so reorder the line and read it to the proper format
                       
                 if (use_hdr_map) then
-                          call reorder_line(107, hmap, fmt_line)
+                          call reorder_line(107, fmt_line)
                           read(fmt_line,*,iostat=eof) ob(i)%num, ob(i)%name, ob(i)%gis_id, ob(i)%area_ha, ob(i)%lat, ob(i)%long, &
                             ob(i)%elev, ob(i)%props, ob(i)%wst_c, ob(i)%constit, ob(i)%props2, ob(i)%ruleset, ob(i)%src_tot
                 !! else use default read

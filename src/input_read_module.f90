@@ -17,12 +17,12 @@ module input_read_module
 
   type :: header_map
     type(map_meta)               :: meta           !! |tag, used flag, version
-    character(len=90), allocatable :: expected(:)  !! |column headers desired order
-    character(len=90), allocatable :: default_vals(:) !! |defaults for missing columns
+    character(len=90), dimension (:), allocatable :: expected(:)  !! |column headers desired order
+    character(len=90), dimension (:), allocatable :: default_vals(:) !! |defaults for missing columns
     integer, allocatable           :: col_order(:) !! |column order
     logical                        :: is_correct = .true. !!  |flag for perfect header match
-    character(len=90), allocatable :: missing(:)   !! |missing columns
-    character(len=90), allocatable :: extra(:)     !! |extra columns
+    character(len=90), dimension (:), allocatable :: missing(:)   !! |missing columns
+    character(len=90), dimension (:), allocatable :: extra(:)     !! |extra columns
   end type header_map
 
   type(header_map), allocatable, target :: hdr_map(:)
@@ -118,7 +118,13 @@ contains
         hblocks = max_lines / 3
 
         ! Allocate mapping array.
-        allocate(hdr_map(hblocks))
+        allocate(hdr_map(0:hblocks))
+        
+        allocate(hdr_map(0)%expected   (0))
+        allocate(hdr_map(0)%default_vals(0))
+        allocate(hdr_map(0)%col_order   (0))
+        allocate(hdr_map(0)%missing     (0))
+        allocate(hdr_map(0)%extra       (0))
 
         rewind(unit)
         ! Skip title again.
@@ -150,24 +156,31 @@ contains
         !!> If any unused mappings were removed, resize the array.
         if (j < size(hdr_map)) then
             call move_alloc(hdr_map, hdr_map_tmp)
-            allocate(hdr_map(j))
-            hdr_map = hdr_map_tmp(1:j)
+            allocate(hdr_map(0:j))
+            ! Re-initialize dummy slot after shrink
+            allocate(hdr_map(0)%expected    (0))
+            allocate(hdr_map(0)%default_vals(0))
+            allocate(hdr_map(0)%col_order   (0))
+            allocate(hdr_map(0)%missing     (0))
+            allocate(hdr_map(0)%extra       (0))
+
+            ! Copy back the real entries
+            hdr_map(1:j) = hdr_map_tmp(1:j)
             deallocate(hdr_map_tmp)
         end if
-        hblocks =  size(hdr_map)
 
-        !!> Set mapping_avail flag to indicate successful mapping initialization.
-        mapping_avail = .true.
-        close(unit)
+          hblocks = j
+          mapping_avail = .true.
+          close(unit)
     endif
   end subroutine init_mappings
 
-subroutine check_headers_by_tag(search_tag, header_line, hmap, use_hdr_map)
+subroutine check_headers_by_tag(search_tag, header_line, use_hdr_map)
   implicit none
 
   character(len=*), intent(in)       :: search_tag    !! |Tag to search for
   character(len=*), intent(in)       :: header_line   !! |Header line to check
-  type(header_map), pointer          :: hmap          !! |Output: pointer to matching header map
+  !type(header_map), pointer          :: hmap          !! |Output: pointer to matching header map
   !character(len=3), intent(out)      :: pvar          !! |Format variable
   logical, intent(inout)             :: use_hdr_map   !! |Flag to indicate whether to use map
 
@@ -176,18 +189,22 @@ subroutine check_headers_by_tag(search_tag, header_line, hmap, use_hdr_map)
   integer                            :: ntok, i, j
   integer                            :: miss_cnt, extra_cnt
   integer                            :: imax
-  type(header_map), pointer          :: hdr_map2(:)
+  type(header_map), pointer          :: hdr_map2(:)     !! |Pointer to all header maps
+  
 
   ! Initialize outputs
-  hmap => null()
+  
   use_hdr_map = .false.
 
   if (.not. mapping_avail) return
-
+  
+  ! Use hdr_map2 to see debugging information
+  hdr_map2 => hdr_map
+  ! Set hmap to dummy hdr_map
+  hmap => hdr_map2(0)
   ! Lookup the tag in available mappings
   tag = search_tag
-  hdr_map2 => hdr_map
-  do i = 1, hblocks
+  do i = 0, hblocks
     if (trim(hdr_map2(i)%meta%tag) == trim(tag)) then
       hmap => hdr_map2(i)
       use_hdr_map = .true.
@@ -196,7 +213,7 @@ subroutine check_headers_by_tag(search_tag, header_line, hmap, use_hdr_map)
   end do
 
   ! If not found, track it and exit
-  if (.not. associated(hmap)) then
+  if (.not. use_hdr_map) then
     if (num_missing_tags < size(missing_tags)) then
       num_missing_tags = num_missing_tags + 1
       missing_tags(num_missing_tags) = trim(tag)
@@ -272,12 +289,12 @@ end subroutine check_headers_by_tag
 !!> \param[in] unit Unit number to read from
 !!> \param[in] hmap Header map
 !!> \param[out] out_line Reordered line
-subroutine reorder_line(unit, hmap, out_line)
+subroutine reorder_line(unit, out_line)
     implicit none
 
     integer, intent(in) :: unit !! Unit number to read from
     character(len=2000) :: line = '' !!  | line buffer
-    type(header_map), intent(in) :: hmap !! |Header map
+    type(header_map), pointer          :: hmap2 !! |Header map pointer
     character(len=2000), intent(out) :: out_line !! |Reordered line
     character(len=90), allocatable :: tok(:) !! |Array of tokens
     integer :: ntok = 0 !!  | number of tokens
@@ -285,9 +302,12 @@ subroutine reorder_line(unit, hmap, out_line)
     integer :: ios = 0  !!  | I/O status
 
     out_line = ''  ! Initialize output
+    
+    ! use to see debug values
+    hmap2 => hmap
 
     ! Only reorder if the header is not a perfect match
-    if (.not. hmap%is_correct) then
+    if (.not. hmap2%is_correct) then
             ! Read a line from the input unit
             read(unit,'(A)',iostat=ios) line
             if (ios /= 0) return
@@ -296,12 +316,12 @@ subroutine reorder_line(unit, hmap, out_line)
             call split_by_multispace(line, tok, ntok)
 
             ! Loop over expected columns in the header map
-            do i = 1, size(hmap%expected)
+            do i = 1, size(hmap2%expected)
                     ! If the column exists in the input, use it; otherwise, use the default value
-                    if (hmap%col_order(i) /= 0 .and. hmap%col_order(i) <= ntok) then
-                            out_line = trim(out_line)//' '//trim(tok(hmap%col_order(i)))
+                    if (hmap2%col_order(i) /= 0 .and. hmap2%col_order(i) <= ntok) then
+                            out_line = trim(out_line)//' '//trim(tok(hmap2%col_order(i)))
                     else
-                            out_line = trim(out_line)//' '//trim(hmap%default_vals(i))
+                            out_line = trim(out_line)//' '//trim(hmap2%default_vals(i))
                     end if
             end do
 
@@ -311,12 +331,12 @@ subroutine reorder_line(unit, hmap, out_line)
     end if
 end subroutine reorder_line
 
-subroutine header_read_n_reorder(unit, hmap, use_hdr_map, out_line)
+subroutine header_read_n_reorder(unit, use_hdr_map, out_line)
     implicit none
 
     integer, intent(in) :: unit !! Unit number to read from
     character(len=2000) :: line = '' !!  | line buffer
-    type(header_map), intent(in) :: hmap !! |Header map
+    type(header_map), pointer          :: hmap2 !! |Header map pointer
     character(len=2000), intent(out) :: out_line !! |Reordered line
     character(len=90), allocatable :: tok(:) !! |Array of tokens
     integer :: ntok = 0 !!  | number of tokens
@@ -325,14 +345,16 @@ subroutine header_read_n_reorder(unit, hmap, use_hdr_map, out_line)
     logical, intent(inout) :: use_hdr_map          !! |Flag to indicate if header map should be used
 
     out_line = ''  ! Initialize output
-
+    ! use to see debug values
+    hmap2 => hmap
+    
     ! Read a line from the input unit
     read(unit,'(A)',iostat=ios) line
     if (ios /= 0) return
     
     if (use_hdr_map) then
         ! If the header is a perfect match, just use the line as is
-        if (hmap%is_correct) then
+        if (hmap2%is_correct) then
             out_line = line 
         ! If the header is not a perfect match, reorder the line
         else 
@@ -340,12 +362,12 @@ subroutine header_read_n_reorder(unit, hmap, use_hdr_map, out_line)
             call split_by_multispace(line, tok, ntok)
 
                 ! Loop over expected columns in the header map
-                do i = 1, size(hmap%expected)
+                do i = 1, size(hmap2%expected)
                         ! If the column exists in the input, use it; otherwise, use the default value
-                        if (hmap%col_order(i) /= 0 .and. hmap%col_order(i) <= ntok) then
-                                out_line = trim(out_line)//' '//trim(tok(hmap%col_order(i)))
+                        if (hmap2%col_order(i) /= 0 .and. hmap2%col_order(i) <= ntok) then
+                                out_line = trim(out_line)//' '//trim(tok(hmap2%col_order(i)))
                         else
-                                out_line = trim(out_line)//' '//trim(hmap%default_vals(i))
+                                out_line = trim(out_line)//' '//trim(hmap2%default_vals(i))
                         end if
                 end do
                 ! Left-adjust the output line and clean up

@@ -57,12 +57,12 @@
         read (104,'(A)',iostat=eof) header
         if (eof < 0) exit
         ! check if headers tag exist and if headers are already in correct order
-        call check_headers_by_tag(in_parmdb%plants_plt, header, hmap, use_hdr_map)
+        call check_headers_by_tag(in_parmdb%plants_plt, header, use_hdr_map)
         
         do ic = 1, imax
           if (bsn_cc%nam1 == 0) then
             ! alt call method, read line returns fmt line
-            call header_read_n_reorder(104, hmap, use_hdr_map, fmt_line)
+            call header_read_n_reorder(104, use_hdr_map, fmt_line)
             !read (104,*,iostat=eof) pldb(ic)
             read (fmt_line,*,iostat=eof) pldb(ic)
           else
