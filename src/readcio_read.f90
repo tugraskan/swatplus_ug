@@ -87,9 +87,9 @@
 
        close (107) 
        
-      !! call init_mappings to check for the existence of the master mapping file &
+      !! call load_header_mappings to check for the existence of the master mapping file &
       !! build header maps
-      call init_mappings
+      call load_header_mappings
        
        return
       end subroutine readcio_read  
