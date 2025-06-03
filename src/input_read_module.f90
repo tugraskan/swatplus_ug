@@ -5,17 +5,21 @@ module input_read_module
   implicit none
 
   !==================[Constants and Module Variables]====================!
-  integer, parameter        :: MAX_LINE_LEN = 512      !!   | Maximum length of a line 
+  integer, parameter        :: MAX_LINE_LEN = 2000      !!   | Maximum length of a line 
   integer, parameter        :: STR_LEN    = 90       !!   | Maximum length of a string allowed 
   integer, parameter        :: NAME_LEN      = 60       !!   | Maxiumum Length of a File Name 
   integer, parameter        :: IO_UNIT      = 107      !!   | I/O unit number of header_map.cio file
   integer, parameter        :: MAX_HDRS     = 100      !!   | Maximum number of Files in the header_map.cio file
+  character(len=STR_LEN), parameter :: DEFAULT_STR = 'MISSING'
   
   logical                   :: mapping_loaded = .false.                     !! | Flag to indicate if the header mappings have been loaded
   integer                                 :: map_count = 0                  !! | Count of header mappings loaded
-  character(len=NAME_LEN)                  :: missing_tags(MAX_HDRS) = ''    !! | Array to store missing tags
+  character(len=NAME_LEN), allocatable                  :: missing_tags(:)     !! | Array to store missing tags
   integer                                 :: num_missing_tags = 0           !! | Number of missing tags
   integer                                 :: hblock  = 0     !! | Header block number
+  
+  character(len=NAME_LEN)  :: HDR_file = 'header_map.cio'
+  character(len=60) :: tag
 
   !==================[ Types ]=======================================!
 
@@ -33,9 +37,12 @@ module input_read_module
       
   end type header_map
   
-  type(header_map), target :: all_maps(MAX_HDRS) !! Array of header maps
+  type(header_map), allocatable, target :: all_maps(:)   !! Array of header maps
   type(header_map), pointer              :: active_map  !! | Pointer to the active header map
-  type(header_map), allocatable :: tmp(:)
+
+  type(header_map), allocatable :: tmp_maps(:)
+  
+  type(header_map), allocatable :: filtered(:)
 
 contains
 
@@ -107,217 +114,179 @@ contains
     if (count < size(tokens)) tokens = tokens(1:count)
   end subroutine split_by_Multispace
 
+!==================[ Load_header_mappings - One-Pass ]=======================!!
+! Purpose: Single-pass parser that distinguishes metadata (3 tokens) from
+!          column-mapping rows (5 tokens) in header_map.cio,
+!          storing only used headers and removing unused entries.
 subroutine load_header_mappings()
   implicit none
 
-  ! Local Variables
-  character(len=MAX_LINE_LEN)        :: line
-  character(len=STR_LEN), allocatable :: words(:)
-  character(len=NAME_LEN)           :: block_name
-  character(len=1)                  :: usage_flag, lower_flag
-  integer                            :: iostat, num_fields
-  integer                            :: declared_num_cols, actual_count
-  integer                            :: idx, i, map_index
-  integer                            :: state      ! 0=look for [filelist], 1=in filelist, 2=in blocks
+  ! Module-level assumptions (in containing module):
+  !   type(header_map), allocatable, target :: all_maps(:)
+  !   type(header_map), allocatable          :: tmp_maps(:)
 
-  ! Reset counters (assume all_maps and map_count are module variables)
+  ! Local variables
+  character(len=MAX_LINE_LEN)         :: line
+  character(len=STR_LEN), allocatable :: tok(:)
+  integer                             :: io, nf, i, idx, ncols, p, map_idx
+  character(len=NAME_LEN)             :: file_id
+  logical                             :: used_flag, i_exist
+  character(len=NAME_LEN)             :: last_file_id = ''
+  integer                             :: last_map_idx = 0
+  integer                             :: keep_count
+
   map_count      = 0
   mapping_loaded = .false.
-  state          = 0
 
-  ! If file doesn’t exist, bail
-  inquire(file='header_map.cio', exist=iostat)
-  if (iostat == 0) return
+  ! Check for existence of the header_map file
+  inquire(file=HDR_file, exist=i_exist)
+  if (.not. i_exist) return
 
-  open(unit=IO_UNIT, file='header_map.cio', status='old', action='read', iostat=iostat)
-  if (iostat /= 0) return
+  ! Open the file
+  open(unit=IO_UNIT, file=trim(HDR_file), status='old', action='read', iostat=io)
+  if (io /= 0) return
 
-  !— Read once to skip the title line (we assume it’s always present) —
-  read(IO_UNIT,'(A)',iostat=iostat) line
-  if (iostat /= 0) then
-    close(IO_UNIT)
-    return
-  end if
-
-  !— Main loop: state 0 finds “[filelist]”, state 1 reads filelist entries,
-  !   state 2 handles each “[<filename>]” block (using declared_num_cols). —
+  ! Single-pass parse: metadata and column mappings
   do
-    read(IO_UNIT,'(A)',iostat=iostat) line
-    if (iostat /= 0) exit   ! EOF → done
+    read(IO_UNIT, '(A)', iostat=io) line
+    if (io /= 0) exit   ! EOF or read error
 
-    ! Skip blank or comment lines
-    if (trim(line)=='' .or. line(1:1)=='#') cycle
+    ! Skip blanks or comment lines (leading spaces allowed)
+    if (trim(line) == '') cycle
+    p = 1
+    do while (p <= len_trim(line) .and. line(p:p) == ' ')
+      p = p + 1
+    end do
+    if (line(p:p) == '#') cycle
 
-    select case (state)
+    call split_by_multispace(line, tok, nf)
+    select case(nf)
 
-    case (0)
-      !— Expect “[filelist]” as the very first real line —
-      if (trim(adjustl(line)) /= '[filelist]') then
-        close(IO_UNIT)
-        return
-      end if
-      state = 1
-      cycle
+    case (3)
+      ! Metadata: <filename> <Y/N> <ncols>
+      file_id   = trim(tok(1))
+      used_flag = (tok(2)(1:1) == 'Y' .or. tok(2)(1:1) == 'y')
+      read(tok(3), *, iostat=io) ncols
+      if (io /= 0) ncols = 0
 
-    case (1)
-      !— In [filelist] until we hit a “[foo]” marker —
-      if (line(1:1)=='[' .and. index(line,']')>1) then
-        block_name = adjustl(line(2:index(line,']')-1))
-        block_name = trim(block_name)
-        state = 2
-        cycle
-      end if
-
-      ! Otherwise, parse “<filename>  <Y/N>  <declared_num_cols>”
-      call split_by_Multispace(line, words, num_fields)
-      if (num_fields < 3) cycle
-
-      map_count = map_count + 1
-      all_maps(map_count)%name = trim(words(1))
-      usage_flag = words(2)(1:1)
-      all_maps(map_count)%used = (usage_flag=='Y' .or. usage_flag=='y')
-
-      read(words(3),*, iostat=iostat) declared_num_cols
-      if (iostat /= 0) declared_num_cols = 0
-
-      if (declared_num_cols > 0) then
-        allocate(all_maps(map_count)%expected   (declared_num_cols))
-        allocate(all_maps(map_count)%default_vals(declared_num_cols))
-        allocate(all_maps(map_count)%mandatory  (declared_num_cols))
-        allocate(all_maps(map_count)%col_order  (declared_num_cols))
-        all_maps(map_count)%col_order = [(i, i=1,declared_num_cols)]
-      end if
-
-      cycle
-
-    case (2)
-      !— We have just seen “[foo]” (e.g. “[hru.con]”), stored in block_name. —
-
-      ! 1) Find map_index for this block
-      map_index = 0
-      do i = 1, map_count
-        if (all_maps(i)%name == block_name) then
-          map_index = i
-          exit
+      if (used_flag) then
+        map_count = map_count + 1
+        ! Grow all_maps
+        if (.not. allocated(all_maps)) then
+          allocate(all_maps(1))
+        else
+          allocate(tmp_maps(map_count))
+          tmp_maps(1:map_count-1) = all_maps
+          call move_alloc(tmp_maps, all_maps)
         end if
-      end do
+        ! Initialize new map entry
+        all_maps(map_count)%name      = file_id
+        all_maps(map_count)%used      = .true.
+        allocate(all_maps(map_count)%expected   (ncols))
+        allocate(all_maps(map_count)%default_vals(ncols))
+        allocate(all_maps(map_count)%mandatory  (ncols))
+        allocate(all_maps(map_count)%col_order  (ncols))
+        all_maps(map_count)%col_order = 0
+      end if
 
-      ! 2) If not found or used=FALSE, skip until next “[foo]” marker or EOF
-      if (map_index == 0 .or. .not. all_maps(map_index)%used) then
-        do
-          read(IO_UNIT,'(A)',iostat=iostat) line
-          if (iostat /= 0) exit   ! EOF → done
-
-          if (trim(line)=='' .or. line(1:1)=='#') cycle
-
-          if (line(1:1)=='[' .and. index(line,']')>1) then
-            block_name = adjustl(line(2:index(line,']')-1))
-            block_name = trim(block_name)
+    case (5)
+      ! Column mapping: <filename> <idx> <expected> <default> <mandatory>
+      file_id = trim(tok(1))
+      ! Fast lookup for repeated filenames
+      if (file_id == last_file_id) then
+        map_idx = last_map_idx
+      else
+        map_idx = 0
+        do i = 1, map_count
+          if (all_maps(i)%name == file_id) then
+            map_idx = i
+            last_file_id = file_id
+            last_map_idx = i
             exit
           end if
         end do
-
-        cycle   ! back to main loop (still state=2) with next block_name or EOF
       end if
+      if (map_idx == 0) cycle   ! mapping for unused or unknown file
 
-      ! 3) Block is used = TRUE.  Read exactly declared_num_cols data rows:
-      declared_num_cols = size(all_maps(map_index)%expected)
-      actual_count = 0
-      do while (actual_count < declared_num_cols)
-          read(IO_UNIT, '(A)', iostat=iostat) line
-          if (iostat /= 0) exit   ! EOF → bail
+      read(tok(2), *, iostat=io) idx
+      if (io /= 0) cycle
+      if (idx < 1 .or. idx > size(all_maps(map_idx)%expected)) cycle
 
-          ! 1) Skip blank‐only lines
-          if (trim(line) == '') cycle
+      all_maps(map_idx)%expected   (idx) = trim(tok(3))
+      all_maps(map_idx)%default_vals(idx) = trim(tok(4))
+      all_maps(map_idx)%mandatory  (idx) = (tok(5)(1:1) == 'Y')
+      all_maps(map_idx)%col_order  (idx) = idx
 
-          ! 2) Skip comment lines even if they start with spaces
-          if (line(1:1) == '#') cycle
-
-          ! 3) If this is a new “[foo]” marker (again, maybe spaces before “[”)
-          if (adjustl(line)(1:1) == '[' .and. index(adjustl(line),']') > 1) then
-            block_name = adjustl( line( 2 : index(adjustl(line),']')-1 ) )
-            block_name = trim(block_name)
-            exit  ! missing data rows—bail out
-          end if
-
-          ! 4) Otherwise it’s a data row. Parse it:
-          call split_by_Multispace(line, words, num_fields)
-          if (num_fields < 4) cycle
-
-          read(words(1), *, iostat=iostat) idx
-          if (iostat /= 0) cycle
-          if (idx < 1 .or. idx > declared_num_cols) cycle
-
-          all_maps(map_index)%expected   (idx) = trim(words(2))
-          all_maps(map_index)%default_vals(idx) = trim(words(3))
-
-          lower_flag = 'N'
-          if (num_fields >= 4) lower_flag = trim(words(4))
-          all_maps(map_index)%mandatory(idx) = (lower_flag == 'Y' .or. lower_flag == 'y')
-
-          actual_count = actual_count + 1
-          
-      end do
-      ! 4) We (hopefully) finished reading all declared_num_cols, or hit a marker/EOF. Now skip to the next “[foo]”:
-      do
-        read(IO_UNIT,'(A)',iostat=iostat) line
-        if (iostat /= 0) exit   ! EOF → done
-
-        if (trim(line)=='' .or. line(1:1)=='#') cycle
-
-        if (line(1:1)=='[' .and. index(line,']')>1) then
-          block_name = adjustl(line(2:index(line,']')-1))
-          block_name = trim(block_name)
-          exit
-        end if
-      end do
-
-      cycle   ! return to main loop, state=2, with the next block_name or EOF
+    case default
+      ! ignore lines with other token counts
     end select
   end do
 
   close(IO_UNIT)
+
+  ! Post-process: remove any maps that received zero mappings
+  keep_count = 0
+  do i = 1, map_count
+    if (any(all_maps(i)%col_order /= 0)) then
+      keep_count = keep_count + 1
+    else
+      write(*,*) 'WARNING: header ', trim(all_maps(i)%name), &
+                 ' declared but no mappings found.'
+    end if
+  end do
+
+  if (keep_count < map_count) then
+    allocate(filtered(keep_count))
+    keep_count = 0
+    do i = 1, map_count
+      if (any(all_maps(i)%col_order /= 0)) then
+        keep_count = keep_count + 1
+        filtered(keep_count) = all_maps(i)
+      end if
+    end do
+    deallocate(all_maps)
+    call move_alloc(filtered, all_maps)
+    map_count = keep_count
+  end if
+
   mapping_loaded = (map_count > 0)
 end subroutine load_header_mappings
 
 subroutine check_headers_by_tag(search_tag, header_line, use_hdr_map)
   implicit none
 
-  character(len=*), intent(in)       :: search_tag    !! |Tag to search for
-  character(len=*), intent(in)       :: header_line   !! |Header line to check
-  character(len=STR_LEN) :: tag = ''        !!  |tag for mapping
-  !type(header_map), pointer          :: hmap          !! |Output: pointer to matching header map
-  !character(len=3), intent(out)      :: pvar          !! |Format variable
-  logical, intent(inout)             :: use_hdr_map   !! |Flag to indicate whether to use map
+  ! Inputs
+  character(len=*), intent(in)  :: search_tag
+  character(len=*), intent(in)  :: header_line
+  logical,       intent(inout)  :: use_hdr_map
 
-  character(len=90), allocatable     :: headers(:)    !! |Header tokens
-  logical, allocatable               :: matched(:)    !! |Flags for matched headers
-  integer                            :: ntok, i, j
-  integer                            :: miss_cnt, extra_cnt
-  integer                            :: imax
-  integer                            :: h_index 
-  type(header_map)         :: hdr_map2(MAX_HDRS)
-
-  ! Initialize outputs
+  ! Locals
+  character(len=STR_LEN), allocatable :: headers(:)
+  logical,           allocatable      :: matched(:)
+  integer               :: ntok, i, j, idx, h_index
+  logical               :: found
+  type(header_map), pointer :: hmap     ! pointer to the matching map
+  type(header_map), pointer          :: hdr_map2(:)   !! |Pointer to all header maps
 
   use_hdr_map = .false.
-  h_index = 0
-
+  h_index    = 0
   if (.not. mapping_loaded) return
+  
+   hdr_map2 => all_maps
 
-  ! Lookup the tag in available mappings
+
+  ! 1) Find the matching header_map entry
+  found = .false.
   tag = search_tag
-  hdr_map2(i) = all_maps(i)
-  do i = 1, hblock
+  do i = 1, map_count
     if (trim(hdr_map2(i)%name) == trim(tag)) then
       h_index = i
-      use_hdr_map = .true.
+      found = .true.
       exit
     end if
   end do
 
-  ! If not found, track it and exit
-  if (h_index == 0) then
+  if (.not. found) then
     if (num_missing_tags < size(missing_tags)) then
       num_missing_tags = num_missing_tags + 1
       missing_tags(num_missing_tags) = trim(tag)
@@ -325,62 +294,73 @@ subroutine check_headers_by_tag(search_tag, header_line, use_hdr_map)
     return
   end if
 
-  ! Split and compare headers if map was found
+  ! Point at the map we want to test
+  hmap => hdr_map2(h_index)
+  use_hdr_map = .true.
+
+  ! 2) Split the incoming header line
   call split_by_multispace(header_line, headers, ntok)
-  imax = size(hdr_map2(i)%expected)
+
+  ! Prepare matched flags
   allocate(matched(ntok))
   matched = .false.
-  hdr_map2(i)%is_correct = .true.
 
-  do i = 1, imax
-    hdr_map2(i)%col_order(i) = 0
+  ! Assume correct until proven otherwise
+  hmap%is_correct = .true.
+
+  ! 3) Walk each expected column and try to find it in `headers`
+  do i = 1, size(hmap%expected)
+    hmap%col_order(i) = 0
     do j = 1, ntok
-      if (lowercase(adjustl(trim(headers(j)))) == lowercase(adjustl(trim(hdr_map2(i)%expected(i))))) then
-        hdr_map2(i)%col_order(i) = j
+      if ( &
+        lowercase(trim(headers(j))) == &
+        lowercase(trim(hmap%expected(i))) ) then
+
+        hmap%col_order(i) = j
         matched(j) = .true.
         exit
       end if
     end do
-    if (hdr_map2(i)%col_order(i) /= i) then
-      hdr_map2(i)%is_correct = .false.
-    end if
+    if (hmap%col_order(i) == 0) hmap%is_correct = .false.
   end do
 
-  if (.not. hdr_map2(i)%is_correct) then
+  ! 4) If it wasn’t perfect, collect missing & extra
+  if (.not. hmap%is_correct) then
     ! missing
-    miss_cnt = count(hdr_map2(i)%col_order == 0)
-    if (miss_cnt > 0) then
-      allocate(hdr_map2(i)%missing(miss_cnt))
-      miss_cnt = 0
-      do i = 1, imax
-        if (hdr_map2(i)%col_order(i) == 0) then
-          miss_cnt = miss_cnt + 1
-          hdr_map2(i)%missing(miss_cnt) = hdr_map2(i)%expected(i)
+    idx = count(hmap%col_order == 0)
+    if (idx > 0) then
+      allocate(hmap%missing(idx))
+      idx = 0
+      do i = 1, size(hmap%col_order)
+        if (hmap%col_order(i) == 0) then
+          idx = idx + 1
+          hmap%missing(idx) = hmap%expected(i)
         end if
       end do
     end if
 
     ! extra
-    extra_cnt = count(.not. matched)
-    if (extra_cnt > 0) then
-      allocate(hdr_map2(i)%extra(extra_cnt))
-      extra_cnt = 0
+    idx = count(.not. matched)
+    if (idx > 0) then
+      allocate(hmap%extra(idx))
+      idx = 0
       do j = 1, ntok
         if (.not. matched(j)) then
-          extra_cnt = extra_cnt + 1
-          hdr_map2(i)%extra(extra_cnt) = trim(headers(j))
+          idx = idx + 1
+          hmap%extra(idx) = headers(j)
         end if
       end do
     end if
+
   else
-    allocate(hdr_map2(i)%missing(0))
-    allocate(hdr_map2(i)%extra(0))
-    use_hdr_map = .false.
+    ! perfect match: make sure arrays exist but are zero‐length
+    if (.not. allocated(hmap%missing)) allocate(hmap%missing(0))
+    if (.not. allocated(hmap%extra  )) allocate(hmap%extra  (0))
+    use_hdr_map = .false.    ! everything matched → no need to apply the map
   end if
 
   deallocate(matched)
   deallocate(headers)
-
 end subroutine check_headers_by_tag
 
 
@@ -495,7 +475,7 @@ end subroutine header_read_n_reorder
   implicit none
   integer :: unit = 1942 !! Unit number to write to
   integer :: i, ii
-  type(header_map)         :: hdr_map2(MAX_HDRS)
+  type(header_map)         :: hdr_map2(map_count)
 
   !> \brief Writes mapping information to a file
   !!>
