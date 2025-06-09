@@ -97,14 +97,20 @@ contains
     integer                              :: len_line                 !! | Length of the line
     integer                              :: i                        !! | Loop counter
 
+    !-----------------------------------------------------------------------
+    ! Initialise buffers and counters before scanning the line
+    !-----------------------------------------------------------------------
     allocate(tokens(1000))
-    buffer = line
-    word = ''
-    count = 0
+    buffer   = line
+    word     = ''
+    count    = 0
     len_line = len_trim(buffer)
     in_quotes = .false.
 
-    ! Loop through each character in the line
+    !-----------------------------------------------------------------------
+    ! Scan each character of the line. Quoted strings are preserved and
+    ! spaces outside of quotes are used as delimiters.
+    !-----------------------------------------------------------------------
     do i = 1, len_line
       select case (buffer(i:i))
       case ('"')
@@ -123,13 +129,17 @@ contains
       end select
     end do
 
-    ! Check if there is a word left after the loop
+    !-----------------------------------------------------------------------
+    ! Append the last token if one remains after exiting the loop
+    !-----------------------------------------------------------------------
     if (len_trim(word) > 0) then
       count = count + 1
       tokens(count) = adjustl(word)
     end if
 
-    ! Resize the tokens array
+    !-----------------------------------------------------------------------
+    ! Resize the token array to the actual number of tokens discovered
+    !-----------------------------------------------------------------------
     if (count < size(tokens)) tokens = tokens(1:count)
   end subroutine split_by_Multispace
 
@@ -154,6 +164,9 @@ contains
     integer                             :: last_map_idx = 0   !! | Index of last file/tag
     integer                             :: keep_count         !! | Counter for valid maps
 
+    !-----------------------------------------------------------------------
+    ! Initialise state and attempt to open the mapping configuration file
+    !-----------------------------------------------------------------------
     map_count      = 0
     mapping_loaded = .false.
 
@@ -163,6 +176,10 @@ contains
     open(unit=IO_UNIT, file=trim(HDR_file), status='old', action='read', iostat=io)
     if (io /= 0) return
 
+    !-----------------------------------------------------------------------
+    ! Read the file line by line.  Lines with three tokens define a new file
+    ! mapping.  Lines with five tokens assign individual column information.
+    !-----------------------------------------------------------------------
     do
       read(IO_UNIT, '(A)', iostat=io) line
       if (io /= 0) exit   ! EOF or read error
@@ -177,6 +194,7 @@ contains
       call split_by_multispace(line, tok, nf)
       select case(nf)
       case (3)
+        !-- Beginning of a new header mapping block -----------------------
         file_id   = trim(tok(1))
         used_flag = (tok(2)(1:1) == 'Y' .or. tok(2)(1:1) == 'y')
         read(tok(3), *, iostat=io) ncols
@@ -201,6 +219,7 @@ contains
         end if
 
       case (5)
+        !-- Column definition within a mapping ---------------------------
         file_id = trim(tok(1))
         if (file_id == last_file_id) then
           map_idx = last_map_idx
@@ -215,7 +234,7 @@ contains
             end if
           end do
         end if
-        if (map_idx == 0) cycle
+        if (map_idx == 0) cycle      ! Skip entries for unknown mappings
 
         read(tok(2), *, iostat=io) idx
         if (io /= 0) cycle
@@ -230,11 +249,17 @@ contains
       end select
     end do
 
+    !-----------------------------------------------------------------------
+    ! Finished reading the mapping file
+    !-----------------------------------------------------------------------
     close(IO_UNIT)
 
     keep_count = 0
     allocate(missing_tags(map_count))
     num_missing_tags = 0
+    !-----------------------------------------------------------------------
+    ! Remove mappings that have no columns defined and collect their tags
+    !-----------------------------------------------------------------------
     do i = 1, map_count
       if (any(all_maps(i)%col_order /= 0)) then
         keep_count = keep_count + 1
@@ -244,6 +269,7 @@ contains
       end if
     end do
 
+    ! Resize the missing tag list to the actual number found
     if (num_missing_tags < size(missing_tags)) then
       allocate(tmp_missing(num_missing_tags))
       tmp_missing = missing_tags(1:num_missing_tags)
@@ -251,6 +277,7 @@ contains
       call move_alloc(tmp_missing, missing_tags)
     end if
 
+    ! Compact the mapping array so that only valid mappings remain
     if (keep_count < map_count) then
       allocate(filtered(keep_count))
       keep_count = 0
@@ -265,6 +292,7 @@ contains
       map_count = keep_count
     end if
 
+    ! Flag indicating whether any usable mappings were loaded
     mapping_loaded = (map_count > 0)
   end subroutine load_header_mappings
 
@@ -287,6 +315,9 @@ contains
     type(header_map), pointer           :: hmap             !! | Pointer to current header map
     type(header_map), pointer           :: hdr_map2(:)      !! | Pointer to all header maps
 
+    !-----------------------------------------------------------------------
+    ! Look for a loaded mapping that matches the requested tag
+    !-----------------------------------------------------------------------
     use_hdr_map = .false.
     h_index    = 0
     if (.not. mapping_loaded) return
@@ -304,15 +335,22 @@ contains
 
     if (.not. found) return
 
+    !-----------------------------------------------------------------------
+    ! Prepare to check the header line against the selected mapping
+    !-----------------------------------------------------------------------
     hmap => hdr_map2(h_index)
     use_hdr_map = .true.
 
+    ! Tokenise the header line for comparison
     call split_by_multispace(header_line, headers, ntok)
 
     allocate(matched(ntok))
     matched = .false.
 
     hmap%is_correct = .true.
+    !-----------------------------------------------------------------------
+    ! Determine the column order by matching expected headers to the tokens
+    !-----------------------------------------------------------------------
     do i = 1, size(hmap%expected)
       hmap%col_order(i) = 0
       do j = 1, ntok
@@ -325,6 +363,9 @@ contains
       if (hmap%col_order(i) == 0) hmap%is_correct = .false.
     end do
 
+    !-----------------------------------------------------------------------
+    ! If any expected headers were not found record missing/extra fields
+    !-----------------------------------------------------------------------
     if (.not. hmap%is_correct) then
       idx = count(hmap%col_order == 0)
       if (idx > 0) then
@@ -351,11 +392,13 @@ contains
       end if
 
     else
+      ! Perfect match: initialise empty arrays and disable reordering
       if (.not. allocated(hmap%missing)) allocate(hmap%missing(0))
       if (.not. allocated(hmap%extra  )) allocate(hmap%extra  (0))
       use_hdr_map = .false.
     end if
 
+    ! Clean up temporary arrays
     deallocate(matched)
     deallocate(headers)
   end subroutine check_headers_by_tag
@@ -374,6 +417,12 @@ contains
     integer                          :: i = 0               !! | Loop counter
     integer                          :: ios = 0             !! | I/O status
 
+    !-----------------------------------------------------------------------
+    ! Fetch the active map and read the raw line from the unit when needed
+    !-----------------------------------------------------------------------
+    !-----------------------------------------------------------------------
+    ! Read a raw line from the unit and use the active mapping if requested
+    !-----------------------------------------------------------------------
     out_line = ''
     hmap2 => active_map
 
@@ -381,6 +430,7 @@ contains
       read(unit,'(A)',iostat=ios) line
       if (ios /= 0) return
 
+      ! Tokenise the input line and rebuild it in the expected order
       call split_by_multispace(line, tok, ntok)
 
       do i = 1, size(hmap2%expected)
@@ -421,6 +471,7 @@ contains
       if (hmap2%is_correct) then
         out_line = line
       else
+        ! Re-tokenise and reorder the line according to the mapping
         call split_by_multispace(line, tok, ntok)
         do i = 1, size(hmap2%expected)
           if (hmap2%col_order(i) /= 0 .and. hmap2%col_order(i) <= ntok) then
@@ -449,6 +500,7 @@ contains
     hdr_map2 => all_maps
     if (.not. mapping_loaded) return
 
+    ! Inform the user and write details for any imperfect matches
     write(*,*) 'Alt mapping may have been used see Mapping information:'
     open (unit,file="use_hdr_map.fin")
     do ii = 1, map_count
