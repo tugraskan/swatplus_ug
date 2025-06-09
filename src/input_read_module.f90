@@ -16,10 +16,11 @@ module input_read_module
   integer                                 :: map_count = 0                  !! | Count of header mappings loaded
   character(len=NAME_LEN), allocatable                  :: missing_tags(:)     !! | Array to store missing tags
   integer                                 :: num_missing_tags = 0           !! | Number of missing tags
-  integer                                 :: hblock  = 0     !! | Header block number
+
   
   character(len=NAME_LEN)  :: HDR_file = 'header_map.cio'
   character(len=60) :: tag
+  character(len=NAME_LEN), allocatable :: tmp_missing(:)
 
   !==================[ Types ]=======================================!
 
@@ -226,15 +227,28 @@ subroutine load_header_mappings()
 
   ! Post-process: remove any maps that received zero mappings
   keep_count = 0
+  ! Allocate to maximum possible size
+  allocate(missing_tags(map_count))
+  num_missing_tags = 0
   do i = 1, map_count
     if (any(all_maps(i)%col_order /= 0)) then
       keep_count = keep_count + 1
     else
-      write(*,*) 'WARNING: header ', trim(all_maps(i)%name), &
-                 ' declared but no mappings found.'
+      num_missing_tags = num_missing_tags + 1
+      missing_tags(num_missing_tags) = trim(all_maps(i)%name)
     end if
   end do
 
+  ! Shrink missing_tags to remove any unused (empty) entries
+  if (num_missing_tags < size(missing_tags)) then
+
+    allocate(tmp_missing(num_missing_tags))
+    tmp_missing = missing_tags(1:num_missing_tags)
+    deallocate(missing_tags)
+    call move_alloc(tmp_missing, missing_tags)
+  end if
+
+  ! Now filter out any all_maps entries that never got a mapping
   if (keep_count < map_count) then
     allocate(filtered(keep_count))
     keep_count = 0
@@ -285,14 +299,9 @@ subroutine check_headers_by_tag(search_tag, header_line, use_hdr_map)
       exit
     end if
   end do
+  
+  if (.not. found) return
 
-  if (.not. found) then
-    if (num_missing_tags < size(missing_tags)) then
-      num_missing_tags = num_missing_tags + 1
-      missing_tags(num_missing_tags) = trim(tag)
-    end if
-    return
-  end if
 
   ! Point at the map we want to test
   hmap => hdr_map2(h_index)
@@ -475,7 +484,7 @@ end subroutine header_read_n_reorder
   implicit none
   integer :: unit = 1942 !! Unit number to write to
   integer :: i, ii
-  type(header_map)         :: hdr_map2(map_count)
+  type(header_map), pointer          :: hdr_map2(:)
 
   !> \brief Writes mapping information to a file
   !!>
@@ -489,7 +498,7 @@ end subroutine header_read_n_reorder
   !!>
 
   ! Lookup the tag in available mappings
-  hdr_map2(i) = all_maps(i)
+  hdr_map2 => all_maps
   
   ! Return early if no mapping is available
   if (.not. mapping_loaded) return
@@ -500,7 +509,7 @@ end subroutine header_read_n_reorder
   open (unit,file="use_hdr_map.fin")
   
   ! Loop over all header blocks
-  do ii = 1, hblock
+  do ii = 1, map_count
       ! Only process mappings that are not a perfect match
       if (.not. hdr_map2(ii)%is_correct) then
         ! Write the tag for the mapping
