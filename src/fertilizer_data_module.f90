@@ -12,11 +12,48 @@
       end type fertilizer_db
       type (fertilizer_db), dimension(:),allocatable, save :: fertdb
       
+      type fertilizer_ext_db
+        character(len=16) :: oman = " "  !!
+        character(len=16) :: pest = ""  !! pest.man name
+        character(len=16) :: path = ""  !! path.man name
+        character(len=16) :: salt = ""  !! salt.man name
+        character(len=16) :: hmet = ""  !! hmet.man name
+        character(len=16) :: cs = ""    !! cs.man name
+      end type fertilizer_ext_db
+      
+
+      
       type manure_data
-        character(len=16) :: fertnm = " "
+        character(len=16) :: manure_name = " "
       !  character(len=16), dimension(:),allocatable :: path = " "
       !  character(len=16), dimension(:),allocatable :: antibiotic = " "
       end type manure_data
       type (manure_data), dimension(:),allocatable :: manure_db
+      
+      type :: omad_input
+        character(len=32) :: manure_name = " "  ! e.g., BFSD
+        character(len=64) :: manure_desc = " "  ! e.g., Beef solid unsurfaced lot
+        real :: omadtyp = 0.0    ! Type flag, e.g., 1.5
+        real :: astgc = 0.0      ! gC/m2/ton or gC/m2/gal
+        real :: astlbl = 0.0     ! May be a label/unused
+        real :: astlig = 0.0     ! Lignin fraction
+        real :: cn = 0.0         ! C:N ratio
+        real :: cp = 0.0         ! C:P ratio
+        real :: cs = 0.0         ! C:S ratio
+      end type omad_input
+      type(omad_input), allocatable, save :: omad_db(:)
+      
+      type fertilizer_carbon_db
+        type(fertilizer_db) :: base     !! base fertilizer data
+        real :: wc = 0.0                 !! kg H2O/kg frt     |frac of fert which is water (H2O)
+        type (omad_input) :: omad
+        character(len=16) :: pest = ""  !! pest.man name
+        character(len=16) :: path = ""  !! path.man name
+        character(len=16) :: salt = ""  !! salt.man name
+        character(len=16) :: hmet = ""  !! hmet.man name
+        character(len=16) :: cs = ""    !! cs.man name
+      end type fertilizer_carbon_db
+      type (fertilizer_carbon_db), dimension(:), allocatable, save :: fertdb_cbn
+
       
       end module fertilizer_data_module 
