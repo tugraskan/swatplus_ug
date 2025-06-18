@@ -254,6 +254,18 @@
       type (cs_soil_init_concentrations), dimension(:), allocatable:: salt_soil_ini
       type (cs_soil_init_concentrations), dimension(:), allocatable:: cs_soil_ini !rtb cs
       
+      ! initial constituent soil concentrations for fert
+      type cs_fert_init_concentrations
+        character (len=16) :: name = ""             !! name of the constituent - points to constituent database
+        real, dimension (:), allocatable :: soil    !! ppm                  |amount of constituent in soil at start of simulation
+      end type cs_fert_init_concentrations
+      type (cs_fert_init_concentrations), dimension(:), allocatable:: pest_fert_soil_ini
+      type (cs_fert_init_concentrations), dimension(:), allocatable:: path_fert_soil_ini
+      type (cs_fert_init_concentrations), dimension(:), allocatable:: hmet_fert_soil_ini
+      !! first 8 values of soil and plt are salt ion concentrations and next 5 are salt mineral fractions
+      type (cs_fert_init_concentrations), dimension(:), allocatable:: salt_fert_soil_ini
+      type (cs_fert_init_concentrations), dimension(:), allocatable:: cs_fert_soil_ini !rtb cs
+      
       ! initial salt ion groundwater concentrations and mineral fractions for aquifers
       type salt_aqu_init_concentrations
         character (len=16) :: name = ""             !! name of the constituent - points to constituent database
