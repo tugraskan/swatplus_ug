@@ -24,5 +24,5 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Set environment so both gfortran and ifx are on the PATH
-ENV PATH=/opt/intel/oneapi/compiler/2025.0/bin:$PATH \
-    LD_LIBRARY_PATH=/opt/intel/oneapi/compiler/2025.0/lib:$LD_LIBRARY_PATH
+ENV PATH=/opt/intel/oneapi/compiler/2025.0/bin:$PATH
+ENV LD_LIBRARY_PATH=/opt/intel/oneapi/compiler/2025.0/lib
