@@ -1,6 +1,8 @@
-# Custom Codex-Fortran Runtime Image
-# Base on OpenAI's Codex sandbox for self-hosted deployments
-FROM openai/codex-universal:latest
+# Custom Fortran Development Image
+# Place this file at: swatplus_ug/Codex_docker/Dockerfile
+# Base on Ubuntu Jammy via Microsoft's Dev Container image for local builds
+FROM mcr.microsoft.com/devcontainers/base:jammy
+
 
 # Install essential build tools, compilers, Python, and documentation generator
 RUN apt-get update && \
