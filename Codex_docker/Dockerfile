@@ -3,6 +3,9 @@ FROM mcr.microsoft.com/devcontainers/base:jammy
 
 # 0. Pre-set Intel oneAPI environment variables so 'ifx' is available immediately
 ENV ONEAPI_ROOT=/opt/intel/oneapi
+# Use Linux subdirectories for compilers
+ENV PATH=$ONEAPI_ROOT/compiler/2025.0/linux/bin:$PATH
+ENV LD_LIBRARY_PATH=$ONEAPI_ROOT/compiler/2025.0/linux/lib:$LD_LIBRARY_PATH
 ENV PATH=$ONEAPI_ROOT/compiler/2025.0/bin:$PATH
 ENV LD_LIBRARY_PATH=$ONEAPI_ROOT/compiler/2025.0/lib:$LD_LIBRARY_PATH
 
