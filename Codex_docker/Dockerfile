@@ -26,9 +26,7 @@ RUN apt-get update && \
     # Clean up APT and pip caches
     rm -rf /var/lib/apt/lists/*
 
-# Ensure every shell sources Intel's setvars so 'ifx' is on PATH
-RUN echo "source /opt/intel/oneapi/setvars.sh" >> /etc/bash.bashrc
-
-# Expose Intel compiler binaries and libraries
+# Intel oneAPI compilers are in PATH via ENV below
 ENV PATH=/opt/intel/oneapi/compiler/2025.0/bin:$PATH \
+    LD_LIBRARY_PATH=/opt/intel/oneapi/compiler/2025.0/lib:$LD_LIBRARY_PATH=/opt/intel/oneapi/compiler/2025.0/bin:$PATH \
     LD_LIBRARY_PATH=/opt/intel/oneapi/compiler/2025.0/lib:$LD_LIBRARY_PATH
