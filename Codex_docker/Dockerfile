@@ -30,5 +30,5 @@ RUN apt-get update && \
 RUN echo "source /opt/intel/oneapi/setvars.sh" >> /etc/bash.bashrc
 
 # Expose Intel compiler binaries and libraries
-ENV PATH=/opt/intel/oneapi/compiler/2025.0/bin:$PATH
-ENV LD_LIBRARY_PATH=/opt/intel/oneapi/compiler/2025.0/lib
+ENV PATH=/opt/intel/oneapi/compiler/2025.0/bin:$PATH \
+    LD_LIBRARY_PATH=/opt/intel/oneapi/compiler/2025.0/lib:$LD_LIBRARY_PATH
