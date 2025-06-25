@@ -3,7 +3,6 @@
 # Base on Ubuntu Jammy via Microsoft's Dev Container image for local builds
 FROM mcr.microsoft.com/devcontainers/base:jammy
 
-
 # Install essential build tools, compilers, Python, and documentation generator
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -20,8 +19,7 @@ RUN apt-get update && \
     # Add Intel oneAPI APT key and repository
     wget -qO- https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB \
         | gpg --dearmor > /usr/share/keyrings/oneapi-archive-keyring.gpg && \
-    echo "deb [signed-by=/usr/share/keyrings/oneapi-archive-keyring.gpg] \
-        https://apt.repos.intel.com/oneapi all main" \
+    echo "deb [signed-by=/usr/share/keyrings/oneapi-archive-keyring.gpg] https://apt.repos.intel.com/oneapi all main" \
         > /etc/apt/sources.list.d/oneAPI.list && \
     apt-get update && \
     apt-get install -y --no-install-recommends intel-oneapi-compiler-fortran && \
@@ -32,5 +30,5 @@ RUN apt-get update && \
 RUN echo "source /opt/intel/oneapi/setvars.sh" >> /etc/bash.bashrc
 
 # Expose Intel compiler binaries and libraries
-ENV PATH=/opt/intel/oneapi/compiler/2025.0/bin:$PATH \
-    LD_LIBRARY_PATH=/opt/intel/oneapi/compiler/2025.0/lib:$LD_LIBRARY_PATH
+ENV PATH=/opt/intel/oneapi/compiler/2025.0/bin:$PATH
+ENV LD_LIBRARY_PATH=/opt/intel/oneapi/compiler/2025.0/lib
