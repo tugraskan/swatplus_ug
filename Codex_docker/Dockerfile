@@ -23,6 +23,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends intel-oneapi-compiler-fortran && \
     rm -rf /var/lib/apt/lists/*
 
-# Set environment so both gfortran and ifx are on the PATH
-ENV PATH=/opt/intel/oneapi/compiler/2025.0/bin:$PATH
-ENV LD_LIBRARY_PATH=/opt/intel/oneapi/compiler/2025.0/lib
+# Set environment so both gfortran and Intel ifx are on the PATH using generic 'latest' symlink
+ENV ONEAPI_ROOT=/opt/intel/oneapi
+ENV PATH=$ONEAPI_ROOT/compiler/latest/linux/bin:$PATH
+ENV LD_LIBRARY_PATH=$ONEAPI_ROOT/compiler/latest/linux/lib:$LD_LIBRARY_PATH
