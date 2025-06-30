@@ -1,0 +1,19 @@
+plant_gro_sft
+   1
+  NAME 		LUM_NUMB  NSPU 
+ basin	    	  14       0
+  NAME		YIELD	NPP	LAI_MX	WSTRESS	ASTRESS	TSTRESS
+  corn  	 6.7	0.	  0.	  0.	  0.	  0.
+  soyb  	 1.5	0.	  0.	  0.	  0.	  0.
+  wwht  	 3.7	0.	  0.	  0.	  0.	  0.
+  swht  	 0.0	0.	  0.	  0.	  0.	  0.
+  dwht  	 0.0	0.	  0.	  0.	  0.	  0.
+  cotp  	 1.2	0.	  0.	  0.	  0.	  0.
+  cots  	 1.2	0.	  0.	  0.	  0.	  0.
+  oats  	 0.0	0.	  0.	  0.	  0.	  0.
+  gsrg  	 0.0	0.	  0.	  0.	  0.	  0.
+  rice  	 0.0	0.	  0.	  0.	  0.	  0.
+  barl  	 3.4	0.	  0.	  0.	  0.	  0.
+  sgbt  	 0.0	0.	  0.	  0.	  0.	  0.
+  sugc  	 0.0	0.	  0.	  0.	  0.	  0.
+  alfa  	 3.6	0.	  0.	  0.	  0.	  0.

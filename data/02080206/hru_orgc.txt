@@ -1,0 +1,3 @@
+ ceap_02080206             SWAT+ 2025-06-27        MODULAR Rev 2025.61.0.2.11-158-g240face                
+         day          yr        unit           str_c             lig_c         meta_c          man_c          hum_c         phum_c       mb_c 
+          --          --          --           kg/ha             kg/ha          kg/ha          kg/ha          kg/ha          kg/ha          kg/ha
