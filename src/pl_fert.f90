@@ -49,7 +49,7 @@
 
       j = ihru
       
-      rtof = 0.5
+      rtof = man_coef%rtof
       !! calculate c:n ratio for manure applications for SWAT-C
       if (bsn_cc%cswat == 2) then
         if (fertdb(ifrt)%forgn > 0. .or. fertdb(ifrt)%forgp > 0. ) then
@@ -58,7 +58,7 @@
         
         if (manure_flag) then
           org_frt%m = frt_kg
-          org_frt%c = 0.42 * frt_kg
+          org_frt%c = man_coef%man_to_c * frt_kg
           org_frt%n = fertdb(ifrt)%forgn * frt_kg
           org_frt%p = fertdb(ifrt)%forgp * frt_kg
           c_n_rto = .175 * org_frt%c / (fertdb(ifrt)%fminn + fertdb(ifrt)%forgn + 1.e-5)
@@ -137,7 +137,7 @@
           soil1(j)%lig(l) = soil1(j)%lig(l) + 0.175 * pool_fr * org_frt
           
           !! total residue pool is metabolic + structural
-          soil1(j)%rsd(l) = soil1(j)%meta(l) + soil1(j)%str(l)
+          ! soil1(j)%rsd(l) = soil1(j)%meta(l) + soil1(j)%str(l)
           
         end if
         
