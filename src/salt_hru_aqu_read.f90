@@ -3,6 +3,7 @@
       use constituent_mass_module
       use input_file_module
       use maximum_data_module
+      use fert_constituent_file_module
       
       implicit none
  
@@ -59,10 +60,14 @@
             read (107,*,iostat=eof) titldum, salt_soil_ini(isalti)%plt
             if (eof < 0) exit
           end do
-          close (107)
-          exit
-        end do
-      end if
-      
-      return
-      end subroutine salt_hru_aqu_read
+      close (107)
+      exit
+    end do
+  end if
+
+  ! --- fertilizer salt concentrations ---
+  ! salts use the bulk format (all ions per line)
+  call fert_constituent_file_read('salt.man', imax, cs_db%num_salts+5, salt_fert_soil_ini, .true.)
+
+  return
+  end subroutine salt_hru_aqu_read

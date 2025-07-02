@@ -267,7 +267,7 @@
               ifertop = d_tbl%act_app(iac)            !surface application fraction from chem app data base
 
               if (wet(j)%flo > 0. .and. chemapp_db(ifertop)%surf_frac == 1) then
-                call pl_fert_wet (ifrt, frt_kg)
+                call pl_fert_wet (ifrt, frt_kg, ifertop)
                 if (pco%mgtout == "y") then
                   write (2612,*) j, time%yrc, time%mo, time%day_mo, mgt%op_char, " FERT-WET", &
                     phubase(j), pcom(j)%plcur(ipl)%phuacc, soil(j)%sw, pl_mass(j)%tot(ipl)%m,           &

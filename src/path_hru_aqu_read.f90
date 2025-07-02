@@ -3,6 +3,7 @@
       use constituent_mass_module
       use input_file_module
       use maximum_data_module
+      use fert_constituent_file_module
  
       implicit none
       
@@ -61,7 +62,11 @@
           close (107)
           exit
         end do
-      end if
-      
-      return
-      end subroutine path_hru_aqu_read
+  end if
+
+  ! --- fertilizer pathogen concentrations ---
+  ! reads the pathogen amounts that are attached to each fertilizer
+  call fert_constituent_file_read('path.man', imax, cs_db%num_paths, path_fert_soil_ini)
+
+  return
+  end subroutine path_hru_aqu_read

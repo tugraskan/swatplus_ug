@@ -14,6 +14,7 @@
       use fertilizer_data_module
       use basin_module
       use organic_mineral_mass_module
+      use constituent_mass_module
       use hru_module, only : ihru, fertn, fertp, fertnh3, fertno3, fertorgn, fertorgp, fertp,  &
         fertsolp  
 
@@ -147,6 +148,12 @@
       fertorgp = frt_kg * fertdb(ifrt)%forgp  
       fertn = fertn + frt_kg * (fertdb(ifrt)%fminn + fertdb(ifrt)%forgn)
       fertp = fertp + frt_kg * (fertdb(ifrt)%fminp + fertdb(ifrt)%forgp)
-      
+
+
+      !! apply constituents associated with this fertilizer
+      !! the helper cross-references pest/path/salt/hmet/cs names from
+      !! fertilizer_ext.frt and distributes the resulting loads
+      call fert_constituents_apply(j, ifrt, frt_kg, fertop)
+
       return
       end subroutine pl_fert

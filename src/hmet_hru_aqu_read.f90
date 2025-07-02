@@ -3,6 +3,7 @@
       use constituent_mass_module
       use input_file_module
       use maximum_data_module
+      use fert_constituent_file_module
 
       implicit none
  
@@ -63,10 +64,14 @@
               if (eof < 0) exit
             end do
           end do
-          close (107)
-          exit
-        end do
-      end if
-      
-      return
-      end subroutine hmet_hru_aqu_read
+      close (107)
+      exit
+    end do
+  end if
+
+  ! --- fertilizer heavy metal concentrations ---
+  ! link fertilizer types to heavy metal values from hmet.man
+  call fert_constituent_file_read('hmet.man', imax, cs_db%num_metals, hmet_fert_soil_ini)
+
+  return
+  end subroutine hmet_hru_aqu_read
