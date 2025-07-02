@@ -4,6 +4,7 @@
       use constituent_mass_module
       use input_file_module
       use maximum_data_module
+      use fert_constituent_file_module
       
       implicit none
  
@@ -78,28 +79,7 @@
   end if
 
   ! --- fertilizer constituent concentrations ---
-  inquire (file='cs.man', exist=i_exist)
-  allocate (cs_fert_soil_ini(imax))
-  do
-    open (107,file='cs.man')
-    do ics = 1, imax
-      allocate (cs_fert_soil_ini(ics)%soil(cs_db%num_cs), source=0.)
-    enddo
-    if (i_exist) then
-      read (107,*,iostat=eof) titldum
-      if (eof < 0) exit
-      read (107,*,iostat=eof) header
-      if (eof < 0) exit
-
-      do ics = 1, imax
-        read (107,*,iostat=eof) cs_fert_soil_ini(ics)%name
-        read (107,*,iostat=eof) cs_fert_soil_ini(ics)%soil
-        if (eof < 0) exit
-      end do
-      close (107)
-      exit
-    endif
-  enddo
+  call fert_constituent_file_read('cs.man', imax, cs_db%num_cs, cs_fert_soil_ini, .true.)
       
       return
       end subroutine cs_hru_read

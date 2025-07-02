@@ -3,6 +3,7 @@
       use constituent_mass_module
       use input_file_module
       use maximum_data_module
+      use fert_constituent_file_module
  
       implicit none
       
@@ -64,30 +65,7 @@
   end if
 
   ! --- fertilizer pathogen concentrations ---
-  inquire (file='path.man', exist=i_exist)
-  allocate (path_fert_soil_ini(imax))
-  do
-    open (107,file='path.man')
-    do ipath = 1, imax
-      allocate (path_fert_soil_ini(ipath)%soil(cs_db%num_paths), source=0.)
-    enddo
-    if (i_exist) then
-      read (107,*,iostat=eof) titldum
-      if (eof < 0) exit
-      read (107,*,iostat=eof) header
-      if (eof < 0) exit
-
-      do ipathi = 1, imax
-        read (107,*,iostat=eof) path_fert_soil_ini(ipathi)%name
-        do ipath = 1, cs_db%num_paths
-          read (107,*,iostat=eof) titldum, path_fert_soil_ini(ipathi)%soil(ipath)
-          if (eof < 0) exit
-        end do
-      end do
-      close (107)
-      exit
-    endif
-  enddo
+  call fert_constituent_file_read('path.man', imax, cs_db%num_paths, path_fert_soil_ini)
       
       return
       end subroutine path_hru_aqu_read

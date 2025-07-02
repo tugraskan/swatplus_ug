@@ -3,6 +3,7 @@
       use constituent_mass_module
       use input_file_module
       use maximum_data_module
+      use fert_constituent_file_module
       
       implicit none
  
@@ -65,28 +66,7 @@
   end if
 
   ! --- fertilizer salt concentrations ---
-  inquire (file='salt.man', exist=i_exist)
-  allocate (salt_fert_soil_ini(imax))
-  do
-    open (107,file='salt.man')
-    do isalt = 1, imax
-      allocate (salt_fert_soil_ini(isalt)%soil(cs_db%num_salts+5), source=0.)
-    enddo
-    if (i_exist) then
-      read (107,*,iostat=eof) titldum
-      if (eof < 0) exit
-      read (107,*,iostat=eof) header
-      if (eof < 0) exit
-
-      do isalti = 1, imax
-        read (107,*,iostat=eof) salt_fert_soil_ini(isalti)%name
-        read (107,*,iostat=eof) titldum, salt_fert_soil_ini(isalti)%soil
-        if (eof < 0) exit
-      end do
-      close (107)
-      exit
-    endif
-  enddo
+  call fert_constituent_file_read('salt.man', imax, cs_db%num_salts+5, salt_fert_soil_ini, .true.)
       
       return
       end subroutine salt_hru_aqu_read
