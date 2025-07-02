@@ -20,6 +20,7 @@
       use hydrograph_module
       use constituent_mass_module
 
+
       
       implicit none 
       
@@ -45,6 +46,9 @@
       real :: YZ = 0.
       real :: RLN = 0.
       real :: orgc_f = 0.
+      integer :: ipest_ini = 0            !index for fertilizer pesticide data
+      integer :: ipest = 0                !pesticide counter
+      real :: pest_kg = 0.                !kg/ha pesticide mass applied
       
       j = ihru
       
@@ -169,4 +173,24 @@
       !! apply constituents associated with fertilizer
       call fert_constituents_apply(j, ifrt, frt_kg, fertop)
       return
+      
+      !! apply pesticides associated with fertilizer if specified
+      if (cs_db%num_pests > 0) then
+        if (allocated(pest_fert_soil_ini)) then
+          if (size(fertdb_cbn) >= ifrt) then
+            if (fertdb_cbn(ifrt)%pest /= '') then
+              do ipest_ini = 1, size(pest_fert_soil_ini)
+                if (trim(fertdb_cbn(ifrt)%pest) == trim(pest_fert_soil_ini(ipest_ini)%name)) then
+                  do ipest = 1, cs_db%num_pests
+                    pest_kg = frt_kg * pest_fert_soil_ini(ipest_ini)%soil(ipest)
+                    if (pest_kg > 0.) call pest_apply (j, ipest, pest_kg, fertop)
+                  end do
+                  exit
+                end if
+              end do
+            end if
+          end if
+        end if
+      end if
+      
       end subroutine pl_fert_wet
