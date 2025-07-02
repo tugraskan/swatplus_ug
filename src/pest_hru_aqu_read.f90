@@ -3,6 +3,7 @@
       use constituent_mass_module
       use input_file_module
       use maximum_data_module
+      use fert_constituent_file_module
  
       implicit none 
         
@@ -65,6 +66,9 @@
         end do
       end if
       
+
+      call fert_constituent_file_read('pest.man', imax, cs_db%num_pests, pest_fert_soil_ini)
+
       !--- we assume that this new file uses the same number of cs_db%num_pests
       !--- as above and imax
       inquire (file= 'pest.man', exist=i_exist)
@@ -91,6 +95,7 @@
                 exit
             endif
         enddo
+
       
       return
       end subroutine pest_hru_aqu_read

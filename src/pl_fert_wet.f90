@@ -16,7 +16,7 @@
       use basin_module
       use organic_mineral_mass_module
       use hru_module, only : ihru, fertn, fertp, fertnh3, fertno3, fertorgn, fertorgp, fertp,  &
-        fertsolp  
+        fertsolp
       use hydrograph_module
       use constituent_mass_module
 
@@ -169,6 +169,9 @@
       fertorgp = frt_kg * fertdb(ifrt)%forgp  
       fertn = fertn + frt_kg * (fertdb(ifrt)%fminn + fertdb(ifrt)%forgn)
       fertp = fertp + frt_kg * (fertdb(ifrt)%fminp + fertdb(ifrt)%forgp)
+
+      !! apply constituents associated with fertilizer
+      call fert_constituents_apply(j, ifrt, frt_kg, fertop)
       return
       
       !! apply pesticides associated with fertilizer if specified
