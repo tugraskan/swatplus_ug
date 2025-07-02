@@ -45,6 +45,9 @@
       real :: YZ = 0.
       real :: RLN = 0.
       real :: orgc_f = 0.
+      integer :: ipest_ini = 0            !index for fertilizer pesticide data
+      integer :: ipest = 0                !pesticide counter
+      real :: pest_kg = 0.                !kg/ha pesticide mass applied
       
       j = ihru
       

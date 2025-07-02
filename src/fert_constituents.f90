@@ -1,3 +1,4 @@
+
 !--------------------------------------------------------------------
 !  fert_constituents_apply
 !    Apply pesticide, pathogen, salt, heavy metal and other constituent
@@ -7,6 +8,7 @@
 !    and soil pools.
 !--------------------------------------------------------------------
 subroutine fert_constituents_apply(j, ifrt, frt_kg, fertop)
+
 
       use mgt_operations_module
       use fertilizer_data_module
@@ -23,6 +25,7 @@ subroutine fert_constituents_apply(j, ifrt, frt_kg, fertop)
       integer, intent(in) :: ifrt        ! fertilizer id
       real,    intent(in) :: frt_kg      ! fertilizer mass (kg/ha)
       integer, intent(in) :: fertop      ! chemical application type
+
 
       ! fraction intercepted by plant canopy (0-1)
       real :: gc = 0.
@@ -53,6 +56,7 @@ subroutine fert_constituents_apply(j, ifrt, frt_kg, fertop)
       ! --- pesticides ---
       ! If the fertilizer references a pesticide table, locate the matching
       ! entry and apply each pesticide in proportion to the fertilizer mass.
+      
       if (cs_db%num_pests > 0) then
         if (allocated(pest_fert_soil_ini)) then
           if (size(fertdb_cbn) >= ifrt) then
@@ -63,6 +67,7 @@ subroutine fert_constituents_apply(j, ifrt, frt_kg, fertop)
                     pest_kg = frt_kg * pest_fert_soil_ini(ipest_ini)%soil(ipest)
                     if (pest_kg > 0.) call pest_apply(j, ipest, pest_kg, fertop)
                   end do
+
                   exit                       ! stop searching once a match is found
                 end if
               end do
@@ -75,6 +80,7 @@ subroutine fert_constituents_apply(j, ifrt, frt_kg, fertop)
       ! Similar logic is used for pathogens.  The matching table provides
       ! concentrations for each pathogen which are multiplied by the fertilizer
       ! rate and then added to plant and soil pools.
+
       if (cs_db%num_paths > 0) then
         if (allocated(path_fert_soil_ini)) then
           if (size(fertdb_cbn) >= ifrt) then
@@ -106,6 +112,7 @@ subroutine fert_constituents_apply(j, ifrt, frt_kg, fertop)
 
       ! --- salts ---
       ! Add ion concentrations from the matching salt table to the soil layers.
+
       if (cs_db%num_salts > 0) then
         if (allocated(salt_fert_soil_ini)) then
           if (size(fertdb_cbn) >= ifrt) then
@@ -129,6 +136,7 @@ subroutine fert_constituents_apply(j, ifrt, frt_kg, fertop)
 
       ! --- heavy metals ---
       ! Heavy metals are treated like salts but stored in a separate table.
+
       if (cs_db%num_metals > 0) then
         if (allocated(hmet_fert_soil_ini)) then
           if (size(fertdb_cbn) >= ifrt) then
@@ -152,6 +160,7 @@ subroutine fert_constituents_apply(j, ifrt, frt_kg, fertop)
 
       ! --- other constituents ---
       ! Generic constituents are treated in the same way as salts and metals.
+
       if (cs_db%num_cs > 0) then
         if (allocated(cs_fert_soil_ini)) then
           if (size(fertdb_cbn) >= ifrt) then

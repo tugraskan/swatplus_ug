@@ -1,17 +1,16 @@
-      module fert_constituent_file_module
 
-      contains
-
-      !--------------------------------------------------------------------
+!--------------------------------------------------------------------
       !  fert_constituent_file_read
       !    Read a constituent fertilization table (e.g. pest.man) and
       !    allocate an array of cs_fert_init_concentrations containing the
       !    concentrations for each fertilizer.
       !--------------------------------------------------------------------
+
       subroutine fert_constituent_file_read(file_name, imax, nconst, fert_arr, bulk)
 
       use constituent_mass_module
       implicit none
+
 
       !> name of the constituent file (e.g. 'pest.man')
       character(len=*), intent(in) :: file_name
@@ -49,11 +48,14 @@
           allocate(fert_arr(i)%soil(nconst), source=0.)
         end do
         if (i_exist) then
+
           ! discard title and header information
+
           read(107,*,iostat=eof) titldum
           if (eof < 0) exit
           read(107,*,iostat=eof) header
           if (eof < 0) exit
+
 
           ! loop over fertilizer entries in the file
           do i = 1, imax
@@ -62,6 +64,7 @@
               read(107,*,iostat=eof) titldum, fert_arr(i)%soil
               if (eof < 0) exit
             else                             ! multiple lines: one per constituent
+
               do j = 1, nconst
                 read(107,*,iostat=eof) titldum, fert_arr(i)%soil(j)
                 if (eof < 0) exit
