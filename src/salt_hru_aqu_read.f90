@@ -66,7 +66,8 @@
   end if
 
   ! --- fertilizer salt concentrations ---
+  ! salts use the bulk format (all ions per line)
   call fert_constituent_file_read('salt.man', imax, cs_db%num_salts+5, salt_fert_soil_ini, .true.)
-      
-      return
-      end subroutine salt_hru_aqu_read
+
+  return
+  end subroutine salt_hru_aqu_read

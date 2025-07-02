@@ -155,7 +155,10 @@
 
 
       !! apply constituents associated with this fertilizer
+      !! the helper cross-references pest/path/salt/hmet/cs names from
+      !! fertilizer_ext.frt and distributes the resulting loads
       call fert_constituents_apply(j, ifrt, frt_kg, fertop)
+
       
       !! apply pesticides associated with this fertilizer, if any
       if (cs_db%num_pests > 0) then

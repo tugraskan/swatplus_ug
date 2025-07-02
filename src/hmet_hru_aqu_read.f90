@@ -70,7 +70,9 @@
   end if
 
   ! --- fertilizer heavy metal concentrations ---
+  ! link fertilizer types to heavy metal values from hmet.man
   call fert_constituent_file_read('hmet.man', imax, cs_db%num_metals, hmet_fert_soil_ini)
-      
-      return
-      end subroutine hmet_hru_aqu_read
+
+  return
+  end subroutine hmet_hru_aqu_read
+

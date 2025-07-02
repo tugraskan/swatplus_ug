@@ -65,7 +65,9 @@
   end if
 
   ! --- fertilizer pathogen concentrations ---
+  ! reads the pathogen amounts that are attached to each fertilizer
   call fert_constituent_file_read('path.man', imax, cs_db%num_paths, path_fert_soil_ini)
-      
-      return
-      end subroutine path_hru_aqu_read
+
+  return
+  end subroutine path_hru_aqu_read
+

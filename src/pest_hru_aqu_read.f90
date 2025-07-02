@@ -66,6 +66,8 @@
         end do
       end if
       
+      ! read fertilizer-specific pesticide concentrations
+
 
       call fert_constituent_file_read('pest.man', imax, cs_db%num_pests, pest_fert_soil_ini)
 
@@ -97,5 +99,6 @@
         enddo
 
       
+
       return
       end subroutine pest_hru_aqu_read

@@ -1,4 +1,14 @@
-      subroutine fert_constituents_apply(j, ifrt, frt_kg, fertop)
+
+!--------------------------------------------------------------------
+!  fert_constituents_apply
+!    Apply pesticide, pathogen, salt, heavy metal and other constituent
+!    loads that are linked to a fertilizer application.  The routine
+!    multiplies the fertilizer rate by the stored constituent
+!    concentrations and distributes the resulting mass between plant
+!    and soil pools.
+!--------------------------------------------------------------------
+subroutine fert_constituents_apply(j, ifrt, frt_kg, fertop)
+
 
       use mgt_operations_module
       use fertilizer_data_module
@@ -16,27 +26,37 @@
       real,    intent(in) :: frt_kg      ! fertilizer mass (kg/ha)
       integer, intent(in) :: fertop      ! chemical application type
 
+
+      ! fraction intercepted by plant canopy (0-1)
       real :: gc = 0.
+      ! portion of fertilizer remaining on the soil surface
       real :: surf_frac = 0.
+      ! temporary plant fraction
       real :: pl_frac = 0.
-      integer :: ipl = 0
+      integer :: ipl = 0                  ! plant loop index
 
-      integer :: ipest_ini = 0, ipest = 0
-      real :: pest_kg = 0.
-      integer :: ipath_ini = 0, ipath = 0
-      real :: path_kg = 0.
-      integer :: isalt_ini = 0, isalt = 0
-      real :: salt_kg = 0.
-      integer :: ihmet_ini = 0, ihmet = 0
-      real :: hmet_kg = 0.
-      integer :: ics_ini = 0, ics = 0
-      real :: cs_kg = 0.
+      integer :: ipest_ini = 0, ipest = 0  ! pesticide table and index
+      real :: pest_kg = 0.                 ! mass of pesticide applied
+      integer :: ipath_ini = 0, ipath = 0  ! pathogen table and index
+      real :: path_kg = 0.                 ! mass of pathogen applied
+      integer :: isalt_ini = 0, isalt = 0  ! salt table and index
+      real :: salt_kg = 0.                 ! mass of salt applied
+      integer :: ihmet_ini = 0, ihmet = 0  ! heavy metal table and index
+      real :: hmet_kg = 0.                 ! mass of heavy metal applied
+      integer :: ics_ini = 0, ics = 0      ! other constituent table and index
+      real :: cs_kg = 0.                   ! mass of other constituent applied
 
+      ! compute the fraction of spray intercepted by the canopy (gc)
+      ! using the standard SWAT+ pesticide algorithm
       gc = (1.99532 - erfc(1.333 * pcom(j)%lai_sum - 2.)) / 2.1
       if (gc < 0.) gc = 0.
+      ! fraction of application that remains on the soil surface
       surf_frac = chemapp_db(fertop)%surf_frac
 
       ! --- pesticides ---
+      ! If the fertilizer references a pesticide table, locate the matching
+      ! entry and apply each pesticide in proportion to the fertilizer mass.
+      
       if (cs_db%num_pests > 0) then
         if (allocated(pest_fert_soil_ini)) then
           if (size(fertdb_cbn) >= ifrt) then
@@ -47,7 +67,8 @@
                     pest_kg = frt_kg * pest_fert_soil_ini(ipest_ini)%soil(ipest)
                     if (pest_kg > 0.) call pest_apply(j, ipest, pest_kg, fertop)
                   end do
-                  exit
+
+                  exit                       ! stop searching once a match is found
                 end if
               end do
             end if
@@ -56,6 +77,10 @@
       end if
 
       ! --- pathogens ---
+      ! Similar logic is used for pathogens.  The matching table provides
+      ! concentrations for each pathogen which are multiplied by the fertilizer
+      ! rate and then added to plant and soil pools.
+
       if (cs_db%num_paths > 0) then
         if (allocated(path_fert_soil_ini)) then
           if (size(fertdb_cbn) >= ifrt) then
@@ -86,6 +111,8 @@
       end if
 
       ! --- salts ---
+      ! Add ion concentrations from the matching salt table to the soil layers.
+
       if (cs_db%num_salts > 0) then
         if (allocated(salt_fert_soil_ini)) then
           if (size(fertdb_cbn) >= ifrt) then
@@ -108,6 +135,8 @@
       end if
 
       ! --- heavy metals ---
+      ! Heavy metals are treated like salts but stored in a separate table.
+
       if (cs_db%num_metals > 0) then
         if (allocated(hmet_fert_soil_ini)) then
           if (size(fertdb_cbn) >= ifrt) then
@@ -130,6 +159,8 @@
       end if
 
       ! --- other constituents ---
+      ! Generic constituents are treated in the same way as salts and metals.
+
       if (cs_db%num_cs > 0) then
         if (allocated(cs_fert_soil_ini)) then
           if (size(fertdb_cbn) >= ifrt) then

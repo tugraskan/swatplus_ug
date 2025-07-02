@@ -79,7 +79,9 @@
   end if
 
   ! --- fertilizer constituent concentrations ---
+  ! general constituents are stored in bulk format
   call fert_constituent_file_read('cs.man', imax, cs_db%num_cs, cs_fert_soil_ini, .true.)
-      
-      return
-      end subroutine cs_hru_read
+
+  return
+  end subroutine cs_hru_read
+
