@@ -63,10 +63,36 @@
               if (eof < 0) exit
             end do
           end do
-          close (107)
-          exit
+      close (107)
+      exit
+    end do
+  end if
+
+  ! --- fertilizer heavy metal concentrations ---
+  inquire (file='hmet.man', exist=i_exist)
+  allocate (hmet_fert_soil_ini(imax))
+  do
+    open (107,file='hmet.man')
+    do ihmet = 1, imax
+      allocate (hmet_fert_soil_ini(ihmet)%soil(cs_db%num_metals), source=0.)
+    enddo
+    if (i_exist) then
+      read (107,*,iostat=eof) titldum
+      if (eof < 0) exit
+      read (107,*,iostat=eof) header
+      if (eof < 0) exit
+
+      do ihmeti = 1, imax
+        read (107,*,iostat=eof) hmet_fert_soil_ini(ihmeti)%name
+        do ihmet = 1, cs_db%num_metals
+          read (107,*,iostat=eof) titldum, hmet_fert_soil_ini(ihmeti)%soil(ihmet)
+          if (eof < 0) exit
         end do
-      end if
+      end do
+      close (107)
+      exit
+    endif
+  enddo
       
       return
       end subroutine hmet_hru_aqu_read
