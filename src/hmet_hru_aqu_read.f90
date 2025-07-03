@@ -3,12 +3,13 @@
       use constituent_mass_module
       use input_file_module
       use maximum_data_module
-      use fert_constituent_file_module
+
 
       implicit none
  
       character (len=80) :: titldum = ""
       character (len=80) :: header = ""
+      character(len=16) :: hmet_man = "hmet.man"
       integer :: ihmet = 0
       integer :: ihmeti = 0
       integer :: eof = 0
@@ -71,7 +72,9 @@
 
   ! --- fertilizer heavy metal concentrations ---
   ! link fertilizer types to heavy metal values from hmet.man
-  call fert_constituent_file_read('hmet.man', imax, cs_db%num_metals, hmet_fert_soil_ini)
+  call fert_constituent_file_read(hmet_man, imax, cs_db%num_metals, .false.)
+  call MOVE_ALLOC(fert_arr, hmet_fert_soil_ini)
+  
 
   return
   end subroutine hmet_hru_aqu_read

@@ -3,12 +3,12 @@
       use constituent_mass_module
       use input_file_module
       use maximum_data_module
-      use fert_constituent_file_module
  
       implicit none
       
       character (len=80) :: titldum = ""
       character (len=80) :: header = ""
+      character(len=16) :: path_man = "path.man"
       integer :: ipath = 0
       integer :: ipathi = 0
       integer :: eof = 0
@@ -66,7 +66,8 @@
 
   ! --- fertilizer pathogen concentrations ---
   ! reads the pathogen amounts that are attached to each fertilizer
-  call fert_constituent_file_read('path.man', imax, cs_db%num_paths, path_fert_soil_ini)
+  call fert_constituent_file_read(path_man, imax, cs_db%num_paths, .false.)
+  call MOVE_ALLOC(fert_arr, path_fert_soil_ini)
 
   return
   end subroutine path_hru_aqu_read

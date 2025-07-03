@@ -3,7 +3,6 @@
       use constituent_mass_module
       use input_file_module
       use maximum_data_module
-      use fert_constituent_file_module
       
       implicit none
  
@@ -67,7 +66,8 @@
 
   ! --- fertilizer salt concentrations ---
   ! salts use the bulk format (all ions per line)
-  call fert_constituent_file_read('salt.man', imax, cs_db%num_salts+5, salt_fert_soil_ini, .true.)
+  call fert_constituent_file_read('salt.man', imax, cs_db%num_salts+5, .true.)
+  call MOVE_ALLOC(fert_arr, salt_fert_soil_ini)
 
   return
   end subroutine salt_hru_aqu_read

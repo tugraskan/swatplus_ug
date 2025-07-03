@@ -3,12 +3,12 @@
       use constituent_mass_module
       use input_file_module
       use maximum_data_module
-      use fert_constituent_file_module
  
       implicit none 
         
       character (len=80) :: titldum = ""
       character (len=80) :: header = ""
+      character(len=16) :: pest_man = "pest.man"
       integer :: eof = 0
       integer :: imax = 0
       integer :: ipest = 0
@@ -69,34 +69,34 @@
       ! read fertilizer-specific pesticide concentrations
 
 
-      call fert_constituent_file_read('pest.man', imax, cs_db%num_pests, pest_fert_soil_ini)
+      call fert_constituent_file_readpest_('pest.man', imax, cs_db%num_pests, .false.)
+      call MOVE_ALLOC(fert_arr, pest_fert_soil_ini)
 
-      !--- we assume that this new file uses the same number of cs_db%num_pests
-      !--- as above and imax
-      inquire (file= 'pest.man', exist=i_exist)
-      allocate (pest_fert_soil_ini(imax))
-      do
-          open (107,file= 'pest.man')
-          do ipest = 1, imax
-            allocate (pest_fert_soil_ini(ipest)%soil(cs_db%num_pests), source = 0.)
-          enddo
-            if (i_exist) then
-                read (107,*,iostat=eof) titldum
-                if (eof < 0) exit
-                read (107,*,iostat=eof) header
-                if (eof < 0) exit
+      !--- done now in subroutine fert_constituent_file_read
+      !inquire (file= 'pest.man', exist=i_exist)
+     ! allocate (pest_fert_soil_ini(imax))
+      !do
+       !   open (107,file= 'pest.man')
+        !  do ipest = 1, imax
+         !   allocate (pest_fert_soil_ini(ipest)%soil(cs_db%num_pests), source = 0.)
+          !enddo
+           ! if (i_exist) then
+            !    read (107,*,iostat=eof) titldum
+             !   if (eof < 0) exit
+              !  read (107,*,iostat=eof) header
+               ! if (eof < 0) exit
           
-                do ipesti = 1, imax
-                    read (107,*,iostat=eof) pest_fert_soil_ini(ipesti)%name
-                    do ipest = 1, cs_db%num_pests
-                        read (107,*,iostat=eof) titldum, pest_fert_soil_ini(ipesti)%soil(ipest)
-                        if (eof < 0) exit
-                    end do
-                end do
-                close (107)
-                exit
-            endif
-        enddo
+                !do ipesti = 1, imax
+                 !   read (107,*,iostat=eof) pest_fert_soil_ini(ipesti)%name
+                  !  do ipest = 1, cs_db%num_pests
+                   !     read (107,*,iostat=eof) titldum, pest_fert_soil_ini(ipesti)%soil(ipest)
+                    !    if (eof < 0) exit
+                    !end do
+                !end do
+                !close (107)
+                !exit
+            !endif
+        !enddo
 
       
 

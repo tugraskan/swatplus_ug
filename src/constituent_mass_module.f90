@@ -265,6 +265,9 @@
       !! first 8 values of soil and plt are salt ion concentrations and next 5 are salt mineral fractions
       type (cs_fert_init_concentrations), dimension(:), allocatable:: salt_fert_soil_ini
       type (cs_fert_init_concentrations), dimension(:), allocatable:: cs_fert_soil_ini !rtb cs
+      type (cs_fert_init_concentrations), dimension(:), allocatable :: fert_arr       !! returned array of concentrations for each fertilizer
+      
+      character(len=16) :: fert_file_name = ""  !! name of the fertilizer file
       
       ! initial salt ion groundwater concentrations and mineral fractions for aquifers
       type salt_aqu_init_concentrations
@@ -319,7 +322,7 @@
       integer :: cs_obs_file = 0                            !               |flag: file for channels with daily output      
       integer :: cs_str_nobs = 0                            !                |number of channels for daily output
       integer, dimension (:), allocatable :: cs_str_obs     !                |list of channels for daily output
-      
+    
       
       !header for routing unit salt balance output
       type output_rusaltb_header

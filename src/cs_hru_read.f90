@@ -4,16 +4,17 @@
       use constituent_mass_module
       use input_file_module
       use maximum_data_module
-      use fert_constituent_file_module
       
       implicit none
  
       character (len=80) :: titldum = ""
       character (len=80) :: header = ""
+      character(len=16) :: cs_man = "cs.man"
       integer :: ics = 0
       integer :: eof = 0
       integer :: imax = 0
       logical :: i_exist              !none       |check to determine if file exists
+
 
       eof = 0
       
@@ -80,7 +81,8 @@
 
   ! --- fertilizer constituent concentrations ---
   ! general constituents are stored in bulk format
-  call fert_constituent_file_read('cs.man', imax, cs_db%num_cs, cs_fert_soil_ini, .true.)
+  call fert_constituent_file_read(cs_man, imax, cs_db%num_cs, .true.)
+  call MOVE_ALLOC(fert_arr, cs_fert_soil_ini)
 
   return
   end subroutine cs_hru_read
