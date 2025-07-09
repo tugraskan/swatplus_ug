@@ -62,12 +62,58 @@
           close (107)
           exit
         end do
-  end if
+      end if
 
   ! --- fertilizer pathogen concentrations ---
   ! reads the pathogen amounts that are attached to each fertilizer
-  call fert_constituent_file_read(path_man, imax, cs_db%num_paths, .false.)
-  call MOVE_ALLOC(fert_arr, path_fert_soil_ini)
+    
+      inquire (file = path_man, exist = i_exist)
+        allocate (path_fert_soil_ini(imax))
+        do
+            open (107, file = path_man)
+            do ipath = 1, imax
+              allocate (path_fert_soil_ini(ipath)%soil(cs_db%num_paths), source = 0.)
+            end do
+                if (i_exist) then
+                    read (107,*,iostat=eof) titldum
+                    if (eof < 0) exit
+                    read (107,*,iostat=eof) header
+                    if (eof < 0) exit
+          
+                    do ipathi = 1, imax
+                        read (107,*,iostat=eof) path_fert_soil_ini(ipathi)%name
+                        do ipath = 1, cs_db%num_paths
+                            read (107,*,iostat=eof) titldum, path_fert_soil_ini(ipathi)%soil(ipath)
+                            if (eof < 0) exit
+                        end do
+                    end do
+                    close (107)
+                    exit
+        end do
+inquire (file= 'pest.man', exist=i_exist)
+      allocate (pest_fert_soil_ini(imax))
+      do
+          open (107,file= 'pest.man')
+          do ipest = 1, imax
+            allocate (pest_fert_soil_ini(ipest)%soil(cs_db%num_pests), source = 0.)
+          enddo
+            if (i_exist) then
+                read (107,*,iostat=eof) titldum
+                if (eof < 0) exit
+                read (107,*,iostat=eof) header
+                if (eof < 0) exit
+          
+                do ipesti = 1, imax
+                    read (107,*,iostat=eof) pest_fert_soil_ini(ipesti)%name
+                    do ipest = 1, cs_db%num_pests
+                        read (107,*,iostat=eof) titldum, pest_fert_soil_ini(ipesti)%soil(ipest)
+                        if (eof < 0) exit
+                    end do
+                end do
+                close (107)
+                exit
+            endif
+        enddo
 
   return
   end subroutine path_hru_aqu_read

@@ -8,7 +8,7 @@
         
       character (len=80) :: titldum = ""
       character (len=80) :: header = ""
-      character(len=16) :: pest_man = "pest.man"
+      character (len=16) :: manu = "pest.man"
       integer :: eof = 0
       integer :: imax = 0
       integer :: ipest = 0
@@ -69,7 +69,7 @@
       ! read fertilizer-specific pesticide concentrations
 
 
-      call fert_constituent_file_readpest_('pest.man', imax, cs_db%num_pests, .false.)
+      call fert_constituent_file_read (manu, imax, cs_db%num_pests, .false.)
       call MOVE_ALLOC(fert_arr, pest_fert_soil_ini)
 
       !--- done now in subroutine fert_constituent_file_read

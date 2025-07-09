@@ -279,14 +279,14 @@
       
       
       !! new consistent input file structure
-      type manuare_init
-       character(len=16) :: pest = "pest.man"
-       character(len=16) :: path = "path.man"
-       character(len=16) :: hmet = "hmet.man"
-       character(len=16) :: salt = "salt.man"
-       character(len=16) :: cs = "cs.man"
-       end type manuare_init
-      type (manuare_init) :: man_init
+      !type manuare_init
+       !character(len=16) :: pest = "pest.man"
+       !character(len=16) :: path = "path.man"
+       !character(len=16) :: hmet = "hmet.man"
+       !character(len=16) :: salt = "salt.man"
+       !character(len=16) :: cs = "cs.man"
+       !end type manuare_init
+      !type (manuare_init) :: man_init
       
       type input_path_pcp
         character(len=80) :: pcp = " "

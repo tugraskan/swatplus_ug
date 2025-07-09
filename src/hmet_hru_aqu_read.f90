@@ -9,7 +9,7 @@
  
       character (len=80) :: titldum = ""
       character (len=80) :: header = ""
-      character(len=16) :: hmet_man = "hmet.man"
+      character (len=16) :: manu = "hmet.man"
       integer :: ihmet = 0
       integer :: ihmeti = 0
       integer :: eof = 0
@@ -72,7 +72,7 @@
 
   ! --- fertilizer heavy metal concentrations ---
   ! link fertilizer types to heavy metal values from hmet.man
-  call fert_constituent_file_read(hmet_man, imax, cs_db%num_metals, .false.)
+  call fert_constituent_file_read(manu, imax, cs_db%num_metals)
   call MOVE_ALLOC(fert_arr, hmet_fert_soil_ini)
   
 
