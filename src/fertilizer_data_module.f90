@@ -23,9 +23,9 @@
       
 
 
-      type manure_data
+      type manure_attributes
         ! Identifier used to crosswalk fertilizer entries
-        character(len=32) :: manure_name = " "  ! e.g., BFSD
+        character(len=64) ::  manure_name = " "  ! e.g., BFSD
         ! additional attributes from fp5-manure-content-defaults-swat.csv
         character(len=32) :: manure_region = " "
         character(len=32) :: manure_source = " "
@@ -47,20 +47,20 @@
         integer :: sample_size = 0
         character(len=32) :: summary_level = " "
         character(len=64) :: data_source = " "
-      end type manure_data
-      type (manure_data), dimension(:),allocatable :: manure_db
+      end type  manure_attributes
+      type (manure_attributes), dimension(:),allocatable :: manure_csv
       
-      type fertilizer_carbon_db
+      type manure_database
         type(fertilizer_db) :: base     !! base fertilizer data
-        real :: wc = 0.0                 !! kg H2O/kg frt     |frac of fert which is water (H2O)
-        type (manure_content) :: manure_content
+        character(len=64) ::  name = " "  ! e.g., BFSD
+        type (manure_attributes), dimension(:),allocatable :: csv
         character(len=16) :: pest = ""  !! pest.man name
         character(len=16) :: path = ""  !! path.man name
         character(len=16) :: salt = ""  !! salt.man name
         character(len=16) :: hmet = ""  !! hmet.man name
         character(len=16) :: cs = ""    !! cs.man name
-      end type fertilizer_carbon_db
-      type (fertilizer_carbon_db), dimension(:), allocatable, save :: fertdb_cbn
+      end type manure_database
+      type (manure_database), dimension(:), allocatable, save :: manure_db
 
       
       end module fertilizer_data_module 

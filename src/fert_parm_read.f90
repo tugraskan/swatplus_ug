@@ -23,7 +23,7 @@ subroutine fert_parm_read
       !! check if fertilizer_ext.frt exists, if so use it instead of fertilizer.frt
       inquire (file='fertilizer_ext.frt', exist = i_exist_cbn)
         if (.not. i_exist_cbn) then
-           allocate (fertdb_cbn(0:0)) 
+           allocate (manure_db(0:0)) 
         else
             in_parmdb%fert_frt = 'fertilizer_ext.frt'
         endif
@@ -61,20 +61,16 @@ subroutine fert_parm_read
               end do
             else
               ! If fertilizer_ext.frt exists, read fertilizer_cbn data
-              allocate (fertdb_cbn(0:imax))
+              allocate (manure_db(0:imax))
               do it = 1, imax
-                read (107,*,iostat=eof) fertdb_cbn(it)%base, fertdb_cbn(it)%wc, &
-                      fertdb_cbn(it)%manure_content%manure_region, &
-                      fertdb_cbn(it)%manure_content%manure_source, &
-                      fertdb_cbn(it)%manure_content%manure_type, &
-                      fertdb_cbn(it)%pest, fertdb_cbn(it)%path, &
-                      fertdb_cbn(it)%salt, fertdb_cbn(it)%hmet, fertdb_cbn(it)%cs
+                read (107,*,iostat=eof) manure_db(it)%base, &
+                      manure_db(it)%name, &
+                      manure_db(it)%pest, manure_db(it)%path, &
+                      manure_db(it)%salt, manure_db(it)%hmet, manure_db(it)%cs
                 if (eof < 0) exit
-                fertdb_cbn(it)%manure_content%manure_name = trim(fertdb_cbn(it)%manure_content%manure_region)//trim(fertdb_cbn(it)%manure_content%manure_source)//"_"// &
-                     trim(fertdb_cbn(it)%manure_content%manure_type)
 
-                !-- Assign fertdb_cbn to fertdb for compatibility with existing code --- !
-                fertdb(it) = fertdb_cbn(it)%base
+                !-- Assign manure_db to fertdb for compatibility with existing code --- !
+                fertdb(it) = manure_db(it)%base
               end do
             endif
           enddo

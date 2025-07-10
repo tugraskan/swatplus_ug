@@ -23,7 +23,7 @@
       !! --- inquire if fp5-manure-content-defaults-swat.csv exists --- !!
       inquire (file="fp5-manure-content-defaults-swat.csv", exist=i_exist)
       if (.not. i_exist .or. "fp5-manure-content-defaults-swat.csv" == "null") then
-          allocate (manure_db(0:0))
+          allocate (manure_csv(0:0))
           db_mx%manureparm = 0
       else
             open (unit,file="fp5-manure-content-defaults-swat.csv")
@@ -33,46 +33,46 @@
                 if (eof < 0) exit
                 imax = imax + 1
             end do
-            allocate (manure_db(0:imax))
+            allocate (manure_csv(0:imax))
             rewind(unit)
             read(unit,'(A)',iostat=eof) header
             do it = 1, imax
                 read(unit,'(A)',iostat=eof) csv_line
                 if (eof < 0) exit
                 read(csv_line,*) &
-                     manure_db(it)%manure_region, &
-                     manure_db(it)%manure_source, &
-                     manure_db(it)%manure_type, &
-                     manure_db(it)%pct_moisture, &
-                     manure_db(it)%pct_solids, &
-                     manure_db(it)%total_c, &
-                     manure_db(it)%total_n, &
-                     manure_db(it)%inorganic_n, &
-                     manure_db(it)%organic_n, &
-                     manure_db(it)%total_p2o5, &
-                     manure_db(it)%inorganic_p2o5, &
-                     manure_db(it)%organic_p2o5, &
-                     manure_db(it)%inorganic_p, &
-                     manure_db(it)%organic_p, &
-                     manure_db(it)%solids, &
-                     manure_db(it)%water, &
-                     manure_db(it)%units, &
-                     manure_db(it)%sample_size, &
-                     manure_db(it)%summary_level, &
-                     manure_db(it)%data_source
-                manure_db(it)%manure_name = trim(manure_db(it)%manure_region)//trim(manure_db(it)%manure_source)//"_"// &
-                     trim(manure_db(it)%manure_type)
+                     manure_csv(it)%manure_region, &
+                     manure_csv(it)%manure_source, &
+                     manure_csv(it)%manure_type, &
+                     manure_csv(it)%pct_moisture, &
+                     manure_csv(it)%pct_solids, &
+                     manure_csv(it)%total_c, &
+                     manure_csv(it)%total_n, &
+                     manure_csv(it)%inorganic_n, &
+                     manure_csv(it)%organic_n, &
+                     manure_csv(it)%total_p2o5, &
+                     manure_csv(it)%inorganic_p2o5, &
+                     manure_csv(it)%organic_p2o5, &
+                     manure_csv(it)%inorganic_p, &
+                     manure_csv(it)%organic_p, &
+                     manure_csv(it)%solids, &
+                     manure_csv(it)%water, &
+                     manure_csv(it)%units, &
+                     manure_csv(it)%sample_size, &
+                     manure_csv(it)%summary_level, &
+                     manure_csv(it)%data_source
+                manure_csv(it)%manure_name = trim(manure_csv(it)%manure_region)//trim(manure_csv(it)%manure_source)//"_"// &
+                     trim(manure_csv(it)%manure_type)
             end do
             close (unit)
 
             db_mx%manureparm = imax
 
             ! crosswalk manure content records to entries loaded from fertilizer_ext.frt
-            if (size(fertdb_cbn) > 0 .and. size(manure_db) > 0) then
-              do i = 1, size(fertdb_cbn)
-                do it = 1, size(manure_db)
-                  if (trim(fertdb_cbn(i)%manure_content%manure_name) == trim(manure_db(it)%manure_name)) then
-                    fertdb_cbn(i)%manure_content = manure_db(it)
+            if (size(manure_db) > 0 .and. size(manure_csv) > 0) then
+              do i = 1, size(manure_db)
+                do it = 1, size(manure_csv)
+                  if (trim(manure_db(i)%name) == trim(manure_csv(it)%manure_name)) then
+                    manure_db(i)%csv = manure_csv(it)
                     exit  ! Stop searching once a match is found
                   end if
                 end do

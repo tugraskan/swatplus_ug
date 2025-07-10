@@ -163,10 +163,10 @@
       !! apply pesticides associated with this fertilizer, done in fert_constituents_apply now
       !if (cs_db%num_pests > 0) then
       !  if (allocated(pest_fert_soil_ini)) then
-      !    if (size(fertdb_cbn) >= ifrt) then
-      !      if (fertdb_cbn(ifrt)%pest /= '') then
+      !    if (size(manure_db) >= ifrt) then
+      !      if (manure_db(ifrt)%pest /= '') then
       !        do ipest_ini = 1, size(pest_fert_soil_ini)
-      !          if (trim(fertdb_cbn(ifrt)%pest) == trim(pest_fert_soil_ini(ipest_ini)%name)) then
+      !          if (trim(manure_db(ifrt)%pest) == trim(pest_fert_soil_ini(ipest_ini)%name)) then
       !            do ipest = 1, cs_db%num_pests
       !              pest_kg = frt_kg * pest_fert_soil_ini(ipest_ini)%soil(ipest)
       !              if (pest_kg > 0.) call pest_apply (j, ipest, pest_kg, fertop)
