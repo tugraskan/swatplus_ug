@@ -64,14 +64,15 @@ subroutine fert_parm_read
               allocate (fertdb_cbn(0:imax))
               do it = 1, imax
                 read (107,*,iostat=eof) fertdb_cbn(it)%base, fertdb_cbn(it)%wc, &
-                      fertdb_cbn(it)%omad%manure_region, &
-                      fertdb_cbn(it)%omad%manure_source, &
-                      fertdb_cbn(it)%omad%manure_type, &
+                      fertdb_cbn(it)%manure_content%manure_region, &
+                      fertdb_cbn(it)%manure_content%manure_source, &
+                      fertdb_cbn(it)%manure_content%manure_type, &
                       fertdb_cbn(it)%pest, fertdb_cbn(it)%path, &
                       fertdb_cbn(it)%salt, fertdb_cbn(it)%hmet, fertdb_cbn(it)%cs
                 if (eof < 0) exit
-                fertdb_cbn(it)%omad%manure_name = trim(fertdb_cbn(it)%omad%manure_region)//trim(fertdb_cbn(it)%omad%manure_source)//"_"// &
-                     trim(fertdb_cbn(it)%omad%manure_type)
+                fertdb_cbn(it)%manure_content%manure_name = trim(fertdb_cbn(it)%manure_content%manure_region)//trim(fertdb_cbn(it)%manure_content%manure_source)//"_"// &
+                     trim(fertdb_cbn(it)%manure_content%manure_type)
+
                 !-- Assign fertdb_cbn to fertdb for compatibility with existing code --- !
                 fertdb(it) = fertdb_cbn(it)%base
               end do

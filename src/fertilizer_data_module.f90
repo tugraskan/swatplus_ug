@@ -22,15 +22,8 @@
       end type fertilizer_ext_db
       
 
-      
+
       type manure_data
-        character(len=16) :: manure_name = " "
-      !  character(len=16), dimension(:),allocatable :: path = " "
-      !  character(len=16), dimension(:),allocatable :: antibiotic = " "
-      end type manure_data
-      type (manure_data), dimension(:),allocatable :: manure_db
-      
-      type :: omad_input
         ! Identifier used to crosswalk fertilizer entries
         character(len=32) :: manure_name = " "  ! e.g., BFSD
         ! additional attributes from fp5-manure-content-defaults-swat.csv
@@ -54,13 +47,13 @@
         integer :: sample_size = 0
         character(len=32) :: summary_level = " "
         character(len=64) :: data_source = " "
-      end type omad_input
-      type(omad_input), allocatable, save :: omad_db(:)
+      end type manure_data
+      type (manure_data), dimension(:),allocatable :: manure_db
       
       type fertilizer_carbon_db
         type(fertilizer_db) :: base     !! base fertilizer data
         real :: wc = 0.0                 !! kg H2O/kg frt     |frac of fert which is water (H2O)
-        type (omad_input) :: omad
+        type (manure_content) :: manure_content
         character(len=16) :: pest = ""  !! pest.man name
         character(len=16) :: path = ""  !! path.man name
         character(len=16) :: salt = ""  !! salt.man name
