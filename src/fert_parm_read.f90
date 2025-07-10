@@ -72,6 +72,7 @@ subroutine fert_parm_read
                 if (eof < 0) exit
                 fertdb_cbn(it)%manure_content%manure_name = trim(fertdb_cbn(it)%manure_content%manure_region)//trim(fertdb_cbn(it)%manure_content%manure_source)//"_"// &
                      trim(fertdb_cbn(it)%manure_content%manure_type)
+
                 !-- Assign fertdb_cbn to fertdb for compatibility with existing code --- !
                 fertdb(it) = fertdb_cbn(it)%base
               end do

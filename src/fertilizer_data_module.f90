@@ -22,8 +22,8 @@
       end type fertilizer_ext_db
       
 
-      
-      type :: manure_content
+
+      type manure_data
         ! Identifier used to crosswalk fertilizer entries
         character(len=32) :: manure_name = " "  ! e.g., BFSD
         ! additional attributes from fp5-manure-content-defaults-swat.csv
@@ -47,8 +47,8 @@
         integer :: sample_size = 0
         character(len=32) :: summary_level = " "
         character(len=64) :: data_source = " "
-      end type manure_content
-      type(manure_content), allocatable, save :: manure_db(:)
+      end type manure_data
+      type (manure_data), dimension(:),allocatable :: manure_db
       
       type fertilizer_carbon_db
         type(fertilizer_db) :: base     !! base fertilizer data
