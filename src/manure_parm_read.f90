@@ -71,6 +71,7 @@
               do i = 1, size(manure_db)
                 do it = 1, size(manure_csv)
                   if (trim(manure_db(i)%csv) == trim(manure_csv(it)%manure_name)) then
+                    ! store attributes from matching csv record
                     manure_db(i)%manucontent = manure_csv(it)
                     exit  ! Stop searching once a match is found
                   end if
