@@ -6,14 +6,14 @@ subroutine fert_parm_read
       
       implicit none
    
-      integer :: it = 0               !none       |counter
-      character (len=80) :: titldum = ""!           |title of file
-      character (len=80) :: header = "" !           |header of file
-      integer :: eof = 0              !           |end of file
-      integer :: imax = 0             !none       |determine max number for array (imax) and total number in file
-      integer :: mfrt = 0             !           |
-      logical :: i_exist              !none       |check to determine if file exists
-      logical :: i_exist_cbn          !none       |check to determine if fertilizer_ext.frt exists
+      integer :: it = 0                     !!    none          |counter
+      character (len=80) :: titldum = ""    !!                  |title of file
+      character (len=80) :: header = ""     !!                  |header of file
+      integer :: eof = 0                    !!                  |end of file
+      integer :: imax = 0                   !!                  |determine max number for array (imax) and total number in file
+      integer :: mfrt = 0                   !!                  |maximum fertilizer types
+      logical :: i_exist                    !!none              |check to determine if fertilizer.frt exists
+      logical :: i_exist_cbn                !!none              |check to determine if fertilizer_ext.frt exists
       
       
       eof = 0
@@ -60,16 +60,16 @@ subroutine fert_parm_read
                 if (eof < 0) exit
               end do
             else
-              ! If fertilizer_ext.frt exists, read fertilizer_cbn data
+              !! If fertilizer_ext.frt does exists, read fertilizer_cbn data instead
               allocate (manure_db(0:imax))
               do it = 1, imax
                 read (107,*,iostat=eof) manure_db(it)%base, &
-                      manure_db(it)%name, &
+                      manure_db(it)%name,manure_db(it)%csv,  &
                       manure_db(it)%pest, manure_db(it)%path, &
                       manure_db(it)%salt, manure_db(it)%hmet, manure_db(it)%cs
                 if (eof < 0) exit
 
-                !-- Assign manure_db to fertdb for compatibility with existing code --- !
+                !! Assign manure_db%base to fertdb for compatibility with existing code
                 fertdb(it) = manure_db(it)%base
               end do
             endif

@@ -7,8 +7,9 @@
       implicit none
    
       integer :: it = 0                     !!none      |counter
+      character (len=80) :: csv = "fp5-manure-content-defaults-swat.csv"        !!          |filename for csv file
       character (len=256) :: header = ""     !!          |header of file
-      character (len=256) :: csv_line = ""  !! line for csv file
+      character (len=1000) :: csv_line = ""  !! line for csv file
       integer :: eof = 0                    !!          |end of file
       integer :: unit = 107                 !!          |unit number for file
       integer :: imax = 0                   !!none      |determine max number for array (imax) and total number in file
@@ -21,12 +22,12 @@
 
       
       !! --- inquire if fp5-manure-content-defaults-swat.csv exists --- !!
-      inquire (file="fp5-manure-content-defaults-swat.csv", exist=i_exist)
-      if (.not. i_exist .or. "fp5-manure-content-defaults-swat.csv" == "null") then
+      inquire (file=csv, exist=i_exist)
+      if (.not. i_exist .or. csv == "null") then
           allocate (manure_csv(0:0))
           db_mx%manureparm = 0
       else
-            open (unit,file="fp5-manure-content-defaults-swat.csv")
+            open (unit,file=csv)
             read(unit,'(A)',iostat=eof) header   ! skip header line
             do while (eof == 0)
                 read(unit,'(A)',iostat=eof) csv_line
@@ -37,10 +38,7 @@
             rewind(unit)
             read(unit,'(A)',iostat=eof) header
             do it = 1, imax
-                read(unit,'(A)',iostat=eof) csv_line
-                if (eof < 0) exit
-                read(csv_line,*) &
-                     manure_csv(it)%manure_region, &
+                read (107,*,iostat=eof) manure_csv(it)%manure_region, &
                      manure_csv(it)%manure_source, &
                      manure_csv(it)%manure_type, &
                      manure_csv(it)%pct_moisture, &
@@ -60,8 +58,9 @@
                      manure_csv(it)%sample_size, &
                      manure_csv(it)%summary_level, &
                      manure_csv(it)%data_source
-                manure_csv(it)%manure_name = trim(manure_csv(it)%manure_region)//trim(manure_csv(it)%manure_source)//"_"// &
+                manure_csv(it)%manure_name = trim(manure_csv(it)%manure_region)//"_"//trim(manure_csv(it)%manure_source)//"_"// &
                      trim(manure_csv(it)%manure_type)
+                if (eof < 0) exit
             end do
             close (unit)
 
@@ -71,8 +70,8 @@
             if (size(manure_db) > 0 .and. size(manure_csv) > 0) then
               do i = 1, size(manure_db)
                 do it = 1, size(manure_csv)
-                  if (trim(manure_db(i)%name) == trim(manure_csv(it)%manure_name)) then
-                    manure_db(i)%csv = manure_csv(it)
+                  if (trim(manure_db(i)%csv) == trim(manure_csv(it)%manure_name)) then
+                    manure_db(i)%manucontent = manure_csv(it)
                     exit  ! Stop searching once a match is found
                   end if
                 end do
