@@ -44,7 +44,7 @@
         type(fertilizer_db) :: base     !! base fertilizer data
         character(len=16) ::  name = " "  !! e.g., Midwest_Beef_Liquid
         character(len=64) ::  csv = " "  !! e.g., Midwest_Beef_Liquid
-        type (manure_attributes), dimension(:),allocatable :: manucontent !! manure attributes from csv file
+        type(manure_attributes) :: manucontent !! manure attributes from a single csv record
         character(len=16) :: pest = ""  !! pest.man name
         character(len=16) :: path = ""  !! path.man name
         character(len=16) :: salt = ""  !! salt.man name
