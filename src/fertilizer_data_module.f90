@@ -12,21 +12,11 @@
       end type fertilizer_db
       type (fertilizer_db), dimension(:),allocatable, save :: fertdb
       
-      type fertilizer_ext_db
-        character(len=16) :: oman = " "  !!
-        character(len=16) :: pest = ""  !! pest.man name
-        character(len=16) :: path = ""  !! path.man name
-        character(len=16) :: salt = ""  !! salt.man name
-        character(len=16) :: hmet = ""  !! hmet.man name
-        character(len=16) :: cs = ""    !! cs.man name
-      end type fertilizer_ext_db
-      
-
 
       type manure_attributes
-        ! Identifier used to crosswalk fertilizer entries
-        character(len=64) ::  manure_name = " "  ! e.g., BFSD
-        ! additional attributes from fp5-manure-content-defaults-swat.csv
+        character(len=64) ::  manure_name = " "  !! Identifier used to crosswalk fertilizer entries, constructed from
+                                                 !! manure_region, manure_source, and manure_type
+        !! additional attributes from fp5-manure-content-defaults-swat.csv
         character(len=32) :: manure_region = " "
         character(len=32) :: manure_source = " "
         character(len=32) :: manure_type = " "
@@ -52,8 +42,9 @@
       
       type manure_database
         type(fertilizer_db) :: base     !! base fertilizer data
-        character(len=64) ::  name = " "  ! e.g., BFSD
-        type (manure_attributes), dimension(:),allocatable :: csv
+        character(len=16) ::  name = " "  !! e.g., Midwest_Beef_Liquid
+        character(len=64) ::  csv = " "  !! e.g., Midwest_Beef_Liquid
+        type (manure_attributes), dimension(:),allocatable :: manucontent !! manure attributes from csv file
         character(len=16) :: pest = ""  !! pest.man name
         character(len=16) :: path = ""  !! path.man name
         character(len=16) :: salt = ""  !! salt.man name
