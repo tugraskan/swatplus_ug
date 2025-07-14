@@ -21,8 +21,12 @@
         ipath_db = sol_plt_ini(isp_ini)%path
         path_kd = path_db(ipath_db)%kd
         !! compute pathogen incorporated into the soil
-        hpath_bal(j)%path(ipath)%perc1 = path_kd * cs_soil(j)%ly(1)%path(ipath) * soil(j)%ly(1)%prk / &
-           ((soil(j)%phys(1)%conv_wt / 1000.) * path_db(ipath_db)%perco)
+        if (path_db(ipath_db)%perco <= 0.) then
+          hpath_bal(j)%path(ipath)%perc1 = 0.
+        else
+          hpath_bal(j)%path(ipath)%perc1 = path_kd * cs_soil(j)%ly(1)%path(ipath) * soil(j)%ly(1)%prk / &
+             ((soil(j)%phys(1)%conv_wt / 1000.) * path_db(ipath_db)%perco)
+        end if
         hpath_bal(j)%path(ipath)%perc1 = Min(hpath_bal(j)%path(ipath)%perc1, cs_soil(j)%ly(1)%path(ipath))
         hpath_bal(j)%path(ipath)%perc1 = Max(hpath_bal(j)%path(ipath)%perc1, 0.)
         cs_soil(j)%ly(1)%path(ipath) = cs_soil(j)%ly(1)%path(ipath) - hpath_bal(j)%path(ipath)%perc1
