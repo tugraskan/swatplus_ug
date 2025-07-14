@@ -20,6 +20,7 @@
       inquire (file=in_parmdb%pathcom_db,exist=i_exist)
       if (.not. i_exist .or. in_parmdb%pathcom_db == "null") then
          allocate (path_db(0:0))
+         path_db(0)%perco = 1.0      !! assume percolation when no database found
       else
       do
         open (107,file=in_parmdb%pathcom_db)
