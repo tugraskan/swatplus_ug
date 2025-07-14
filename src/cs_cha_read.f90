@@ -23,7 +23,7 @@
       
       !open and read file contents
       inquire (file="cs_channel.ini", exist=i_exist)
-      if (i_exist .or. "cs_channel.ini" /= "null") then
+      if (i_exist) then
         do
           open (107,file="cs_channel.ini")
           read (107,*,iostat=eof) titldum
@@ -58,7 +58,14 @@
           close (107)
           exit
         end do
-      end if
+        else
+          ! If cs_channel.ini is missing, create a single default record with
+          ! zero concentrations so downstream initialization can proceed.
+          db_mx%cs_cha_ini = 1
+          allocate (cs_cha_ini(1))
+          allocate (cs_cha_ini(1)%conc(cs_db%num_cs), source = 0.)
+          cs_cha_ini(1)%name = 'default'
+        end if
 
       !determine if daily channel concentrations and loads should be output
       inquire (file="cs_streamobs", exist=i_exist)
