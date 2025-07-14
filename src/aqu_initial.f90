@@ -122,7 +122,6 @@
           allocate (aqupst_a(iaq)%pest(cs_db%num_pests))
           allocate (cs_aqu(iaq)%path(cs_db%num_paths), source = 0.)
           allocate (cs_aqu(iaq)%hmet(cs_db%num_metals), source = 0.)
-          allocate (cs_aqu(iaq)%salt(cs_db%num_salts), source = 0.)
         end if
         !salts !rtb salt
         if (cs_db%num_salts > 0) then
