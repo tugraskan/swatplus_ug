@@ -20,7 +20,26 @@
       inquire (file=in_parmdb%pathcom_db,exist=i_exist)
       if (.not. i_exist .or. in_parmdb%pathcom_db == "null") then
          allocate (path_db(0:0))
-         path_db(0)%perco = 1.0      !! assume percolation when no database found
+         ! Set defaults so the model does not access uninitialized values when
+         ! pathogens are not simulated
+         path_db(0)%pathnm    = ""
+         path_db(0)%do_soln   = 0.
+         path_db(0)%gr_soln   = 0.
+         path_db(0)%do_sorb   = 0.
+         path_db(0)%gr_sorb   = 0.
+         path_db(0)%kd        = 0.
+         path_db(0)%t_adj     = 1.
+         path_db(0)%washoff   = 0.
+         path_db(0)%do_plnt   = 0.
+         path_db(0)%gr_plnt   = 0.
+         path_db(0)%fr_manure = 0.
+         path_db(0)%perco     = 1.0      !! assume percolation when no database found
+         path_db(0)%det_thrshd = 0.
+         path_db(0)%do_stream = 0.
+         path_db(0)%gr_stream = 0.
+         path_db(0)%do_res    = 0.
+         path_db(0)%gr_res    = 0.
+         path_db(0)%conc_min  = 0.
       else
       do
         open (107,file=in_parmdb%pathcom_db)
