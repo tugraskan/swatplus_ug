@@ -71,7 +71,12 @@
               do i = 1, size(manure_db)
                 do it = 1, size(manure_csv)
                   if (trim(manure_db(i)%csv) == trim(manure_csv(it)%manure_name)) then
+<<<<<<< HEAD
                     call MOVE_ALLOC(manure_db(i)%manucontent, manure_csv(it))
+=======
+                    ! store attributes from matching csv record
+                    manure_db(i)%manucontent = manure_csv(it)
+>>>>>>> ce22d0c7c59d12df36286700883685daf4153fdf
                     exit  ! Stop searching once a match is found
                   end if
                 end do

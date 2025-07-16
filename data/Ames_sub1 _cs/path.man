@@ -1,0 +1,8 @@
+path_hru.man
+NAME           man
+low_ini
+fecal_col_form 0.10    
+e_coli         0.05    
+no_ini
+fecal_col_form 0.00    
+e_coli         0.00    

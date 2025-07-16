@@ -1,0 +1,4 @@
+ demo                      SWAT+ 2025-07-16        MODULAR Rev 2025.61.0.2.11-219-g8a465b1                
+ HRU_TOTC                  hru_totc.txt
+        jday          yr        unit    soil_tot_c   plant_tot_c     rsd_tot_c 
+          --          --          --          kg/ha         kg/ha         kg/ha

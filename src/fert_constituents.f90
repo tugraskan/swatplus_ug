@@ -135,7 +135,7 @@ subroutine fert_constituents_apply(j, ifrt, frt_kg, fertop)
       end if
 
       ! --- heavy metals ---
-      ! Heavy metals are treated like salts but stored in a separate table.
+      !   cs_soil(j)%ly(1)%hmet is not used in SWAT+.
 
       if (cs_db%num_metals > 0) then
         if (allocated(hmet_fert_soil_ini)) then
