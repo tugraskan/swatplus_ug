@@ -1,0 +1,6 @@
+hmet_hru.man
+NAME         man
+low_ini
+lead      0.02    
+no_ini
+lead      0.00    

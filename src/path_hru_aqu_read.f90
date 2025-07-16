@@ -67,7 +67,7 @@
   ! --- fertilizer pathogen concentrations ---
   ! reads the pathogen amounts that are attached to each fertilizer
       
-  call fert_constituent_file_read (manu, imax, cs_db%num_pests)
+  call fert_constituent_file_read (manu, imax, cs_db%num_paths)
   call MOVE_ALLOC(fert_arr, path_fert_soil_ini)
 
   return

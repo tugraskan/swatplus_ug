@@ -22,8 +22,12 @@
       real :: bacdiegrosol_out = 0.
       real :: bacdiegroplt_out = 0.
       real :: wash_off = 0. !               |pathogen wash off
+      real :: theta 
+      real :: T_ADJ = 0. !              |temperature adjustment factor
 
       j = ihru
+
+
          
       pl_die_gro = 0.
       sol_die_gro = 0.
@@ -48,7 +52,7 @@
         pl_ini = cs_pl(j)%pl_on(ipl)%path(ipath)
         pl_die_gro = path_db(ipath_db)%do_plnt - path_db(ipath_db)%gr_plnt
         cs_pl(j)%pl_on(ipl)%path(ipath) = cs_pl(j)%pl_on(ipl)%path(ipath) *                                 &
-                Exp(-Theta(pl_die_gro, path_db(ipath_db)%t_adj, w%tave)) - path_db(ipath_db)%conc_min
+                Exp(-theta(pl_die_gro, path_db(ipath_db)%t_adj, w%tave)) - path_db(ipath_db)%conc_min
         cs_pl(j)%pl_on(ipl)%path(ipath) = Max(0., cs_pl(j)%pl_on(ipl)%path(ipath))
         if (cs_pl(j)%pl_on(ipl)%path(ipath) < path_db(ipath_db)%conc_min)                                   &
                                          cs_pl(j)%pl_on(ipl)%path(ipath) = path_db(ipath_db)%conc_min

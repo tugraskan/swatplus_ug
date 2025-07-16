@@ -34,8 +34,11 @@ subroutine fert_constituent_file_read(constituent_name, imax, nconst)
       character(len=80) :: header = ""    !     |   header line
       integer :: eof = 0                  !     |   end-of-file flag
       logical :: i_exist                  !     |   true if file exists
-      integer :: i, ii, j                 !     |   loop indices
+      integer :: i, k, j                 !     |   loop indices
 
+      i = 0
+      k = 0
+      j = 0
       
       fert_file_name = trim(constituent_name)
       file_name = fert_file_name
@@ -58,13 +61,12 @@ subroutine fert_constituent_file_read(constituent_name, imax, nconst)
               if (eof < 0) exit
 
               !! loop over fertilizer entries in the file
-              do i = 1, imax
-                read(107,*,iostat=eof) fert_arr(i)%name
-                read(107,*,iostat=eof) titldum, fert_arr(i)%soil
+              do k = 1, imax
+                read(107,*,iostat=eof) fert_arr(k)%name
                   if (eof < 0) exit
                 !! loop over constituents for each fertilizer
-                do j = 1, imax
-                    read(107,*,iostat=eof) titldum, fert_arr(j)%soil(i)
+                do j = 1, nconst
+                    read(107,*,iostat=eof) titldum, fert_arr(k)%soil(j)
                     if (eof < 0) exit
                 end do
               end do
