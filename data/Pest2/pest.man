@@ -1,0 +1,13 @@
+pest_hru.ini: 
+NAME    	SOIL(ppm)  
+low_ini
+ dacamine	1.001	   
+ roundup	3.005
+high_ini    
+ dacamine	17.001	   
+ roundup	13.005
+no_ini
+ dacamine	5.0	       
+ roundup	7.0	       
+
+

@@ -1,0 +1,2 @@
+ BHAC                      SWAT+ 2025-07-10        MODULAR Rev 2025.61.0.2.11-201-g009132f                
+       year      plant_no   plant_name       harv_area(ha)     yld(t)          yld(t/ha)      

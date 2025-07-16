@@ -1,0 +1,6 @@
+hmet_hru.man
+NAME         man
+low_ini
+mercury      0.02    
+no_ini
+mercury      0.00    

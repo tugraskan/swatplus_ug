@@ -1,0 +1,113 @@
+manure_region,manure_source,manure_type,pct_moisture,pct_solids,total_c,total_n,inorganic_n,organic_n,total_p2o5,inorganic_p2o5,organic_p2o5,inorganic_p,organic_p,solids,water,units,sample_size,summary_level,data_source
+Midwest,Beef,Liquid,98.8,1.19,6.51,5.92,2.6,2.98,4.17,2.88,1.29,1.26,0.564,99,8241,lb/1000 gal (as-applied),1100,Regional,ManureDB 2014-2023
+Midwest,Beef,Slurry,92.6,7.41,140,41.7,22.5,17.6,22.5,15.5,6.98,6.78,3.05,618,7722,lb/1000 gal (as-applied),1515,Regional,ManureDB 2014-2023
+Midwest,Beef,Semi-solid,86.7,13.3,128,13.4,1.53,8,7,4.83,2.17,2.11,0.948,266,1734,lb/ton (as-applied),1659,Regional,ManureDB 2014-2023
+Midwest,Beef,Solid,67.7,32.3,131,15.6,1.4,13.8,9.4,6.49,2.91,2.83,1.27,645,1355,lb/ton (as-applied),6186,Regional,ManureDB 2014-2023
+Midwest,Dairy,Liquid,97.4,2.57,45.3,13.8,7.43,6.42,5,3.1,1.9,1.35,0.83,214,8126,lb/1000 gal (as-applied),18876,Regional,ManureDB 2014-2023
+Midwest,Dairy,Slurry,94.2,5.78,121,21.6,10.8,10.5,9.17,5.69,3.49,2.48,1.52,482,7858,lb/1000 gal (as-applied),22331,Regional,ManureDB 2014-2023
+Midwest,Dairy,Semi-solid,86.2,13.8,82.4,6.6,0.864,5.4,2.68,1.66,1.02,0.724,0.444,276,1724,lb/ton (as-applied),4929,Regional,ManureDB 2014-2023
+Midwest,Dairy,Solid,66.9,33.1,221,9.8,1.18,8.38,4.21,2.61,1.6,1.14,0.699,661,1339,lb/ton (as-applied),10026,Regional,ManureDB 2014-2023
+Midwest,Poultry,Liquid,99.5,0.52,3.19,8.34,3.96,3.34,4.17,2.42,1.75,1.06,0.765,43.4,8297,lb/1000 gal (as-applied),206,Regional,ManureDB 2014-2023
+Midwest,Poultry,Slurry,93.7,6.34,204,53.4,27.7,22.5,30.4,17.7,12.8,7.71,5.58,529,7811,lb/1000 gal (as-applied),76,Regional,ManureDB 2014-2023
+Midwest,Poultry,Semi-solid,82.7,17.3,118,15.4,3.4,11.2,16.4,9.51,6.89,4.15,3.01,345,1655,lb/ton (as-applied),39,Regional,ManureDB 2014-2023
+Midwest,Poultry,Solid,41.4,58.6,275,51.4,11,39.9,41.9,24.3,17.6,10.6,7.68,1172,828,lb/ton (as-applied),18145,Regional,ManureDB 2014-2023
+Midwest,Swine,Liquid,98,1.99,48.9,25.9,17.5,8.01,10,7.21,2.8,3.15,1.22,166,8174,lb/1000 gal (as-applied),37329,Regional,ManureDB 2014-2023
+Midwest,Swine,Slurry,93.9,6.13,153,54.2,34.6,20,26.7,19.2,7.47,8.39,3.26,511,7829,lb/1000 gal (as-applied),37128,Regional,ManureDB 2014-2023
+Midwest,Swine,Semi-solid,88.8,11.2,36.5,17.4,3.07,13.4,9.4,6.77,2.63,2.96,1.15,225,1775,lb/ton (as-applied),4738,Regional,ManureDB 2014-2023
+Midwest,Swine,Solid,59.6,40.4,353,17.4,2.66,13.8,21.3,15.3,5.96,6.7,2.6,807,1193,lb/ton (as-applied),668,Regional,ManureDB 2014-2023
+Northeast,Beef,Liquid,99.3,0.664,6.51,4.36,0.937,2.8,0.987,0.681,0.306,0.297,0.134,55.4,8285,lb/1000 gal (as-applied),12,Regional,ManureDB 2014-2023
+Northeast,Beef,Slurry,91.1,8.87,140,25.3,6.07,17.3,10.6,7.32,3.29,3.2,1.44,740,7600,lb/1000 gal (as-applied),8,Regional,ManureDB 2014-2023
+Northeast,Beef,Semi-solid,83.6,16.4,126,7.1,0.343,6.3,3.84,2.65,1.19,1.16,0.52,328,1672,lb/ton (as-applied),138,Regional,ManureDB 2014-2023
+Northeast,Beef,Solid,71.9,28.1,232,13,0.623,12,6.89,4.75,2.14,2.08,0.933,562,1438,lb/ton (as-applied),454,Regional,ManureDB 2014-2023
+Northeast,Dairy,Liquid,98.1,1.94,57.5,10.8,5.24,5.15,3.74,2.32,1.42,1.01,0.621,162,8178,lb/1000 gal (as-applied),1643,Regional,ManureDB 2014-2023
+Northeast,Dairy,Slurry,93.5,6.45,227,22.8,10.3,12.3,9,5.58,3.42,2.44,1.49,538,7802,lb/1000 gal (as-applied),2237,Regional,ManureDB 2014-2023
+Northeast,Dairy,Semi-solid,85.4,14.6,135,7.94,2.24,5.65,3.33,2.07,1.27,0.903,0.553,293,1707,lb/ton (as-applied),2055,Regional,ManureDB 2014-2023
+Northeast,Dairy,Solid,70.2,29.8,236,9.06,1.31,7.46,4.38,2.72,1.67,1.19,0.727,596,1404,lb/ton (as-applied),2666,Regional,ManureDB 2014-2023
+Northeast,Poultry,Liquid,99,1.04,3.19,12.5,5.02,7.03,3.36,1.95,1.41,0.85,0.616,86.9,8253,lb/1000 gal (as-applied),19,Regional,ManureDB 2014-2023
+Northeast,Poultry,Slurry,91.6,8.39,204,30.4,10.7,17.7,17.2,10,7.24,4.37,3.16,700,7640,lb/1000 gal (as-applied),6,Regional,ManureDB 2014-2023
+Northeast,Poultry,Semi-solid,83.4,16.6,118,14.7,5.97,11,11.9,6.91,5,3.02,2.19,331,1669,lb/ton (as-applied),16,Regional,ManureDB 2014-2023
+Northeast,Poultry,Solid,35.1,64.9,672,53.3,7.02,44.3,44.8,26,18.8,11.3,8.22,1299,701,lb/ton (as-applied),1553,Regional,ManureDB 2014-2023
+Northeast,Swine,Liquid,98.7,1.27,16,22.7,14.4,6.88,5.02,3.62,1.41,1.58,0.614,106,8234,lb/1000 gal (as-applied),340,Regional,ManureDB 2014-2023
+Northeast,Swine,Slurry,94,5.99,153,45.8,25.4,17.4,38.8,27.9,10.9,12.2,4.74,499,7841,lb/1000 gal (as-applied),136,Regional,ManureDB 2014-2023
+Northeast,Swine,Semi-solid,87.5,12.5,36.5,14.6,7.79,6.49,14.2,10.2,3.97,4.46,1.73,249,1751,lb/ton (as-applied),37,Regional,ManureDB 2014-2023
+Northeast,Swine,Solid,61.3,38.7,204,23.5,3.82,17.8,19,13.7,5.32,5.97,2.32,774,1226,lb/ton (as-applied),85,Regional,ManureDB 2014-2023
+Northern Plains,Beef,Liquid,99.9,0.1,6.51,2.06,0.801,0.984,1,0.691,0.31,0.302,0.135,8.34,8332,lb/1000 gal (as-applied),297,Regional,ManureDB 2014-2023
+Northern Plains,Beef,Slurry,91.9,8.12,140,50.9,35.9,15.9,21,14.5,6.52,6.33,2.85,677,7663,lb/1000 gal (as-applied),21,Regional,ManureDB 2014-2023
+Northern Plains,Beef,Semi-solid,88,12,89.5,16,10.6,5.34,8.15,5.62,2.53,2.46,1.1,240,1760,lb/ton (as-applied),20,Regional,ManureDB 2014-2023
+Northern Plains,Beef,Solid,39.7,60.3,213,17.2,2.2,14.9,17.8,12.3,5.53,5.38,2.42,1206,794,lb/ton (as-applied),241,Regional,ManureDB 2014-2023
+Northern Plains,Dairy,Liquid,97.6,2.44,51.7,14.9,7.92,5.92,4.2,2.6,1.59,1.14,0.696,204,8136,lb/1000 gal (as-applied),309,Regional,ManureDB 2014-2023
+Northern Plains,Dairy,Slurry,94.5,5.47,140,21.3,10.3,10.4,6.89,4.27,2.62,1.87,1.14,456,7884,lb/1000 gal (as-applied),317,Regional,ManureDB 2014-2023
+Northern Plains,Dairy,Semi-solid,86.9,13.1,115,5.97,1.73,4.32,2.09,1.29,0.793,0.565,0.346,262,1738,lb/ton (as-applied),84,Regional,ManureDB 2014-2023
+Northern Plains,Dairy,Solid,62.1,37.9,218,10.5,1.26,9.09,4.61,2.86,1.75,1.25,0.764,758,1242,lb/ton (as-applied),196,Regional,ManureDB 2014-2023
+Northern Plains,Poultry,Liquid,97.4,2.58,3.19,42.5,28.5,14,13.3,7.74,5.6,3.38,2.45,215,8125,lb/1000 gal (as-applied),1,Regional,ManureDB 2014-2023
+Northern Plains,Poultry,Slurry,95.1,4.92,204,42.5,32.5,10,23.4,13.5,9.81,5.91,4.28,410,7930,lb/1000 gal (as-applied),1,Regional,ManureDB 2014-2023
+Northern Plains,Poultry,Semi-solid,83.1,16.9,118,13.8,3.17,9.8,18.2,10.6,7.64,4.61,3.34,339,1661,lb/ton (as-applied),77,National,ManureDB 2014-2023
+Northern Plains,Poultry,Solid,26.2,73.8,513,48.4,7.03,39.7,58.2,33.8,24.4,14.7,10.7,1476,524,lb/ton (as-applied),32,Regional,ManureDB 2014-2023
+Northern Plains,Swine,Liquid,98.4,1.6,16,20.4,14,4.78,7.09,5.1,1.98,2.23,0.867,133,8207,lb/1000 gal (as-applied),383,Regional,ManureDB 2014-2023
+Northern Plains,Swine,Slurry,93.6,6.4,153,53.9,37.9,15.9,31.4,22.6,8.78,9.86,3.83,534,7806,lb/1000 gal (as-applied),370,Regional,ManureDB 2014-2023
+Northern Plains,Swine,Semi-solid,88.9,11.1,36.5,16.5,11.8,4.52,9.34,6.72,2.62,2.94,1.14,222,1778,lb/ton (as-applied),57,Regional,ManureDB 2014-2023
+Northern Plains,Swine,Solid,41.5,58.5,353,17,3.9,13.5,50.1,36.1,14,15.8,6.13,1169,831,lb/ton (as-applied),32,Regional,ManureDB 2014-2023
+Pacific Northwest,Beef,Liquid,99.9,0.1,6.51,4.04,1.5,2.87,2.84,1.96,0.879,0.854,0.384,8.34,8332,lb/1000 gal (as-applied),5,Regional,ManureDB 2014-2023
+Pacific Northwest,Beef,Slurry,92.6,7.4,140,40.9,21.7,17.5,21.7,15,6.72,6.53,2.94,617,7723,lb/1000 gal (as-applied),1636,National,ManureDB 2014-2023
+Pacific Northwest,Beef,Semi-solid,86.4,13.6,128,13,1.44,7.6,6.68,4.61,2.07,2.01,0.904,271,1729,lb/ton (as-applied),1890,National,ManureDB 2014-2023
+Pacific Northwest,Beef,Solid,46.5,53.5,235,16.5,1.06,16.4,12.4,8.56,3.84,3.74,1.68,1070,930,lb/ton (as-applied),17,Regional,ManureDB 2014-2023
+Pacific Northwest,Dairy,Liquid,99.1,0.881,51.7,5.91,3.74,2.47,1.41,0.876,0.537,0.383,0.235,73.5,8267,lb/1000 gal (as-applied),57,Regional,ManureDB 2014-2023
+Pacific Northwest,Dairy,Slurry,94.2,5.82,140,18.3,5.48,12.8,7.24,4.49,2.75,1.96,1.2,485,7855,lb/1000 gal (as-applied),5,Regional,ManureDB 2014-2023
+Pacific Northwest,Dairy,Semi-solid,86.3,13.7,115,6.44,1.09,5.35,3.76,2.33,1.43,1.02,0.623,275,1725,lb/ton (as-applied),18,Regional,ManureDB 2014-2023
+Pacific Northwest,Dairy,Solid,71.2,28.8,224,12.2,1.16,10.3,8.63,5.35,3.28,2.34,1.43,576,1424,lb/ton (as-applied),33,Regional,ManureDB 2014-2023
+Pacific Northwest,Poultry,Liquid,99.9,0.1,3.19,6.68,3.32,3.23,3.34,1.93,1.4,0.845,0.612,8.34,8332,lb/1000 gal (as-applied),938,National,ManureDB 2014-2023
+Pacific Northwest,Poultry,Slurry,93.6,6.38,204,48.4,24.2,19.2,30.5,17.7,12.8,7.73,5.6,532,7808,lb/1000 gal (as-applied),95,National,ManureDB 2014-2023
+Pacific Northwest,Poultry,Semi-solid,83.1,16.9,118,13.8,3.17,9.8,18.2,10.6,7.64,4.61,3.34,339,1661,lb/ton (as-applied),77,National,ManureDB 2014-2023
+Pacific Northwest,Poultry,Solid,33.4,66.6,513,52.6,10.6,41.8,47.2,27.4,19.8,11.9,8.65,1332,668,lb/ton (as-applied),41464,National,ManureDB 2014-2023
+Pacific Northwest,Swine,Liquid,98.1,1.89,16,3.48,2.14,1.28,0.877,0.632,0.246,0.276,0.107,158,8182,lb/1000 gal (as-applied),133950,National,ManureDB 2014-2023
+Pacific Northwest,Swine,Slurry,93.9,6.13,153,54.2,34.2,19.8,26.7,19.2,7.47,8.39,3.26,511,7829,lb/1000 gal (as-applied),38113,National,ManureDB 2014-2023
+Pacific Northwest,Swine,Semi-solid,88.8,11.2,36.5,17.4,3.07,13.3,9.48,6.83,2.65,2.98,1.16,225,1775,lb/ton (as-applied),4849,National,ManureDB 2014-2023
+Pacific Northwest,Swine,Solid,57.9,42.1,353,17.6,2.72,14,22.6,16.3,6.33,7.11,2.76,841,1159,lb/ton (as-applied),853,National,ManureDB 2014-2023
+Southeast,Beef,Liquid,97.7,2.34,6.51,0.978,0.508,0.469,0.826,0.57,0.256,0.249,0.112,195,8145,lb/1000 gal (as-applied),190,Regional,ManureDB 2014-2023
+Southeast,Beef,Slurry,93.7,6.29,140,5.68,2.95,2.73,9.44,6.51,2.93,2.84,1.28,525,7815,lb/1000 gal (as-applied),91,Regional,ManureDB 2014-2023
+Southeast,Beef,Semi-solid,83.2,16.8,128,6.73,0.484,6.24,4.62,3.19,1.43,1.39,0.626,336,1664,lb/ton (as-applied),66,Regional,ManureDB 2014-2023
+Southeast,Beef,Solid,62.3,37.7,213,14.5,0.621,13.8,9.7,6.7,3.01,2.92,1.31,754,1246,lb/ton (as-applied),551,Regional,ManureDB 2014-2023
+Southeast,Dairy,Liquid,98.7,1.27,51.7,0.614,0.317,0.31,0.992,0.615,0.377,0.269,0.165,106,8234,lb/1000 gal (as-applied),1543,Regional,ManureDB 2014-2023
+Southeast,Dairy,Slurry,93.7,6.29,181,8.52,4.5,4,5.44,3.37,2.07,1.47,0.903,524,7816,lb/1000 gal (as-applied),3051,Regional,ManureDB 2014-2023
+Southeast,Dairy,Semi-solid,84.6,15.4,115,6.21,0.591,5.48,4.1,2.54,1.56,1.11,0.68,309,1691,lb/ton (as-applied),626,Regional,ManureDB 2014-2023
+Southeast,Dairy,Solid,62.8,37.2,448,12.6,0.875,11.7,7.35,4.56,2.79,1.99,1.22,744,1256,lb/ton (as-applied),1476,Regional,ManureDB 2014-2023
+Southeast,Poultry,Liquid,99.9,0.1,3.19,3.31,1.66,1.6,1.02,0.591,0.428,0.258,0.187,8.34,8332,lb/1000 gal (as-applied),573,Regional,ManureDB 2014-2023
+Southeast,Poultry,Slurry,91.8,8.18,204,12.6,6.31,6.31,52.4,30.4,22,13.3,9.62,683,7657,lb/1000 gal (as-applied),12,Regional,ManureDB 2014-2023
+Southeast,Poultry,Semi-solid,83.2,16.8,118,9.77,2.15,7.62,26.2,15.2,11,6.65,4.81,337,1663,lb/ton (as-applied),21,Regional,ManureDB 2014-2023
+Southeast,Poultry,Solid,26.8,73.2,272,53.6,10.4,43.2,51.4,29.8,21.6,13,9.43,1463,537,lb/ton (as-applied),21362,Regional,ManureDB 2014-2023
+Southeast,Swine,Liquid,99.6,0.435,163,2.68,1.66,1.02,0.711,0.512,0.199,0.224,0.087,36.2,8304,lb/1000 gal (as-applied),95780,Regional,ManureDB 2014-2023
+Southeast,Swine,Slurry,94.3,5.74,153,16.1,9.71,6.11,19.9,14.3,5.56,6.24,2.43,478,7862,lb/1000 gal (as-applied),477,Regional,ManureDB 2014-2023
+Southeast,Swine,Semi-solid,88,12,36.5,5.04,0.577,4.4,24.9,18,6.98,7.84,3.05,240,1760,lb/ton (as-applied),16,Regional,ManureDB 2014-2023
+Southeast,Swine,Solid,32.9,67.1,724,12.8,1.26,11.4,21.2,15.3,5.95,6.68,2.6,1342,658,lb/ton (as-applied),64,Regional,ManureDB 2014-2023
+Southern Plains,Beef,Liquid,99.9,0.1,6.51,56.2,1.43,52.7,55.5,38.3,17.2,16.7,7.52,8.34,8332,lb/1000 gal (as-applied),1717,Regional,ManureDB 2014-2023
+Southern Plains,Beef,Slurry,91.6,8.4,140,62.8,42.5,20.3,23.5,16.2,7.29,7.09,3.18,701,7639,lb/1000 gal (as-applied),1,Regional,ManureDB 2014-2023
+Southern Plains,Beef,Semi-solid,84.6,15.4,144,4.64,0.418,4.22,2.84,1.96,0.88,0.856,0.384,309,1691,lb/ton (as-applied),7,Regional,ManureDB 2014-2023
+Southern Plains,Beef,Solid,31.3,68.7,268,21.7,2.24,17.2,18.4,12.7,5.71,5.55,2.49,1373,627,lb/ton (as-applied),51,Regional,ManureDB 2014-2023
+Southern Plains,Dairy,Liquid,99.9,0.1,51.7,33.9,3.5,26.2,16.8,10.4,6.37,4.54,2.78,8.34,8332,lb/1000 gal (as-applied),627,Regional,ManureDB 2014-2023
+Southern Plains,Dairy,Slurry,94.1,5.9,140,51,35.9,15.1,21.4,13.3,8.13,5.79,3.55,492,7848,lb/1000 gal (as-applied),2,Regional,ManureDB 2014-2023
+Southern Plains,Dairy,Semi-solid,85.6,14.4,115,4.55,0.546,4.01,1.59,0.987,0.605,0.431,0.264,288,1712,lb/ton (as-applied),2,Regional,ManureDB 2014-2023
+Southern Plains,Dairy,Solid,22.5,77.5,224,19,2.28,16.7,13.9,8.59,5.27,3.75,2.3,1551,449,lb/ton (as-applied),10,Regional,ManureDB 2014-2023
+Southern Plains,Poultry,Liquid,99.9,0.1,3.19,232,24,208,205,119,86.3,52,37.7,8.34,8332,lb/1000 gal (as-applied),139,Regional,ManureDB 2014-2023
+Southern Plains,Poultry,Slurry,93.6,6.38,204,48.4,24.2,19.2,30.5,17.7,12.8,7.73,5.6,532,7808,lb/1000 gal (as-applied),95,National,ManureDB 2014-2023
+Southern Plains,Poultry,Semi-solid,86.5,13.5,118,20.9,4.59,16.3,18.3,10.6,7.69,4.64,3.36,269,1731,lb/ton (as-applied),1,Regional,ManureDB 2014-2023
+Southern Plains,Poultry,Solid,25.7,74.3,526,57.8,12.7,45.4,65.3,37.9,27.4,16.5,12,1486,514,lb/ton (as-applied),320,Regional,ManureDB 2014-2023
+Southern Plains,Swine,Liquid,99.9,0.1,15,11.6,4.64,2.76,2.07,1.49,0.581,0.652,0.254,8.34,8332,lb/1000 gal (as-applied),118,Regional,ManureDB 2014-2023
+Southern Plains,Swine,Slurry,94.7,5.3,13.7,13.8,5.33,8.51,22,15.9,6.17,6.92,2.69,442,7898,lb/1000 gal (as-applied),2,Regional,ManureDB 2014-2023
+Southern Plains,Swine,Semi-solid,86.9,13.1,36.5,3.26,0.522,2.74,66.8,48.1,18.7,21,8.16,262,1738,lb/ton (as-applied),1,Regional,ManureDB 2014-2023
+Southern Plains,Swine,Solid,42.9,57.1,303,33.2,5.31,27.9,92.4,66.5,25.9,29.1,11.3,1143,857,lb/ton (as-applied),4,Regional,ManureDB 2014-2023
+Southwest,Beef,Liquid,99.9,0.1,6.51,6.21,1.47,3.2,4.17,2.88,1.29,1.26,0.564,8.34,8332,lb/1000 gal (as-applied),3321,National,ManureDB 2014-2023
+Southwest,Beef,Slurry,92.6,7.4,140,40.9,21.7,17.5,21.7,15,6.72,6.53,2.94,617,7723,lb/1000 gal (as-applied),1636,National,ManureDB 2014-2023
+Southwest,Beef,Semi-solid,86.4,13.6,128,13,1.44,7.6,6.68,4.61,2.07,2.01,0.904,271,1729,lb/ton (as-applied),1890,National,ManureDB 2014-2023
+Southwest,Beef,Solid,55.1,44.9,213,16.4,1.48,14.9,10.8,7.43,3.34,3.24,1.46,897,1103,lb/ton (as-applied),14,Regional,ManureDB 2014-2023
+Southwest,Dairy,Liquid,99.3,0.72,51.7,3.96,2.41,1.38,1.46,0.907,0.556,0.396,0.243,60,8280,lb/1000 gal (as-applied),1902,Regional,ManureDB 2014-2023
+Southwest,Dairy,Slurry,95,5.02,140,23.4,12.4,10.8,12.5,7.76,4.75,3.39,2.08,419,7921,lb/1000 gal (as-applied),11,Regional,ManureDB 2014-2023
+Southwest,Dairy,Semi-solid,82.2,17.8,118,8,0.96,7.04,4,2.48,1.52,1.08,0.664,356,1644,lb/ton (as-applied),44,Regional,ManureDB 2014-2023
+Southwest,Dairy,Solid,32.2,67.8,197,22.4,2.69,19.7,15.4,9.55,5.85,4.17,2.56,1357,643,lb/ton (as-applied),1074,Regional,ManureDB 2014-2023
+Southwest,Poultry,Liquid,99.9,0.1,3.19,6.68,3.32,3.23,3.34,1.93,1.4,0.845,0.612,8.34,8332,lb/1000 gal (as-applied),938,National,ManureDB 2014-2023
+Southwest,Poultry,Slurry,93.6,6.38,204,48.4,24.2,19.2,30.5,17.7,12.8,7.73,5.6,532,7808,lb/1000 gal (as-applied),95,National,ManureDB 2014-2023
+Southwest,Poultry,Semi-solid,83.1,16.9,118,13.8,3.17,9.8,18.2,10.6,7.64,4.61,3.34,339,1661,lb/ton (as-applied),77,National,ManureDB 2014-2023
+Southwest,Poultry,Solid,38.6,61.4,339,45.8,9.97,35.7,43.4,25.2,18.2,11,7.95,1227,773,lb/ton (as-applied),52,Regional,ManureDB 2014-2023
+Southwest,Swine,Liquid,98.1,1.89,16,3.48,2.14,1.28,0.877,0.632,0.246,0.276,0.107,158,8182,lb/1000 gal (as-applied),133950,National,ManureDB 2014-2023
+Southwest,Swine,Slurry,93.9,6.13,153,54.2,34.2,19.8,26.7,19.2,7.47,8.39,3.26,511,7829,lb/1000 gal (as-applied),38113,National,ManureDB 2014-2023
+Southwest,Swine,Semi-solid,88.8,11.2,36.5,17.4,3.07,13.3,9.48,6.83,2.65,2.98,1.16,225,1775,lb/ton (as-applied),4849,National,ManureDB 2014-2023
+Southwest,Swine,Solid,57.9,42.1,353,17.6,2.72,14,22.6,16.3,6.33,7.11,2.76,841,1159,lb/ton (as-applied),853,National,ManureDB 2014-2023

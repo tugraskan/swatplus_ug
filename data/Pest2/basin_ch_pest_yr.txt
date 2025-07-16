@@ -1,0 +1,2 @@
+ BHAC                      SWAT+ 2025-07-10        MODULAR Rev 2025.61.0.2.11-201-g009132f                
+   jday   mon   day    yr   unit  gis_id  name            pesticide      tot_in_kg    sol_out_kg   sor_out_kg    react_h2o_kg metab_h2o_kg volat_kg    settle_kg   resuspend_kg diffuse_kg  react_benth_kg metab_benth_kg bury_benth_kg water_stor_kg benthic_kg  

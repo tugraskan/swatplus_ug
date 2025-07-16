@@ -1,0 +1,2 @@
+ BHAC                      SWAT+ 2025-07-10        MODULAR Rev 2025.61.0.2.11-201-g009132f                
+  jday   mon   day    yr    unit  gis_id  name            pesticide      on_plant_kg/ha    soil_kg/ha     sed_kg/ha     surq_kg/ha     latq_kg/ha    tileq_kg/ha     perc_kg/ha   apply_s_kg/ha  apply_f_kg/ha  decay_s_kg/ha  decay_f_kg/ha    wash_kg/ha   metab_s_kg/ha  metab_f_kg/ha   uptake_kg/ha in_plant_kg/ha 

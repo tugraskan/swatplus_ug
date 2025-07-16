@@ -1,0 +1,12 @@
+pest_hru.man
+NAME         man   
+low_ini
+aatrex       0.10    
+banvel       0.05    
+prowl        0.00    
+roundup      0.01    
+no_ini
+aatrex       0.00    
+banvel       0.00    
+prowl        0.00    
+roundup      0.00    
