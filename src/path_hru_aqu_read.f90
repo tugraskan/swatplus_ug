@@ -8,6 +8,7 @@
       
       character (len=80) :: titldum = ""
       character (len=80) :: header = ""
+      character(len=16) :: manu = "path.man"
       integer :: ipath = 0
       integer :: ipathi = 0
       integer :: eof = 0
@@ -61,7 +62,17 @@
           close (107)
           exit
         end do
-      end if
+        
+        ! --- fertilizer pathogen concentrations ---
+        ! reads the pathogen amounts that are attached to each fertilizer
       
-      return
-      end subroutine path_hru_aqu_read
+        call fert_constituent_file_read (manu, imax, cs_db%num_paths)
+        call MOVE_ALLOC(fert_arr, path_fert_soil_ini) 
+        
+      end if
+
+
+
+  return
+  end subroutine path_hru_aqu_read
+

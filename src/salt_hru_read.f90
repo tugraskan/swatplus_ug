@@ -8,6 +8,7 @@
  
       character (len=80) :: titldum = ""
       character (len=80) :: header = ""
+      character (len=16) :: manu = 'salt.man'
       integer :: isalt = 0
       integer :: isalti = 0
       integer :: eof = 0
@@ -75,6 +76,11 @@
           exit
         end do
       end if
+
+      ! --- fertilizer salt concentrations ---
+      ! salts use the bulk format (all ions per line)
+      call fert_constituent_file_read(manu, imax, cs_db%num_salts)
+      call MOVE_ALLOC(fert_arr, salt_fert_soil_ini)
       
       return
       end subroutine salt_hru_read

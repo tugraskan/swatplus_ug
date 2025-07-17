@@ -9,10 +9,12 @@
  
       character (len=80) :: titldum = ""
       character (len=80) :: header = ""
+      character (len=16) :: manu = "cs.man"
       integer :: ics = 0
       integer :: eof = 0
       integer :: imax = 0
       logical :: i_exist              !none       |check to determine if file exists
+
 
       eof = 0
       
@@ -72,10 +74,16 @@
             read (107,*,iostat=eof) cs_soil_ini(ics)%plt
             if (eof < 0) exit
           end do
-          close (107)
-          exit
-        end do
-      end if
-      
-      return
-      end subroutine cs_hru_read
+      close (107)
+      exit
+    end do
+  end if
+
+  ! --- fertilizer constituent concentrations ---
+  ! general constituents are stored in bulk format
+  call fert_constituent_file_read(manu, imax, cs_db%num_cs)
+  call MOVE_ALLOC(fert_arr, cs_fert_soil_ini)
+
+  return
+  end subroutine cs_hru_read
+
