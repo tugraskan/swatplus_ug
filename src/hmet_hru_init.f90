@@ -1,3 +1,10 @@
+!--------------------------------------------------------------------
+!  hmet_hru_init
+!    Allocate and initialize heavy metal pools for each HRU based on
+!    the hmet_hru_aqu_read inputs.  Soil layers are populated with
+!    starting concentrations and irrigation water values are set to
+!    zero.
+!--------------------------------------------------------------------
 subroutine hmet_hru_init
 
   use hru_module, only : hru, sol_plt_ini_cs

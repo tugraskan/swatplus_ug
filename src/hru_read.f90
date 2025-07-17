@@ -1,4 +1,10 @@
-      subroutine hru_read
+!--------------------------------------------------------------------
+!  hru_read
+!    Read the hru.con file and allocate HRU level data structures.
+!    Soil, landuse and climate pointers are resolved here prior to
+!    model initialization.
+!--------------------------------------------------------------------
+subroutine hru_read
 
       use maximum_data_module
       use reservoir_data_module

@@ -1,3 +1,10 @@
+!--------------------------------------------------------------------
+!  cs_apply
+!    Add a generic constituent to the first two soil layers and
+!    optionally intercept a portion on the plant canopy.  The amount
+!    added is specified in mass per area and distributed according to
+!    the application option.
+!--------------------------------------------------------------------
 subroutine cs_apply(jj, ics, cs_kg, csop)
 
   use mgt_operations_module

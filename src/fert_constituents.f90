@@ -1,11 +1,12 @@
 
 !--------------------------------------------------------------------
 !  fert_constituents_apply
-!    Apply pesticide, pathogen, salt, heavy metal and other constituent
-!    loads that are linked to a fertilizer application.  The routine
-!    multiplies the fertilizer rate by the stored constituent
-!    concentrations and distributes the resulting mass between plant
-!    and soil pools.
+!    Apply pesticide, pathogen, salt, heavy metal and other
+!    constituent loads that are linked to a fertilizer application.
+!    Concentrations are looked up from the appropriate *.man file
+!    for the fertilizer in question.  The resulting mass is
+!    partitioned between plant and soil pools according to the
+!    application option.
 !--------------------------------------------------------------------
 subroutine fert_constituents_apply(j, ifrt, frt_kg, fertop)
 
@@ -41,8 +42,11 @@ subroutine fert_constituents_apply(j, ifrt, frt_kg, fertop)
 
 
       ! --- pesticides ---
-      ! If the fertilizer references a pesticide table, locate the matching
-      ! entry and apply each pesticide in proportion to the fertilizer mass.
+      ! Look up pesticide concentrations linked to this fertilizer.  The
+      ! matching pest.man table lists an application rate for each pesticide
+      ! which is multiplied by the fertilizer mass.  Each resulting load is
+      ! then routed through pest_apply so it can be partitioned between the
+      ! canopy and soil layers.
       
       if (cs_db%num_pests > 0) then
         if (allocated(pest_fert_soil_ini)) then
@@ -64,9 +68,9 @@ subroutine fert_constituents_apply(j, ifrt, frt_kg, fertop)
       end if
 
       ! --- pathogens ---
-      ! Similar logic is used for pathogens.  The matching table provides
-      ! concentrations for each pathogen which are multiplied by the fertilizer
-      ! rate and then added to plant and soil pools.
+      ! Pathogen addition uses the same approach.  A table name stored with the
+      ! fertilizer points to path.man which holds a concentration for each
+      ! pathogen.  Those values are scaled by frt_kg and passed to path_apply.
 
       if (cs_db%num_paths > 0) then
         if (allocated(path_fert_soil_ini)) then
@@ -87,7 +91,9 @@ subroutine fert_constituents_apply(j, ifrt, frt_kg, fertop)
       end if
 
       ! --- salts ---
-      ! Add ion concentrations from the matching salt table to the soil layers.
+      ! Fertilizer derived salts are stored in salt.man.  Each ion listed for
+      ! the matching table is converted to a mass using the fertilizer amount
+      ! and distributed with salt_apply.
 
       if (cs_db%num_salts > 0) then
         if (allocated(salt_fert_soil_ini)) then
@@ -108,7 +114,10 @@ subroutine fert_constituents_apply(j, ifrt, frt_kg, fertop)
       end if
 
       ! --- heavy metals ---
-      !   cs_soil(j)%ly(1)%hmet is not used in SWAT+.
+      ! Heavy metal loads work in an identical fashion.  The hmet.man file
+      ! supplies concentrations by fertilizer type.  After scaling by the
+      ! application rate each metal is routed via hmet_apply.  Note that
+      ! cs_soil(j)%ly(1)%hmet is not used in SWAT+.
 
       if (cs_db%num_metals > 0) then
         if (allocated(hmet_fert_soil_ini)) then
@@ -129,7 +138,8 @@ subroutine fert_constituents_apply(j, ifrt, frt_kg, fertop)
       end if
 
       ! --- other constituents ---
-      ! Generic constituents are treated in the same way as salts and metals.
+      ! Generic constituents stored in cs.man follow the same lookup and
+      ! application process used for salts and metals.
 
       if (cs_db%num_cs > 0) then
         if (allocated(cs_fert_soil_ini)) then

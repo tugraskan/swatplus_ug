@@ -1,4 +1,11 @@
-      subroutine hmet_hru_aqu_read
+!--------------------------------------------------------------------
+!  hmet_hru_aqu_read
+!    Read initialization data for heavy metals in HRUs and aquifers.
+!    This routine loads soil and plant concentrations from hmet_soil
+!    and links fertilizer types to heavy metal concentration tables
+!    specified in hmet.man.
+!--------------------------------------------------------------------
+subroutine hmet_hru_aqu_read
     
       use constituent_mass_module
       use input_file_module

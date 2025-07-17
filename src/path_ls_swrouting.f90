@@ -1,4 +1,11 @@
-      subroutine path_ls_swrouting
+!--------------------------------------------------------------------
+!  path_ls_swrouting
+!    Calculate pathogen infiltration from the surface soil layer into
+!    deeper layers using a first order decay approach.  The resulting
+!    reduction in surface concentration is recorded in the pathogen
+!    balance arrays.
+!--------------------------------------------------------------------
+subroutine path_ls_swrouting
     
       use pathogen_data_module
       use constituent_mass_module

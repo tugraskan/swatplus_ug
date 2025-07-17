@@ -1,3 +1,9 @@
+!--------------------------------------------------------------------
+!  salt_apply
+!    Apply dissolved salt ions to the soil profile.  The amount added
+!    is divided between the surface and second layer and reduced by
+!    any canopy interception of the application.
+!--------------------------------------------------------------------
 subroutine salt_apply(jj, isalt, salt_kg, saltop)
 
   use mgt_operations_module

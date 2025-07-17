@@ -1,4 +1,10 @@
-      subroutine salt_cha_read !rtb salt
+!--------------------------------------------------------------------
+!  salt_cha_read
+!    Read initial salt concentrations for channels.  If no
+!    salt_channel.ini file is provided a default zero concentration
+!    profile is created so downstream routines can proceed.
+!--------------------------------------------------------------------
+subroutine salt_cha_read !rtb salt
     
       use constituent_mass_module
       use input_file_module

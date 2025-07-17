@@ -1,4 +1,10 @@
-      subroutine pest_hru_aqu_read
+!--------------------------------------------------------------------
+!  pest_hru_aqu_read
+!    Load pesticide concentrations for soils and plants as well as
+!    fertilizer-specific pesticide amounts.  Data are read from the
+!    pest_soil initialization file and the pest.man fertilizer table.
+!--------------------------------------------------------------------
+subroutine pest_hru_aqu_read
     
       use constituent_mass_module
       use input_file_module

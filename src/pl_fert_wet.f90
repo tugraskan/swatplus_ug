@@ -1,8 +1,10 @@
       subroutine pl_fert_wet (ifrt, frt_kg, fertop)
       
 !!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine applies N and P specified by date and
-!!    amount in the management file (.mgt) for rice fields during ponding periods
+!!    this subroutine applies mineral and organic N and P specified by
+!!    date and amount in the management file (.mgt) for rice fields
+!!    during ponding periods.  Constituent additions linked to the
+!!    fertilizer are handled by fert_constituents_apply.
 !!    Jaehak 2022
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 

@@ -1,3 +1,10 @@
+!--------------------------------------------------------------------
+!  hmet_apply
+!    Apply a heavy metal mass to the first two soil layers, accounting
+!    for canopy interception.  The portion captured by vegetation is
+!    removed from the application before the remaining mass is split
+!    between the surface and subsurface soil.
+!--------------------------------------------------------------------
 subroutine hmet_apply(jj, ihmet, hmet_kg, hmetop)
 
   use mgt_operations_module

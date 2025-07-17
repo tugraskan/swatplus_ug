@@ -1,8 +1,9 @@
       subroutine salt_hru_init
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine calls subroutines which read input data for the 
-!!    databases and the HRUs
+!!    this subroutine allocates and initializes salt pools for each HRU
+!!    using values read by salt_hru_aqu_read.  Concentrations for
+!!    irrigation water are also set up here.
 
       use hru_module, only : hru, sol_plt_ini_cs
       use soil_module

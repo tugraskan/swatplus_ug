@@ -1,4 +1,10 @@
-      subroutine path_parm_read
+!--------------------------------------------------------------------
+!  path_parm_read
+!    Read pathogen property information from pathcom.dat.  This
+!    routine allocates the pathogen database and stores parameters
+!    required by pathogen transport routines.
+!--------------------------------------------------------------------
+subroutine path_parm_read
       
       use input_file_module
       use pathogen_data_module, only : path_db
