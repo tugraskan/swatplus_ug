@@ -34,10 +34,6 @@
       real :: meta_fr                     !              |fraction of metabolic applied to layer
       real :: pool_fr                     !              |fraction of structural or lignin applied to layer
       logical :: manure_flag
-      integer :: ipest_ini = 0            !none          |index for fertilizer pesticide concentrations
-      integer :: ipest = 0                !none          |pesticide counter
-      real :: pest_kg = 0.                !kg/ha         |pesticide mass applied with fertilizer
-
       manure_flag = .false.
       org_frt%m = 0.
       org_frt%c = 0.
