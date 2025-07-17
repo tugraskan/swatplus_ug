@@ -7,6 +7,9 @@
  HRU                       hru_rescarb_aa.txt
  HRU                       hru_plcarb_aa.txt
  HRU                       hru_scf_aa.txt
+ HRU                       hru_plc_stat.txt
+ HRU                       hru_resc_stat.txt
+ HRU                       hru_soilc_stat.txt
  BASIN                     basin_carbon_all.txt
  HRU                       hru_nut_carb_gl_aa.txt
  HRU                       hru_ls_aa.txt
@@ -28,9 +31,6 @@
  DEPO                      deposition_aa.txt
  RES_WET                   wetland_aa.txt
  HRU_ORGC                  hru_orgc.txt
- HRU_PEST                  hru_pest_aa.txt
- BASIN_LS_PEST             basin_ls_pest_aa.txt
- HRU_PATH                  hru_path_aa.txt
  BASIN_AQUIFER             basin_aqu_aa.txt
  BASIN_RESERVOIR           basin_res_aa.txt
  RECALL_AA                 recall_aa.txt
