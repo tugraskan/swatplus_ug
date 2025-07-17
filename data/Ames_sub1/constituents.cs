@@ -1,9 +1,9 @@
 constituents.cs:
-1     !pesticides
-weedar 
-0     !pathogens
-
-0     !metals
-
-0     !salts
-
+2     !pesticides
+weedar  roundup
+2     !pathogens
+e_coli  fecal_col_form
+1     !metals
+lead
+1     !salts
+chloride

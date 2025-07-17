@@ -56,7 +56,14 @@
             water_volume = (soil(ihru)%phys(ly)%st/1000.) * hru_area_m2
             cs_soil(ihru)%ly(ly)%salt(isalt) = (salt_soil_ini(isalt_db)%soil(isalt)/1000.) * water_volume / hru(ihru)%area_ha !g/m3 --> kg/ha
           end do
-          cs_irr(ihru)%saltc(isalt) = salt_water_irr(isalt_db)%water(isalt) !g/m3 concentration
+          ! irrigation water salt concentration. salt_water_irr is allocated
+          ! with zero values when no salt_irrigation file is provided (see
+          ! salt_irr_read).
+          if (allocated(salt_water_irr)) then
+            cs_irr(ihru)%saltc(isalt) = salt_water_irr(isalt_db)%water(isalt)
+          else
+            cs_irr(ihru)%saltc(isalt) = 0.
+          end if
         end do
         
         ! loop for salt mineral fractions

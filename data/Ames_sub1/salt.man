@@ -1,0 +1,6 @@
+salt_hru.man
+NAME         man
+low_ini
+chloride       10.0       
+no_ini
+chloride       0.0         

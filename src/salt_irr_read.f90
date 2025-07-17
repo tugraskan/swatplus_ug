@@ -17,6 +17,9 @@
       eof = 0
       
       !read salt data for outside irrigation water
+      !if the file is missing, a single default profile with zero
+      !concentration is created so initialization routines can
+      !safely reference salt_water_irr
       inquire (file="salt_irrigation", exist=i_exist)
       if (i_exist) then
         do
@@ -54,7 +57,7 @@
           close (107)
           exit
         end do
-      end if
+        end if
       
       return
       end subroutine salt_irr_read

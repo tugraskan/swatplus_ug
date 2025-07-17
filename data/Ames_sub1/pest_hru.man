@@ -1,0 +1,8 @@
+pest_hru.man
+NAME         man   
+low_ini   
+weedar        0.00    
+roundup      0.01    
+no_ini 
+weedar        0.00    
+roundup      0.00    

@@ -23,9 +23,9 @@
       real :: bacdiegroplt_out = 0.
       real :: theta
       real :: wash_off = 0. !               |pathogen wash off
-
+       
       j = ihru
-         
+     
       pl_die_gro = 0.
       sol_die_gro = 0.
       

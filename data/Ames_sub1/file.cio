@@ -1,5 +1,5 @@
 file.cio: AMES
-simulation        time.sim          print.prt         null              object.cnt        null              
+simulation        time.sim          print.prt         null              object.cnt        constituents.cs              
 basin             codes.bsn         parameters.bsn    
 climate           weather-sta.cli   weather-wgn.cli   null              pcp.cli           tmp.cli           null              null              null              null              
 connect           hru.con           null              null              null              null              null              null              null              null              null              null              null              null       
@@ -16,11 +16,11 @@ water_rights      null              null              null
 link              null              null              
 hydrology         hydrology.hyd     topography.hyd    null         
 structural        tiledrain.str     septic.str        filterstrip.str   grassedww.str     bmpuser.str       
-hru_parm_db       plants.plt        fertilizer.frt    tillage.til       pesticide.pes     null              null              null              urban.urb         septic.sep        snow.sno          
+hru_parm_db       plants.plt        fertilizer.frt    tillage.til       pesticide.pes     pathogens.pth     metals.mtl       salt.slt              urban.urb         septic.sep        snow.sno          
 ops               harv.ops          graze.ops         irr.ops           chem_app.ops      fire.ops          sweep.ops         
 lum               landuse.lum       management.sch    cntable.lum       cons_practice.lum  ovn_table.lum     
 chg               null     null              null              null              null              null              null              null              null              
-init              plant.ini         soil_plant.ini    null     null              null              null              null              null              null              null              null              null              
+init              plant.ini         soil_plant.ini    null pest_hru.ini      pest_water.ini    path_hru.ini      path_water.ini    hmet_hru.ini      hmet_water.ini    salt_hru.ini      salt_water.ini              
 soils             soils.sol         nutrients.sol              null              
 decision_table    lum.dtl           null              null              null
 regions           ls_unit.ele       null              null              null              null              null              null              null              aqu_catunit.ele   null              null              null              null              null              null              null              null              

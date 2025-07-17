@@ -62,13 +62,16 @@
           close (107)
           exit
         end do
+        
+        ! --- fertilizer pathogen concentrations ---
+        ! reads the pathogen amounts that are attached to each fertilizer
+      
+        call fert_constituent_file_read (manu, imax, cs_db%num_paths)
+        call MOVE_ALLOC(fert_arr, path_fert_soil_ini) 
+        
       end if
 
-  ! --- fertilizer pathogen concentrations ---
-  ! reads the pathogen amounts that are attached to each fertilizer
-      
-  call fert_constituent_file_read (manu, imax, cs_db%num_paths)
-  call MOVE_ALLOC(fert_arr, path_fert_soil_ini)
+
 
   return
   end subroutine path_hru_aqu_read

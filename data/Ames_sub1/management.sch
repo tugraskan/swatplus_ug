@@ -5,7 +5,7 @@ mgt_01                              305         1
                                                     till          4          1    0.0    chisplow        null     0.000
                                                     plnt          4         28    0.0        corn        null         0
                                                     irrm          5         15    0.0        sprinkler_ilm    null     0.000
-                                                    fert          6          1    0.0        null      elem_n   181.400
+                                                    fert          6          1    0.0        beef_fr      broadcast   181.400
                                                     hvkl         10          7    0.0        corn       grain     0.000
                                                     fert         10          9    0.0        null    11_52_00   142.700
                                                     till         10         11    0.0    chisplow        null     0.000													

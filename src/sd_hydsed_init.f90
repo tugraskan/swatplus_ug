@@ -286,8 +286,13 @@
           ich_ini = sd_dat(ichdat)%init
           isalt_ini = sd_init(ich_ini)%salt
           do isalt=1,cs_db%num_salts
-            ch_water(ich)%saltc(isalt) = salt_cha_ini(isalt_ini)%conc(isalt) !g/m3
-            ch_water(ich)%salt(isalt) = (salt_cha_ini(isalt_ini)%conc(isalt)/1000.) * tot_stor(ich)%flo !kg
+            if (allocated(salt_cha_ini)) then
+              ch_water(ich)%saltc(isalt) = salt_cha_ini(isalt_ini)%conc(isalt) !g/m3
+            else
+              ! fall back to zero concentration when no salt_channel.ini was provided
+              ch_water(ich)%saltc(isalt) = 0.
+            end if
+            ch_water(ich)%salt(isalt) = (ch_water(ich)%saltc(isalt)/1000.) * tot_stor(ich)%flo !kg
           enddo
         enddo
       endif
@@ -299,10 +304,15 @@
           ichdat = ob(iob)%props
           ich_ini = sd_dat(ichdat)%init
           ics_ini = sd_init(ich_ini)%cs
-          do ics=1,cs_db%num_cs
-            ch_water(ich)%csc(ics) = cs_cha_ini(ics_ini)%conc(ics)
-            ch_water(ich)%cs(ics) = (cs_cha_ini(ics_ini)%conc(ics)/1000.) * tot_stor(ich)%flo !kg
-          enddo
+            do ics=1,cs_db%num_cs
+              if (allocated(cs_cha_ini)) then
+                ch_water(ich)%csc(ics) = cs_cha_ini(ics_ini)%conc(ics)
+              else
+                ! default to zero concentration when no cs_channel.ini was provided
+                ch_water(ich)%csc(ics) = 0.
+              end if
+              ch_water(ich)%cs(ics) = (ch_water(ich)%csc(ics)/1000.) * tot_stor(ich)%flo !kg
+            enddo
         enddo
             endif
       
