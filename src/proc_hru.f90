@@ -39,6 +39,7 @@
         if (cs_db%num_pests > 0) call pesticide_init
         if (cs_db%num_paths > 0) call pathogen_init
         if (cs_db%num_salts > 0) call salt_hru_init !rtb salt
+        if (cs_db%num_metals > 0) call hmet_hru_init
         if (cs_db%num_cs > 0) call cs_hru_init !rtb cs
         
       !! allocate erosion output and open file

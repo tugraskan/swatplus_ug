@@ -326,7 +326,9 @@
             frt_kg = mgt%op3                        !amount applied in kg/ha
             ifertop = mgt%op4                       !surface application fraction from chem app data base
             if (wet(j)%flo>0.) then !case for surface application with standing water
-              call pl_fert_wet (ifrt, frt_kg) 
+
+              call pl_fert_wet (ifrt, frt_kg, ifertop)
+
               call salt_fert_wet(j,ifrt,frt_kg)
               call cs_fert_wet(j,ifrt,frt_kg)
               if (pco%mgtout == "y") then

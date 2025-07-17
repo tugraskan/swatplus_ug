@@ -14,9 +14,9 @@
       use fertilizer_data_module
       use basin_module
       use organic_mineral_mass_module
+      use constituent_mass_module
       use hru_module, only : ihru, fertn, fertp, fertnh3, fertno3, fertorgn, fertorgp, fertp,  &
         fertsolp  
-
       implicit none 
       
       real :: rtof             !none          |weighting factor used to partition the 
@@ -34,7 +34,6 @@
       real :: meta_fr                     !              |fraction of metabolic applied to layer
       real :: pool_fr                     !              |fraction of structural or lignin applied to layer
       logical :: manure_flag
-
       manure_flag = .false.
       org_frt%m = 0.
       org_frt%c = 0.
@@ -147,6 +146,32 @@
       fertorgp = frt_kg * fertdb(ifrt)%forgp  
       fertn = fertn + frt_kg * (fertdb(ifrt)%fminn + fertdb(ifrt)%forgn)
       fertp = fertp + frt_kg * (fertdb(ifrt)%fminp + fertdb(ifrt)%forgp)
+
+
+      !! apply constituents associated with this fertilizer
+      !! the helper cross-references pest/path/salt/hmet/cs names from
+      !! fertilizer_ext.frt and distributes the resulting loads
+      call fert_constituents_apply(j, ifrt, frt_kg, fertop)
+
+      
+      !! apply pesticides associated with this fertilizer, done in fert_constituents_apply now
+      !if (cs_db%num_pests > 0) then
+      !  if (allocated(pest_fert_soil_ini)) then
+      !    if (size(manure_db) >= ifrt) then
+      !      if (manure_db(ifrt)%pest /= '') then
+      !        do ipest_ini = 1, size(pest_fert_soil_ini)
+      !          if (trim(manure_db(ifrt)%pest) == trim(pest_fert_soil_ini(ipest_ini)%name)) then
+      !            do ipest = 1, cs_db%num_pests
+      !              pest_kg = frt_kg * pest_fert_soil_ini(ipest_ini)%soil(ipest)
+      !              if (pest_kg > 0.) call pest_apply (j, ipest, pest_kg, fertop)
+      !            end do
+      !            exit
+      !          end if
+      !        end do
+      !      end if
+      !    end if
+      !  end if
+      !end if
       
       return
       end subroutine pl_fert

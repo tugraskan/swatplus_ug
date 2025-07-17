@@ -1,57 +1,41 @@
-       subroutine path_apply (frt_kg)
-          
-      !! calculate ground cover
-      !! graze only if adequate biomass in HRU
-            
-!!    this subroutine applies pathogens leached to the plants and soil 
+subroutine path_apply(jj, ipath, path_kg, pathop)
 
-!!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
-!!    name         |units         |definition
-!!         ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-!!    fert_kg      |kg/ha         |manure applied
+  use mgt_operations_module
+  use soil_module
+  use plant_module
+  use output_ls_pathogen_module
+  use constituent_mass_module
 
-!!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
+  implicit none
 
-      use soil_module
-      use plant_module
-      use pathogen_data_module
-      use output_ls_pathogen_module
-      use constituent_mass_module
+  integer, intent(in) :: jj      ! HRU number
+  integer, intent(in) :: ipath   ! pathogen index
+  real,    intent(in) :: path_kg ! amount of pathogen applied (kg or cfu)
+  integer, intent(in) :: pathop  ! application option
 
-      implicit none
-            
-      real, intent (in)  :: frt_kg
-      real :: frt_t = 0.   !          |
-      real :: gc = 0.      !none      |fraction of ground covered by plant foliage
-      real :: gc1 = 0.     !          | 
-      real :: pl_frac = 0. !0-1       |fraction of pesticide applied to each plant
-      integer :: ipath = 0 !none      |counter
-      integer :: ipath_db = 0!          |pathogen type from pathogens.pth data input file
-      integer :: j = 0     !          |
-      integer :: ipl = 0   !none      |plant number
+  integer :: j = 0
+  integer :: ipl = 0
+  real :: gc = 0.
+  real :: surf_frac = 0.
+  real :: pl_frac = 0.
 
-      j = 0
-      
-      !! add pathogens - #cfu/g * t(manure)/ha * 1.e6 g/t * ha/10,000 m^2 = 100.  **should be conc in manure
-      gc = (1.99532 - erfc(1.333 * pcom(j)%lai_sum - 2.)) / 2.1
-      if (gc < 0.) gc = 0.
-      gc1 = 1. - gc
-      do ipath = 1, cs_db%num_paths
-        ipath_db = cs_db%path_num(ipath)
-        frt_t = path_db(ipath_db)%fr_manure * frt_kg / 1000.
-        !! update pathogen levels on foliage
-        if (pcom(j)%lai_sum > 1.e-6) then
-          do ipl = 1, pcom(j)%npl
-            pl_frac = pcom(j)%plg(ipl)%lai / pcom(j)%lai_sum
-            cs_pl(j)%pl_on(ipl)%path(ipath) = cs_pl(j)%pl_on(ipl)%pest(ipath) + gc * pl_frac * frt_kg
-            hpath_bal(j)%path(ipath)%apply_plt = hpath_bal(j)%path(ipath)%apply_plt + gc * pl_frac * frt_kg
-          end do
-        end if
-        !! update pathogen levels on ground
-        hpath_bal(j)%path(ipath)%apply_sol =  gc1 * frt_t * 100.
-        cs_soil(j)%ly(1)%path(ipath) = cs_soil(j)%ly(1)%path(ipath) + gc1 * frt_t * 100.
-      end do
+  j = jj
 
-      return
-      
-      end subroutine path_apply
+  ! fraction intercepted by plant canopy
+  gc = (1.99532 - erfc(1.333 * pcom(j)%lai_sum - 2.)) / 2.1
+  if (gc < 0.) gc = 0.
+  surf_frac = chemapp_db(pathop)%surf_frac
+
+  if (pcom(j)%lai_sum > 1.e-6) then
+    do ipl = 1, pcom(j)%npl
+      pl_frac = pcom(j)%plg(ipl)%lai / pcom(j)%lai_sum
+      cs_pl(j)%pl_on(ipl)%path(ipath) = cs_pl(j)%pl_on(ipl)%path(ipath) + gc * pl_frac * path_kg
+      hpath_bal(j)%path(ipath)%apply_plt = hpath_bal(j)%path(ipath)%apply_plt + gc * pl_frac * path_kg
+    end do
+  end if
+
+  cs_soil(j)%ly(1)%path(ipath) = cs_soil(j)%ly(1)%path(ipath) + (1. - gc) * surf_frac * path_kg
+  cs_soil(j)%ly(2)%path(ipath) = cs_soil(j)%ly(2)%path(ipath) + (1. - gc) * (1. - surf_frac) * path_kg
+  hpath_bal(j)%path(ipath)%apply_sol = hpath_bal(j)%path(ipath)%apply_sol + (1. - gc) * path_kg
+
+end subroutine path_apply
