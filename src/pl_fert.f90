@@ -17,8 +17,6 @@
       use constituent_mass_module
       use hru_module, only : ihru, fertn, fertp, fertnh3, fertno3, fertorgn, fertorgp, fertp,  &
         fertsolp  
-      use constituent_mass_module
-
       implicit none 
       
       real :: rtof             !none          |weighting factor used to partition the 
