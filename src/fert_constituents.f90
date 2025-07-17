@@ -27,13 +27,6 @@ subroutine fert_constituents_apply(j, ifrt, frt_kg, fertop)
       integer, intent(in) :: fertop      ! chemical application type
 
 
-      ! fraction intercepted by plant canopy (0-1)
-      real :: gc = 0.
-      ! portion of fertilizer remaining on the soil surface
-      real :: surf_frac = 0.
-      ! temporary plant fraction
-      real :: pl_frac = 0.
-      integer :: ipl = 0                  ! plant loop index
 
       integer :: ipest_ini = 0, ipest = 0  ! pesticide table and index
       real :: pest_kg = 0.                 ! mass of pesticide applied
@@ -46,12 +39,6 @@ subroutine fert_constituents_apply(j, ifrt, frt_kg, fertop)
       integer :: ics_ini = 0, ics = 0      ! other constituent table and index
       real :: cs_kg = 0.                   ! mass of other constituent applied
 
-      ! compute the fraction of spray intercepted by the canopy (gc)
-      ! using the standard SWAT+ pesticide algorithm
-      gc = (1.99532 - erfc(1.333 * pcom(j)%lai_sum - 2.)) / 2.1
-      if (gc < 0.) gc = 0.
-      ! fraction of application that remains on the soil surface
-      surf_frac = chemapp_db(fertop)%surf_frac
 
       ! --- pesticides ---
       ! If the fertilizer references a pesticide table, locate the matching
@@ -89,18 +76,7 @@ subroutine fert_constituents_apply(j, ifrt, frt_kg, fertop)
                 if (trim(manure_db(ifrt)%path) == trim(path_fert_soil_ini(ipath_ini)%name)) then
                   do ipath = 1, cs_db%num_paths
                     path_kg = frt_kg * path_fert_soil_ini(ipath_ini)%soil(ipath)
-                    if (path_kg > 0.) then
-                      if (pcom(j)%lai_sum > 1.e-6) then
-                        do ipl = 1, pcom(j)%npl
-                          pl_frac = pcom(j)%plg(ipl)%lai / pcom(j)%lai_sum
-                          cs_pl(j)%pl_on(ipl)%path(ipath) = cs_pl(j)%pl_on(ipl)%path(ipath) + gc * pl_frac * path_kg
-                          hpath_bal(j)%path(ipath)%apply_plt = hpath_bal(j)%path(ipath)%apply_plt + gc * pl_frac * path_kg
-                        end do
-                      end if
-                      cs_soil(j)%ly(1)%path(ipath) = cs_soil(j)%ly(1)%path(ipath) + (1. - gc) * surf_frac * path_kg
-                      cs_soil(j)%ly(2)%path(ipath) = cs_soil(j)%ly(2)%path(ipath) + (1. - gc) * (1. - surf_frac) * path_kg
-                      hpath_bal(j)%path(ipath)%apply_sol = hpath_bal(j)%path(ipath)%apply_sol + (1. - gc) * path_kg
-                    end if
+                    if (path_kg > 0.) call path_apply(j, ipath, path_kg, fertop)
                   end do
                   exit
                 end if
@@ -121,10 +97,7 @@ subroutine fert_constituents_apply(j, ifrt, frt_kg, fertop)
                 if (trim(manure_db(ifrt)%salt) == trim(salt_fert_soil_ini(isalt_ini)%name)) then
                   do isalt = 1, size(salt_fert_soil_ini(isalt_ini)%soil)
                     salt_kg = frt_kg * salt_fert_soil_ini(isalt_ini)%soil(isalt)
-                    if (isalt <= size(cs_soil(j)%ly(1)%salt)) then
-                      cs_soil(j)%ly(1)%salt(isalt) = cs_soil(j)%ly(1)%salt(isalt) + (1. - gc) * surf_frac * salt_kg
-                      cs_soil(j)%ly(2)%salt(isalt) = cs_soil(j)%ly(2)%salt(isalt) + (1. - gc) * (1. - surf_frac) * salt_kg
-                    end if
+                    if (salt_kg > 0.) call salt_apply(j, isalt, salt_kg, fertop)
                   end do
                   exit
                 end if
@@ -145,10 +118,7 @@ subroutine fert_constituents_apply(j, ifrt, frt_kg, fertop)
                 if (trim(manure_db(ifrt)%hmet) == trim(hmet_fert_soil_ini(ihmet_ini)%name)) then
                   do ihmet = 1, size(hmet_fert_soil_ini(ihmet_ini)%soil)
                     hmet_kg = frt_kg * hmet_fert_soil_ini(ihmet_ini)%soil(ihmet)
-                    if (ihmet <= size(cs_soil(j)%ly(1)%hmet)) then
-                      cs_soil(j)%ly(1)%hmet(ihmet) = cs_soil(j)%ly(1)%hmet(ihmet) + (1. - gc) * surf_frac * hmet_kg
-                      cs_soil(j)%ly(2)%hmet(ihmet) = cs_soil(j)%ly(2)%hmet(ihmet) + (1. - gc) * (1. - surf_frac) * hmet_kg
-                    end if
+                    if (hmet_kg > 0.) call hmet_apply(j, ihmet, hmet_kg, fertop)
                   end do
                   exit
                 end if
@@ -169,10 +139,7 @@ subroutine fert_constituents_apply(j, ifrt, frt_kg, fertop)
                 if (trim(manure_db(ifrt)%cs) == trim(cs_fert_soil_ini(ics_ini)%name)) then
                   do ics = 1, size(cs_fert_soil_ini(ics_ini)%soil)
                     cs_kg = frt_kg * cs_fert_soil_ini(ics_ini)%soil(ics)
-                    if (ics <= size(cs_soil(j)%ly(1)%cs)) then
-                      cs_soil(j)%ly(1)%cs(ics) = cs_soil(j)%ly(1)%cs(ics) + (1. - gc) * surf_frac * cs_kg
-                      cs_soil(j)%ly(2)%cs(ics) = cs_soil(j)%ly(2)%cs(ics) + (1. - gc) * (1. - surf_frac) * cs_kg
-                    end if
+                    if (cs_kg > 0.) call cs_apply(j, ics, cs_kg, fertop)
                   end do
                   exit
                 end if
