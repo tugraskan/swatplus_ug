@@ -1,4 +1,10 @@
-      subroutine salt_hru_aqu_read
+!--------------------------------------------------------------------
+!  salt_hru_aqu_read
+!    Read soil and plant salt concentrations for HRUs and aquifers.
+!    Fertilizer based salt concentrations are loaded from salt.man and
+!    stored for use during applications.
+!--------------------------------------------------------------------
+subroutine salt_hru_aqu_read
     
       use constituent_mass_module
       use input_file_module

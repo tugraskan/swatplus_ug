@@ -1,4 +1,10 @@
-      subroutine salt_hru_read
+!--------------------------------------------------------------------
+!  salt_hru_read
+!    Read salt concentrations for soils and plants from salt_hru.ini.
+!    Fertilizer specific salt tables are also processed so that future
+!    applications can add the appropriate ion loads.
+!--------------------------------------------------------------------
+subroutine salt_hru_read
     
       use constituent_mass_module
       use input_file_module

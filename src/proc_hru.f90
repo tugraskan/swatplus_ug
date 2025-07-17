@@ -1,4 +1,10 @@
-      subroutine proc_hru
+!--------------------------------------------------------------------
+!  proc_hru
+!    Top-level routine for HRU initialization.  This reads input
+!    tables, allocates HRU variables and prepares land use and soil
+!    data so simulation can begin.
+!--------------------------------------------------------------------
+subroutine proc_hru
     
       use hydrograph_module
       use maximum_data_module

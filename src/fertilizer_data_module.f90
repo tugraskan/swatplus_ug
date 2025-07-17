@@ -1,4 +1,11 @@
-      module fertilizer_data_module
+!--------------------------------------------------------------------
+!  fertilizer_data_module
+!    Data structures for storing fertilizer and manure properties
+!    loaded from fertilizer parameter files and associated CSV
+!    records.  These structures provide composition information used
+!    by fertilizer application routines.
+!--------------------------------------------------------------------
+module fertilizer_data_module
      
       implicit none
           

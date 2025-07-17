@@ -1,4 +1,10 @@
-      subroutine mgt_sched (isched)
+!--------------------------------------------------------------------
+!  mgt_sched
+!    Execute one management schedule entry for the specified HRU.  The
+!    schedule defines timed operations such as fertilizer and pesticide
+!    applications, harvesting and irrigation events.
+!--------------------------------------------------------------------
+subroutine mgt_sched (isched)
 
       use plant_data_module
       use mgt_operations_module

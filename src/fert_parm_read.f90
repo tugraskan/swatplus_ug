@@ -1,3 +1,10 @@
+!--------------------------------------------------------------------
+!  fert_parm_read
+!    Read the fertilizer parameter file and populate the fertilizer
+!    and manure databases.  The routine supports the legacy
+!    fertilizer.frt format and the extended fertilizer_ext.frt file
+!    used for manure applications.
+!--------------------------------------------------------------------
 subroutine fert_parm_read
       
       use input_file_module

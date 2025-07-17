@@ -1,4 +1,10 @@
-      subroutine salt_irr_read
+!--------------------------------------------------------------------
+!  salt_irr_read
+!    Read salt concentrations in outside irrigation water.  If the
+!    input file is not supplied a single zero concentration profile is
+!    created so irrigation routines can proceed safely.
+!--------------------------------------------------------------------
+subroutine salt_irr_read
     
       use constituent_mass_module
       use input_file_module

@@ -1,8 +1,10 @@
       subroutine pl_fert (ifrt, frt_kg, fertop)
       
 !!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine applies N and P specified by date and
-!!    amount in the management file (.mgt)
+!!    this subroutine applies mineral and organic N and P specified by
+!!    date and amount in the management file (.mgt).  After updating
+!!    soil nutrient pools, any associated pesticide, pathogen, salt or
+!!    heavy metal loads are added via fert_constituents_apply.
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~

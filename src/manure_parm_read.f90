@@ -1,4 +1,11 @@
-      subroutine manure_parm_read
+!--------------------------------------------------------------------
+!  manure_parm_read
+!    Load manure attribute information from the
+!    fp5-manure-content-defaults-swat.csv table.  When fertilizer
+!    records reference a CSV name, the corresponding attributes are
+!    copied into the manure database for later use.
+!--------------------------------------------------------------------
+subroutine manure_parm_read
       
       use input_file_module
       use maximum_data_module
@@ -32,9 +39,9 @@
             do while (eof == 0)
                 read(unit,'(A)',iostat=eof) csv_line
                 if (eof < 0) exit
-                imax = imax + 1
+                imax = imax + 1                ! count number of records
             end do
-            allocate (manure_csv(0:imax))
+            allocate (manure_csv(0:imax))       ! allocate array for all records
             rewind(unit)
             read(unit,'(A)',iostat=eof) header
             do it = 1, imax
@@ -66,13 +73,14 @@
 
             db_mx%manureparm = imax
 
-            ! crosswalk manure content records to entries loaded from fertilizer_ext.frt
+            ! Crosswalk the csv attribute records with fertilizer_ext.frt
+            ! entries.  When the csv name matches the csv field in the
+            ! fertilizer record, copy the manure attributes into the
+            ! manure_db so they are available during simulations.
             if (size(manure_db) > 0 .and. size(manure_csv) > 0) then
               do i = 1, size(manure_db)
                 do it = 1, size(manure_csv)
                   if (trim(manure_db(i)%csv) == trim(manure_csv(it)%manure_name)) then
-
-                    ! store attributes from matching csv record
                     manure_db(i)%manucontent = manure_csv(it)
                     exit  ! Stop searching once a match is found
                   end if

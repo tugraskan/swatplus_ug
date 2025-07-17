@@ -1,4 +1,10 @@
-      subroutine path_hru_aqu_read
+!--------------------------------------------------------------------
+!  path_hru_aqu_read
+!    Read pathogen initialization data for HRUs and aquifers.  The
+!    routine also processes pathogen concentrations tied to
+!    fertilizers via the path.man file.
+!--------------------------------------------------------------------
+subroutine path_hru_aqu_read
     
       use constituent_mass_module
       use input_file_module

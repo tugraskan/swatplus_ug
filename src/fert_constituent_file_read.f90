@@ -1,3 +1,11 @@
+!--------------------------------------------------------------------
+!  fert_constituent_file_read
+!    Utility routine used by several constituent modules to read the
+!    "*.man" tables that store concentrations of a constituent for each
+!    fertilizer type.  The routine allocates an array sized to the
+!    number of fertilizer records and fills it with the concentration
+!    values.
+!--------------------------------------------------------------------
 subroutine fert_constituent_file_read(constituent_name, imax, nconst)
     
     
@@ -47,33 +55,40 @@ subroutine fert_constituent_file_read(constituent_name, imax, nconst)
       !! check if the file exists
       inquire(file=file_name, exist=i_exist)
       if (i_exist) then
-          !! Allocate the array of fertilizer constituents to IMAX
+          !! Allocate the array of fertilizer constituents to IMAX.  Each
+          !! element will hold a set of concentrations read from the file.
           allocate(fert_arr(imax))
-          do
+
+          do                      ! scope block used so EXIT jumps to cleanup
             open(107, file=trim(file_name))     ! open constituent table
+
+            !! allocate nested arrays for the number of constituents
             do i = 1, imax
               allocate(fert_arr(i)%soil(nconst), source=0.)
             end do
-              !! discard title and header information
-              read(107,*,iostat=eof) titldum
-              if (eof < 0) exit
-              read(107,*,iostat=eof) header
+
+            !! discard the title and header lines at the top of the table
+            read(107,*,iostat=eof) titldum
+            if (eof < 0) exit
+            read(107,*,iostat=eof) header
+            if (eof < 0) exit
+
+            !! loop over all fertilizer entries in the file and capture the
+            !! concentration values for each constituent
+            do k = 1, imax
+              read(107,*,iostat=eof) fert_arr(k)%name
               if (eof < 0) exit
 
-              !! loop over fertilizer entries in the file
-              do k = 1, imax
-                read(107,*,iostat=eof) fert_arr(k)%name
-                  if (eof < 0) exit
-                !! loop over constituents for each fertilizer
-                do j = 1, nconst
-                    read(107,*,iostat=eof) titldum, fert_arr(k)%soil(j)
-                    if (eof < 0) exit
-                end do
+              do j = 1, nconst
+                read(107,*,iostat=eof) titldum, fert_arr(k)%soil(j)
+                if (eof < 0) exit
               end do
-              close(107)
-              exit
+            end do
+
+            close(107)
+            exit
           end do
-        
+
       endif
 
       return

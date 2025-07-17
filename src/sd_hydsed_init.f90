@@ -1,4 +1,10 @@
-      subroutine sd_hydsed_init
+!--------------------------------------------------------------------
+!  sd_hydsed_init
+!    Initialize sediment and constituent storage for subdaily channel
+!    routing.  Reads starting conditions for pesticides, pathogens,
+!    salts and other constituents from initialization files.
+!--------------------------------------------------------------------
+subroutine sd_hydsed_init
       
       use input_file_module
       use sd_channel_module

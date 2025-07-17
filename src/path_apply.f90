@@ -1,3 +1,10 @@
+!--------------------------------------------------------------------
+!  path_apply
+!    Apply a pathogen load to the soil surface and optionally the
+!    plant canopy.  The load is distributed between surface soil and
+!    the second layer based on the application method and canopy
+!    interception.
+!--------------------------------------------------------------------
 subroutine path_apply(jj, ipath, path_kg, pathop)
 
   use mgt_operations_module

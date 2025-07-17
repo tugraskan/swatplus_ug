@@ -1,4 +1,10 @@
-      module input_file_module
+!--------------------------------------------------------------------
+!  input_file_module
+!    Contains filenames for all input tables used during model
+!    initialization.  Paths are read from file.cio and stored here so
+!    other modules can locate their required data files.
+!--------------------------------------------------------------------
+module input_file_module
     
       implicit none
 
