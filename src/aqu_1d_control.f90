@@ -1,4 +1,10 @@
-      subroutine aqu_1d_control 
+!!@summary Simulate one-dimensional aquifer processes
+!!@description
+!! Computes groundwater movement, constituent transport and
+!! pesticide decay for each aquifer each day.
+!!@arguments
+!!    (none) | in/out | all variables are module-scoped
+      subroutine aqu_1d_control
     
       use aquifer_module
       use time_module
@@ -15,42 +21,42 @@
       
       implicit none
       
-      integer :: iaq = 0        !none       |counter
-      integer :: iaqdb = 0      !           |
-      integer :: icha = 0       !           |
-      integer :: iob_out = 0    !           !object type out
-      integer :: iout = 0       !none       |counter
-      integer :: ii = 0         !none       |counter
-      integer :: icontrib = 0   !none       |counter
-      integer :: ipest = 0      !none       |counter
-      integer :: ipest_db = 0   !none       |pesticide number from pesticide data base
-      integer :: ipseq = 0      !none       |sequential basin pesticide number
-      integer :: ipdb = 0       !none       |sequential pesticide number of daughter pesticide
-      integer :: imeta = 0      !none       |pesticide metabolite counter
-      real :: mol_wt_rto = 0.   !ratio      |molecular weight ratio of duaghter to parent pesticide
-      real :: stor_init = 0.    !           |
-      real :: conc_no3 = 0.     !           |
-      real :: step = 0.         !           |
-      real :: contrib_len = 0.
-      real :: contrib_len_left = 0.
-      real :: pest_init = 0.    !kg/ha      |amount of pesticide present at beginning of day
-      real :: no3_init = 0.     !kg/ha      |amount of nitrate present at beginning of day
-      real :: flow_mm = 0.      !mm         |total flow through aquifer - return flow + seepage
-      real :: pest_kg = 0.      !kg         |soluble pesticide moving with flow
-      real :: conc = 0.         !kg/mm      |concentration of pesticide in flow
-      real :: zdb1 = 0.         !mm         |kd - flow factor for pesticide transport
-      real :: kd = 0.           !(mg/kg)/(mg/L) |koc * carbon
-      real :: gw_volume = 0.    !m3         |m3 of groundwater in aquifer
-      real :: salt_recharge = 0.  !kg         |kg of salt in recharge water
-      real :: gw_discharge = 0. !m3         |m3 of groundwater discharging to channels
-      real :: salt_discharge = 0. !kg         |kg of salt in groundwater discharge
-      real :: gw_seep = 0.      !m3         |m3 of groundwater seeping from the aquifer
-      real :: salt_seep = 0.    !kg         |kg of salt in groundwater seepage 
-      real :: cs_recharge = 0.                 !rtb cs
-      real :: cs_discharge = 0.                !rtb cs
-      real :: cs_seep = 0.                     !rtb cs
-      integer :: m = 0!rtb salt
-      integer :: ics = 0 !rtb cs
+      integer :: iaq = 0        !!none | counter
+      integer :: iaqdb = 0      !!none |
+      integer :: icha = 0       !!none |
+      integer :: iob_out = 0    !!none | object type out
+      integer :: iout = 0       !!none | counter
+      integer :: ii = 0         !!none | counter
+      integer :: icontrib = 0   !!none | counter
+      integer :: ipest = 0      !!none | counter
+      integer :: ipest_db = 0   !!none | pesticide number from database
+      integer :: ipseq = 0      !!none | sequential basin pesticide number
+      integer :: ipdb = 0       !!none | sequential pesticide number of daughter
+      integer :: imeta = 0      !!none | pesticide metabolite counter
+      real :: mol_wt_rto = 0.   !!ratio | molecular weight ratio daughter/parent
+      real :: stor_init = 0.    !!none |
+      real :: conc_no3 = 0.     !!none |
+      real :: step = 0.         !!none |
+      real :: contrib_len = 0.                !!none |
+      real :: contrib_len_left = 0.           !!none |
+      real :: pest_init = 0.    !!kg/ha | pesticide at day start
+      real :: no3_init = 0.     !!kg/ha | nitrate at day start
+      real :: flow_mm = 0.      !!mm | total aquifer flow
+      real :: pest_kg = 0.      !!kg | soluble pesticide
+      real :: conc = 0.         !!kg/mm | pesticide concentration
+      real :: zdb1 = 0.         !!mm | kd-flow factor
+      real :: kd = 0.           !!(mg/kg)/(mg/L) | koc * carbon
+      real :: gw_volume = 0.    !!m3 | groundwater volume
+      real :: salt_recharge = 0.  !!kg | salt in recharge
+      real :: gw_discharge = 0. !!m3 | groundwater to channel
+      real :: salt_discharge = 0. !!kg | salt in discharge
+      real :: gw_seep = 0.      !!m3 | groundwater seepage
+      real :: salt_seep = 0.    !!kg | salt in seepage
+      real :: cs_recharge = 0.                 !!cs unit | recharge constituent
+      real :: cs_discharge = 0.                !!cs unit | discharge constituent
+      real :: cs_seep = 0.                     !!cs unit | seep constituent
+      integer :: m = 0                         !!none |
+      integer :: ics = 0                       !!none |
       
       !! set pointers to aquifer database and weather station
       iaq = ob(icmd)%num
@@ -156,12 +162,14 @@
       
       !rtb salt
       !compute salt recharge into the aquifer
+      !! compute salt recharge into the aquifer
       do m=1,cs_db%num_salts
         salt_recharge = obcs(icmd)%hin(1)%salt(m) !kg
         cs_aqu(iaq)%salt(m) = cs_aqu(iaq)%salt(m) + salt_recharge !kg
         asaltb_d(iaq)%salt(m)%rchrg = salt_recharge
       enddo
       !compute groundwater salt loading and seepage
+      !! compute groundwater salt loading and seepage
       do m=1,cs_db%num_salts
         !calculate new concentration of salt ion in groundwater
         gw_volume = (aqu_d(iaq)%stor/1000.) * (ob(icmd)%area_ha*10000.) !m3 of groundwater
@@ -204,12 +212,14 @@
 
       !rtb cs
       !compute constituent mass recharge into the aquifer
+      !! compute constituent mass recharge into the aquifer
       do ics=1,cs_db%num_cs
         cs_recharge = obcs(icmd)%hin(1)%cs(ics) !kg
         cs_aqu(iaq)%cs(ics) = cs_aqu(iaq)%cs(ics) + cs_recharge !kg
         acsb_d(iaq)%cs(ics)%rchrg = cs_recharge
       enddo
       !compute groundwater constituent loading and seepage
+      !! compute groundwater constituent loading and seepage
       do ics=1,cs_db%num_cs
         !calculate new concentration of constituent in groundwater
         gw_volume = (aqu_d(iaq)%stor/1000.) * (ob(icmd)%area_ha*10000.) !m3 of groundwater
@@ -264,6 +274,7 @@
       
         !! find the first channel contributing
         icontrib = 0
+        !! find the first channel contributing
         do icha = 1, aq_ch(iaq)%num_tot
           if (contrib_len >= aq_ch(iaq)%ch(icha)%len_left) then
             icontrib = icha
@@ -271,6 +282,7 @@
             exit
           end if
         end do
+        !! set fractions for flow to each channel
         !! set fractions for flow to each channel
         do icha = 1, aq_ch(iaq)%num_tot
           if (icha >= icontrib .and. icontrib > 0) then
@@ -283,6 +295,7 @@
         aq_ch(iaq)%hd = ob(icmd)%hd(1)
       end if
 
+      !! compute pesticide transport and decay
       !! compute pesticide transport and decay
       do ipest = 1, cs_db%num_pests
         ipest_db = cs_db%pest_num(ipest)
@@ -352,6 +365,7 @@
       aqu_d(iaq)%flo_cha = 0.
       aqu_d(iaq)%flo_res = 0.
       aqu_d(iaq)%flo_ls = 0.
+      !! loop through all receiving objects
       do iout = 1, ob(iob_out)%src_tot
         !! sum outflow to channels, reservoirs and other aquifers
         if (ob(iob_out)%htyp_out(iout) == "tot") then
@@ -373,7 +387,8 @@
       ob(icmd)%hout_tot = ob(icmd)%hout_tot + ob(icmd)%hd(1) + ob(icmd)%hd(2)
         
       !if (time%step > 0) then
-        do ii = 1, time%step
+      !! distribute daily flow into sub-steps
+      do ii = 1, time%step
           step = real(time%step)
           ob(icmd)%ts(1,ii) = ob(icmd)%hd(1) / step
         end do

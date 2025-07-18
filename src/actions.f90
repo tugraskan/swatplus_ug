@@ -1,3 +1,11 @@
+!!@summary Execute management actions for the current object
+!!@description
+!! Processes the decision table for the object and performs
+!! operations such as manure demand, irrigation and harvest.
+!!@arguments
+!!    ob_cur  |in  |sequential number of individual objects
+!!    ob_num  |in  |sequential number for all objects
+!!    idtbl   |in  |decision table identifier
       subroutine actions (ob_cur, ob_num, idtbl)
       use conditional_module
       use climate_module
@@ -32,77 +40,81 @@
 
       implicit none
 
-      integer, intent (in)  :: ob_cur      !none     |sequential number of individual objects
-      integer, intent (in)  :: ob_num      !none     |sequential number for all objects
-      integer, intent (in)  :: idtbl       !none     |
-      integer :: icom = 0                  !none     |
-      integer :: iac = 0                   !none     |counter
-      integer :: ial = 0                   !none     |counter
+      integer, intent (in)  :: ob_cur      !!none | sequential number of individual objects
+      integer, intent (in)  :: ob_num      !!none | sequential number for all objects
+      integer, intent (in)  :: idtbl       !!none | decision table identifier
+      integer :: icom = 0                  !!none |
+      integer :: iac = 0                   !!none | counter
+      integer :: ial = 0                   !!none | counter
       !integer :: jj                        !none     |counter
-      integer :: iburn = 0                 !none     |burn type from fire data base
-      integer :: idtill = 0                !none     |tillage type
-      integer :: ifertop = 0               !         |surface application fraction from chem app data base
-      integer :: ifrt = 0                  !         |fertilizer type from fert data base
-      integer :: ipestop = 0               !         |surface application fraction from chem app data base
-      integer :: ipst = 0                  !         |pesticide type from pest data base
-      integer :: iharvop = 0               !         |harvest operation type
-      integer :: iihru = 0                 !         |
-      integer :: ilu = 0                   !         |landuse type 
-      integer :: j = 0                     !none     |counter
-      integer :: iob = 0
-      integer :: idp = 0                   !         |
-      integer :: istr = 0                  !         |
-      integer :: istr1 = 0                 !         |
-      integer :: iob_out = 0
-      integer :: inhyd = 0                 !         |
-      integer :: ihyd_in = 0               !         |
-      integer :: icon = 0                  !         |
-      integer :: iplt_bsn = 0
-      integer :: irrop = 0                 !         |
-      integer :: igr = 0
-      integer :: ireg = 0                  !         |
-      integer :: ilum = 0
-      integer :: isrc = 0
-      integer :: isched = 0
-      integer :: ipud = 0
-      integer :: ipdl = 0
-      integer :: ires = 0
-      integer :: idb = 0
-      integer :: imallo = 0
-      integer :: idmd = 0
-      integer :: irec = 0
-      integer :: iplt = 0
-      integer :: num_plts_cur = 0
-      integer :: hru_rcv
-      real :: hiad1 = 0.                   !         |
-      real :: biomass = 0.                 !         |
-      real :: frt_kg = 0.
-      real :: harveff = 0.
-      real :: wur = 0.                     !         |
-      real :: frac = 0.                    !         |
-      real :: rto = 0.                     !         |
-      real :: rto1 = 0.                    !         |
-      real :: pest_kg = 0.                 !kg/ha    |amount of pesticide applied 
-      real :: chg_par                      !variable |new parameter value
-      real :: yield = 0.
-      real :: sumpst = 0.
-      real :: rock = 0.
-      real :: p_factor = 0.
-      real :: cn_prev = 0.
-      real :: stor_m3 = 0.
-      character(len=1) :: action = ""      !         |
-      character(len=40) :: lu_prev = ""    !         |
+      integer :: iburn = 0                 !!none | burn type from fire data base
+      integer :: idtill = 0                !!none | tillage type
+      integer :: ifertop = 0               !!none | surface application fraction from chem app data base
+      integer :: ifrt = 0                  !!none | fertilizer type from fert data base
+      integer :: ipestop = 0               !!none | surface application fraction from chem app data base
+      integer :: ipst = 0                  !!none | pesticide type from pest data base
+      integer :: iharvop = 0               !!none | harvest operation type
+      integer :: iihru = 0                 !!none |
+      integer :: ilu = 0                   !!none | landuse type
+      integer :: j = 0                     !!none | counter
+      integer :: iob = 0                   !!none |
+      integer :: idp = 0                   !!none |
+      integer :: istr = 0                  !!none |
+      integer :: istr1 = 0                 !!none |
+      integer :: iob_out = 0               !!none |
+      integer :: inhyd = 0                 !!none |
+      integer :: ihyd_in = 0               !!none |
+      integer :: icon = 0                  !!none |
+      integer :: iplt_bsn = 0              !!none |
+      integer :: irrop = 0                 !!none |
+      integer :: igr = 0                   !!none |
+      integer :: ireg = 0                  !!none |
+      integer :: ilum = 0                  !!none |
+      integer :: isrc = 0                  !!none |
+      integer :: isched = 0                !!none |
+      integer :: ipud = 0                  !!none |
+      integer :: ipdl = 0                  !!none |
+      integer :: ires = 0                  !!none |
+      integer :: idb = 0                   !!none |
+      integer :: imallo = 0                !!none |
+      integer :: idmd = 0                  !!none |
+      integer :: irec = 0                  !!none |
+      integer :: iplt = 0                  !!none |
+      integer :: num_plts_cur = 0          !!none |
+      integer :: hru_rcv                   !!none |
+      real :: hiad1 = 0.                   !!none |
+      real :: biomass = 0.                 !!none |
+      real :: frt_kg = 0.                  !!kg | fertilizer mass
+      real :: harveff = 0.                 !!fraction | harvest efficiency
+      real :: wur = 0.                     !!mm | water use ratio
+      real :: frac = 0.                    !!none |
+      real :: rto = 0.                     !!none |
+      real :: rto1 = 0.                    !!none |
+      real :: pest_kg = 0.                 !!kg/ha | amount of pesticide applied
+      real :: chg_par                      !!variable | new parameter value
+      real :: yield = 0.                   !!kg/ha | crop yield
+      real :: sumpst = 0.                  !!kg | sum of pesticide
+      real :: rock = 0.                    !!none | rock cover factor
+      real :: p_factor = 0.                !!none | USLE P factor
+      real :: cn_prev = 0.                 !!none | previous curve number
+      real :: stor_m3 = 0.                 !!m3 | storage volume
+      character(len=1) :: action = ""      !!none |
+      character(len=40) :: lu_prev = ""    !!none |
 
+      !! iterate through actions in the decision table
       do iac = 1, d_tbl%acts
         action = "n"
+        !! scan alternative actions to determine if triggered
         do ial = 1, d_tbl%alts
           if (d_tbl%act_hit(ial) == "y" .and. d_tbl%act_outcomes(iac,ial) == "y") then
             action = "y"
             exit
           end if
         end do
-      
+
+        !! execute the selected action
         if (action == "y") then
+          !! branch by action type
           select case (d_tbl%act(iac)%typ)
           
           !manure demand - for manure allocation

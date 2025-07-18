@@ -1,3 +1,9 @@
+!!@summary Output constituent fluxes from aquifers
+!!@description
+!! Aggregates daily constituent masses to monthly totals and writes
+!! them to the output structures.
+!!@arguments
+!!    iaq | in | aquifer index
       subroutine aqu_cs_output(iaq) !rtb cs
     
       use time_module
@@ -9,18 +15,16 @@
       
       implicit none
       
-      integer, intent (in) :: iaq        !             |
-      real :: const = 0.                 !             |constant used for rate, days, etc
-      integer :: iob = 0                 !             |
-      integer :: ics = 0
+      integer, intent (in) :: iaq        !!none | aquifer index
+      real :: const = 0.                 !!none | constant used for rate, days, etc
+      integer :: iob = 0                 !!none | object number
+      integer :: ics = 0                 !!none | constituent counter
                          
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine outputs constituent mass loadings and concentrations in aquifers
 
       
       iob = sp_ob1%aqu + iaq - 1
           
-      !add daily values to monthly values
+      !! add daily values to monthly totals
       do ics=1,cs_db%num_cs
         acsb_m(iaq)%cs(ics)%csgw = acsb_m(iaq)%cs(ics)%csgw + acsb_d(iaq)%cs(ics)%csgw
         acsb_m(iaq)%cs(ics)%rchrg = acsb_m(iaq)%cs(ics)%rchrg + acsb_d(iaq)%cs(ics)%rchrg
