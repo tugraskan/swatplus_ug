@@ -1,3 +1,7 @@
+!!@summary Read 2-D aquifer configuration
+!!@description Loads channel element connections from input files for
+!! groundwater simulation.
+!!@arguments None
       subroutine aqu2d_read
     
       use hydrograph_module
@@ -6,28 +10,30 @@
       
       implicit none
       
-      character (len=80) :: titldum = ""!           |title of file
-      character (len=80) :: header = "" !           |header of file
-      character (len=16) :: namedum = ""!           |
-      integer :: eof = 0              !           |end of file
-      integer :: imax = 0             !none       |determine max number for array (imax) and total number in file
-      integer :: nspu = 0             !           |
-      logical :: i_exist              !none       |check to determine if file exists
-      integer :: i = 0                !none       |counter
-      integer :: isp = 0              !none       |counter
-      integer :: numb = 0             !           |
-      integer :: iaq = 0              !none       |counter
-      integer :: iaq_db = 0           !none       |counter
-      integer :: ielem1 = 0           !none       |counter
+      character (len=80) :: titldum = ""  !!none | title of file
+      character (len=80) :: header = ""   !!none | header of file
+      character (len=16) :: namedum = "" !!none | temporary name
+      integer :: eof = 0              !!none | end of file flag
+      integer :: imax = 0             !!none | max index in file
+      integer :: nspu = 0             !!none | number of subunits
+      logical :: i_exist              !!none | file exists flag
+      integer :: i = 0                !!none | counter
+      integer :: isp = 0              !!none | counter
+      integer :: numb = 0             !!none | dummy variable
+      integer :: iaq = 0              !!none | counter
+      integer :: iaq_db = 0           !!none | counter
+      integer :: ielem1 = 0           !!none | element count
 
       eof = 0
       imax = 0
       
-    !!read data for aquifer elements for 2-D groundwater model
+!! read data for aquifer elements for 2-D groundwater model
       inquire (file=in_link%aqu_cha, exist=i_exist)
       if (.not. i_exist .or. in_link%aqu_cha == "null" ) then
         allocate (aq_ch(0:0))
-      else 
+      else
+!! loop until end of file
+!! loop through file to count elements
       do
         if (eof < 0) exit
         open (107,file=in_link%aqu_cha)
@@ -43,12 +49,14 @@
         end do
       end do
 
+!! allocate arrays based on file count
       db_mx%aqu2d = imax
       allocate (aq_ch(sp_ob%aqu))
       rewind (107)
       read (107,*) titldum
       read (107,*) header
 
+!! read channel definitions
       do iaq_db = 1, imax
 
         read (107,*,iostat=eof) iaq, namedum, nspu
@@ -71,7 +79,9 @@
       end do
       end if
 
+!! close file and exit
       close (107)
       
+!! finalize routine
       return
       end subroutine aqu2d_read

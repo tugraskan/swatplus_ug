@@ -1,3 +1,7 @@
+!!@summary Initialize 2-D aquifer channels
+!!@description Sets up geomorphic linkage among channels and
+!! computes remaining length as they dry up for groundwater flow routing.
+!!@arguments None
       subroutine aqu2d_init
     
       use hydrograph_module
@@ -7,20 +11,22 @@
 
       implicit none
 
-      integer :: iaq = 0            !none       |counter
-      integer :: mfe = 0            !none       |my first element (channel with smallest area)
-      integer :: next1 = 0          !none       |counter
-      integer :: iprv = 0           !none       |counter 
-      integer :: ipts = 0           !none       |counter
-      integer :: npts = 0           !none       |counter
-      integer :: icha = 0           !none       |counter
-      integer :: ichd = 0           !none       |counter
-      integer :: iob = 0            !none       |counter
-      real :: sum_len = 0.          !km         |total length of channel in aquifer
-      real, dimension(:), allocatable :: next   !!next channel to dry up - sorted by drainage area
+      integer :: iaq = 0            !!none | counter
+      integer :: mfe = 0            !!none | my first element (channel with smallest area)
+      integer :: next1 = 0          !!none | counter
+      integer :: iprv = 0           !!none | counter
+      integer :: ipts = 0           !!none | counter
+      integer :: npts = 0           !!none | counter
+      integer :: icha = 0           !!none | counter
+      integer :: ichd = 0           !!none | counter
+      integer :: iob = 0            !!none | counter
+      real :: sum_len = 0.          !!km | total length of channel in aquifer
+      real, dimension(:), allocatable :: next   !!none | next channel to dry up - sorted by drainage area
       
-      !! set parameters needed to distribute gwflow to channels using geomorphical model
+!! initialize linkage for groundwater flow
+      !! exit if 2-D aquifer modeling is disabled
       if (db_mx%aqu2d <= 0) return
+!! loop through aquifers
       do iaq = 1, sp_ob%aqu
         !! set channel drainage areas
         allocate (aq_ch(iaq)%ch(aq_ch(iaq)%num_tot))
@@ -77,12 +83,13 @@
           aq_ch(iaq)%ch(icha)%len_left = sum_len
         end do
 
+        !! release temporary arrays
         deallocate (aqu_cha)
         deallocate (next)
         
       end do
 
-      !rtb salt/cs
+!! allocate constituent arrays for salt and other solutes
       if(cs_db%num_tot > 0) then
         allocate (aq_chcs(sp_ob%aqu))
         do iaq = 1, sp_ob%aqu
@@ -102,5 +109,6 @@
       endif
 
       
+!! finalize routine
       return
       end subroutine aqu2d_init
