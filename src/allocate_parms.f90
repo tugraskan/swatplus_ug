@@ -1,12 +1,8 @@
+!!@summary Allocate model parameter arrays
+!!@description Reserves memory for hydrologic, management, and output
+!! arrays and sets default values.
+!!@arguments None
       subroutine allocate_parms
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine allocates array sizes
-
-!!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    mhyd        |none          |max number of hydrographs
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
       use hru_module      
       use time_module
@@ -14,21 +10,21 @@
       use constituent_mass_module
 
       implicit none
-      
-      integer :: mhru = 0
-      integer :: mch = 0
-      integer :: mpc = 0
+
+      integer :: mhru = 0  !!none | number of HRUs
+      integer :: mch = 0   !!none | number of channels
+      integer :: mpc = 0   !!none | plant community size
       
 !! initialize variables    
       mhyd = 1  !!added for jaehak vars
       mhru = sp_ob%hru
       mch = sp_ob%chan
 
-!!    drains
+!! allocate drainage variables
       allocate (wnan(10), source = 0.)
       allocate (ranrns_hru(mhru), source = 0.)
-      
-      !dimension plant arrays used each day and not saved
+
+!! allocate daily plant arrays
        mpc = 20
        allocate (uno3d(mpc), source = 0.)
        allocate (uapd(mpc), source = 0.)
@@ -40,12 +36,12 @@
        allocate (epmax(mpc), source = 0.)
        epmax = 0.
 
-!!    arrays for plant communities
+!! arrays for plant communities
       allocate (cvm_com(mhru), source = 0.)
       allocate (rsdco_plcom(mhru), source = 0.)
       allocate (percn(mhru), source = 0.)
 
-!! septic changes added 1/28/09 gsm
+!! septic system arrays
       allocate (i_sep(mhru), source = 0)
       allocate (sep_tsincefail(mhru), source = 0)
       allocate (qstemm(mhru), source = 0.)
@@ -59,17 +55,16 @@
       
       allocate (hhqday(mhru,time%step), source = 0.)
       
- !! arrays for management output (output.mgt)  
+!! arrays for management output (output.mgt)
       allocate (sol_sumno3(mhru), source = 0.)
       allocate (sol_sumsolp(mhru), source = 0.)
 
       allocate (iseptic(mhru), source = 0)
 
-!!    arrays which contain data related to years of rotation,
-!!    grazings per year, and HRUs
+!! arrays for rotation and grazing information
       allocate (grz_days(mhru), source = 0)
 
-!!    arrays which contain data related to HRUs
+!! arrays containing HRU data
       allocate (brt(mhru), source = 0.)
       allocate (canstor(mhru), source = 0.)
       allocate (cbodu(mhru), source = 0.)
@@ -209,10 +204,8 @@
        tillage_depth = 0.
        tillage_days = 0
        tillage_factor = 0.
-       
-      !! By Zhang for C/N cycling
-      !! ============================
-          
+
+!! initialize C/N cycling arrays
       call zero0
       call zero1
       call zero2
