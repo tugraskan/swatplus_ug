@@ -1,3 +1,9 @@
+!!@summary Read initial salt and constituent data
+!!@description
+!! Parses input files for aquifer salt and constituent starting
+!! values and populates the corresponding state variables.
+!!@arguments
+!!    (none) | in/out | module arrays modified
       subroutine aqu_read_init_cs !rtb salt/cs
       
       use basin_module

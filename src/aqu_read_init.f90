@@ -1,4 +1,10 @@
       !populate initial constituent data for aquifers
+!!@summary Read initial constituent concentrations for aquifers
+!!@description
+!! Loads nitrate, pesticide and salt starting values from input
+!! files and stores them in the aquifer state variables.
+!!@arguments
+!!    (none) | in/out | module arrays modified
       subroutine aqu_read_init !rtb cs
       
       use basin_module
@@ -11,14 +17,14 @@
       
       implicit none      
       
-      character (len=80) :: titldum = ""  !             |title of file
-      character (len=80) :: header = "" !             |header of file
-      integer :: eof = 0                !             |end of file
-      integer :: imax = 0               !             |determine max number for array (imax) and total number in file
-      logical :: i_exist                !none         |check to determine if file exists
-      integer :: iaqu = 0               !none         |counter
-      integer :: iaq = 0
-      integer :: ics = 0
+      character (len=80) :: titldum = ""  !!none | title of file
+      character (len=80) :: header = "" !!none | header of file
+      integer :: eof = 0                !!none | end of file
+      integer :: imax = 0               !!none | determine max number in file
+      logical :: i_exist                !!none | check file exists
+      integer :: iaqu = 0               !!none | counter
+      integer :: iaq = 0                !!none |
+      integer :: ics = 0                !!none |
       
       eof = 0
       imax = 0
@@ -49,6 +55,7 @@
       read (105,*,iostat=eof) header
       if (eof < 0) exit
            
+       !! read all initial records
        do iaqu = 1, imax
          read (105,*,iostat=eof) aqu_init_dat_c(iaqu)
          if (eof < 0) exit
@@ -59,6 +66,7 @@
 
       end if
 
+      !! initialize organics and constituents for each aquifer object
       !! initialize organics and constituents for each aquifer object
       do iaq = 1, sp_ob%aqu
 

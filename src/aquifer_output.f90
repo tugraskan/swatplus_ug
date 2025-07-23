@@ -1,3 +1,9 @@
+!!@summary Output aquifer water balances
+!!@description
+!! Aggregates daily aquifer water terms into monthly and daily
+!! output arrays and writes them when print options are met.
+!!@arguments
+!!    iaq | in | aquifer index
       subroutine aquifer_output(iaq)
       
       use time_module
@@ -7,9 +13,9 @@
       
       implicit none
             
-      integer, intent (in) :: iaq        !             |
-      real :: const = 0.                 !             |constant used for rate, days, etc
-      integer :: iob = 0                 !             |
+      integer, intent (in) :: iaq        !!none | aquifer index
+      real :: const = 0.                 !!none | constant used for rate, days, etc
+      integer :: iob = 0                 !!none | object index
                           
       iob = sp_ob1%aqu + iaq - 1
        
@@ -17,7 +23,7 @@
         aqu_m(iaq) = aqu_m(iaq) + aqu_d(iaq)
         
         !! daily print - AQUIFER
-         if (pco%day_print == "y" .and. pco%int_day_cur == pco%int_day) then
+        if (pco%day_print == "y" .and. pco%int_day_cur == pco%int_day) then
           if (pco%aqu%d == "y") then
             write (2520,100) time%day, time%mo, time%day_mo, time%yrc, iaq, ob(iob)%gis_id, ob(iob)%name, aqu_d(iaq)
             if (pco%csvout == "y") then

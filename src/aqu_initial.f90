@@ -1,4 +1,10 @@
-      subroutine aqu_initial 
+!!@summary Initialize aquifer data structures
+!!@description
+!! Allocates arrays and sets starting values for aquifer
+!! storages and concentrations at the beginning of the simulation.
+!!@arguments
+!!    (none) | in/out | uses module data
+      subroutine aqu_initial
     
       use aquifer_module  
       use hydrograph_module
@@ -11,13 +17,13 @@
        
       implicit none
       
-      integer :: iaq = 0               !none      |counter
-      integer :: iob = 0               !          | 
-      integer :: iaqdb = 0             !          | 
-      integer :: isalt = 0             !          |salt ion counter
-      integer :: ics = 0               !          |constituent counter 
+      integer :: iaq = 0               !!none | counter
+      integer :: iob = 0               !!none |
+      integer :: iaqdb = 0             !!none |
+      integer :: isalt = 0             !!none | salt ion counter
+      integer :: ics = 0               !!none | constituent counter
 
-      !allocate objects for each aquifer
+      !! allocate objects for each aquifer
       allocate (aqu_om_init(sp_ob%aqu))
       allocate (aqu_d(sp_ob%aqu))
       allocate (aqu_dat(sp_ob%aqu))
@@ -44,11 +50,13 @@
         allocate (asaltb_m(sp_ob%aqu))
         allocate (asaltb_y(sp_ob%aqu))
         allocate (asaltb_a(sp_ob%aqu))
+        !! allocate salt output arrays for each aquifer
         do iaq = 1,sp_ob%aqu
           allocate (asaltb_d(iaq)%salt(cs_db%num_salts))
           allocate (asaltb_m(iaq)%salt(cs_db%num_salts))
           allocate (asaltb_y(iaq)%salt(cs_db%num_salts))
           allocate (asaltb_a(iaq)%salt(cs_db%num_salts))
+          !! initialize salt daily values
           do isalt=1,cs_db%num_salts
             asaltb_m(iaq)%salt(isalt)%rchrg = 0.
             asaltb_m(iaq)%salt(isalt)%seep = 0.

@@ -1,3 +1,9 @@
+!!@summary Output salt loads from aquifers
+!!@description
+!! Aggregates daily salt mass terms to monthly totals and
+!! prints them when required.
+!!@arguments
+!!    iaq | in | aquifer index
       subroutine aqu_salt_output(iaq)
     
       use time_module
@@ -9,17 +15,15 @@
       
       implicit none
       
-      integer, intent (in) :: iaq        !             |
-      real :: const = 0.                 !             |constant used for rate, days, etc
-      integer :: iob = 0                 !             |
-      integer :: isalt = 0
+      integer, intent (in) :: iaq        !!none | aquifer index
+      real :: const = 0.                 !!none | constant used for rate, days, etc
+      integer :: iob = 0                 !!none | object index
+      integer :: isalt = 0               !!none | salt ion counter
                          
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine outputs salt mass loadings and concentrations in aquifers
       
       iob = sp_ob1%aqu + iaq - 1
           
-      !add daily values to monthly values
+      !! add daily values to monthly totals
       do isalt=1,cs_db%num_salts
         asaltb_m(iaq)%salt(isalt)%rchrg = asaltb_m(iaq)%salt(isalt)%rchrg + asaltb_d(iaq)%salt(isalt)%rchrg
         asaltb_m(iaq)%salt(isalt)%seep = asaltb_m(iaq)%salt(isalt)%seep + asaltb_d(iaq)%salt(isalt)%seep

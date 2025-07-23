@@ -1,3 +1,9 @@
+!!@summary Output pesticide concentrations in aquifers
+!!@description
+!! Aggregates pesticide amounts by timestep and writes daily,
+!! monthly and annual values to output variables.
+!!@arguments
+!!    j | in | aquifer index
       subroutine aqu_pesticide_output(j)
     
       use output_ls_pesticide_module
@@ -12,18 +18,17 @@
       
       implicit none
       
-      integer :: ipest = 0
-      integer :: j
-      integer :: iob = 0
-      real :: const = 0.
-      real :: stor_init = 0. !kg         |store initial pesticide when entire object is zero'd
+      integer :: ipest = 0        !!none | pesticide counter
+      integer :: j               !!none | aquifer index
+      integer :: iob = 0         !!none | object index for output
+      real :: const = 0.         !!none |
+      real :: stor_init = 0.     !!kg | store initial pesticide when entire object is zero'd
                          
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine outputs HRU variables on daily, monthly and annual time steps
      
       iob = sp_ob1%aqu + j - 1
           
       !! print balance for each pesticide
+      !! accumulate and print for each pesticide
       do ipest = 1, cs_db%num_pests
           
        aqupst_m(j)%pest(ipest) = aqupst_m(j)%pest(ipest) + aqupst_d(j)%pest(ipest)

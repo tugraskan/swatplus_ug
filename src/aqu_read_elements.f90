@@ -1,3 +1,9 @@
+!!@summary Read aquifer element connection file
+!!@description
+!! Reads spatial connections between aquifers, channels and reservoirs
+!! from the input file and stores them in the module arrays.
+!!@arguments
+!!    (none) | in/out | uses module variables
       subroutine aqu_read_elements
    
       use input_file_module
@@ -8,21 +14,21 @@
       
       implicit none
 
-      character (len=80) :: titldum = ""  !             |title of file
-      character (len=80) :: header = "" !             |header of file
-      integer :: eof = 0                !             |end of file
-      integer :: imax = 0               !             |determine max number for array (imax) and total number in file
-      integer :: mcal = 0               !             |
-      logical :: i_exist                !none         |check to determine if file exists
-      integer :: mreg = 0               !             |
-      integer :: i = 0                  !none         |counter
-      integer :: k = 0                  !             |
-      integer :: nspu = 0               !             | 
-      integer :: isp = 0                !             |
-      integer :: ielem1 = 0             !none         |counter
-      integer :: ihru = 0               !none         |counter
-      integer :: iaqu = 0               !none         |counter
-      integer :: ireg = 0               !none         |counter
+      character (len=80) :: titldum = ""  !!none | title of file
+      character (len=80) :: header = "" !!none | header of file
+      integer :: eof = 0                !!none | end of file flag
+      integer :: imax = 0               !!none | max number in file
+      integer :: mcal = 0               !!none |
+      logical :: i_exist                !!none | check file exists
+      integer :: mreg = 0               !!none |
+      integer :: i = 0                  !!none | counter
+      integer :: k = 0                  !!none |
+      integer :: nspu = 0               !!none |
+      integer :: isp = 0                !!none |
+      integer :: ielem1 = 0             !!none | counter
+      integer :: ihru = 0               !!none | counter
+      integer :: iaqu = 0               !!none | counter
+      integer :: ireg = 0               !!none | counter
                 
       mreg = 0
       imax = 0
@@ -48,6 +54,7 @@
         allocate (saqu_y(0:mreg))
         allocate (saqu_a(0:mreg))
 
+      !! read region level aquifer definitions
       do i = 1, mreg
 
         read (107,*,iostat=eof) k, acu_out(i)%name, acu_out(i)%area_ha, nspu        
@@ -68,6 +75,7 @@
           !!all hrus are in region 
           allocate (acu_out(i)%num(sp_ob%hru), source = 0)
           acu_out(i)%num_tot = sp_ob%hru
+          !! assign all HRUs to this region
           do ihru = 1, sp_ob%hru
             acu_out(i)%num(ihru) = ihru
           end do      
