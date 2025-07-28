@@ -1,0 +1,2 @@
+container:
+  image: ghcr.io/tugraskan/codex-fortran:latest
