@@ -77,9 +77,9 @@
 
       ! constituent mass - soil, plant, aquifer, and channels
       type constituent_mass
-        real, dimension (:), allocatable :: pest        !kg/ha          |pesticide in soil layer
-        real, dimension (:), allocatable :: path        !pathogen hydrographs
-        real, dimension (:), allocatable :: hmet        !heavy metal hydrographs 
+        real, dimension (:), allocatable :: pest        !pesticide (kg/ha)
+        real, dimension (:), allocatable :: path        !pathogen (cfu)
+        real, dimension (:), allocatable :: hmet        !heavy metal (kg/ha) 
         real, dimension (:), allocatable :: salt        !salt ion mass (kg/ha)
         real, dimension (:), allocatable :: salt_min    !salt mineral hydrographs
         real, dimension (:), allocatable :: saltc       !salt ion concentrations (mg/L)

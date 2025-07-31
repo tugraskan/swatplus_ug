@@ -48,6 +48,8 @@
           wallod_out(iwallo)%dmd(idmd)%src(isrc)%withdr = wallod_out(iwallo)%dmd(idmd)%src(isrc)%withdr + dmd_m3
         else
           wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet = wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet + dmd_m3
+          wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet = Min (wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet,      &
+                                                                wallod_out(iwallo)%dmd(idmd)%src(isrc)%demand)
         end if
             
         !! reservoir source
@@ -63,6 +65,8 @@
             wallod_out(iwallo)%dmd(idmd)%src(isrc)%withdr = wallod_out(iwallo)%dmd(idmd)%src(isrc)%withdr + dmd_m3
           else
             wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet = wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet + dmd_m3
+            wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet = Min (wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet,      &
+                                                                wallod_out(iwallo)%dmd(idmd)%src(isrc)%demand)
           end if
          
         !! diversion inflow source
@@ -77,6 +81,8 @@
             wallod_out(iwallo)%dmd(idmd)%src(isrc)%withdr = wallod_out(iwallo)%dmd(idmd)%src(isrc)%withdr + dmd_m3
           else
             wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet = wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet + dmd_m3
+            wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet = Min (wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet,      &
+                                                                wallod_out(iwallo)%dmd(idmd)%src(isrc)%demand)
           end if
          
         !! aquifer source
@@ -98,6 +104,8 @@
             wallod_out(iwallo)%dmd(idmd)%src(isrc)%withdr = wallod_out(iwallo)%dmd(idmd)%src(isrc)%withdr + dmd_m3
           else
             wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet = wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet + dmd_m3
+            wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet = Min (wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet,      &
+                                                                wallod_out(iwallo)%dmd(idmd)%src(isrc)%demand)
           end if
           elseif(bsn_cc%gwflow == 1) then !gwflow is active; determine pumping amounts from grid cells
             extracted = 0.
@@ -106,6 +114,8 @@
             call gwflow_ppag(wallo(iwallo)%dmd(idmd)%ob_num,dmd_m3,extracted,dmd_unmet)
             wallod_out(iwallo)%dmd(idmd)%src(isrc)%withdr = wallod_out(iwallo)%dmd(idmd)%src(isrc)%withdr + extracted
             wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet = wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet + dmd_unmet
+            wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet = Min (wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet,      &
+                                                                wallod_out(iwallo)%dmd(idmd)%src(isrc)%demand)
           endif
         
           !! canal diversion source (water removed from channel using point source)
@@ -126,6 +136,8 @@
             !store values
             wallod_out(iwallo)%dmd(idmd)%src(isrc)%withdr = wallod_out(iwallo)%dmd(idmd)%src(isrc)%withdr + withdraw
             wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet = wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet + unmet
+            wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet = Min (wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet,      &
+                                                                wallod_out(iwallo)%dmd(idmd)%src(isrc)%demand)
             
           !! unlimited source
           case ("unl")

@@ -53,7 +53,9 @@
       real :: flovol_ob = 0.
       real :: wet_fill = 0.
       real :: ave_rate
-      !!
+      real :: v_vc = 0.
+      real :: m_exhaust = 0.
+      real :: dur_scale = 0.
       
       ich = isdch
       iob = sp_ob1%chandeg + jrch - 1
@@ -95,7 +97,7 @@
       
       !! compute flood plain deposition
       ave_rate = ht1%flo / 86400.     !m3/s
-      sd_ch(ich)%bankfull_flo = 2.
+      
       bf_flow = sd_ch(ich)%bankfull_flo * ch_rcurv(ich)%elev(2)%flo_rate
       florate_ob = ave_rate - bf_flow
       if (florate_ob > 0.) then
@@ -179,7 +181,12 @@
       b_exp = min (3.5, b_exp)
       if (vel_rch > vel_cr) then
         !! bank erosion m/yr
-        ebank_m = 0.001 / (1. + exp(-4. * (vel_rch / vel_cr) / sd_ch(ich)%chw))
+        dur_scale = 0.0001 * (ob(icmd)%area_ha / 100.) ** (-0.0858)
+        v_vc = dur_scale * sd_ch(ich)%chw * (1. / (1. + exp(-4. * (vel_rch / vel_cr - 1.))))
+        m_exhaust = 0.0002 * sd_ch(ich)%chw
+        ebank_m = 1. / (1. / v_vc + 1. / m_exhaust)
+        !ebank_m = 0.0001 * sd_ch(ich)%chw * (1. / (1. + exp(-4. * (vel_rch / vel_cr - 1.))) - 0.5)
+        !ebank_m = 0.001 / (1. + exp(-4. * (vel_rch / vel_cr) / sd_ch(ich)%chw))
         !ebank_m = 0.00024 * (vel_rch / vel_cr) ** sd_ch(ich)%bank_exp
       else
         ebank_m = 0.
@@ -187,10 +194,10 @@
       
       !! write for Peter
       !if (ich == 2133) then
-      !write () time%day, time%yrc, ich, sd_ch(ich)%chw, sd_ch(ich)%chw, sd_ch(ich)%chl,   &
-      !    sd_ch(ich)%chn, sd_ch(ich)%sinu, sd_ch(ich)%pk_rto, pk_rto, peakrate, vel,      &
-      !    sd_ch(ich)%ch_clay, cohesion, sd_ch(ich)%cov, veg, cohes_fac, sd_ch(ich)%ch_bd, &
-      !    bd_fac, sd_ch(ich)%vcr_coef, vel_cr, sd_ch(ich)%bank_exp, ebank_m, "  0.24 ")
+      write (7777, *) time%day, time%yrc, ich, sd_ch(ich)%chw, sd_ch(ich)%chd, sd_ch(ich)%chl,   &
+          sd_ch(ich)%chn, sd_ch(ich)%sinu, sd_ch(ich)%pk_rto, pk_rto, peakrate, vel,      &
+          sd_ch(ich)%ch_clay, cohesion, sd_ch(ich)%cov, veg, cohes_fac, sd_ch(ich)%ch_bd, &
+          bd_fac, sd_ch(ich)%vcr_coef, vel_cr, sd_ch(ich)%bank_exp, ebank_m
       !end if
       
       ch_morph(ich)%w_yr = ch_morph(ich)%w_yr + ebank_m
