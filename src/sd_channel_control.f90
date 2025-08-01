@@ -489,6 +489,7 @@
           end if
 
       !! compute flood plain deposition
+      !sd_ch(ich)%bankfull_flo = 1.0      !***jga
       bf_flow = sd_ch(ich)%bankfull_flo * ch_rcurv(ich)%elev(2)%flo_rate
       if (peakrate > bf_flow) then
         !dep = sd_ch(ich)%chseq * ht1%sed           !((peakrate - bf_flow) / peakrate) * ht1%sed
@@ -722,12 +723,12 @@
       ich = isdch
             
       !! check decision table for flow control - water diversion
-      if (ob(icmd)%ruleset /= "null" .and. ob(icmd)%ruleset /= "0") then
-        id = ob(icmd)%flo_dtbl
-        d_tbl => dtbl_flo(id)
-        call conditions (ich, id)
-        call actions (ich, icmd, id)
-      end if
+      !if (ob(icmd)%ruleset /= "null" .and. ob(icmd)%ruleset /= "0") then
+      !  id = ob(icmd)%flo_dtbl
+      !  d_tbl => dtbl_flo(id)
+      !  call conditions (ich, id)
+      !  call actions (ich, icmd, id)
+      !end if
  
       !! check decision table for water allocation
       if (sd_ch(isdch)%wallo > 0) then

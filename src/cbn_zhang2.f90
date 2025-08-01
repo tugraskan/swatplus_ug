@@ -297,6 +297,7 @@
         end if
         
         ! Initialize org_allo variables to zero except for a1co2, asco2, and apco2 because they are input values and don't change.
+        org_allo(cf_lyr)%abco2 = 0.
         org_allo(cf_lyr)%abp = 0.
         org_allo(cf_lyr)%asp = 0.
         soil1(j)%org_allo_lr(k) = org_allo(cf_lyr)   
@@ -413,6 +414,7 @@
 
           ! set nitrogen carbon ratios for upper layer
           if (k == 1) then
+            org_allo(cf_lyr)%abco2 = .55
             !carbdb%hs_rate=prmt(47) !century slow humus transformation rate d^-1(0.00041_0.00068) original value = 0.000548,
             if (.not. ufc) carbdb(cf_lyr)%hs_rate = 5.4799998e-04
             !carbdb%hp_rate=prmt(48) !century passive humus transformation rate d^-1(0.0000082_0.000015) original value = 0.000012 
@@ -424,7 +426,6 @@
             if (.not. ufc) org_allo(cf_lyr)%a1co2 = .55
             if (.not. ufc) org_allo(cf_lyr)%asco2 = .55
             if (.not. ufc) org_allo(cf_lyr)%apco2 = .55
-            if (.not. ufc) org_allo(cf_lyr)%abco2 = .55
             org_ratio%nchp = .1
             xbm = 1.
             ! org_con%cs = org_con%cs * carbdb(cf_lyr)%microb_top_rate
@@ -682,7 +683,7 @@
               !supply - demand
               rnmn = sum - dmdn
               
-        !     update
+        !! imm_min = 1
               if (rnmn > 0.) then
                 soil1(j)%mn(k)%nh4 = soil1(j)%mn(k)%nh4 + rnmn     
                 min_n = soil1(j)%mn(k)%no3 - rnmn
@@ -694,6 +695,7 @@
                 end if   
                 ! print*, "2. in cbn_zhang2", k, soil1(j)%mn(k)%no3, rnmn
               end if
+        !! imm_min = 1
               
 	          ! calculate p flows
               ! compute humus mineralization on active organic p
@@ -905,10 +907,10 @@
                 hrc_d(j)%rsd_rootdecay_c = lmcta + lscta
                 ! soil1(j)%rsd(k)%c = soil1(j)%rsd(k)%c - hrc_d(j)%rsd_rootdecay_c
               end if 
-                      
+              
               if (soil1(j)%mn(k)%no3 < 0.0) soil1(j)%mn(k)%no3 = 0.0
               if (soil1(j)%mn(k)%nh4 < 0.0) soil1(j)%mn(k)%nh4 = 0.0
-
+                
               soil1(j)%meta(k)%n = max(.001, soil1(j)%meta(k)%n - org_flux%efmets1 & !subtract n flow from met (metabolic litter) to s1 (microbial biomass)
                             - org_flux%mnrmets1)                    !subtract n immobilization during transformaiton from met (metabolic litter) to s1 (microbial biomass)
 
@@ -983,4 +985,3 @@
 
     return
     end subroutine cbn_zhang2
-    
