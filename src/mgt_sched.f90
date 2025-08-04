@@ -344,7 +344,7 @@
               endif
             endif
 
-          case ("manu")   !! fertilizer operation
+          case ("manu")   !! manure application operation
             ipl = 1
             ifrt = mgt%op1                          !fertilizer type from fert data base
             frt_kg = mgt%op3                        !amount applied in kg/ha
