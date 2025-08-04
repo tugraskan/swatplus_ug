@@ -57,4 +57,5 @@
       endif
       
       return
-      end subroutine res_read_init
+    end subroutine res_read_init
+    
