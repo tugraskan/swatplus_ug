@@ -1,0 +1,10 @@
+# wallo_dat
+1
+NAME      RULE_TYP              SRC_OBS DMD_OBS CHA_DB
+07010101  high_right_first_serve   2       2     n
+SRC_NUM OB_TYP OB_NUM JAN_MIN ... DEC_MIN DESCRIPTION
+1       res   1      0.5 ... 0.5  local surface water source
+2       unl   0      0   ... 0    unlimited source
+NUMB OB_TYP OB_NUM WITHDR AMOUNT W_RT TR_TYP TREAT RCV_OB RCV_NUM RCV_DTL SRCS SCRC1 FRAC1 COMP1 SCRC2 FRAC2 COMP2 DESCRIPTION
+1    muni  1     ave_day 0      sr   null  null null 0 null 2 1 1 y 2 0   muni surface local only
+2    muni  2     ave_day 0.609  sr   null  null null 0 null 1 2 1 n       muni groundwater

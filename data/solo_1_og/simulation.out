@@ -1,0 +1,16 @@
+                   SWAT+               
+             Revision 61.0.2.11-217-gfe5e2fd  
+      Soil & Water Assessment Tool    
+IntelLLVM (2025.2.0), 2025-08-07 11:58:44, Windows
+    Program reading . . . executing
+
+
+  Date of Sim   8/ 7/2025 Time  15:23:53
+ reading from pet file                   Time  15:23:53
+ reading from precipitation file         Time  15:23:53
+ reading from temperature file           Time  15:23:53
+ reading from solar radiation file       Time  15:23:57
+ reading from relative humidity file     Time  15:24: 2
+ reading from wind file                  Time  15:24: 2
+ reading from wgn file                   Time  15:24: 2
+ reading from wx station file            Time  15:24: 2

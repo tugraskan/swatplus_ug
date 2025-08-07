@@ -1,0 +1,6 @@
+water_balance.sft
+   1
+ NAME      	NLUM
+ basin           1
+  NAME     SURQ_PCP_Ratio  LAT_PCP_Ratio  GWQ_PCP_Ratio  ET_PCP_Ratio  TILE_PCP_Ratio   PET     SED   WYLD_PCP_Ratio  Subsurface_WYLD_Ratio    NO3     SOLP
+ basin   0.000     0.000    0.000     0.000     0.000     0.000     0.00     0.422     0.796    0.00     0.00     0.00
