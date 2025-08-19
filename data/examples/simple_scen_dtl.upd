@@ -1,0 +1,5 @@
+scen_dtl.upd: Control file for simple land use change scenario
+1
+
+max_hits    typ         dtbl
+1           lu_change   crop_to_forest

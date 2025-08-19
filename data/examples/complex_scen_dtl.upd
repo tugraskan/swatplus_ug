@@ -1,0 +1,9 @@
+scen_dtl.upd: Control file for complex land use change scenarios
+5
+
+max_hits    typ         dtbl
+1           lu_change   forest_to_ag_low_stress
+1           lu_change   ag_to_forest_drought  
+5           lu_change   urban_expansion
+50          irrigate    irrigation_trigger
+100         harvest     auto_harvest

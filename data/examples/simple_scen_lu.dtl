@@ -1,0 +1,11 @@
+scen_lu.dtl: Simple land use change example - convert cropland to forest in 2010
+1
+
+name                     conds      alts      acts       !Convert cropland to forest on January 1, 2010
+crop_to_forest                3         1         1  
+var                        obj   obj_num           lim_var            lim_op     lim_const      alt1  
+year_cal                  null         0              null                 -    2010.00000         =       !year 2010
+jday                      null         0              null                 -       1.00000         =       !January 1
+land_use                   hru         0         corn_lum                 -       0.00000         =       !current land use must be corn
+act_typ                    obj   obj_num              name            option         const        const2                fp  outcome           
+lu_change                  hru         0      crop_to_forest           null       0.00000       1.00000       forest_lum  y   

@@ -1,0 +1,50 @@
+scen_lu.dtl: Complex land use change example with multiple scenarios and conditions
+5
+
+name                     conds      alts      acts       !Convert forest to agriculture when water stress is low
+forest_to_ag_low_stress       4         1         1  
+var                        obj   obj_num           lim_var            lim_op     lim_const      alt1  
+year_cal                  null         0              null                 -    2015.00000         >=      !from year 2015 onwards
+jday                      null         0              null                 -      90.00000         >=      !after March (day 90)
+land_use                   hru         0       forest_lum                 -       0.00000         =       !current land use must be forest
+w_stress                   hru         0              null                 -       0.30000         <       !low water stress
+act_typ                    obj   obj_num              name            option         const        const2                fp  outcome           
+lu_change                  hru         0   forest_to_crops              null       0.00000       1.00000         corn_lum  y   
+
+name                     conds      alts      acts       !Convert agriculture to forest during drought years
+ag_to_forest_drought          4         1         1  
+var                        obj   obj_num           lim_var            lim_op     lim_const      alt1  
+year_cal                  null         0              null                 -    2020.00000         >=      !from year 2020 onwards
+w_stress                   hru         0              null                 -       0.80000         >       !high water stress (drought)
+land_use                   hru         0         corn_lum                 -       0.00000         =       !current land use must be corn
+soil_water                 hru         0                fc                 *       0.40000         <       !soil water < 40% of field capacity
+act_typ                    obj   obj_num              name            option         const        const2                fp  outcome           
+lu_change                  hru         0     ag_to_forest              null       0.00000       1.00000       forest_lum  y   
+
+name                     conds      alts      acts       !Probabilistic urban expansion
+urban_expansion               3         1         1  
+var                        obj   obj_num           lim_var            lim_op     lim_const      alt1  
+year_cal                  null         0              null                 -    2025.00000         =       !year 2025
+land_use                   hru         0         corn_lum                 -       0.00000         =       !current land use must be corn
+prob                      null         0              null                 -       0.05000         <       !5% probability
+act_typ                    obj   obj_num              name            option         const        const2                fp  outcome           
+lu_change                  hru         0    urban_develop              null       0.00000       1.00000        urban_lum  y   
+
+name                     conds      alts      acts       !Seasonal irrigation based on plant stress and timing
+irrigation_trigger            4         1         1  
+var                        obj   obj_num           lim_var            lim_op     lim_const      alt1  
+jday                      null         0              null                 -     150.00000         >=      !after day 150 (late May)
+jday                      null         0              null                 -     250.00000         <=      !before day 250 (early September)
+w_stress                   hru         0              null                 -       0.70000         >       !high water stress
+irr_year                   hru         0              null                 -     400.00000         <       !less than 400mm irrigation this year
+act_typ                    obj   obj_num              name            option         const        const2                fp  outcome           
+irrigate                   hru         0         sprinkler       sprinkler_ilm      25.00000      10.00000              null  y   
+
+name                     conds      alts      acts       !Harvest when plant maturity is reached
+auto_harvest                  3         1         1  
+var                        obj   obj_num           lim_var            lim_op     lim_const      alt1  
+phu_plant                  hru         0           phu_mat                 -       0.95000         >=      !95% of maturity
+jday                      null         0              null                 -     200.00000         >=      !after day 200 (mid July)
+plant_gro                  hru         0              null                 -       1.00000         =       !plant is growing
+act_typ                    obj   obj_num              name            option         const        const2                fp  outcome           
+harvest                    hru         0      grain_harvest         grain_har       0.00000       0.00000              null  y   

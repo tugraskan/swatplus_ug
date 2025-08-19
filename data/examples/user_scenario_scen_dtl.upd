@@ -1,0 +1,37 @@
+scen_dtl.upd: Forest conversion scenario control file
+40
+
+max_hits    typ         dtbl
+1           lu_change   frsd_tecf_sb_to_grass
+1           lu_change   frse_tecf_db_to_grass
+1           lu_change   frsd_tecf_sb_2019_to_wost
+1           lu_change   frsd_tecf_sb_2020_to_wost
+1           lu_change   frsd_tecf_sb_2021_to_wost
+1           lu_change   frsd_tecf_sb_2022_to_wost
+1           lu_change   frse_tecf_db_2018_to_wost
+1           lu_change   frse_tecf_db_2019_to_wost
+1           lu_change   frse_tecf_db_2020_to_wost
+1           lu_change   frse_tecf_db_2021_to_wost
+1           lu_change   frse_tecf_db_2022_to_wost
+1           lu_change   frse_tecf_fb_2018_to_wost
+1           lu_change   frse_tecf_fb_2019_to_wost
+1           lu_change   frse_tecf_fb_2020_to_wost
+1           lu_change   frse_tecf_fb_2021_to_wost
+1           lu_change   frse_tecf_fb_2022_to_wost
+1           lu_change   frse_tecf_lb_2018_to_wost
+1           lu_change   frse_tecf_lb_2019_to_wost
+1           lu_change   frse_tecf_lb_2021_to_wost
+1           lu_change   frse_tecf_lb_2022_to_wost
+1           lu_change   frse_tecf_sb_2018_to_wost
+1           lu_change   frse_tecf_sb_2019_to_wost
+1           lu_change   frse_tecf_sb_2020_to_wost
+1           lu_change   frse_tecf_sb_2021_to_wost
+1           lu_change   frse_tecf_sb_2022_to_wost
+1           lu_change   frse_teyg_db_2018_to_wost
+1           lu_change   frse_teyg_db_2021_to_wost
+1           lu_change   frse_teyg_db_2022_to_wost
+1           lu_change   frse_teyg_fb_2018_to_wost
+1           lu_change   frse_teyg_fb_2019_to_wost
+1           lu_change   frse_teyg_fb_2020_to_wost
+1           lu_change   frse_teyg_fb_2022_to_wost
+1           lu_change   frse_teyg_sb_2018_to_wost
