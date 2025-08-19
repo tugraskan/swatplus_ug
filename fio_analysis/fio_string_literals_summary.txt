@@ -1,0 +1,20 @@
+FIO String Literals Analysis Summary
+=====================================
+Total files analyzed: 77
+Total FIO string literal occurrences: 828
+
+By operation type:
+  inquire: 70
+  open: 758
+
+Top files with most occurrences:
+  output_landscape_init.f90: 201
+  gwflow_read.f90: 77
+  header_write.f90: 76
+  header_cs.f90: 64
+  header_pest.f90: 64
+  header_const.f90: 52
+  header_salt.f90: 52
+  header_hyd.f90: 26
+  header_sd_channel.f90: 26
+  swift_output.f90: 14
