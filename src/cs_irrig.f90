@@ -46,14 +46,14 @@
       
 
       !determine number of irrigation sources
-      irrig_nsource = wallo(iwallo)%dmd(idmd)%dmd_src_obs
+      !irrig_nsource = wallo(iwallo)%dmd(idmd)%dmd_src_obs
       
       !loop through the irrigation sources
       do isrc=1,irrig_nsource
       
         !determine the object type and object number (of water source)
-        irrig_type = wallo(iwallo)%dmd(idmd)%src_ob(isrc)%ob_typ
-        irrig_ob = wallo(iwallo)%dmd(idmd)%src_ob(isrc)%ob_num
+        irrig_type = wallo(iwallo)%dmd(idmd)%src(isrc)%src_typ
+        irrig_ob = wallo(iwallo)%dmd(idmd)%src(isrc)%src_num
         
         !total water volume (m3) removed from source object
         irrig_volume = wallod_out(iwallo)%dmd(idmd)%src(isrc)%withdr
