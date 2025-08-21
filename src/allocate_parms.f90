@@ -1,12 +1,12 @@
+!!@summary Allocate memory for dynamic arrays and initialize simulation variables
+!!@description This subroutine allocates memory for all dynamic arrays used throughout the SWAT+ simulation
+!! based on the number of spatial objects (HRUs, channels, etc.). It initializes array sizes, allocates
+!! memory for plant communities, drainage systems, septic systems, tillage operations, and other simulation
+!! components. After allocation, it calls initialization subroutines to set default values.
+!!@arguments
+!! This subroutine has no explicit arguments - it operates on global module variables and uses
+!! object counts from spatial object modules to determine array sizes
       subroutine allocate_parms
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine allocates array sizes
-
-!!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    mhyd        |none          |max number of hydrographs
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
       use hru_module      
       use time_module
@@ -15,20 +15,20 @@
 
       implicit none
       
-      integer :: mhru = 0
-      integer :: mch = 0
-      integer :: mpc = 0
+      integer :: mhru = 0               !!none | maximum number of HRUs  
+      integer :: mch = 0                !!none | maximum number of channels
+      integer :: mpc = 0                !!none | maximum number of plant communities
       
-!! initialize variables    
+      !! Initialize array dimension variables based on spatial object counts   
       mhyd = 1  !!added for jaehak vars
       mhru = sp_ob%hru
       mch = sp_ob%chan
 
-!!    drains
+      !! Allocate drainage system arrays
       allocate (wnan(10), source = 0.)
       allocate (ranrns_hru(mhru), source = 0.)
       
-      !dimension plant arrays used each day and not saved
+      !! Allocate plant arrays used daily but not saved between time steps
        mpc = 20
        allocate (uno3d(mpc), source = 0.)
        allocate (uapd(mpc), source = 0.)
@@ -40,12 +40,12 @@
        allocate (epmax(mpc), source = 0.)
        epmax = 0.
 
-!!    arrays for plant communities
+      !! Allocate arrays for plant community management
       allocate (cvm_com(mhru), source = 0.)
       allocate (rsdco_plcom(mhru), source = 0.)
       allocate (percn(mhru), source = 0.)
 
-!! septic changes added 1/28/09 gsm
+      !! Allocate septic system arrays (changes added 1/28/09 gsm)
       allocate (i_sep(mhru), source = 0)
       allocate (sep_tsincefail(mhru), source = 0)
       allocate (qstemm(mhru), source = 0.)
@@ -210,14 +210,15 @@
        tillage_days = 0
        tillage_factor = 0.
        
-      !! By Zhang for C/N cycling
+      !! Initialize carbon/nitrogen cycling variables (By Zhang for C/N cycling)
       !! ============================
           
+      !! Call initialization subroutines to set default values for arrays
       call zero0
       call zero1
       call zero2
       call zeroini
 
-!!    zero reservoir module
+      !! Complete array initialization for reservoir module
       return
-      end
+      end subroutine allocate_parms

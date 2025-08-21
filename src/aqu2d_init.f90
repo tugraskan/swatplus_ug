@@ -1,3 +1,10 @@
+!!@summary Initialize 2D groundwater aquifer channel connectivity and flow distribution parameters
+!!@description This subroutine initializes parameters needed for the 2D groundwater flow model to distribute
+!! groundwater discharge to channels using a geomorphological approach. It sets up channel drainage areas,
+!! creates linked lists ordered by drainage area for flow distribution calculations, establishes aquifer-channel
+!! connectivity, and allocates memory for constituent transport in aquifer-channel interactions.
+!!@arguments
+!! This subroutine has no explicit arguments - it operates on global aquifer and channel module variables
       subroutine aqu2d_init
     
       use hydrograph_module
@@ -7,26 +14,27 @@
 
       implicit none
 
-      integer :: iaq = 0            !none       |counter
-      integer :: mfe = 0            !none       |my first element (channel with smallest area)
-      integer :: next1 = 0          !none       |counter
-      integer :: iprv = 0           !none       |counter 
-      integer :: ipts = 0           !none       |counter
-      integer :: npts = 0           !none       |counter
-      integer :: icha = 0           !none       |counter
-      integer :: ichd = 0           !none       |counter
-      integer :: iob = 0            !none       |counter
-      real :: sum_len = 0.          !km         |total length of channel in aquifer
-      real, dimension(:), allocatable :: next   !!next channel to dry up - sorted by drainage area
+      integer :: iaq = 0                        !!none | aquifer counter
+      integer :: mfe = 0                        !!none | first element index (channel with smallest drainage area)
+      integer :: next1 = 0                      !!none | next element counter
+      integer :: iprv = 0                       !!none | previous element counter 
+      integer :: ipts = 0                       !!none | points counter
+      integer :: npts = 0                       !!none | number of points
+      integer :: icha = 0                       !!none | channel counter
+      integer :: ichd = 0                       !!none | channel data index
+      integer :: iob = 0                        !!none | object counter
+      real :: sum_len = 0.                      !!km | total length of channels in aquifer
+      real, dimension(:), allocatable :: next   !!none | next channel to dry up - sorted by drainage area
       
-      !! set parameters needed to distribute gwflow to channels using geomorphical model
+      !! Initialize groundwater flow distribution parameters for 2D aquifer model
       if (db_mx%aqu2d <= 0) return
       do iaq = 1, sp_ob%aqu
-        !! set channel drainage areas
+        !! Allocate and set channel drainage area arrays
         allocate (aq_ch(iaq)%ch(aq_ch(iaq)%num_tot))
         allocate (aqu_cha(aq_ch(iaq)%num_tot))
         allocate (next(aq_ch(iaq)%num_tot), source = 0.)
         sum_len = 0.
+        !! Loop through channels connected to this aquifer
         do icha = 1, aq_ch(iaq)%num_tot
           ich = aq_ch(iaq)%num(icha)
           sd_ch(ich)%aqu_link = iaq
@@ -38,7 +46,7 @@
           sum_len = sum_len + sd_chd(ichd)%chl
         end do
           
-        !! order channels by drainage area - set linked list
+        !! Create linked list ordered by drainage area for flow distribution
         mfe = 1
         do icha = 2, aq_ch(iaq)%num_tot
           next1 = mfe

@@ -1,3 +1,10 @@
+!!@summary Read aquifer-channel connectivity data for 2D groundwater flow model
+!!@description This subroutine reads input data defining the connections between aquifers and channels
+!! for the 2D groundwater flow model. It processes the aquifer-channel linkage file to determine which
+!! channels are connected to each aquifer, allocates memory for storing these connections, and sets up
+!! the data structures needed for groundwater-surface water interactions in the model.
+!!@arguments
+!! This subroutine has no explicit arguments - it reads from input files defined in global modules
       subroutine aqu2d_read
     
       use hydrograph_module
@@ -6,28 +13,29 @@
       
       implicit none
       
-      character (len=80) :: titldum = ""!           |title of file
-      character (len=80) :: header = "" !           |header of file
-      character (len=16) :: namedum = ""!           |
-      integer :: eof = 0              !           |end of file
-      integer :: imax = 0             !none       |determine max number for array (imax) and total number in file
-      integer :: nspu = 0             !           |
-      logical :: i_exist              !none       |check to determine if file exists
-      integer :: i = 0                !none       |counter
-      integer :: isp = 0              !none       |counter
-      integer :: numb = 0             !           |
-      integer :: iaq = 0              !none       |counter
-      integer :: iaq_db = 0           !none       |counter
-      integer :: ielem1 = 0           !none       |counter
+      character (len=80) :: titldum = ""        !!none | title line of input file
+      character (len=80) :: header = ""         !!none | header line of input file
+      character (len=16) :: namedum = ""        !!none | name placeholder variable
+      integer :: eof = 0                        !!none | end of file flag
+      integer :: imax = 0                       !!none | maximum number for array allocation
+      integer :: nspu = 0                       !!none | number of spatial units
+      logical :: i_exist                        !!none | file existence check flag
+      integer :: i = 0                          !!none | general counter
+      integer :: isp = 0                        !!none | spatial counter
+      integer :: numb = 0                       !!none | number placeholder
+      integer :: iaq = 0                        !!none | aquifer counter
+      integer :: iaq_db = 0                     !!none | aquifer database counter
+      integer :: ielem1 = 0                     !!none | element counter
 
       eof = 0
       imax = 0
       
-    !!read data for aquifer elements for 2-D groundwater model
+      !! Read aquifer-channel connectivity data for 2D groundwater model
       inquire (file=in_link%aqu_cha, exist=i_exist)
       if (.not. i_exist .or. in_link%aqu_cha == "null" ) then
         allocate (aq_ch(0:0))
       else 
+      !! Process input file to determine array dimensions
       do
         if (eof < 0) exit
         open (107,file=in_link%aqu_cha)
@@ -36,6 +44,7 @@
         read (107,*,iostat=eof) header
         if (eof < 0) exit
         imax = 0
+        !! Find maximum aquifer number for array allocation
         do while (eof == 0)
           read (107,*,iostat=eof) i
           if (eof < 0) exit
@@ -43,6 +52,7 @@
         end do
       end do
 
+      !! Allocate aquifer-channel connection arrays
       db_mx%aqu2d = imax
       allocate (aq_ch(sp_ob%aqu))
       rewind (107)
