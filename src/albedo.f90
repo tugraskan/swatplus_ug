@@ -24,11 +24,13 @@
 
       !! Calculate albedo based on snow cover conditions
       cej = -5.e-5
+      !! Calculate total soil cover from plant biomass and residue
       cover = pl_mass(j)%ab_gr_com%m + soil1(j)%rsd(1)%m
       eaj = Exp(cej * (cover + .1))   !! equation 2.2.16 in SWAT manual
 
       !! Check for snow cover to determine albedo calculation method
       if (hru(j)%sno_mm <= .5) then
+        !! For minimal snow cover, use soil-based albedo calculation
         !! equation 2.2.14 in SWAT manual
         albday = soil(j)%ly(1)%alb
 

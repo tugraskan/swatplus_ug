@@ -28,31 +28,37 @@
       
       !! Initialize groundwater flow distribution parameters for 2D aquifer model
       if (db_mx%aqu2d <= 0) return
+      !! Loop through each aquifer in the simulation
       do iaq = 1, sp_ob%aqu
-        !! Allocate and set channel drainage area arrays
+        !! Allocate channel connection arrays for this aquifer
         allocate (aq_ch(iaq)%ch(aq_ch(iaq)%num_tot))
         allocate (aqu_cha(aq_ch(iaq)%num_tot))
         allocate (next(aq_ch(iaq)%num_tot), source = 0.)
         sum_len = 0.
-        !! Loop through channels connected to this aquifer
+        !! Process each channel connected to this aquifer
         do icha = 1, aq_ch(iaq)%num_tot
           ich = aq_ch(iaq)%num(icha)
+          !! Set up bidirectional aquifer-channel linkages
           sd_ch(ich)%aqu_link = iaq
           sd_ch(ich)%aqu_link_ch = icha
           iob = sp_ob1%chandeg + ich - 1
           ichd = ob(iob)%props
+          !! Store channel properties for flow distribution calculations
           aqu_cha(icha)%area = ob(iob)%area_ha
           aqu_cha(icha)%len = sd_chd(ichd)%chl
           sum_len = sum_len + sd_chd(ichd)%chl
         end do
           
-        !! Create linked list ordered by drainage area for flow distribution
+        !! Create linked list ordered by drainage area for priority-based flow distribution
         mfe = 1
+        !! Build linked list by inserting each channel in drainage area order (smallest to largest)
         do icha = 2, aq_ch(iaq)%num_tot
           next1 = mfe
           npts = icha - 1
+          !! Find correct position in linked list for current channel
           do ipts = 1, npts
             if (aqu_cha(icha)%area < aqu_cha(next1)%area) then
+              !! Insert channel before current position
               next(icha) = next1
               if (ipts == 1) then
                 mfe = icha
@@ -64,44 +70,48 @@
             iprv = next1
             next1 = next(next1)
           end do
+          !! If channel has largest drainage area, append to end of list
           if (npts > 0 .and. ipts == npts + 1) then
             next(iprv) = icha
           end if
         end do
             
-        !! set the sorted object- aq_ch
+        !! Transfer sorted channels to final array structure
         next1 = mfe
         do icha = 1, aq_ch(iaq)%num_tot
           aq_ch(iaq)%ch(icha) = aqu_cha(next1)
           next1 = next(next1)
         end do
         
-        !! save total channel length in aquifer
+        !! Store total channel length for aquifer discharge calculations
         aq_ch(iaq)%len_tot = sum_len
         
-        !! compute length of channel left when current channel dries up
+        !! Calculate remaining channel length when each channel dries up
+        !! (used for proportional flow distribution when demand exceeds supply)
         do icha = 1, aq_ch(iaq)%num_tot
           sum_len = sum_len - aq_ch(iaq)%ch(icha)%len
           aq_ch(iaq)%ch(icha)%len_left = sum_len
         end do
 
+        !! Clean up temporary arrays
         deallocate (aqu_cha)
         deallocate (next)
         
       end do
 
-      !rtb salt/cs
+      !! Allocate constituent transport arrays if constituents are being simulated (rtb salt/cs modules)
       if(cs_db%num_tot > 0) then
         allocate (aq_chcs(sp_ob%aqu))
+        !! Initialize constituent arrays for each aquifer
         do iaq = 1, sp_ob%aqu
-          !allocate groundwater loading array
+          !! Allocate groundwater loading arrays for constituent transport
           allocate (aq_chcs(iaq)%hd(1))
-          !salts
+          !! Initialize salt transport arrays if salts are simulated
           if(cs_db%num_salts > 0) then
             allocate (aq_chcs(iaq)%hd(1)%salt(cs_db%num_salts), source = 0.)
             aq_chcs(iaq)%hd(1)%salt = 0.
           endif
-          !other constituents
+          !! Initialize other constituent transport arrays if constituents are simulated
           if(cs_db%num_cs > 0) then
             allocate (aq_chcs(iaq)%hd(1)%cs(cs_db%num_cs), source = 0.)
             aq_chcs(iaq)%hd(1)%cs = 0.

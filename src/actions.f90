@@ -118,12 +118,13 @@
           !! Select appropriate management action based on action type
           select case (d_tbl%act(iac)%typ)
           
-          !manure demand - for manure allocation
+          !! Process manure demand for manure allocation system
           case ("manure_demand")
             j = ob_cur
             idmd = ob_num
             imallo = 1      !if mallo objects > 1, need to input
             
+            !! Set manure allocation parameters based on decision table values
             mallo(imallo)%dmd(idmd)%manure_amt = manure_amtz
             if (pcom(j)%dtbl(idtbl)%num_actions(iac) <= Int(d_tbl%act(iac)%const2)) then
               mallo(imallo)%dmd(idmd)%manure_amt%mallo_obj = 1                      !assume 1 manure allocation object - could use file_pointer to xwalk
@@ -132,42 +133,46 @@
               mallo(imallo)%dmd(idmd)%manure_amt%app_method = d_tbl%act_app(iac)    !manure application method
             end if
 
-          !irrigation demand - hru action
+          !! Process irrigation demand from HRU for water allocation
           case ("irr_demand")
             ipl = 1
             j = d_tbl%act(iac)%ob_num
             if (j == 0) j = ob_cur
             
+            !! Handle special case for paddy/wetland ponding depth irrigation
             if (d_tbl%act(iac)%name=='ponding') then !irrigation demand calculated by paddy/wetland ponding depth requirements Jaehak 2023
               hru(j)%irr_hmax = d_tbl%act(iac)%const !mm target ponding depth
               hru(j)%irr_hmin = d_tbl%act(iac)%const2 !mm threshold ponding depth for irrigation
               
+              !! Add any irrigation that already occurred today to current depth
               wet_ob(j)%depth = wet_ob(j)%depth + irrig(j)%applied / 1000. !mm irrigation by wro already happend for today Jaehak 2023
 
+              !! Calculate irrigation demand based on current ponding depth vs threshold
               if (wet_ob(j)%depth*1000.<hru(j)%irr_hmin) then
                 irrig(j)%demand = max(0.,d_tbl%act(iac)%const-wet_ob(j)%depth*1000.) * hru(j)%area_ha * 10.       ! m3 = mm * ha * 10.
               else
                 irrig(j)%demand = 0.
               endif
             else
+              !! Handle regular irrigation demand (non-ponding systems)
               if (pcom(j)%dtbl(idtbl)%num_actions(iac) <= Int(d_tbl%act(iac)%const2)) then
                 irrop = d_tbl%act_typ(iac)      ! irrigation application type in irr.ops
                 irrig(j)%demand = d_tbl%act(iac)%const * hru(j)%area_ha * 10.       ! m3 = mm * ha * 10.
             
-            !! if unlimited source, set irrigation applied directly to hru
+            !! Check for unlimited irrigation source and apply directly to HRU
             if (d_tbl%act(iac)%file_pointer == "unlim") then
               irrig(j)%applied = irrop_db(irrop)%amt_mm * irrop_db(irrop)%eff * (1. - irrop_db(irrop)%surq)
               irrig(j)%runoff = irrop_db(irrop)%amt_mm * irrop_db(irrop)%eff * irrop_db(irrop)%surq
             end if  
               
-                !set organics and constituents from irr.ops ! irrig(j)%water =  cs_irr(j) = 
+                !! Set organics and constituents from irrigation operation parameters
                 if (pco%mgtout == "y") then
                   write (2612, *) j, time%yrc, time%mo, time%day_mo, d_tbl%act(iac)%name, "IRRIGATE", phubase(j),  &
                       pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,pl_mass(j)%tot(ipl)%m, soil1(j)%rsd(1)%m, &
                       sol_sumno3(j), sol_sumsolp(j), irrig(j)%applied
                 end if
               else
-                !! set demand for irrigation from channel, reservoir or aquifer
+                !! Set demand for irrigation from external water sources (channel, reservoir or aquifer)
                 if (pco%mgtout == "y") then
                   write (2612, *) j, time%yrc, time%mo, time%day_mo, d_tbl%act(iac)%name, "IRRIG_DMD", phubase(j), &
                       pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,pl_mass(j)%tot(ipl)%m, soil1(j)%rsd(1)%m, &
@@ -176,42 +181,48 @@
               end if
             endif
 
-          !irrigate - hru action
+          !! Apply irrigation water directly to HRU
           case ("irrigate")
             ipl = 1
             j = ob_cur                      ! hru number 
             
-            !! check number of applications per year
+            !! Check maximum number of applications per year constraint
             if (pcom(j)%dtbl(idtbl)%num_actions(iac) <= Int(d_tbl%act(iac)%const2)) then
             isrc = d_tbl%act(iac)%ob_num    ! source object type number
             irrop = d_tbl%act_typ(iac)      ! irrigation application type in irr.ops
 
+            !! Handle special case for paddy irrigation with ponding depth control
             if (d_tbl%act(iac)%name=='ponding') then !paddy irrigation
               hru(j)%irr_hmax = d_tbl%act(iac)%const !mm
               hru(j)%irr_hmin = d_tbl%act(iac)%const2 !mm
+              !! Calculate irrigation amounts for paddy ponding based on current depth
               irrig(j)%applied = max(0.,d_tbl%act(iac)%const-wet_ob(j)%depth*1000.) * irrop_db(irrop)%eff * &
                         (1. - irrop_db(irrop)%surq) !mm
               irrig(j)%runoff = max(0.,d_tbl%act(iac)%const-wet_ob(j)%depth*1000.) * irrop_db(irrop)%surq   !mm
               irrig(j)%demand = max(0.,d_tbl%act(iac)%const-wet_ob(j)%depth*1000.) * hru(j)%area_ha * 10.       ! m3 = mm * ha * 10.
             else
+              !! Calculate irrigation amounts for regular (non-paddy) systems
               irrig(j)%applied = d_tbl%act(iac)%const * irrop_db(irrop)%eff * (1. - irrop_db(irrop)%surq)
               irrig(j)%runoff = d_tbl%act(iac)%const * irrop_db(irrop)%surq
               irrig(j)%demand = d_tbl%act(iac)%const * hru(j)%area_ha * 10.       ! m3 = mm * ha * 10.
             end if
 
-            !select object type
+            !! Determine water source object type and extract water accordingly
             iob = d_tbl%act(iac)%ob_num
             select case (d_tbl%act(iac)%ob)
             case ("aqu")
+              !! Extract irrigation water from aquifer
               stor_m3 = aqu_d(iob)%stor * aqu_prm(iob)%area_ha * 10.
               if (stor_m3 > irrig(j)%demand) then
                 rto = irrig(j)%demand / stor_m3                 ! ratio of water removed from aquifer volume (m3)
               else
+                !! If insufficient water in aquifer, set irrigation to zero
                 rto = 0.
                 irrig(j)%applied = 0.
                 irrig(j)%runoff = 0.
                 irrig(j)%demand = 0.
               end if
+              !! Apply constraints and calculate water/constituent transfers
               rto = amax1 (0., rto)
               rto = amin1 (1., rto)
               rto1 = (1. - rto)
@@ -221,14 +232,17 @@
               cs_aqu(iob) = rto1 * cs_aqu(iob)                          ! remainder stays in aquifer
               
             case ("cha", "sdc")
+              !! Extract irrigation water from channel
               if (ch_stor(iob)%flo > irrig(j)%demand) then
                 rto = irrig(j)%demand / ch_stor(iob)%flo                ! ratio of water removed from channel volume
               else
+                !! If insufficient water in channel, set irrigation to zero
                 rto = 0.
                 irrig(j)%applied = 0.
                 irrig(j)%runoff = 0.
                 irrig(j)%demand = 0.
               end if
+              !! Apply constraints and calculate water/constituent transfers
               rto = amax1 (0., rto)
               rto = amin1 (1., rto)
               rto1 = (1. - rto)
@@ -238,14 +252,17 @@
               ch_water(iob) = rto1 * ch_water(iob)                      ! remainder stays in channel
               
             case ("res")
+              !! Extract irrigation water from reservoir
               if (res(iob)%flo > irrig(j)%demand) then
                 rto = irrig(j)%demand / res(iob)%flo                    ! ratio of water removed from res volume
               else
+                !! If insufficient water in reservoir, set irrigation to zero
                 rto = 0.
                 irrig(j)%applied = 0.
                 irrig(j)%runoff = 0.
                 irrig(j)%demand = 0.
               end if
+              !! Apply constraints and calculate water/constituent transfers
               rto = amax1 (0., rto)
               rto = amin1 (1., rto)
               rto1 = (1. - rto)
@@ -256,33 +273,39 @@
               
             end select
                   
+            !! Update irrigation tracking variables and output management information
             ! add irrigation to yearly sum for dtbl conditioning jga 6-25
             hru(j)%irr_yr = hru(j)%irr_yr + irrig(j)%applied
             
+            !! Write management output if enabled
             if (pco%mgtout == "y") then
               write (2612, *) j, time%yrc, time%mo, time%day_mo, d_tbl%act(iac)%name, "IRRIGATE", phubase(j),  &
                   pcom(j)%plcur(ipl)%phuacc, soil(j)%sw, pl_mass(j)%tot(ipl)%m, soil1(j)%rsd(1)%m, &
                   sol_sumno3(j), sol_sumsolp(j), irrig(j)%demand
             end if
             
+              !! Update action counters and reset day tracking variables
               pcom(j)%dtbl(idtbl)%num_actions(iac) = pcom(j)%dtbl(idtbl)%num_actions(iac) + 1
               pcom(j)%dtbl(idtbl)%days_act(iac) = 1                     !reset days since last action
               pcom(j)%days_irr = 1                                      ! reset days since last irrigation
               if (iac > 1) pcom(j)%dtbl(idtbl)%days_act(iac-1) =  0     !reset previous action day counter
             end if      ! const2 - number per year check
 
-          !fertilize
+          !! Apply fertilizer to HRU
           case ("fertilize")
             j = d_tbl%act(iac)%ob_num
             if (j == 0) j = ob_cur
             
+            !! Check maximum number of fertilizer applications per year
             if (pcom(j)%dtbl(idtbl)%num_actions(iac) <= Int(d_tbl%act(iac)%const2)) then
               ipl = 1
               ifrt = d_tbl%act_typ(iac)               !fertilizer type from fert data base
               frt_kg = d_tbl%act(iac)%const           !amount applied in kg/ha
               ifertop = d_tbl%act_app(iac)            !surface application fraction from chem app data base
 
+              !! Check for wetland conditions and apply appropriate fertilizer method
               if (wet(j)%flo > 0. .and. chemapp_db(ifertop)%surf_frac == 1) then
+                !! Apply fertilizer to wetland system
                 call pl_fert_wet (ifrt, frt_kg)
                 if (pco%mgtout == "y") then
                   write (2612,*) j, time%yrc, time%mo, time%day_mo, mgt%op_char, " FERT-WET", &
@@ -291,6 +314,7 @@
                     fertorgn, fertsolp, fertorgp
                 endif
               else
+                !! Apply fertilizer to regular soil/plant system
                 call pl_fert (ifrt, frt_kg, ifertop)
                 if (pco%mgtout == "y") then
                   write (2612,*) j, time%yrc, time%mo, time%day_mo, mgt%op_char, "    FERT ", &
@@ -299,22 +323,25 @@
                     fertorgn, fertsolp, fertorgp
                 endif
               endif
+              !! Update action tracking counters
               pcom(j)%dtbl(idtbl)%num_actions(iac) = pcom(j)%dtbl(idtbl)%num_actions(iac) + 1
               pcom(j)%dtbl(idtbl)%days_act(iac) = 1     !reset days since last action
               if (iac > 1) pcom(j)%dtbl(idtbl)%days_act(iac-1) =  0     !reset previous action day counter
             end if
 
-          !manure application
+          !! Apply manure to HRU
           case ("manure")
             j = d_tbl%act(iac)%ob_num
             if (j == 0) j = ob_cur
             
+            !! Check maximum number of manure applications per year
             if (pcom(j)%dtbl(idtbl)%num_actions(iac) <= Int(d_tbl%act(iac)%const2)) then
               ipl = 1
               ifrt = d_tbl%act_typ(iac)               !fertilizer type from fert data base
               frt_kg = d_tbl%act(iac)%const           !amount applied in kg/ha
               ifertop = d_tbl%act_app(iac)            !surface application fraction from chem app data base
 
+              !! Apply manure and track salt/constituent impacts
               call pl_manure (ifrt, frt_kg, ifertop)
               call salt_fert(j,ifrt,frt_kg,ifertop) !rtb salt 
               call cs_fert(j,ifrt,frt_kg,ifertop) !rtb cs
@@ -324,47 +351,54 @@
                   soil1(j)%rsd(1)%m, sol_sumno3(j), sol_sumsolp(j), frt_kg, fertno3, fertnh3,         &
                   fertorgn, fertsolp, fertorgp
               endif
+              !! Update action tracking counters
               pcom(j)%dtbl(idtbl)%num_actions(iac) = pcom(j)%dtbl(idtbl)%num_actions(iac) + 1
               pcom(j)%dtbl(idtbl)%days_act(iac) = 1     !reset days since last action
               if (iac > 1) pcom(j)%dtbl(idtbl)%days_act(iac-1) =  0     !reset previous action day counter
             end if
 
-          !future fertilizer
+          !! Schedule future fertilizer application
           case ("fert_future")
             j = ob_cur
             ifrt = d_tbl%act(iac)%ob_num
+            !! Set future fertilizer application day
             pcom(j)%fert_fut(ifrt)%day_fert = Int (d_tbl%act(iac)%const2)
               
-          !tillage
+          !! Perform tillage operation on HRU
           case ("till")
             j = d_tbl%act(iac)%ob_num
             if (j == 0) j = ob_cur
             
+            !! Check maximum number of tillage operations per year
             if (pcom(j)%dtbl(idtbl)%num_actions(iac) <= Int(d_tbl%act(iac)%const2)) then
               idtill = d_tbl%act_typ(iac)
               ipl = 1
+              !! Perform tillage mixing operation
               call mgt_newtillmix(j, 0., idtill)
             
+              !! Write management output if enabled  
               if (pco%mgtout == "y") then
                 write (2612, *) j, time%yrc, time%mo, time%day_mo, tilldb(idtill)%tillnm, "    TILLAGE",    &
                     phubase(j), pcom(j)%plcur(ipl)%phuacc, soil(j)%sw, pl_mass(j)%tot(ipl)%m,        &
                     soil1(j)%rsd(1)%m, sol_sumno3(j), sol_sumsolp(j), tilldb(idtill)%effmix
               end if
+              !! Update action tracking counters
               pcom(j)%dtbl(idtbl)%num_actions(iac) = pcom(j)%dtbl(idtbl)%num_actions(iac) + 1
               pcom(j)%dtbl(idtbl)%days_act(iac) = 1     !reset days since this action
               if (iac > 1) pcom(j)%dtbl(idtbl)%days_act(iac-1) =  0     !reset previous action day counter
             end if
 
-          !plant
+          !! Plant crop on HRU
           case ("plant")
             j = d_tbl%act(iac)%ob_num
             if (j == 0) j = ob_cur
             
+            !! Check maximum number of planting operations per year
             if (pcom(j)%dtbl(idtbl)%num_actions(iac) <= Int(d_tbl%act(iac)%const2)) then
                 
             icom = pcom(j)%pcomdb
             pcom(j)%days_plant = 1       !reset days since last planting
-            !! check for generic plant-harv and set crops
+            !! Check for generic plant-harvest rotations and set appropriate crops
             isched = hru(j)%mgt_ops
             if (sched(isched)%auto_name(idtbl) == "pl_hv_summer1" .or.      &
                 sched(isched)%auto_name(idtbl) == "pl_hv_winter1") then
@@ -374,17 +408,21 @@
               d_tbl%act(iac)%option = sched(isched)%auto_crop(pcom(j)%rot_yr)
             end if
             
+              !! Loop through all plants in the community to find matching crop
               do ipl = 1, pcom(j)%npl
                 
                 idp = pcomdb(icom)%pl(ipl)%db_num
                 if (d_tbl%act(iac)%option == pcomdb(icom)%pl(ipl)%cpnm) then
-                  !! check to see if the crop is already growing
+                  !! Check if crop is already growing before planting
                   if (pcom(j)%plcur(ipl)%gro == "n") then
+                    !! Plant the crop and initialize growth
                     pcom(j)%plcur(ipl)%gro = "y"
                     pcom(j)%plcur(ipl)%idorm = "n"
                     if (d_tbl%act_app(iac) > 0) then
+                      !! Handle transplanting if specified
                       call mgt_transplant (d_tbl%act_app(iac))
                     end if
+                    !! Write planting output if management output is enabled
                     if (pco%mgtout == "y") then
                     write (2612, *) j, time%yrc, time%mo, time%day_mo, pldb(idp)%plantnm, "    PLANT",   &
                       phubase(j), pcom(j)%plcur(ipl)%phuacc, soil(ihru)%sw,                     &
@@ -392,7 +430,7 @@
                       sol_sumsolp(j), pcom(j)%plg(ipl)%lai, pcom(j)%plcur(ipl)%lai_pot
                     end if
                   else
-                    !! don't plant if the crop is already growing
+                    !! Skip planting if crop is already growing and write notification
                     if (pco%mgtout ==  "y") then
                       write (2612, *) j, time%yrc, time%mo, time%day_mo, pldb(idp)%plantnm,         &
                         "    PLANT_ALREADY_GROWING", phubase(j), pcom(j)%plcur(ipl)%phuacc,       &
@@ -403,12 +441,13 @@
                 end if
               end do
               
+              !! Update action tracking counters after planting
               pcom(j)%dtbl(idtbl)%num_actions(iac) = pcom(j)%dtbl(idtbl)%num_actions(iac) + 1
               pcom(j)%dtbl(idtbl)%days_act(iac) = 1     !reset days since last action
               if (iac > 1) pcom(j)%dtbl(idtbl)%days_act(iac-1) =  0     !reset previous action day counter
             end if
             
-          !harvest only
+          !! Harvest crop biomass only (no kill)
           case ("harvest")
             j = d_tbl%act(iac)%ob_num
             if (j == 0) j = ob_cur
@@ -1095,37 +1134,46 @@
             sd_ch(ich)%cov = d_tbl%act(iac)%const
             sd_ch(ich)%order = d_tbl%act(iac)%file_pointer
         
-          ! burning
+          !! Perform burning operation on HRU
           case ("burn")
             j = d_tbl%act(iac)%ob_num
             if (j == 0) j = ob_cur
             
+            !! Check maximum number of burn operations per year
             if (pcom(j)%dtbl(idtbl)%num_actions(iac) <= Int(d_tbl%act(iac)%const2)) then
               iburn = d_tbl%act_typ(iac)           !burn type
+              !! Apply burning to all plants in the community
               do ipl = 1, pcom(j)%npl
                 call pl_burnop (j, iburn)
               end do
                         
 
-              ! reset plant index for output after burn operation
+              !! Reset plant index for output after burn operation
               ipl = 1
+              !! Write management output if enabled
               if (pco%mgtout == "y") then
                 write (2612, *) j, time%yrc, time%mo, time%day_mo, d_tbl%act(iac)%name, "    BURN", phubase(j),    &
                     pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,pl_mass(j)%tot(ipl)%m, soil1(j)%rsd(1)%m,   &
                     sol_sumno3(j), sol_sumsolp(j)
               end if
+              !! Update action tracking counters
               pcom(j)%dtbl(idtbl)%num_actions(iac) = pcom(j)%dtbl(idtbl)%num_actions(iac) + 1
             end if
           
-          !update curve number
+          !! Update curve number for runoff calculations
           case ("cn_update")
             j = d_tbl%act(iac)%ob_num
             if (j == 0) j = ob_cur
             
+            !! Store previous curve number for comparison
             cn_prev = cn2(j)
+            !! Check maximum number of curve number updates per year
             if (pcom(j)%dtbl(idtbl)%num_actions(iac) <= Int(d_tbl%act(iac)%const2)) then
+              !! Update curve number using change parameter function
               cn2(j) = chg_par (cn2(j), d_tbl%act(iac)%option, d_tbl%act(iac)%const, 35., 95.)
+              !! Recalculate curve number parameters for the HRU
               call curno (cn2(j), j)
+              !! Write management output if enabled
               if (pco%mgtout == "y") then
                 ipl = 1
                 write (2612, *) j, time%yrc, time%mo, time%day_mo, d_tbl%act(iac)%name, "    CNUP", phubase(j),    &
@@ -1135,15 +1183,19 @@
             
             end if
             
+            !! Update action tracking counters
             pcom(j)%dtbl(idtbl)%num_actions(iac) = pcom(j)%dtbl(idtbl)%num_actions(iac) + 1
                           
-          case ("pheno_reset")  !! begin and end monsoon initiation period
+          case ("pheno_reset")  !! Begin and end monsoon initiation period for moisture-triggered growth
             j = d_tbl%act(iac)%ob_num
             if (j == 0) j = ob_cur
             
+            !! Check maximum number of phenology resets per year
             if (pcom(j)%dtbl(idtbl)%num_actions(iac) <= Int(d_tbl%act(iac)%const2)) then
+              !! Loop through all plants to reset phenology for moisture-triggered growth
               do ipl = 1, pcom(j)%npl
                 idp = pcom(j)%plcur(ipl)%idplt
+                !! Reset phenology only for moisture-triggered plants
                 if (pldb(idp)%trig == "moisture_gro") then
                   pcom(j)%plcur(ipl)%phuacc = 0.
                   pcom(j)%plcur(ipl)%gro = "y" 
@@ -1152,11 +1204,12 @@
               end do
             end if
             
+            !! Update action tracking counters
             pcom(j)%dtbl(idtbl)%num_actions(iac) = pcom(j)%dtbl(idtbl)%num_actions(iac) + 1
             pcom(j)%dtbl(idtbl)%days_act(iac) = 1     !reset days since last action
             if (iac > 1) pcom(j)%dtbl(idtbl)%days_act(iac-1) =  0     !reset previous action day counter
 
-          !herd management - move the herd
+          !! Manage livestock herds (placeholder for future implementation)
           case ("herd")
 
           end select

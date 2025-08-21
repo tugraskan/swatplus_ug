@@ -33,9 +33,10 @@
       !! Read aquifer-channel connectivity data for 2D groundwater model
       inquire (file=in_link%aqu_cha, exist=i_exist)
       if (.not. i_exist .or. in_link%aqu_cha == "null" ) then
+        !! If no aquifer-channel file exists, allocate empty array
         allocate (aq_ch(0:0))
       else 
-      !! Process input file to determine array dimensions
+      !! Process input file to determine array dimensions and allocate memory
       do
         if (eof < 0) exit
         open (107,file=in_link%aqu_cha)
@@ -44,7 +45,7 @@
         read (107,*,iostat=eof) header
         if (eof < 0) exit
         imax = 0
-        !! Find maximum aquifer number for array allocation
+        !! First pass: scan file to determine maximum aquifer number for array allocation
         do while (eof == 0)
           read (107,*,iostat=eof) i
           if (eof < 0) exit
@@ -52,26 +53,32 @@
         end do
       end do
 
-      !! Allocate aquifer-channel connection arrays
+      !! Allocate aquifer-channel connection arrays based on file content
       db_mx%aqu2d = imax
       allocate (aq_ch(sp_ob%aqu))
       rewind (107)
       read (107,*) titldum
       read (107,*) header
 
+      !! Second pass: read aquifer data and channel connections
       do iaq_db = 1, imax
 
         read (107,*,iostat=eof) iaq, namedum, nspu
         if (eof < 0) exit
         
+        !! Process aquifer with connected spatial units (channels)
         if (nspu > 0) then
           backspace (107)
+          !! Allocate temporary array for element counts
           allocate (elem_cnt(nspu), source = 0)
+          !! Read aquifer data with connected channel counts
           read (107,*,iostat=eof) numb, aq_ch(iaq)%name, nspu, (elem_cnt(isp), isp = 1, nspu)
           if (eof < 0) exit
           
+          !! Define spatial unit elements and allocate channel number arrays
           call define_unit_elements (nspu, ielem1)
           
+          !! Store channel numbers and connection counts for this aquifer
           allocate (aq_ch(iaq)%num(ielem1), source = 0)
           aq_ch(iaq)%num = defunit_num
           aq_ch(iaq)%num_tot = ielem1
