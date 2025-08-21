@@ -1,0 +1,28 @@
+File Read Structure Summary
+==========================
+
+Input files (with read operations): 68
+Output files (no read operations): 690
+
+Input File Patterns:
+===================
+Files with header reads: 55
+Files with title/skip lines: 0
+
+Data types found:
+  unknown: 66
+  character: 62
+  integer: 39
+  real: 17
+
+Top input files by read operations:
+ 1. file.cio (readcio_read.f90) - 25 reads
+ 2. gwflow.input (gwflow_read.f90) - 20 reads
+ 3. cs_hru.ini (cs_hru_read.f90) - 16 reads
+ 4. salt_hru.ini (salt_hru_read.f90) - 16 reads
+ 5. carb_coefs.cbn (carbon_coef_read.f90) - 16 reads
+ 6. salt_atmo.cli (cli_read_atmodep_salt.f90) - 14 reads
+ 7. gwflow.rescells (gwflow_read.f90) - 14 reads
+ 8. salt_plants (salt_plant_read.f90) - 13 reads
+ 9. cs_res (res_read_csdb.f90) - 11 reads
+10. cs.res (res_read_cs.f90) - 11 reads
