@@ -1,0 +1,6 @@
+water_treat.wal: water treatment plants for sample network
+3
+Water Treatment Plants
+1 wtp1 1000.0 1.0 0.05 org_min_treat1 pest_treat1 path_treat1 salt_treat1 constit_treat1 Primary treatment plant for reservoir water
+2 wtp2 800.0 0.5 0.10 org_min_treat2 pest_treat2 path_treat2 salt_treat2 constit_treat2 Secondary treatment for user wastewater  
+3 wtp3 1200.0 2.0 0.15 org_min_treat3 pest_treat3 path_treat3 salt_treat3 constit_treat3 Tertiary treatment for storage overflow

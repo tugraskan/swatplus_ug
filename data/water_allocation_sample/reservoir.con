@@ -1,0 +1,8 @@
+reservoir.con: reservoir connection file for sample water allocation network
+1
+       id  name                gis_id          area           lat           lon          elev       reservoir         wst       cst      ovfl      rule   out_tot  
+        1  res0001                  1          1000       35.66         127.38       320.00         1    weather_sta1         0         0         0         2
+
+       id   obj_out  htyp_out  frac_out                                                                                                                           
+        1         1       tot       0.7
+        1         2       tot       0.3

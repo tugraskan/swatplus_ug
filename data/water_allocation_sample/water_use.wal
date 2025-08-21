@@ -1,0 +1,8 @@
+water_use.wal: water use facilities for sample network
+2
+Water Use Facilities  
+iuse1 Industrial Use Facility
+org_min_use1 
+
+duse1 Domestic Use Facility  
+org_min_use2

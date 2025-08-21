@@ -1,0 +1,15 @@
+water_allocation.wro: sample water allocation network for SWAT+ 
+1
+Header: Water Allocation Objects
+sample_network priority 4 3
+
+Source objects
+1 res 1 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+2 aqu 1 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0  
+3 aqu 2 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+4 unl 1 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+
+Demand objects
+1 hru 1 ave_day null 5.0 sr 1 1 null 1 res 1 pipe 0 1.0 n null aqu 1 null 0 1.0 n
+2 hru 3 ave_day null 4.0 sr 1 1 null 1 res 1 pipe 0 1.0 n null aqu 2 null 0 1.0 n
+3 wtp 1 ave_day null 50.0 sr 1 0 null 1 res 1 pipe 1 1.0 n

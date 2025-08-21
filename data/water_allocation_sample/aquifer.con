@@ -1,0 +1,9 @@
+aquifer.con: aquifer connection file for sample water allocation network
+2
+       id  name                gis_id          area           lat           lon          elev      aquifer           wst       cst      ovfl      rule   out_tot  
+        1  aqu0001                  1           500       35.65         127.37       300.00         1    weather_sta1         0         0         0         1
+        2  aqu0002                  2           600       35.67         127.39       305.00         2    weather_sta1         0         0         0         1
+
+       id   obj_out  htyp_out  frac_out                                                                                                                           
+        1         1       tot       1.0
+        2         1       tot       1.0

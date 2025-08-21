@@ -1,0 +1,24 @@
+water_allocation_complete.wro: complete water allocation network for SWAT+ 
+1
+Complete Water Allocation Network
+complete_network priority 4 12
+
+Source objects - reservoirs, aquifers, and unlimited sources
+1 res 1 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+2 aqu 1 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0  
+3 aqu 2 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+4 unl 1 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+
+Demand objects - HRUs irrigation water treatment users channels
+1 hru 1 ave_day null 5.0 sr 2 1 null 1 res 1 null 0 0.8 n null 2 aqu 1 null 0 0.2 n null aqu 1 null 0 1.0 n
+2 hru 2 ave_day null 3.0 sr 1 0 null 5 stor 1 pipe 3 1.0 n
+3 hru 3 ave_day null 4.0 sr 2 1 null 1 res 1 null 0 1.0 n null 3 aqu 2 null 0 0.5 n null aqu 2 null 0 1.0 n
+4 wtp 1 ave_day null 50.0 sr 1 1 null 1 res 1 pipe 1 1.0 n null stor 1 pipe 2 1.0 n
+5 stor 1 ave_day null 0.0 sr 1 3 null 4 wtp 1 pipe 2 1.0 n null iuse 1 pipe 3 0.3 n null duse 1 pipe 4 0.4 n null wtp 3 pipe 8 0.3 n
+6 iuse 1 ave_day null 15.0 sr 1 1 null 5 stor 1 pipe 3 1.0 n null wtp 2 pipe 5 1.0 n
+7 duse 1 ave_day null 20.0 sr 1 1 null 5 stor 1 pipe 4 1.0 n null wtp 2 pipe 6 1.0 n
+8 wtp 2 ave_day null 35.0 sr 2 1 null 6 iuse 1 pipe 5 0.5 n null 7 duse 1 pipe 6 0.5 n null cha 1 pipe 7 1.0 n
+9 wtp 3 ave_day null 25.0 sr 1 2 null 5 stor 1 pipe 8 1.0 n null stor 2 pipe 9 0.6 n null cha 2 pipe 10 0.4 n
+10 stor 2 ave_day null 0.0 sr 1 0 null 9 wtp 3 pipe 9 1.0 n
+11 cha 1 ave_day null 0.0 sr 1 0 null 8 wtp 2 pipe 7 1.0 n
+12 cha 2 ave_day null 0.0 sr 1 0 null 9 wtp 3 pipe 10 1.0 n

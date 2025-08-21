@@ -1,0 +1,13 @@
+water_pipe.wal: pipe network for sample allocation system
+10
+Pipe Network Configuration
+pipe1 null 0.0 0.1 0.02 Res1 to WTP1 connection
+pipe2 null 0.0 0.1 0.02 WTP1 to Stor1 connection  
+pipe3 null 0.0 0.1 0.02 Stor1 to IUse1 connection
+pipe4 null 0.0 0.1 0.02 Stor1 to DUse1 connection
+pipe5 null 0.0 0.1 0.02 IUse1 to WTP2 connection
+pipe6 null 0.0 0.1 0.02 DUse1 to WTP2 connection
+pipe7 null 0.0 0.1 0.02 WTP2 to Cha1 connection
+pipe8 null 0.0 0.1 0.02 Stor1 to WTP3 connection
+pipe9 null 0.0 0.1 0.02 WTP3 to Stor2 connection
+pipe10 null 0.0 0.1 0.02 WTP3 to Cha2 connection

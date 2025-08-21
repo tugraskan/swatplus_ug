@@ -1,0 +1,5 @@
+water_tower.wal: water storage towers for sample network  
+2
+Water Storage Towers
+stor1 init_stor1 5000.0 0.5 0.05 Primary storage reservoir after WTP1
+stor2 init_stor2 3000.0 0.5 0.05 Secondary storage after WTP3
