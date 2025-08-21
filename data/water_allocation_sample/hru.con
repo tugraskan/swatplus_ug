@@ -1,11 +1,5 @@
 hru.con: HRU connection file for sample water allocation network
-3
-       id  name                gis_id          area           lat           lon          elev       hru               wst       cst      ovfl      rule   out_tot  
-        1  hru0001                  1           100       35.65         127.37       350.97         1    weather_sta1         0         0         0         2  
+       id  name                gis_id          area           lat           lon          elev       hru               wst       cst      ovfl      rule   out_tot       obj_typ    obj_id       hyd_typ          frac  
+        1  hru0001                  1           100       35.65         127.37       350.97         1    weather_sta1         0         0         0         2           res         1           tot       1.00000           aqu         1           rhg       1.00000  
         2  hru0002                  2           150       35.66         127.38       352.15         2    weather_sta1         0         0         0         0  
-        3  hru0003                  3           200       35.67         127.39       354.20         3    weather_sta1         0         0         0         1
-
-       id   obj_typ  obj_id   hyd_typ          frac  
-        1       res       1       tot       1.0
-        1       aqu       1       rhg       1.0
-        3       aqu       2       rhg       1.0
+        3  hru0003                  3           200       35.67         127.39       354.20         3    weather_sta1         0         0         0         1           aqu         2           rhg       1.00000
