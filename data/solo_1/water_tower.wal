@@ -1,0 +1,7 @@
+water_tower.wal -- water tower storage 
+  3   number of towers
+
+id   name      stormax_m3     lag_days   loss_fr    aquifers     aquifer_num1  loss_frac1  aquifer_num2  loss_frac2   aquifer_num3  loss_frac3    
+ 1   temple1     10000.          10.       0.01        1             1            1.0
+ 2   temple2     10000.          10.       0.01        1             1            1.0
+ 3   belton1     10000.          10.       0.01        1             1            1.0

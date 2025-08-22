@@ -1,0 +1,7 @@
+water_use.wal -- concentrations after water use
+  3   number of uses
+
+ id  name      stormax_m3     lag_days   loss_fr    org_min     pests_ppm  paths_cfu  salts_ppm    constit_ppm   description
+  1  d_use1     10000.          10.       0.01     use_d1_om     null       null       null         null        domestic_use
+  2  i_use1     10000.          10.       0.01     use_i1_om     null       null       null         null        industrial_use
+  3  resident1   10000.          10.       0.01     use_r1_om     null       null       null         null        residential_use

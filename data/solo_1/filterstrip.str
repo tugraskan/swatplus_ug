@@ -1,0 +1,7 @@
+filterstrip_str Generated from M:\Constructor\HUC8_models\models\07010101.accdb Time: 2/13/2025 7:41:33 PM
+             NAME   FLAG  FLD_VFS  CON_VFS  CHA_Q
+     field_border      1      0.1    0.003    0.2
+     filter_strip      1       40      0.5   0.25
+  high_engineered      1      0.1    0.001   0.05
+  rip_plus_filter      1       40      0.6    0.3
+         riparian      1       40      0.8    0.5
