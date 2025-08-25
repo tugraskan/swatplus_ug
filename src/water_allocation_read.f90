@@ -208,7 +208,7 @@
 
       inquire (file='water_treat.wal', exist=i_exist)
       if (.not. i_exist .or. 'water_treat.wal' == "null") then
-        allocate (wtp_om_treat(0:0))
+        allocate (wtp(0:0))
         allocate (wtp_cs_treat(0:0))
       else
       do 
@@ -220,22 +220,30 @@
         !db_mx%water_treat = imax
         if (eof < 0) exit
         
-        allocate (wtp_om_treat(imax))
+        allocate (wtp(imax))
+        ! Note: wtp_om_treat is allocated and filled by om_treat_read function
+        ! allocate (wtp_om_treat(imax)) - commented out to avoid conflict
         allocate (wtp_cs_treat(imax))
 
+        !! read header line
+        read (107,*,iostat=eof) header
+        if (eof < 0) exit
+
         do iwtp = 1, imax
-          read (107,*,iostat=eof) header
-          if (eof < 0) exit 
-          read (107,*,iostat=eof) i
-          if (eof < 0) exit
-          backspace (107)
-          read (107,*,iostat=eof) k, wtp(iwtp)
-          if (eof < 0) exit
-          read (107,*,iostat=eof) header
+          read (107,*,iostat=eof) k, wtp(iwtp)%name, wtp(iwtp)%stor_mx, wtp(iwtp)%lag_days, &
+                                  wtp(iwtp)%loss_fr, wtp(iwtp)%org_min, wtp(iwtp)%pests, &
+                                  wtp(iwtp)%paths, wtp(iwtp)%salts, wtp(iwtp)%constit, wtp(iwtp)%descrip
           if (eof < 0) exit
           
-          !! read concentratin of treated organics - water, sediment and nutrients
-          read (107,*,iostat=eof) wtp_om_treat(iwtp)
+          !! crosswalk organic mineral treatment with om_treat data - store index for later use
+          !! Note: The actual data is in wtp_om_treat array indexed by om_treat database
+          !! This is just for future reference if needed
+          do idb = 1, db_mx%om_treat
+            if (om_treat_name(idb) == wtp(iwtp)%org_min) then
+              !! Could store the index if needed: wtp(iwtp)%om_treat_index = idb
+              exit
+            end if
+          end do
           
           !! read pseticide concentrations of treated water
           if (cs_db%num_pests > 0) then
@@ -246,7 +254,7 @@
           
           !! read pathogen concentrations of treated water
           if (cs_db%num_paths > 0) then
-            allocate (wtp_cs_treat(iwtp)%pest(cs_db%num_paths))
+            allocate (wtp_cs_treat(iwtp)%path(cs_db%num_paths))
             read (107,*,iostat=eof) header
             read (107,*,iostat=eof) wtp_cs_treat(iwtp)%path
           end if
@@ -303,7 +311,7 @@
 
       inquire (file='water_use.wal', exist=i_exist)
       if (.not. i_exist .or. 'water_use.wal' == "null") then
-        allocate (wuse_om_efflu(0:0))
+        allocate (wuse(0:0))
         allocate (wuse_cs_efflu(0:0))
       else
       do 
@@ -315,24 +323,27 @@
         !db_mx%water_treat = imax
         if (eof < 0) exit
         
-        allocate (wuse_om_efflu(imax))
+        allocate (wuse(imax))
+        ! Note: wuse_om_efflu is allocated and filled by om_use_read function
+        ! allocate (wuse_om_efflu(imax)) - commented out to avoid conflict
         allocate (wuse_cs_efflu(imax))
 
+        !! read header line
+        read (107,*,iostat=eof) header
+        if (eof < 0) exit
+
         do iwuse = 1, imax
-          read (107,*,iostat=eof) header
-          if (eof < 0) exit 
-          read (107,*,iostat=eof) wuse(iwuse)%name
-          if (eof < 0) exit
-          read (107,*,iostat=eof) header
+          read (107,*,iostat=eof) k, wuse(iwuse)%name, wuse(iwuse)%stor_mx, wuse(iwuse)%lag_days, &
+                                  wuse(iwuse)%loss_fr, wuse(iwuse)%org_min, wuse(iwuse)%pests, &
+                                  wuse(iwuse)%paths, wuse(iwuse)%salts, wuse(iwuse)%constit, wuse(iwuse)%descrip
           if (eof < 0) exit
           
-          !! read concentratin of treated organics - water, sediment and nutrients
-          read (107,*,iostat=eof) wuse_om_efflu(iwuse)
-          
-          !! crosswalk organic mineral with 
+          !! crosswalk organic mineral use with om_use data - store index for later use
+          !! Note: The actual data is in wuse_om_efflu array indexed by om_use database
+          !! This is just for future reference if needed
           do iom = 1, db_mx%om_use
             if (om_use_name(iom) == wuse(iwuse)%org_min) then
-              sd_init(isp_ini)%org_min = iom
+              !! Could store the index if needed: wuse(iwuse)%om_use_index = iom
               exit
             end if
           end do
@@ -346,7 +357,7 @@
           
           !! read pathogen concentrations of treated water
           if (cs_db%num_paths > 0) then
-            allocate (wuse_cs_efflu(iwuse)%pest(cs_db%num_paths))
+            allocate (wuse_cs_efflu(iwuse)%path(cs_db%num_paths))
             read (107,*,iostat=eof) header
             read (107,*,iostat=eof) wuse_cs_efflu(iwuse)%path
           end if
