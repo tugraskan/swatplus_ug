@@ -178,9 +178,28 @@
             backspace (107)
             read (107,*,iostat=eof) k, wallo(iwro)%dmd(i)%ob_typ, wallo(iwro)%dmd(i)%ob_num,            &
               wallo(iwro)%dmd(i)%dmd_typ, wallo(iwro)%dmd(i)%dmd_typ_name, wallo(iwro)%dmd(i)%amount,   &
-              wallo(iwro)%dmd(i)%right, wallo(iwro)%dmd(i)%src_num, wallo(iwro)%dmd(i)%rcv_num,         &
-              (wallo(iwro)%dmd(i)%src(isrc), isrc = 1, num_src),                                        &
-              (wallo(iwro)%dmd(i)%rcv(isrc), ircv = 1, num_rcv)
+              wallo(iwro)%dmd(i)%right, wallo(iwro)%dmd(i)%src_num, wallo(iwro)%dmd(i)%rcv_num
+            
+            !! read source objects with new format: SCRC src_typ src_num conv_typ conv_num frac comp
+            do isrc = 1, num_src
+              read (107,*,iostat=eof) header, wallo(iwro)%dmd(i)%src(isrc)%src_typ,           &
+                                     wallo(iwro)%dmd(i)%src(isrc)%src_num,                     &
+                                     wallo(iwro)%dmd(i)%src(isrc)%conv_typ,                    &
+                                     wallo(iwro)%dmd(i)%src(isrc)%conv_num,                    &
+                                     wallo(iwro)%dmd(i)%src(isrc)%frac,                        &
+                                     wallo(iwro)%dmd(i)%src(isrc)%comp
+              wallo(iwro)%dmd(i)%src(isrc)%src_wal = isrc
+            end do
+            
+            !! read receiving objects with new format: RCV rcv_typ rcv_num conv_typ conv_num frac comp
+            do ircv = 1, num_rcv
+              read (107,*,iostat=eof) header, wallo(iwro)%dmd(i)%rcv(ircv)%rcv_typ,           &
+                                     wallo(iwro)%dmd(i)%rcv(ircv)%rcv_num,                     &
+                                     wallo(iwro)%dmd(i)%rcv(ircv)%conv_typ,                    &
+                                     wallo(iwro)%dmd(i)%rcv(ircv)%conv_num,                    &
+                                     wallo(iwro)%dmd(i)%rcv(ircv)%frac,                        &
+                                     wallo(iwro)%dmd(i)%rcv(ircv)%comp
+            end do
             
             !! zero output variables for summing
             do isrc = 1, num_objs
