@@ -13,14 +13,22 @@
       real :: overflow = 0.0        !overflow from storage capacity limits
       real :: release_fraction = 0.0 !fraction released per day based on lag
       real :: release_flow = 0.0    !flow released from storage
+      real :: initial_inflow = 0.0  !initial inflow for output tracking
       
       !! get treatment database number from demand object
       itrt = wallo(iwallo)%dmd(idmd)%trt_num
       
       if (itrt > 0 .and. itrt <= size(wtp)) then
+        !! track initial inflow for output
+        initial_inflow = wdraw_om_tot%flo
+        wtpd_out(itrt)%inflow = wtpd_out(itrt)%inflow + initial_inflow
+        
         !! applying water treatment plant parameters
         !! calculate water loss during treatment
         loss_factor = 1.0 - wtp(itrt)%loss_fr
+        
+        !! track water loss for output
+        wtpd_out(itrt)%loss = wtpd_out(itrt)%loss + (initial_inflow * wtp(itrt)%loss_fr)
         
         !! treating water to wtp concentrations using cross-reference
         !! use the om_treat_idx to get the correct organic mineral treatment data
@@ -53,9 +61,15 @@
             wtp(itrt)%stor_cur = wtp(itrt)%stor_mx
           end if
           
+          !! track overflow for output
+          wtpd_out(itrt)%overflow = wtpd_out(itrt)%overflow + overflow
+          
           !! calculate release fraction based on lag time
           release_fraction = min(1.0, 1.0 / wtp(itrt)%lag_days)
           release_flow = wtp(itrt)%stor_cur * release_fraction
+          
+          !! track release fraction for output
+          wtpd_out(itrt)%release_frac = release_fraction
           
           !! update storage after release
           wtp(itrt)%stor_cur = wtp(itrt)%stor_cur - release_flow
@@ -63,6 +77,10 @@
           !! adjust output flow to include overflow and lagged release
           outflo_om%flo = release_flow + overflow
         end if
+        
+        !! track current storage and outflow for output
+        wtpd_out(itrt)%storage = wtp(itrt)%stor_cur
+        wtpd_out(itrt)%outflow = wtpd_out(itrt)%outflow + outflo_om%flo
         
         !! store treated water output for the demand object
         wallo(iwallo)%dmd(idmd)%trt = outflo_om
@@ -86,14 +104,22 @@
       real :: overflow = 0.0        !overflow from storage capacity limits
       real :: release_fraction = 0.0 !fraction released per day based on lag
       real :: release_flow = 0.0    !flow released from storage
+      real :: initial_inflow = 0.0  !initial inflow for output tracking
       
       !! get use database number from demand object
       iuse = wallo(iwallo)%dmd(idmd)%trt_num
       
       if (iuse > 0 .and. iuse <= size(wuse)) then
+        !! track initial inflow for output
+        initial_inflow = wdraw_om_tot%flo
+        wused_out(iuse)%inflow = wused_out(iuse)%inflow + initial_inflow
+        
         !! applying water use plant parameters
         !! calculate water loss during treatment
         loss_factor = 1.0 - wuse(iuse)%loss_fr
+        
+        !! track water loss for output
+        wused_out(iuse)%loss = wused_out(iuse)%loss + (initial_inflow * wuse(iuse)%loss_fr)
         
         !! treating water to use concentrations using cross-reference
         !! use the om_use_idx to get the correct organic mineral use data
@@ -129,9 +155,15 @@
             wuse(iuse)%stor_cur = wuse(iuse)%stor_mx
           end if
           
+          !! track overflow for output
+          wused_out(iuse)%overflow = wused_out(iuse)%overflow + overflow
+          
           !! calculate release fraction based on lag time
           release_fraction = min(1.0, 1.0 / wuse(iuse)%lag_days)
           release_flow = wuse(iuse)%stor_cur * release_fraction
+          
+          !! track release fraction for output
+          wused_out(iuse)%release_frac = release_fraction
           
           !! update storage after release
           wuse(iuse)%stor_cur = wuse(iuse)%stor_cur - release_flow
@@ -142,6 +174,10 @@
           !! update the treated water output with lagged flow
           wallo(iwallo)%dmd(idmd)%trt%flo = outflo_om%flo
         end if
+        
+        !! track current storage and outflow for output
+        wused_out(iuse)%storage = wuse(iuse)%stor_cur
+        wused_out(iuse)%outflow = wused_out(iuse)%outflow + outflo_om%flo
       end if
       
       return

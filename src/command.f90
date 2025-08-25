@@ -427,6 +427,9 @@
           call water_allocation_output (iwro)
         end do
         
+        !! print water treatment output
+        call water_treatment_output
+        
         !! print manure allocation output
         do iwro =1, db_mx%mallo_db
           call manure_source_output (iwro)

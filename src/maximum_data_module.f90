@@ -142,6 +142,8 @@
         integer :: sat_buff = 0
         integer :: om_treat = 0
         integer :: om_use = 0
+        integer :: wtp_db = 0         !! none     |number of water treatment plants
+        integer :: wuse_db = 0        !! none     |number of water use plants
       end type data_files_max_elements
       type (data_files_max_elements), save :: db_mx
                                  

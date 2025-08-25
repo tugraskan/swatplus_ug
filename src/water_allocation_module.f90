@@ -150,6 +150,27 @@
       type (water_allocation_output), dimension(:), allocatable :: walloy_out     !dimension by demand objects
       type (water_allocation_output), dimension(:), allocatable :: walloa_out     !dimension by demand objects
       
+      !! treatment plant output data structures
+      type treatment_plant_output
+        real :: inflow = 0.0               !m3     |inflow to treatment plant
+        real :: outflow = 0.0              !m3     |outflow from treatment plant
+        real :: storage = 0.0              !m3     |current storage in plant
+        real :: overflow = 0.0             !m3     |overflow when capacity exceeded
+        real :: loss = 0.0                 !m3     |water loss during treatment
+        real :: release_frac = 0.0         !       |release fraction based on lag
+      end type treatment_plant_output
+      type (treatment_plant_output) :: wtp_out_zero
+      
+      type (treatment_plant_output), dimension(:), allocatable :: wtpd_out      !daily treatment plant output
+      type (treatment_plant_output), dimension(:), allocatable :: wtpm_out      !monthly treatment plant output  
+      type (treatment_plant_output), dimension(:), allocatable :: wtpy_out      !yearly treatment plant output
+      type (treatment_plant_output), dimension(:), allocatable :: wtpa_out      !average annual treatment plant output
+      
+      type (treatment_plant_output), dimension(:), allocatable :: wused_out     !daily water use plant output
+      type (treatment_plant_output), dimension(:), allocatable :: wusem_out     !monthly water use plant output
+      type (treatment_plant_output), dimension(:), allocatable :: wusey_out     !yearly water use plant output
+      type (treatment_plant_output), dimension(:), allocatable :: wusea_out     !average annual water use plant output
+      
       type wallo_header            
         character(len=6) :: day      =   "  jday"
         character(len=6) :: mo       =   "   mon"
@@ -210,12 +231,51 @@
         end type wallo_header_units
       type (wallo_header_units) :: wallo_hdr_units 
       
+      !! treatment plant output headers
+      type treatment_header            
+        character(len=6) :: day      =   "  jday"
+        character(len=6) :: mo       =   "   mon"
+        character(len=6) :: day_mo   =   " day "
+        character(len=6) :: yrc      =   " yr  "
+        character(len=8) :: plant_id =   " plant  "
+        character(len=25) :: plant_name = "    plant_name       "
+        character(len=15) :: inflow  =   "     inflow    "      !! m3     |inflow to plant
+        character(len=15) :: outflow =   "    outflow    "      !! m3     |outflow from plant 
+        character(len=15) :: storage =   "    storage    "      !! m3     |current storage
+        character(len=15) :: stor_max =  "   stor_max    "      !! m3     |maximum storage capacity
+        character(len=15) :: overflow =  "   overflow    "      !! m3     |overflow when capacity exceeded
+        character(len=15) :: loss     =  "      loss     "      !! m3     |water loss during treatment
+        character(len=15) :: rel_frac =  "   rel_frac    "      !! none   |release fraction based on lag
+        character(len=15) :: lag_days =  "   lag_days    "      !! days   |treatment lag time
+      end type treatment_header
+      type (treatment_header) :: wtp_hdr
+      
+      type treatment_header_units         
+        character (len=8) :: day      =  "        "
+        character (len=8) :: mo       =  "        "
+        character (len=8) :: day_mo   =  "        "
+        character (len=8) :: yrc      =  "        "
+        character (len=8) :: plant_id =  "        "
+        character (len=25) :: plant_name = "                         "
+        character (len=15) :: inflow  =  "m^3            "            !! m3     |inflow to plant
+        character (len=15) :: outflow =  "m^3            "            !! m3     |outflow from plant        
+        character (len=15) :: storage =  "m^3            "            !! m3     |current storage
+        character (len=15) :: stor_max = "m^3            "            !! m3     |maximum storage capacity
+        character (len=15) :: overflow = "m^3            "            !! m3     |overflow when capacity exceeded
+        character (len=15) :: loss     = "m^3            "            !! m3     |water loss during treatment
+        character (len=15) :: rel_frac = "fraction       "            !! none   |release fraction based on lag
+        character (len=15) :: lag_days =  "days           "           !! days   |treatment lag time
+      end type treatment_header_units
+      type (treatment_header_units) :: wtp_hdr_units 
+      
       interface operator (+)
         module procedure wallout_add
+        module procedure wtpout_add
       end interface
 
       interface operator (/)
         module procedure wallo_div_const
+        module procedure wtp_div_const
       end interface   
 
       contains
@@ -238,5 +298,30 @@
         wallo2%withdr = wallo1%withdr / const
         wallo2%unmet = wallo1%unmet / const
       end function wallo_div_const
+
+      !! treatment plant output operators
+      function wtpout_add (wtp1, wtp2) result (wtp3)
+        type (treatment_plant_output), intent (in) :: wtp1
+        type (treatment_plant_output), intent (in) :: wtp2
+        type (treatment_plant_output) :: wtp3
+        wtp3%inflow = wtp1%inflow + wtp2%inflow
+        wtp3%outflow = wtp1%outflow + wtp2%outflow
+        wtp3%storage = wtp1%storage + wtp2%storage
+        wtp3%overflow = wtp1%overflow + wtp2%overflow
+        wtp3%loss = wtp1%loss + wtp2%loss
+        wtp3%release_frac = wtp1%release_frac + wtp2%release_frac
+      end function wtpout_add
+
+      function wtp_div_const (wtp1, const) result (wtp2)
+        type (treatment_plant_output), intent (in) :: wtp1
+        real, intent (in) :: const
+        type (treatment_plant_output) :: wtp2
+        wtp2%inflow = wtp1%inflow / const
+        wtp2%outflow = wtp1%outflow / const
+        wtp2%storage = wtp1%storage / const
+        wtp2%overflow = wtp1%overflow / const
+        wtp2%loss = wtp1%loss / const
+        wtp2%release_frac = wtp1%release_frac / const
+      end function wtp_div_const
 
       end module water_allocation_module

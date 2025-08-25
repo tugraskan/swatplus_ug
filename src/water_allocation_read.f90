@@ -201,6 +201,7 @@
       integer :: isrc = 0             !none       |counter
       integer :: ircv = 0             !none       |counter
       integer :: iwtp = 0             !none       |number of water treatment objects
+      integer :: iwtp_out = 0         !none       |counter for treatment plant outputs
       integer :: num_objs = 0
       integer :: num_src = 0
       integer :: num_rcv = 0
@@ -229,13 +230,27 @@
         ! Skip empty line and read column header
         read (107,'(A)',iostat=eof) header  ! Read empty line as string to not skip it
         read (107,'(A)',iostat=eof) header  ! Read column header line
-        !db_mx%water_treat = imax
+        db_mx%wtp_db = imax
         if (eof < 0) exit
         
         allocate (wtp(imax))
         ! Note: wtp_om_treat is allocated and filled by om_treat_read function
         ! allocate (wtp_om_treat(imax)) - commented out to avoid conflict
         allocate (wtp_cs_treat(imax))
+        
+        !! allocate treatment plant output arrays
+        allocate (wtpd_out(imax))
+        allocate (wtpm_out(imax))
+        allocate (wtpy_out(imax))
+        allocate (wtpa_out(imax))
+        
+        !! initialize output arrays to zero
+        do iwtp_out = 1, imax
+          wtpd_out(iwtp_out) = wtp_out_zero
+          wtpm_out(iwtp_out) = wtp_out_zero
+          wtpy_out(iwtp_out) = wtp_out_zero
+          wtpa_out(iwtp_out) = wtp_out_zero
+        end do
 
         do iwtp = 1, imax
           read (107,*,iostat=eof) k, wtp(iwtp)%name, wtp(iwtp)%stor_mx, wtp(iwtp)%lag_days, &
@@ -318,6 +333,7 @@
       integer :: isrc_wallo = 0
       integer :: div_found = 0
       integer :: iwuse = 0
+      integer :: iwuse_out = 0         !none       |counter for water use outputs
       integer :: isp_ini = 0          !none       |counter
       integer :: iom = 0          !none       |counter
       
@@ -339,13 +355,27 @@
         ! Skip empty line and read column header
         read (107,'(A)',iostat=eof) header  ! Read empty line as string to not skip it
         read (107,'(A)',iostat=eof) header  ! Read column header line
-        !db_mx%water_treat = imax
+        db_mx%wuse_db = imax
         if (eof < 0) exit
         
         allocate (wuse(imax))
         ! Note: wuse_om_efflu is allocated and filled by om_use_read function
         ! allocate (wuse_om_efflu(imax)) - commented out to avoid conflict
         allocate (wuse_cs_efflu(imax))
+        
+        !! allocate water use plant output arrays
+        allocate (wused_out(imax))
+        allocate (wusem_out(imax))
+        allocate (wusey_out(imax))
+        allocate (wusea_out(imax))
+        
+        !! initialize output arrays to zero
+        do iwuse_out = 1, imax
+          wused_out(iwuse_out) = wtp_out_zero
+          wusem_out(iwuse_out) = wtp_out_zero
+          wusey_out(iwuse_out) = wtp_out_zero
+          wusea_out(iwuse_out) = wtp_out_zero
+        end do
 
         do iwuse = 1, imax
           read (107,*,iostat=eof) k, wuse(iwuse)%name, wuse(iwuse)%stor_mx, wuse(iwuse)%lag_days, &
