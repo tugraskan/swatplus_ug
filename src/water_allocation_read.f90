@@ -239,7 +239,9 @@
         read (107,*,iostat=eof) titldum
         if (eof < 0) exit
         read (107,*,iostat=eof) imax
-        read (107,*,iostat=eof) header
+        ! Skip empty line and read column header
+        read (107,'(A)',iostat=eof) header  ! Read empty line as string to not skip it
+        read (107,'(A)',iostat=eof) header  ! Read column header line
         !db_mx%water_treat = imax
         if (eof < 0) exit
         
@@ -247,10 +249,6 @@
         ! Note: wtp_om_treat is allocated and filled by om_treat_read function
         ! allocate (wtp_om_treat(imax)) - commented out to avoid conflict
         allocate (wtp_cs_treat(imax))
-
-        !! read header line
-        read (107,*,iostat=eof) header
-        if (eof < 0) exit
 
         do iwtp = 1, imax
           read (107,*,iostat=eof) k, wtp(iwtp)%name, wtp(iwtp)%stor_mx, wtp(iwtp)%lag_days, &
@@ -342,7 +340,9 @@
         read (107,*,iostat=eof) titldum
         if (eof < 0) exit
         read (107,*,iostat=eof) imax
-        read (107,*,iostat=eof) header
+        ! Skip empty line and read column header
+        read (107,'(A)',iostat=eof) header  ! Read empty line as string to not skip it
+        read (107,'(A)',iostat=eof) header  ! Read column header line
         !db_mx%water_treat = imax
         if (eof < 0) exit
         
@@ -350,10 +350,6 @@
         ! Note: wuse_om_efflu is allocated and filled by om_use_read function
         ! allocate (wuse_om_efflu(imax)) - commented out to avoid conflict
         allocate (wuse_cs_efflu(imax))
-
-        !! read header line
-        read (107,*,iostat=eof) header
-        if (eof < 0) exit
 
         do iwuse = 1, imax
           read (107,*,iostat=eof) k, wuse(iwuse)%name, wuse(iwuse)%stor_mx, wuse(iwuse)%lag_days, &
