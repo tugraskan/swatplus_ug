@@ -79,7 +79,30 @@
             if (eof < 0) exit
             backspace (107)
               read (107,*,iostat=eof) k, wallo(iwro)%src(i)%ob_typ, wallo(iwro)%src(i)%ob_num,    &
-                                                                  wallo(iwro)%src(i)%limit_mon
+                                      wallo(iwro)%src(i)%avail_typ, wallo(iwro)%src(i)%dtbl,       &
+                                      wallo(iwro)%src(i)%rec, wallo(iwro)%src(i)%limit_mon,        &
+                                      wallo(iwro)%src(i)%rec_num, wallo(iwro)%src(i)%div_vol
+            
+            !! crosswalk source decision table if used
+            if (wallo(iwro)%src(i)%avail_typ == "dtbl" .and. wallo(iwro)%src(i)%dtbl /= "null" .and. wallo(iwro)%src(i)%dtbl /= "") then
+              !! xwalk with flow decision table
+              do idb = 1, db_mx%dtbl_flo
+                if (wallo(iwro)%src(i)%dtbl == dtbl_flo(idb)%name) then
+                  exit
+                end if
+              end do
+            end if
+            
+            !! crosswalk source recall file if used
+            if (wallo(iwro)%src(i)%avail_typ == "rec" .and. wallo(iwro)%src(i)%rec /= "null" .and. wallo(iwro)%src(i)%rec /= "") then
+              !! xwalk with recall database
+              do idb = 1, db_mx%recall_max
+                if (wallo(iwro)%src(i)%rec == recall(idb)%name) then
+                  wallo(iwro)%src(i)%rec_num = idb
+                  exit
+                end if
+              end do
+            end if
           end do
           
           !! read demand object data
