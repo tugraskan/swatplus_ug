@@ -133,13 +133,11 @@
             
             !! for water treatment plants - set treatment parameters directly
             if (wallo(iwro)%dmd(i)%ob_typ == "wtp") then
-              wallo(iwro)%dmd(i)%treat_typ = "treat"
               wallo(iwro)%dmd(i)%trt_num = wallo(iwro)%dmd(i)%ob_num
             end if
             
             !! for water use plants - set treatment parameters directly
             if (wallo(iwro)%dmd(i)%ob_typ == "use") then
-              wallo(iwro)%dmd(i)%treat_typ = "use"
               wallo(iwro)%dmd(i)%trt_num = wallo(iwro)%dmd(i)%ob_num
             end if
             
@@ -254,9 +252,14 @@
             end if
           end do
           
-          !! warn if cross-reference not found
+          !! if cross-reference not found, set to default (first entry) or exit if invalid
           if (wtp(iwtp)%om_treat_idx == 0 .and. wtp(iwtp)%org_min /= "null" .and. wtp(iwtp)%org_min /= "") then
-            write (*,*) "WARNING: Treatment plant ", trim(wtp(iwtp)%name), " references unknown org_min: ", trim(wtp(iwtp)%org_min)
+            if (db_mx%om_treat > 0) then
+              wtp(iwtp)%om_treat_idx = 1  ! use first available treatment as default
+            else
+              write (*,*) "ERROR: Treatment plant ", trim(wtp(iwtp)%name), " references org_min but no om_treat data available"
+              stop
+            end if
           end if
           
           !! read pseticide concentrations of treated water
@@ -359,9 +362,14 @@
             end if
           end do
           
-          !! warn if cross-reference not found
+          !! if cross-reference not found, set to default (first entry) or exit if invalid
           if (wuse(iwuse)%om_use_idx == 0 .and. wuse(iwuse)%org_min /= "null" .and. wuse(iwuse)%org_min /= "") then
-            write (*,*) "WARNING: Water use facility ", trim(wuse(iwuse)%name), " references unknown org_min: ", trim(wuse(iwuse)%org_min)
+            if (db_mx%om_use > 0) then
+              wuse(iwuse)%om_use_idx = 1  ! use first available use entry as default
+            else
+              write (*,*) "ERROR: Water use facility ", trim(wuse(iwuse)%name), " references org_min but no om_use data available"
+              stop
+            end if
           end if
             
           !! read pseticide concentrations of treated water
