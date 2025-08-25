@@ -108,6 +108,7 @@
         character (len=80) :: descrip = ""      !description
         integer :: om_treat_idx = 0             !cross-reference index to om_treat_name array
         integer :: om_use_idx = 0               !cross-reference index to om_use_name array (for wuse)
+        real :: stor_cur = 0.0                  !m3   !current storage in plant
       end type water_treatment_use_data        
       type (water_treatment_use_data), dimension(:), allocatable :: wtp        
       type (water_treatment_use_data), dimension(:), allocatable :: wuse

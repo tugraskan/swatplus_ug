@@ -10,6 +10,9 @@
       integer, intent (in) :: idmd          !water demand object number
       integer :: itrt = 0           !none       |treatment database number
       real :: loss_factor = 1.0     !factor for water loss during treatment
+      real :: overflow = 0.0        !overflow from storage capacity limits
+      real :: release_fraction = 0.0 !fraction released per day based on lag
+      real :: release_flow = 0.0    !flow released from storage
       
       !! get treatment database number from demand object
       itrt = wallo(iwallo)%dmd(idmd)%trt_num
@@ -38,11 +41,31 @@
         !! convert concentration to mass
         call hydcsout_conc_mass (outflo_om%flo, wtp_cs_treat(itrt), outflo_cs)
         
+        !! implement storage capacity limits and time lag
+        if (wtp(itrt)%stor_mx > 0.0 .and. wtp(itrt)%lag_days > 0.0) then
+          !! add treated water to storage
+          wtp(itrt)%stor_cur = wtp(itrt)%stor_cur + outflo_om%flo
+          
+          !! check storage capacity limits - overflow if exceeds capacity
+          overflow = 0.0
+          if (wtp(itrt)%stor_cur > wtp(itrt)%stor_mx) then
+            overflow = wtp(itrt)%stor_cur - wtp(itrt)%stor_mx
+            wtp(itrt)%stor_cur = wtp(itrt)%stor_mx
+          end if
+          
+          !! calculate release fraction based on lag time
+          release_fraction = min(1.0, 1.0 / wtp(itrt)%lag_days)
+          release_flow = wtp(itrt)%stor_cur * release_fraction
+          
+          !! update storage after release
+          wtp(itrt)%stor_cur = wtp(itrt)%stor_cur - release_flow
+          
+          !! adjust output flow to include overflow and lagged release
+          outflo_om%flo = release_flow + overflow
+        end if
+        
         !! store treated water output for the demand object
         wallo(iwallo)%dmd(idmd)%trt = outflo_om
-        
-        !! TODO: Implement treatment time lag (wtp(itrt)%lag_days)
-        !! TODO: Implement storage capacity limits (wtp(itrt)%stor_mx)
       end if
       
       return
@@ -60,6 +83,9 @@
       integer, intent (in) :: idmd          !water demand object number
       integer :: iuse = 0           !none       |treatment database number
       real :: loss_factor = 1.0     !factor for water loss during treatment
+      real :: overflow = 0.0        !overflow from storage capacity limits
+      real :: release_fraction = 0.0 !fraction released per day based on lag
+      real :: release_flow = 0.0    !flow released from storage
       
       !! get use database number from demand object
       iuse = wallo(iwallo)%dmd(idmd)%trt_num
@@ -91,8 +117,31 @@
         !! convert concentration to mass
         call hydcsout_conc_mass (outflo_om%flo, wuse_cs_efflu(iuse), outflo_cs)
         
-        !! TODO: Implement treatment time lag (wuse(iuse)%lag_days)
-        !! TODO: Implement storage capacity limits (wuse(iuse)%stor_mx)
+        !! implement storage capacity limits and time lag
+        if (wuse(iuse)%stor_mx > 0.0 .and. wuse(iuse)%lag_days > 0.0) then
+          !! add treated water to storage
+          wuse(iuse)%stor_cur = wuse(iuse)%stor_cur + outflo_om%flo
+          
+          !! check storage capacity limits - overflow if exceeds capacity
+          overflow = 0.0
+          if (wuse(iuse)%stor_cur > wuse(iuse)%stor_mx) then
+            overflow = wuse(iuse)%stor_cur - wuse(iuse)%stor_mx
+            wuse(iuse)%stor_cur = wuse(iuse)%stor_mx
+          end if
+          
+          !! calculate release fraction based on lag time
+          release_fraction = min(1.0, 1.0 / wuse(iuse)%lag_days)
+          release_flow = wuse(iuse)%stor_cur * release_fraction
+          
+          !! update storage after release
+          wuse(iuse)%stor_cur = wuse(iuse)%stor_cur - release_flow
+          
+          !! adjust output flow to include overflow and lagged release
+          outflo_om%flo = release_flow + overflow
+          
+          !! update the treated water output with lagged flow
+          wallo(iwallo)%dmd(idmd)%trt%flo = outflo_om%flo
+        end if
       end if
       
       return
