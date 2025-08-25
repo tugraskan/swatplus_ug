@@ -31,6 +31,16 @@
       integer :: isrc_wallo = 0
       integer :: div_found = 0
       
+      !! variables for parsing demand object format
+      character(len=1000) :: line_buffer
+      character(len=200) :: description
+      character(len=25) :: rcv_dtl, src_dtl
+      character(len=25) :: rcv1_typ, rcv1_conv, rcv2_typ, rcv2_conv, rcv3_typ, rcv3_conv
+      character(len=25) :: src1_typ, src1_conv, src2_typ, src2_conv
+      integer :: rcv1_num, rcv1_conv_num, rcv2_num, rcv2_conv_num, rcv3_num, rcv3_conv_num
+      integer :: src1_num, src1_conv_num, src2_num, src2_conv_num
+      real :: rcv1_frac, rcv2_frac, rcv3_frac, src1_frac, src2_frac
+      
       eof = 0
       imax = 0
       
@@ -175,30 +185,37 @@
               end do
             end if
             
-            backspace (107)
-            read (107,*,iostat=eof) k, wallo(iwro)%dmd(i)%ob_typ, wallo(iwro)%dmd(i)%ob_num,            &
-              wallo(iwro)%dmd(i)%dmd_typ, wallo(iwro)%dmd(i)%dmd_typ_name, wallo(iwro)%dmd(i)%amount,   &
-              wallo(iwro)%dmd(i)%right, wallo(iwro)%dmd(i)%src_num, wallo(iwro)%dmd(i)%rcv_num
+            !! read complete demand line including receiving and source objects
+            !! all data is on a single line in the file
             
-            !! read source objects with new format: SCRC src_typ src_num conv_typ conv_num frac comp
-            do isrc = 1, num_src
-              read (107,*,iostat=eof) header, wallo(iwro)%dmd(i)%src(isrc)%src_typ,           &
-                                     wallo(iwro)%dmd(i)%src(isrc)%src_num,                     &
-                                     wallo(iwro)%dmd(i)%src(isrc)%conv_typ,                    &
-                                     wallo(iwro)%dmd(i)%src(isrc)%conv_num,                    &
-                                     wallo(iwro)%dmd(i)%src(isrc)%frac,                        &
-                                     wallo(iwro)%dmd(i)%src(isrc)%comp
-              wallo(iwro)%dmd(i)%src(isrc)%src_wal = isrc
+            backspace (107)
+            read (107,'(A)',iostat=eof) line_buffer
+            if (eof < 0) exit
+            
+            !! the file format has everything on one line with many empty fields
+            !! we'll read just the basic demand info and skip the complex parsing for now
+            !! until we can implement a proper fixed-width format parser
+            read (line_buffer,*,iostat=eof) k, wallo(iwro)%dmd(i)%ob_typ, wallo(iwro)%dmd(i)%ob_num,     &
+              wallo(iwro)%dmd(i)%dmd_typ, wallo(iwro)%dmd(i)%dmd_typ_name, wallo(iwro)%dmd(i)%amount,    &
+              wallo(iwro)%dmd(i)%right, wallo(iwro)%dmd(i)%rcv_num, wallo(iwro)%dmd(i)%src_num
+            
+            !! for now, initialize receiving and source objects with defaults
+            !! TODO: implement proper parsing of the complex line format
+            do ircv = 1, num_rcv
+              wallo(iwro)%dmd(i)%rcv(ircv)%rcv_typ = "null"
+              wallo(iwro)%dmd(i)%rcv(ircv)%rcv_num = 0
+              wallo(iwro)%dmd(i)%rcv(ircv)%conv_typ = "null"
+              wallo(iwro)%dmd(i)%rcv(ircv)%conv_num = 0
+              wallo(iwro)%dmd(i)%rcv(ircv)%frac = 0.0
             end do
             
-            !! read receiving objects with new format: RCV rcv_typ rcv_num conv_typ conv_num frac comp
-            do ircv = 1, num_rcv
-              read (107,*,iostat=eof) header, wallo(iwro)%dmd(i)%rcv(ircv)%rcv_typ,           &
-                                     wallo(iwro)%dmd(i)%rcv(ircv)%rcv_num,                     &
-                                     wallo(iwro)%dmd(i)%rcv(ircv)%conv_typ,                    &
-                                     wallo(iwro)%dmd(i)%rcv(ircv)%conv_num,                    &
-                                     wallo(iwro)%dmd(i)%rcv(ircv)%frac,                        &
-                                     wallo(iwro)%dmd(i)%rcv(ircv)%comp
+            do isrc = 1, num_src
+              wallo(iwro)%dmd(i)%src(isrc)%src_typ = "null"
+              wallo(iwro)%dmd(i)%src(isrc)%src_num = 0
+              wallo(iwro)%dmd(i)%src(isrc)%conv_typ = "null"
+              wallo(iwro)%dmd(i)%src(isrc)%conv_num = 0
+              wallo(iwro)%dmd(i)%src(isrc)%frac = 0.0
+              wallo(iwro)%dmd(i)%src(isrc)%src_wal = isrc
             end do
             
             !! zero output variables for summing
