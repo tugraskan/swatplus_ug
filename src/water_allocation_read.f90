@@ -143,8 +143,7 @@
             end if
             
             !! for water use plants - set treatment parameters
-            if (wallo(iwro)%dmd(i)%ob_typ == "use" .or. wallo(iwro)%dmd(i)%ob_typ == "i_use" .or. &
-                wallo(iwro)%dmd(i)%ob_typ == "d_use") then
+            if (wallo(iwro)%dmd(i)%ob_typ == "use") then
               !! for use type demands, assign treatment based on object number
               !! this assumes use object number corresponds to use treatment number
               if (wallo(iwro)%dmd(i)%ob_num <= size(wuse)) then
