@@ -73,7 +73,11 @@
         real :: withdr_tot = 0.                 !m3     |total withdrawal of demand object from all sources
         real :: irr_eff = 0.                    !irrigation in-field efficiency
         real :: surq = 0.                       !surface runoff ratio
+        character (len=10) :: treat_typ = ""    !treatment type - "treat", "recall", or "none"
+        character (len=25) :: treatment = ""    !pointer to the recall or treatment file
+        integer :: trt_num = 0                  !treatment database number when treating the withdrawn water
         type (hyd_output) :: hd
+        type (hyd_output) :: trt                !treated water output
       end type water_demand_objects
 
       !water allocation

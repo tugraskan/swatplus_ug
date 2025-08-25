@@ -131,6 +131,29 @@
               end do
             end if
             
+            !! for water treatment plants - set treatment parameters
+            if (wallo(iwro)%dmd(i)%ob_typ == "wtp") then
+              !! for wtp type demands, assign treatment based on object number
+              !! this assumes wtp object number corresponds to treatment plant number
+              if (wallo(iwro)%dmd(i)%ob_num <= size(wtp)) then
+                wallo(iwro)%dmd(i)%treat_typ = "treat"
+                wallo(iwro)%dmd(i)%treatment = wtp(wallo(iwro)%dmd(i)%ob_num)%name
+                wallo(iwro)%dmd(i)%trt_num = wallo(iwro)%dmd(i)%ob_num
+              end if
+            end if
+            
+            !! for water use plants - set treatment parameters
+            if (wallo(iwro)%dmd(i)%ob_typ == "use" .or. wallo(iwro)%dmd(i)%ob_typ == "i_use" .or. &
+                wallo(iwro)%dmd(i)%ob_typ == "d_use") then
+              !! for use type demands, assign treatment based on object number
+              !! this assumes use object number corresponds to use treatment number
+              if (wallo(iwro)%dmd(i)%ob_num <= size(wuse)) then
+                wallo(iwro)%dmd(i)%treat_typ = "use"
+                wallo(iwro)%dmd(i)%treatment = wuse(wallo(iwro)%dmd(i)%ob_num)%name
+                wallo(iwro)%dmd(i)%trt_num = wallo(iwro)%dmd(i)%ob_num
+              end if
+            end if
+            
             !! for municipal treatment - recall option for daily, monthly, or annual mass
             if (wallo(iwro)%dmd(i)%dmd_typ == "recall") then
               !! xwalk with recall database
