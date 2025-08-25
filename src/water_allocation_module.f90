@@ -106,6 +106,8 @@
         character (len=25) :: salts = ""        !salt ions - ppm
         character (len=25) :: constit = ""      !other constituents - ppm
         character (len=80) :: descrip = ""      !description
+        integer :: om_treat_idx = 0             !cross-reference index to om_treat_name array
+        integer :: om_use_idx = 0               !cross-reference index to om_use_name array (for wuse)
       end type water_treatment_use_data        
       type (water_treatment_use_data), dimension(:), allocatable :: wtp        
       type (water_treatment_use_data), dimension(:), allocatable :: wuse

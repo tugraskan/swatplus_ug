@@ -14,15 +14,22 @@
       !! get treatment database number from demand object
       itrt = wallo(iwallo)%dmd(idmd)%trt_num
       
-      if (itrt > 0) then
+      if (itrt > 0 .and. itrt <= size(wtp)) then
         !! applying water treatment plant parameters
         !! calculate water loss during treatment
         loss_factor = 1.0 - wtp(itrt)%loss_fr
         
-        !! treating water to wtp concentrations
+        !! treating water to wtp concentrations using cross-reference
+        !! use the om_treat_idx to get the correct organic mineral treatment data
+        if (wtp(itrt)%om_treat_idx > 0) then
+          outflo_om = wtp_om_treat(wtp(itrt)%om_treat_idx)
+        else
+          !! if no cross-reference, use default or zero values
+          outflo_om = wdraw_om_tot  ! pass through unchanged as fallback
+        end if
+        
         !! treated outflow is a fraction of withdrawal accounting for losses
-        outflo_om = wtp_om_treat(itrt)
-        outflo_om%flo = outflo_om%flo * wdraw_om_tot%flo * loss_factor
+        outflo_om%flo = wdraw_om_tot%flo * loss_factor
         
         !! convert concentration to mass
         call hyd_convert_conc_to_mass (outflo_om)
@@ -57,15 +64,22 @@
       !! get use database number from demand object
       iuse = wallo(iwallo)%dmd(idmd)%trt_num
       
-      if (iuse > 0) then
+      if (iuse > 0 .and. iuse <= size(wuse)) then
         !! applying water use plant parameters
         !! calculate water loss during treatment
         loss_factor = 1.0 - wuse(iuse)%loss_fr
         
-        !! treating water to use concentrations
+        !! treating water to use concentrations using cross-reference
+        !! use the om_use_idx to get the correct organic mineral use data
+        if (wuse(iuse)%om_use_idx > 0) then
+          outflo_om = wuse_om_efflu(wuse(iuse)%om_use_idx)
+        else
+          !! if no cross-reference, use default or zero values
+          outflo_om = wdraw_om_tot  ! pass through unchanged as fallback
+        end if
+        
         !! treated outflow is a fraction of withdrawal accounting for losses
-        outflo_om = wuse_om_efflu(iuse)
-        outflo_om%flo = outflo_om%flo * wdraw_om_tot%flo * loss_factor
+        outflo_om%flo = wdraw_om_tot%flo * loss_factor
         
         !! convert concentration to mass
         call hyd_convert_conc_to_mass (outflo_om)
