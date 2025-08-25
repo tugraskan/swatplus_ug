@@ -131,14 +131,16 @@
               end do
             end if
             
-            !! for water treatment plants - set treatment parameters using name-based cross walk
+            !! for water treatment plants - set treatment parameters directly
             if (wallo(iwro)%dmd(i)%ob_typ == "wtp") then
-              call wallo_crosswalk_treatment(iwro, i)
+              wallo(iwro)%dmd(i)%treat_typ = "treat"
+              wallo(iwro)%dmd(i)%trt_num = wallo(iwro)%dmd(i)%ob_num
             end if
             
-            !! for water use plants - set treatment parameters using name-based cross walk
+            !! for water use plants - set treatment parameters directly
             if (wallo(iwro)%dmd(i)%ob_typ == "use") then
-              call wallo_crosswalk_wateruse(iwro, i)
+              wallo(iwro)%dmd(i)%treat_typ = "use"
+              wallo(iwro)%dmd(i)%trt_num = wallo(iwro)%dmd(i)%ob_num
             end if
             
             !! for municipal treatment - recall option for daily, monthly, or annual mass
@@ -653,89 +655,3 @@
       end subroutine om_use_read
 
 
-      !! Cross walk subroutines for water allocation assignments
-      
-      subroutine wallo_crosswalk_treatment(iwro, idmd)
-      
-      use water_allocation_module
-      
-      implicit none
-      
-      integer, intent(in) :: iwro    ! water allocation object number
-      integer, intent(in) :: idmd    ! demand object number
-      integer :: iwtp = 0            ! treatment plant counter
-      logical :: found = .false.     ! flag to track if match is found
-      
-      !! Try to find treatment plant by object number first (existing logic)
-      if (wallo(iwro)%dmd(idmd)%ob_num > 0 .and. wallo(iwro)%dmd(idmd)%ob_num <= size(wtp)) then
-        iwtp = wallo(iwro)%dmd(idmd)%ob_num
-        wallo(iwro)%dmd(idmd)%treat_typ = "treat"
-        wallo(iwro)%dmd(idmd)%treatment = wtp(iwtp)%name
-        wallo(iwro)%dmd(idmd)%trt_num = iwtp
-        found = .true.
-      else
-        !! If object number doesn't work, try name-based matching
-        !! This handles cases where treatment plant names are specified directly
-        if (wallo(iwro)%dmd(idmd)%treatment /= "") then
-          do iwtp = 1, size(wtp)
-            if (wtp(iwtp)%name == wallo(iwro)%dmd(idmd)%treatment) then
-              wallo(iwro)%dmd(idmd)%treat_typ = "treat"
-              wallo(iwro)%dmd(idmd)%trt_num = iwtp
-              found = .true.
-              exit
-            end if
-          end do
-        end if
-      end if
-      
-      !! Warn if no match found
-      if (.not. found) then
-        write (*,*) "WARNING: Water allocation object ", trim(wallo(iwro)%name), &
-                   " demand ", idmd, " references unknown treatment plant: ", wallo(iwro)%dmd(idmd)%ob_num
-      end if
-      
-      return
-      end subroutine wallo_crosswalk_treatment
-      
-      
-      subroutine wallo_crosswalk_wateruse(iwro, idmd)
-      
-      use water_allocation_module
-      
-      implicit none
-      
-      integer, intent(in) :: iwro    ! water allocation object number  
-      integer, intent(in) :: idmd    ! demand object number
-      integer :: iwuse = 0           ! water use facility counter
-      logical :: found = .false.     ! flag to track if match is found
-      
-      !! Try to find water use facility by object number first (existing logic)
-      if (wallo(iwro)%dmd(idmd)%ob_num > 0 .and. wallo(iwro)%dmd(idmd)%ob_num <= size(wuse)) then
-        iwuse = wallo(iwro)%dmd(idmd)%ob_num
-        wallo(iwro)%dmd(idmd)%treat_typ = "use"
-        wallo(iwro)%dmd(idmd)%treatment = wuse(iwuse)%name
-        wallo(iwro)%dmd(idmd)%trt_num = iwuse
-        found = .true.
-      else
-        !! If object number doesn't work, try name-based matching
-        !! This handles cases where water use facility names are specified directly
-        if (wallo(iwro)%dmd(idmd)%treatment /= "") then
-          do iwuse = 1, size(wuse)
-            if (wuse(iwuse)%name == wallo(iwro)%dmd(idmd)%treatment) then
-              wallo(iwro)%dmd(idmd)%treat_typ = "use"
-              wallo(iwro)%dmd(idmd)%trt_num = iwuse
-              found = .true.
-              exit
-            end if
-          end do
-        end if
-      end if
-      
-      !! Warn if no match found
-      if (.not. found) then
-        write (*,*) "WARNING: Water allocation object ", trim(wallo(iwro)%name), &
-                   " demand ", idmd, " references unknown water use facility: ", wallo(iwro)%dmd(idmd)%ob_num
-      end if
-      
-      return
-      end subroutine wallo_crosswalk_wateruse
