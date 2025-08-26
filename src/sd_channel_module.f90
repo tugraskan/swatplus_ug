@@ -101,7 +101,7 @@
         real :: w_yr = 0.           !ratio      |bank cutting - widths per year 
         real :: d_yr = 0.           !ratio      |bed down cutting - depths per year
         real :: fp_mm = 0.          !mm/yr      |flood plain deposition - uniform across the flood plain
-        real :: ebank_m = 0.        !tons       |bank cutting
+        real :: ebank_m = 0.        !m          |bank cutting
         real :: ebtm_m = 0.         !m          |bed down cutting
         real :: ebank_t = 0.        !tons       |bank cutting  
         real :: ebtm_t = 0.         !tons       |bed down cutting

@@ -273,7 +273,7 @@
         ch_morph(ich)%fp_t = ch_morph(ich)%fp_t + fp_dep%sed
         ch_morph(ich)%ebank_t = ch_morph(ich)%ebank_t + ebank_t
         ch_morph(ich)%ebank_m = ch_morph(ich)%ebank_m + ebank_m
-        ch_morph(ich)%ebtm_t = ch_morph(ich)%ebtm_t + ebtm_m
+        ch_morph(ich)%ebtm_m = ch_morph(ich)%ebtm_m + ebtm_m
         ch_morph(ich)%ebtm_t = ch_morph(ich)%ebtm_t + ebtm_t
       end if
       
