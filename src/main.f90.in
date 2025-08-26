@@ -102,7 +102,7 @@
       call wet_read
       call wet_read_salt_cs
       if (db_mx%wet_dat > 0) call wet_all_initial
-      call wet_fp_init
+      if (bsn_cc%i_fpwet == 2) call wet_fp_init
       
       !! initialize carbon and nutrient contents for each hru
       do ihru = 1, sp_ob%hru

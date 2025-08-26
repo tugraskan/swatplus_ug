@@ -65,6 +65,8 @@
         integer :: smax = 0      !! not used
         integer :: qual2e = 0    !! 0 = instream nutrient routing using QUAL2E 
                                  !! 1 = instream nutrient routing using QUAL2E - with simplified nutrient transformations
+        integer :: i_fpwet = 0   !!   0 = floodplain wetland initialization not active; 
+                                 !!   2 = floodplain wetland initialization active
         integer :: gwflow = 0    !!   0 = gwflow module not active; 1 = gwflow module active
         integer :: idc_till = 3  !! 1 = Use dssat tillage method to use if cswat = 2 
                                  !! 2 = Use epic tillage method to use if cswat = 2
