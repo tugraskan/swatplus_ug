@@ -45,7 +45,7 @@ subroutine manure_parm_read
             rewind(unit)
             read(unit,'(A)',iostat=eof) header
             do it = 1, imax
-                read (107,*,iostat=eof) manure_csv(it)%manure_region, &
+                read (unit,*,iostat=eof) manure_csv(it)%manure_region, &
                      manure_csv(it)%manure_source, &
                      manure_csv(it)%manure_type, &
                      manure_csv(it)%pct_moisture, &
