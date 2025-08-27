@@ -91,5 +91,40 @@
       cs_man_db%num_tot = cs_man_db%num_pests + cs_man_db%num_paths + cs_man_db%num_metals + cs_man_db%num_salts + cs_man_db%num_cs !rtb salt, cs
       
       close (106)
+      
+      ! --- Read all fertilizer constituent files now that constituent database is loaded ---
+      ! This consolidates all fert_constituent_file_read calls that were previously scattered
+      ! across individual constituent reading subroutines
+      
+      ! Read pesticide fertilizer concentrations
+      if (cs_man_db%num_pests > 0) then
+        call fert_constituent_file_read("pest.man", db_mx%fertparm, cs_man_db%num_pests)
+        call MOVE_ALLOC(fert_arr, pest_fert_soil_ini)
+      end if
+      
+      ! Read pathogen fertilizer concentrations  
+      if (cs_man_db%num_paths > 0) then
+        call fert_constituent_file_read("path.man", db_mx%fertparm, cs_man_db%num_paths)
+        call MOVE_ALLOC(fert_arr, path_fert_soil_ini)
+      end if
+      
+      ! Read heavy metal fertilizer concentrations
+      if (cs_man_db%num_metals > 0) then
+        call fert_constituent_file_read("hmet.man", db_mx%fertparm, cs_man_db%num_metals)
+        call MOVE_ALLOC(fert_arr, hmet_fert_soil_ini)
+      end if
+      
+      ! Read salt fertilizer concentrations
+      if (cs_man_db%num_salts > 0) then
+        call fert_constituent_file_read("salt.man", db_mx%fertparm, cs_man_db%num_salts)
+        call MOVE_ALLOC(fert_arr, salt_fert_soil_ini)
+      end if
+      
+      ! Read general constituent fertilizer concentrations
+      if (cs_man_db%num_cs > 0) then
+        call fert_constituent_file_read("cs.man", db_mx%fertparm, cs_man_db%num_cs)
+        call MOVE_ALLOC(fert_arr, cs_fert_soil_ini)
+      end if
+      
       return
       end subroutine constit_man_db_read

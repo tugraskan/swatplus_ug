@@ -80,10 +80,9 @@
   end if
 
   ! --- fertilizer constituent concentrations ---
-  ! general constituents are stored in bulk format
-  call fert_constituent_file_read(manu, imax, cs_man_db%num_cs)
-  call MOVE_ALLOC(fert_arr, cs_fert_soil_ini)
-
+  ! NOTE: Fertilizer constituent concentrations are now read in constit_man_db_read
+  ! This eliminates dependency on cs_db%num_* and uses cs_man_db instead
+  
   return
   end subroutine cs_hru_read
 

@@ -72,9 +72,8 @@ subroutine salt_hru_aqu_read
   end if
 
   ! --- fertilizer salt concentrations ---
-  ! salts use the bulk format (all ions per line)
-  call fert_constituent_file_read(manu, imax, cs_man_db%num_salts)
-  call MOVE_ALLOC(fert_arr, salt_fert_soil_ini)
+  ! NOTE: Fertilizer salt concentrations are now read in constit_man_db_read
+  ! This eliminates dependency on cs_db%num_* and uses cs_man_db instead
 
   return
   end subroutine salt_hru_aqu_read
