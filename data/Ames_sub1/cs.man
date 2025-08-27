@@ -1,0 +1,14 @@
+cs.man: generic constituent concentrations in fertilizers for testing  
+name                          conc_cs1      conc_cs2      conc_cs3
+test_cs_mix1
+  seo4                        0.05          0.0           0.0
+  seo3                        0.0           0.03          0.0
+  boron                       0.0           0.0           0.02
+test_cs_mix2
+  seo4                        0.08          0.0           0.0
+  seo3                        0.0           0.05          0.0
+  boron                       0.0           0.0           0.04
+low_cs
+  seo4                        0.01          0.0           0.0
+  seo3                        0.0           0.005         0.0
+  boron                       0.0           0.0           0.002
