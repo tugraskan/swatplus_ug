@@ -79,7 +79,7 @@ subroutine hmet_hru_aqu_read
 
   ! --- fertilizer heavy metal concentrations ---
   ! link fertilizer types to heavy metal values from hmet.man
-  call fert_constituent_file_read(manu, imax, cs_db%num_metals)
+  call fert_constituent_file_read(manu, imax, cs_man_db%num_metals)
   call MOVE_ALLOC(fert_arr, hmet_fert_soil_ini)
   
 

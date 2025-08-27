@@ -48,13 +48,13 @@ subroutine fert_constituents_apply(j, ifrt, frt_kg, fertop)
       ! then routed through pest_apply so it can be partitioned between the
       ! canopy and soil layers.
       
-      if (cs_db%num_pests > 0) then
+      if (cs_man_db%num_pests > 0) then
         if (allocated(pest_fert_soil_ini)) then
           if (size(manure_db) >= ifrt) then
             if (manure_db(ifrt)%pest /= '') then
               do ipest_ini = 1, size(pest_fert_soil_ini)
                 if (trim(manure_db(ifrt)%pest) == trim(pest_fert_soil_ini(ipest_ini)%name)) then
-                  do ipest = 1, cs_db%num_pests
+                  do ipest = 1, cs_man_db%num_pests
                     pest_kg = frt_kg * pest_fert_soil_ini(ipest_ini)%soil(ipest)
                     if (pest_kg > 0.) call pest_apply(j, ipest, pest_kg, fertop)
                   end do
@@ -72,13 +72,13 @@ subroutine fert_constituents_apply(j, ifrt, frt_kg, fertop)
       ! fertilizer points to path.man which holds a concentration for each
       ! pathogen.  Those values are scaled by frt_kg and passed to path_apply.
 
-      if (cs_db%num_paths > 0) then
+      if (cs_man_db%num_paths > 0) then
         if (allocated(path_fert_soil_ini)) then
           if (size(manure_db) >= ifrt) then
             if (manure_db(ifrt)%path /= '') then
               do ipath_ini = 1, size(path_fert_soil_ini)
                 if (trim(manure_db(ifrt)%path) == trim(path_fert_soil_ini(ipath_ini)%name)) then
-                  do ipath = 1, cs_db%num_paths
+                  do ipath = 1, cs_man_db%num_paths
                     path_kg = frt_kg * path_fert_soil_ini(ipath_ini)%soil(ipath)
                     if (path_kg > 0.) call path_apply(j, ipath, path_kg, fertop)
                   end do
@@ -95,7 +95,7 @@ subroutine fert_constituents_apply(j, ifrt, frt_kg, fertop)
       ! the matching table is converted to a mass using the fertilizer amount
       ! and distributed with salt_apply.
 
-      if (cs_db%num_salts > 0) then
+      if (cs_man_db%num_salts > 0) then
         if (allocated(salt_fert_soil_ini)) then
           if (size(manure_db) >= ifrt) then
             if (manure_db(ifrt)%salt /= '') then
@@ -119,7 +119,7 @@ subroutine fert_constituents_apply(j, ifrt, frt_kg, fertop)
       ! application rate each metal is routed via hmet_apply.  Note that
       ! cs_soil(j)%ly(1)%hmet is not used in SWAT+.
 
-      if (cs_db%num_metals > 0) then
+      if (cs_man_db%num_metals > 0) then
         if (allocated(hmet_fert_soil_ini)) then
           if (size(manure_db) >= ifrt) then
             if (manure_db(ifrt)%hmet /= '') then
@@ -141,7 +141,7 @@ subroutine fert_constituents_apply(j, ifrt, frt_kg, fertop)
       ! Generic constituents stored in cs.man follow the same lookup and
       ! application process used for salts and metals.
 
-      if (cs_db%num_cs > 0) then
+      if (cs_man_db%num_cs > 0) then
         if (allocated(cs_fert_soil_ini)) then
           if (size(manure_db) >= ifrt) then
             if (manure_db(ifrt)%cs /= '') then

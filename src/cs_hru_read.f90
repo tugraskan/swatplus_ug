@@ -81,7 +81,7 @@
 
   ! --- fertilizer constituent concentrations ---
   ! general constituents are stored in bulk format
-  call fert_constituent_file_read(manu, imax, cs_db%num_cs)
+  call fert_constituent_file_read(manu, imax, cs_man_db%num_cs)
   call MOVE_ALLOC(fert_arr, cs_fert_soil_ini)
 
   return

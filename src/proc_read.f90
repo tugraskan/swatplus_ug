@@ -7,6 +7,7 @@
       call cli_staread
 
       call constit_db_read
+      call constit_man_db_read
       call pest_metabolite_read     !! read pesticide metabolites
       call soil_plant_init
       call solt_db_read

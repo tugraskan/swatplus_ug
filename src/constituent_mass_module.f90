@@ -29,6 +29,7 @@
         integer, dimension(:), allocatable :: cs_num                !number of the constituents - points to salts database
       end type constituents
       type (constituents) :: cs_db
+      type (constituents) :: cs_man_db   !manure-specific constituent database
 
       type exco_pesticide
         real, dimension (:), allocatable :: pest         !pesticide hydrographs

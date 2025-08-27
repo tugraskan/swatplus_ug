@@ -44,13 +44,21 @@ This directory contains test files for validating the new fertilizer constituent
 - Contains concentrations for seo4, seo3, boron
 - Referenced from fertilizer_ext.frt via cs_table field
 
-### 3. Constituent Database File
+### 3. Constituent Database Files
 
-#### `constituents.cs`
-- Master database file defining which constituents are available for simulation
+#### `constituents.cs` 
+- Master database file defining which constituents are available for general water-based simulation
 - Read by `constit_db_read.f90` to populate the global `cs_db` structure
+- Used for soil, aquifer, and channel constituent initialization
+- **Required** for general constituent simulation
+
+#### `constituents_man.cs`
+- Manure-specific constituent database defining which constituents are available for fertilizer applications
+- Read by `constit_man_db_read.f90` to populate the `cs_man_db` structure  
 - Format: title, num_pests, pest_names, num_paths, path_names, num_metals, metal_names, num_salts, salt_names, num_cs, cs_names
 - **Critical**: This file must be present and define all constituents referenced in *.man tables
+- Used specifically for manure/fertilizer constituent applications
+- **Required** for fertilizer constituent functionality
 
 ### 4. Constituent Initialization Files
 
@@ -77,10 +85,12 @@ The constituent fertilizer system integrates at several points:
 1. **`actions.f90`**: Calls `cs_fert()` during fertilizer application
 2. **`cs_fert.f90`**: Applies constituent loads to soil layers
 3. **`cs_fert_wet.f90`**: Applies constituent loads to wetlands
-4. **`fert_constituents.f90`**: Integrates pest, path, and cs loads with fertilizers
+4. **`fert_constituents.f90`**: Integrates pest, path, and cs loads with fertilizers using `cs_man_db`
 5. **`pest_apply.f90`**: Applies pesticide loads
 6. **`path_apply.f90`**: Applies pathogen loads
 7. **`cs_apply.f90`**: Applies generic constituent loads
+8. **`constit_db_read.f90`**: Reads main constituent database for general simulation
+9. **`constit_man_db_read.f90`**: Reads manure-specific constituent database for fertilizer applications
 
 ### Data Flow
 1. Fertilizer application triggers in management operations
@@ -133,14 +143,15 @@ If the system doesn't work as expected:
 ## File Relationships
 
 ```
-fertilizer.frt_cs           -> cs_fert.f90 (direct loads)
+fertilizer.frt_cs           -> cs_fert.f90 (direct loads, uses cs_db)
 fertilizer_ext.frt         -> fert_parm_read.f90 -> manure_db
-manure_db.pest            -> pest.man -> pest_apply.f90  
-manure_db.path            -> path.man -> path_apply.f90
-manure_db.cs              -> cs.man -> cs_apply.f90
-cs_hru.ini                -> cs_hru_read.f90 -> cs_soil_ini
-cs_aqu.ini                -> cs_aqu_read.f90  
-cs_channel.ini            -> cs_cha_read.f90
+constituents_man.cs        -> constit_man_db_read.f90 -> cs_man_db
+manure_db.pest            -> pest.man -> pest_apply.f90 (uses cs_man_db)
+manure_db.path            -> path.man -> path_apply.f90 (uses cs_man_db)
+manure_db.cs              -> cs.man -> cs_apply.f90 (uses cs_man_db)
+cs_hru.ini                -> cs_hru_read.f90 -> cs_soil_ini (uses cs_db)
+cs_aqu.ini                -> cs_aqu_read.f90 (uses cs_db)
+cs_channel.ini            -> cs_cha_read.f90 (uses cs_db)
 ```
 
 ## Notes

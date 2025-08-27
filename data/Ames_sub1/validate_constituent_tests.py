@@ -261,7 +261,8 @@ def main():
         ("cs_hru.ini", "HRU constituent initialization"),
         ("cs_aqu.ini", "Aquifer constituent initialization"),
         ("cs_channel.ini", "Channel constituent initialization"),
-        ("constituents.cs", "Constituent database file"),
+        ("constituents.cs", "General constituent database file"),
+        ("constituents_man.cs", "Manure constituent database file"),
     ]
     
     print("\n📋 Checking test file existence...")
@@ -289,6 +290,9 @@ def main():
     
     if os.path.exists("constituents.cs"):
         validation_results.append(validate_constituents_cs("constituents.cs"))
+    
+    if os.path.exists("constituents_man.cs"):
+        validation_results.append(validate_constituents_cs("constituents_man.cs"))
     
     # Summary
     print("\n" + "=" * 60)
