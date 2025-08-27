@@ -1,4 +1,10 @@
-      subroutine mgt_sched (isched)
+!--------------------------------------------------------------------
+!  mgt_sched
+!    Execute one management schedule entry for the specified HRU.  The
+!    schedule defines timed operations such as fertilizer and pesticide
+!    applications, harvesting and irrigation events.
+!--------------------------------------------------------------------
+subroutine mgt_sched (isched)
 
       use plant_data_module
       use mgt_operations_module
@@ -326,7 +332,9 @@
             frt_kg = mgt%op3                        !amount applied in kg/ha
             ifertop = mgt%op4                       !surface application fraction from chem app data base
             if (wet(j)%flo>0.) then !case for surface application with standing water
-              call pl_fert_wet (ifrt, frt_kg) 
+
+              call pl_fert_wet (ifrt, frt_kg, ifertop)
+
               call salt_fert_wet(j,ifrt,frt_kg)
               call cs_fert_wet(j,ifrt,frt_kg)
               if (pco%mgtout == "y") then
@@ -413,13 +421,11 @@
           case ("burn")   !! burning
             iburn = mgt%op1   ! burn type from fire database
             call pl_burnop(j, iburn)
-
+                        
             if (pco%mgtout == "y") then
-                do ipl = 1, pcom(j)%npl
-                    write (2612, *) j, time%yrc, time%mo, time%day_mo, mgt%op_char, "    BURN ", phubase(j),   &
-                    pcom(j)%plcur(ipl)%phuacc, soil(j)%sw, pl_mass(j)%tot(ipl)%m, soil1(j)%rsd(1)%m,      &
-                    sol_sumno3(j), sol_sumsolp(j)
-                end do
+              write (2612, *) j, time%yrc, time%mo, time%day_mo, mgt%op_char, "    BURN ", phubase(j),   &
+                  pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,pl_mass(j)%tot(ipl)%m, soil1(j)%rsd(1)%m,      &
+                  sol_sumno3(j), sol_sumsolp(j)
             end if
 
           case ("swep")   !! street sweeping (only if iurban=2)

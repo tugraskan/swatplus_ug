@@ -1,4 +1,10 @@
-      subroutine path_ls_process
+!--------------------------------------------------------------------
+!  path_ls_process
+!    Simulate pathogen fate on the land surface.  This routine
+!    computes wash off from plant surfaces, die-off in foliage and the
+!    top soil layer, and regrowth when conditions allow.
+!--------------------------------------------------------------------
+subroutine path_ls_process
     
       use pathogen_data_module
       use constituent_mass_module
@@ -23,9 +29,9 @@
       real :: bacdiegroplt_out = 0.
       real :: theta
       real :: wash_off = 0. !               |pathogen wash off
-
+       
       j = ihru
-         
+     
       pl_die_gro = 0.
       sol_die_gro = 0.
       

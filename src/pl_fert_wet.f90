@@ -1,8 +1,10 @@
-      subroutine pl_fert_wet (ifrt, frt_kg)
+      subroutine pl_fert_wet (ifrt, frt_kg, fertop)
       
 !!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine applies N and P specified by date and
-!!    amount in the management file (.mgt) for rice fields during ponding periods
+!!    this subroutine applies mineral and organic N and P specified by
+!!    date and amount in the management file (.mgt) for rice fields
+!!    during ponding periods.  Constituent additions linked to the
+!!    fertilizer are handled by fert_constituents_apply.
 !!    Jaehak 2022
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -16,8 +18,9 @@
       use basin_module
       use organic_mineral_mass_module
       use hru_module, only : ihru, fertn, fertp, fertnh3, fertno3, fertorgn, fertorgp, fertp,  &
-        fertsolp  
+        fertsolp
       use hydrograph_module
+      use constituent_mass_module
 
       
       implicit none 
@@ -29,6 +32,7 @@
       integer :: j = 0                    !none          |counter
       integer, intent (in) :: ifrt        !              |fertilizer type from fert data base
       real, intent (in) :: frt_kg         !kg/ha         |amount of fertilizer applied
+      integer, intent (in) :: fertop      !              |fertilizer operation type
       
 
       !!added by zhang
@@ -163,5 +167,9 @@
       fertorgp = frt_kg * fertdb(ifrt)%forgp  
       fertn = fertn + frt_kg * (fertdb(ifrt)%fminn + fertdb(ifrt)%forgn)
       fertp = fertp + frt_kg * (fertdb(ifrt)%fminp + fertdb(ifrt)%forgp)
+
+      !! apply constituents associated with fertilizer
+      !! this mirrors pl_fert but accounts for wetland operations
+      call fert_constituents_apply(j, ifrt, frt_kg, fertop)
       return
       end subroutine pl_fert_wet

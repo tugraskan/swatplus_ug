@@ -1,13 +1,22 @@
-      subroutine hmet_hru_aqu_read
+!--------------------------------------------------------------------
+!  hmet_hru_aqu_read
+!    Read initialization data for heavy metals in HRUs and aquifers.
+!    This routine loads soil and plant concentrations from hmet_soil
+!    and links fertilizer types to heavy metal concentration tables
+!    specified in hmet.man.
+!--------------------------------------------------------------------
+subroutine hmet_hru_aqu_read
     
       use constituent_mass_module
       use input_file_module
       use maximum_data_module
 
+
       implicit none
  
       character (len=80) :: titldum = ""
       character (len=80) :: header = ""
+      character (len=16) :: manu = "hmet.man"
       integer :: ihmet = 0
       integer :: ihmeti = 0
       integer :: eof = 0
@@ -63,10 +72,17 @@
               if (eof < 0) exit
             end do
           end do
-          close (107)
-          exit
-        end do
-      end if
-      
-      return
-      end subroutine hmet_hru_aqu_read
+      close (107)
+      exit
+    end do
+  end if
+
+  ! --- fertilizer heavy metal concentrations ---
+  ! link fertilizer types to heavy metal values from hmet.man
+  call fert_constituent_file_read(manu, imax, cs_db%num_metals)
+  call MOVE_ALLOC(fert_arr, hmet_fert_soil_ini)
+  
+
+  return
+  end subroutine hmet_hru_aqu_read
+

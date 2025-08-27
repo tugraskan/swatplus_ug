@@ -1,4 +1,11 @@
-      module fertilizer_data_module
+!--------------------------------------------------------------------
+!  fertilizer_data_module
+!    Data structures for storing fertilizer and manure properties
+!    loaded from fertilizer parameter files and associated CSV
+!    records.  These structures provide composition information used
+!    by fertilizer application routines.
+!--------------------------------------------------------------------
+module fertilizer_data_module
      
       implicit none
           
@@ -12,11 +19,46 @@
       end type fertilizer_db
       type (fertilizer_db), dimension(:),allocatable, save :: fertdb
       
-      type manure_data
-        character(len=16) :: fertnm = " "
-      !  character(len=16), dimension(:),allocatable :: path = " "
-      !  character(len=16), dimension(:),allocatable :: antibiotic = " "
-      end type manure_data
-      type (manure_data), dimension(:),allocatable :: manure_db
+
+      type manure_attributes
+        character(len=64) ::  manure_name = " "  !! Identifier used to crosswalk fertilizer entries, constructed from
+                                                 !! manure_region, manure_source, and manure_type
+        !! additional attributes from fp5-manure-content-defaults-swat.csv
+        character(len=32) :: manure_region = " "
+        character(len=32) :: manure_source = " "
+        character(len=32) :: manure_type = " "
+        real :: pct_moisture = 0.0
+        real :: pct_solids = 0.0
+        real :: total_c = 0.0
+        real :: total_n = 0.0
+        real :: inorganic_n = 0.0
+        real :: organic_n = 0.0
+        real :: total_p2o5 = 0.0
+        real :: inorganic_p2o5 = 0.0
+        real :: organic_p2o5 = 0.0
+        real :: inorganic_p = 0.0
+        real :: organic_p = 0.0
+        real :: solids = 0.0
+        real :: water = 0.0
+        character(len=32) :: units = " "
+        integer :: sample_size = 0
+        character(len=32) :: summary_level = " "
+        character(len=64) :: data_source = " "
+      end type  manure_attributes
+      type (manure_attributes), dimension(:),allocatable :: manure_csv
+      
+      type manure_database
+        type(fertilizer_db) :: base     !! base fertilizer data
+        character(len=16) ::  name = " "  !! e.g., Midwest_Beef_Liquid
+        character(len=64) ::  csv = " "  !! e.g., Midwest_Beef_Liquid
+        type(manure_attributes) :: manucontent !! manure attributes from a single csv record
+        character(len=16) :: pest = ""  !! pest.man name
+        character(len=16) :: path = ""  !! path.man name
+        character(len=16) :: salt = ""  !! salt.man name
+        character(len=16) :: hmet = ""  !! hmet.man name
+        character(len=16) :: cs = ""    !! cs.man name
+      end type manure_database
+      type (manure_database), dimension(:), allocatable, save :: manure_db
+
       
       end module fertilizer_data_module 

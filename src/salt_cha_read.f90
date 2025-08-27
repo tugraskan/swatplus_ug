@@ -1,4 +1,10 @@
-      subroutine salt_cha_read !rtb salt
+!--------------------------------------------------------------------
+!  salt_cha_read
+!    Read initial salt concentrations for channels.  If no
+!    salt_channel.ini file is provided a default zero concentration
+!    profile is created so downstream routines can proceed.
+!--------------------------------------------------------------------
+subroutine salt_cha_read !rtb salt
     
       use constituent_mass_module
       use input_file_module
@@ -22,7 +28,7 @@
       
       !read all export coefficient data
       inquire (file="salt_channel.ini", exist=i_exist)
-      if (i_exist .or. "salt_channel.ini" /= "null") then
+      if (i_exist) then
         do
           open (107,file="salt_channel.ini")
           read (107,*,iostat=eof) titldum
@@ -57,7 +63,15 @@
           close (107)
           exit
         end do
-      end if
+        else
+          ! If no salt_channel.ini file is supplied, allocate a single
+          ! default record with zero concentrations so other routines can
+          ! safely reference salt_cha_ini.
+          db_mx%salt_cha_ini = 1
+          allocate (salt_cha_ini(1))
+          allocate (salt_cha_ini(1)%conc(cs_db%num_salts), source = 0.)
+          salt_cha_ini(1)%name = 'default'
+        end if
 
       return
       end subroutine salt_cha_read
