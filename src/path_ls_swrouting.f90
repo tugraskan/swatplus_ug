@@ -1,4 +1,11 @@
-      subroutine path_ls_swrouting
+!--------------------------------------------------------------------
+!  path_ls_swrouting
+!    Calculate pathogen infiltration from the surface soil layer into
+!    deeper layers using a first order decay approach.  The resulting
+!    reduction in surface concentration is recorded in the pathogen
+!    balance arrays.
+!--------------------------------------------------------------------
+subroutine path_ls_swrouting
     
       use pathogen_data_module
       use constituent_mass_module
@@ -21,8 +28,8 @@
         ipath_db = sol_plt_ini(isp_ini)%path
         path_kd = path_db(ipath_db)%kd
         !! compute pathogen incorporated into the soil
-        hpath_bal(j)%path(ipath)%perc1 = path_kd * cs_soil(j)%ly(1)%path(ipath) * soil(j)%ly(1)%prk / &
-           ((soil(j)%phys(1)%conv_wt / 1000.) * path_db(ipath_db)%perco)
+          hpath_bal(j)%path(ipath)%perc1 = path_kd * cs_soil(j)%ly(1)%path(ipath) * soil(j)%ly(1)%prk / &
+             ((soil(j)%phys(1)%conv_wt / 1000.) * path_db(ipath_db)%perco)
         hpath_bal(j)%path(ipath)%perc1 = Min(hpath_bal(j)%path(ipath)%perc1, cs_soil(j)%ly(1)%path(ipath))
         hpath_bal(j)%path(ipath)%perc1 = Max(hpath_bal(j)%path(ipath)%perc1, 0.)
         cs_soil(j)%ly(1)%path(ipath) = cs_soil(j)%ly(1)%path(ipath) - hpath_bal(j)%path(ipath)%perc1

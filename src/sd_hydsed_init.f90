@@ -1,4 +1,10 @@
-      subroutine sd_hydsed_init
+!--------------------------------------------------------------------
+!  sd_hydsed_init
+!    Initialize sediment and constituent storage for subdaily channel
+!    routing.  Reads starting conditions for pesticides, pathogens,
+!    salts and other constituents from initialization files.
+!--------------------------------------------------------------------
+subroutine sd_hydsed_init
       
       use input_file_module
       use sd_channel_module
@@ -71,7 +77,6 @@
         sd_ch(i)%name = sd_chd(idb)%name
         sd_ch(i)%obj_no = icmd
         sd_ch(i)%order = sd_chd(idb)%order
-        if (sd_ch(i)%order > 12) sd_ch(i)%order = 1
         sd_ch(i)%chw = sd_chd(idb)%chw
         sd_ch(i)%chd = sd_chd(idb)%chd
         sd_ch(i)%chs = sd_chd(idb)%chs
@@ -287,8 +292,13 @@
           ich_ini = sd_dat(ichdat)%init
           isalt_ini = sd_init(ich_ini)%salt
           do isalt=1,cs_db%num_salts
-            ch_water(ich)%saltc(isalt) = salt_cha_ini(isalt_ini)%conc(isalt) !g/m3
-            ch_water(ich)%salt(isalt) = (salt_cha_ini(isalt_ini)%conc(isalt)/1000.) * tot_stor(ich)%flo !kg
+            if (allocated(salt_cha_ini)) then
+              ch_water(ich)%saltc(isalt) = salt_cha_ini(isalt_ini)%conc(isalt) !g/m3
+            else
+              ! fall back to zero concentration when no salt_channel.ini was provided
+              ch_water(ich)%saltc(isalt) = 0.
+            end if
+            ch_water(ich)%salt(isalt) = (ch_water(ich)%saltc(isalt)/1000.) * tot_stor(ich)%flo !kg
           enddo
         enddo
       endif
@@ -300,10 +310,15 @@
           ichdat = ob(iob)%props
           ich_ini = sd_dat(ichdat)%init
           ics_ini = sd_init(ich_ini)%cs
-          do ics=1,cs_db%num_cs
-            ch_water(ich)%csc(ics) = cs_cha_ini(ics_ini)%conc(ics)
-            ch_water(ich)%cs(ics) = (cs_cha_ini(ics_ini)%conc(ics)/1000.) * tot_stor(ich)%flo !kg
-          enddo
+            do ics=1,cs_db%num_cs
+              if (allocated(cs_cha_ini)) then
+                ch_water(ich)%csc(ics) = cs_cha_ini(ics_ini)%conc(ics)
+              else
+                ! default to zero concentration when no cs_channel.ini was provided
+                ch_water(ich)%csc(ics) = 0.
+              end if
+              ch_water(ich)%cs(ics) = (ch_water(ich)%csc(ics)/1000.) * tot_stor(ich)%flo !kg
+            enddo
         enddo
             endif
       
