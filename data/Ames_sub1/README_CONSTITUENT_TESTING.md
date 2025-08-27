@@ -44,7 +44,15 @@ This directory contains test files for validating the new fertilizer constituent
 - Contains concentrations for seo4, seo3, boron
 - Referenced from fertilizer_ext.frt via cs_table field
 
-### 3. Constituent Initialization Files
+### 3. Constituent Database File
+
+#### `constituents.cs`
+- Master database file defining which constituents are available for simulation
+- Read by `constit_db_read.f90` to populate the global `cs_db` structure
+- Format: title, num_pests, pest_names, num_paths, path_names, num_metals, metal_names, num_salts, salt_names, num_cs, cs_names
+- **Critical**: This file must be present and define all constituents referenced in *.man tables
+
+### 4. Constituent Initialization Files
 
 #### `cs_hru.ini`
 - Initial constituent concentrations in HRU soils and plants

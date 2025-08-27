@@ -36,6 +36,13 @@ This document summarizes the test files created to validate the new SWAT+ fertil
 8. **`cs_channel.ini`** - Channel constituent initialization  
    - Initial constituent concentrations in surface water
 
+9. **`constituents.cs`** - Constituent database file
+   - Defines which constituents are available for simulation
+   - Contains 3 pesticides: roundup, aatrex, dual
+   - Contains 2 pathogens: ecoli, salmonella
+   - Contains 3 constituents: seo4, seo3, boron
+   - **Required** for constituent system to function
+
 ### 🔧 Integration Points
 
 The test files integrate with SWAT+ at these code points:

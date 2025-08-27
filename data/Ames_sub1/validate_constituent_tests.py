@@ -125,6 +125,121 @@ def validate_cs_ini_file(filepath):
         print(f"❌ Error reading file: {e}")
         return False
 
+def validate_constituents_cs(filepath):
+    """Validate the constituents.cs database file format."""
+    print(f"\n🔍 Validating {filepath}...")
+    try:
+        with open(filepath, 'r') as f:
+            lines = f.readlines()
+        
+        if len(lines) < 6:
+            print("❌ File too short - should have at least 6 lines")
+            return False
+        
+        # Expected format:
+        # Line 1: title
+        # Line 2: num_pests
+        # Line 3: pest names
+        # Line 4: num_paths
+        # Line 5: path names
+        # Line 6: num_metals
+        # Line 7: metal names (if any)
+        # Line 8: num_salts
+        # Line 9: salt names (if any)
+        # Line 10: num_cs
+        # Line 11: cs names
+        
+        line_idx = 1
+        
+        # Parse pesticides
+        try:
+            num_pests = int(lines[line_idx].strip())
+            print(f"  Pesticides: {num_pests}")
+            if num_pests > 0:
+                pest_names = lines[line_idx + 1].strip().split()
+                if len(pest_names) != num_pests:
+                    print(f"❌ Pesticide count mismatch: expected {num_pests}, found {len(pest_names)}")
+                    return False
+                print(f"    Names: {', '.join(pest_names)}")
+                line_idx += 2
+            else:
+                line_idx += 1
+        except (ValueError, IndexError):
+            print("❌ Error parsing pesticides section")
+            return False
+        
+        # Parse pathogens
+        try:
+            num_paths = int(lines[line_idx].strip())
+            print(f"  Pathogens: {num_paths}")
+            if num_paths > 0:
+                path_names = lines[line_idx + 1].strip().split()
+                if len(path_names) != num_paths:
+                    print(f"❌ Pathogen count mismatch: expected {num_paths}, found {len(path_names)}")
+                    return False
+                print(f"    Names: {', '.join(path_names)}")
+                line_idx += 2
+            else:
+                line_idx += 1
+        except (ValueError, IndexError):
+            print("❌ Error parsing pathogens section")
+            return False
+        
+        # Parse metals
+        try:
+            num_metals = int(lines[line_idx].strip())
+            print(f"  Heavy metals: {num_metals}")
+            if num_metals > 0:
+                metal_names = lines[line_idx + 1].strip().split()
+                if len(metal_names) != num_metals:
+                    print(f"❌ Metal count mismatch: expected {num_metals}, found {len(metal_names)}")
+                    return False
+                print(f"    Names: {', '.join(metal_names)}")
+                line_idx += 2
+            else:
+                line_idx += 1
+        except (ValueError, IndexError):
+            print("❌ Error parsing metals section")
+            return False
+        
+        # Parse salts
+        try:
+            num_salts = int(lines[line_idx].strip())
+            print(f"  Salt ions: {num_salts}")
+            if num_salts > 0:
+                salt_names = lines[line_idx + 1].strip().split()
+                if len(salt_names) != num_salts:
+                    print(f"❌ Salt count mismatch: expected {num_salts}, found {len(salt_names)}")
+                    return False
+                print(f"    Names: {', '.join(salt_names)}")
+                line_idx += 2
+            else:
+                line_idx += 1
+        except (ValueError, IndexError):
+            print("❌ Error parsing salts section")
+            return False
+        
+        # Parse other constituents
+        try:
+            num_cs = int(lines[line_idx].strip())
+            print(f"  Other constituents: {num_cs}")
+            if num_cs > 0:
+                cs_names = lines[line_idx + 1].strip().split()
+                if len(cs_names) != num_cs:
+                    print(f"❌ Constituent count mismatch: expected {num_cs}, found {len(cs_names)}")
+                    return False
+                print(f"    Names: {', '.join(cs_names)}")
+        except (ValueError, IndexError):
+            print("❌ Error parsing constituents section")
+            return False
+        
+        print("✅ constituents.cs format is valid")
+        return True
+        
+    except Exception as e:
+        print(f"❌ Error reading file: {e}")
+        return False
+
 def main():
     """Main validation function."""
     print("🧪 SWAT+ Constituent Fertilizer Test File Validation")
@@ -146,6 +261,7 @@ def main():
         ("cs_hru.ini", "HRU constituent initialization"),
         ("cs_aqu.ini", "Aquifer constituent initialization"),
         ("cs_channel.ini", "Channel constituent initialization"),
+        ("constituents.cs", "Constituent database file"),
     ]
     
     print("\n📋 Checking test file existence...")
@@ -170,6 +286,9 @@ def main():
     
     if os.path.exists("cs_hru.ini"):
         validation_results.append(validate_cs_ini_file("cs_hru.ini"))
+    
+    if os.path.exists("constituents.cs"):
+        validation_results.append(validate_constituents_cs("constituents.cs"))
     
     # Summary
     print("\n" + "=" * 60)
