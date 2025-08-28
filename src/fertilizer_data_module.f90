@@ -57,6 +57,12 @@ module fertilizer_data_module
         character(len=16) :: salt = ""  !! salt.man name
         character(len=16) :: hmet = ""  !! hmet.man name
         character(len=16) :: cs = ""    !! cs.man name
+        !! Pre-computed indices for direct array access (set during initialization)
+        integer :: pest_idx = 0         !! index into pest_fert_soil_ini array
+        integer :: path_idx = 0         !! index into path_fert_soil_ini array  
+        integer :: salt_idx = 0         !! index into salt_fert_soil_ini array
+        integer :: hmet_idx = 0         !! index into hmet_fert_soil_ini array
+        integer :: cs_idx = 0           !! index into cs_fert_soil_ini array
       end type manure_database
       type (manure_database), dimension(:), allocatable, save :: manure_db
 
