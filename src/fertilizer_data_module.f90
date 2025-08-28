@@ -1,9 +1,16 @@
 !--------------------------------------------------------------------
 !  fertilizer_data_module
 !    Data structures for storing fertilizer and manure properties
-!    loaded from fertilizer parameter files and associated CSV
-!    records.  These structures provide composition information used
+!    loaded from fertilizer parameter files and the manure_om.man
+!    database. These structures provide composition information used
 !    by fertilizer application routines.
+!    
+!    Key Features:
+!    - Direct name-based crosswalking between fertilizer_ext.frt 
+!      and manure_om.man via om_name field
+!    - Pre-computed array indices for performance optimization
+!    - Integrated constituent linkage tables (pest, path, cs, etc.)
+!    - Type-based unit conversion support
 !--------------------------------------------------------------------
 module fertilizer_data_module
      

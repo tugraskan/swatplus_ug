@@ -1,11 +1,16 @@
 !--------------------------------------------------------------------
 !  manure_parm_read
-!    Load manure attribute information from the
-!    manure_om.man table.  When fertilizer
-!    records reference an om_name, the corresponding attributes are
-!    copied into the manure database for later use.
-!    Includes unit conversion: 1 lb/1000 gal = 119.82 ppm (liquid/slurry)
-!                             1 lb/ton = 500 ppm (solid/semi-solid)
+!    Load manure attribute information from the manure_om.man table.
+!    When fertilizer records reference an om_name, the corresponding 
+!    attributes are copied into the manure database for later use.
+!    
+!    Features direct name-to-name crosswalking between fertilizer_ext.frt
+!    om_name field and manure_om.man name field, replacing the previous
+!    CSV-based approach with a streamlined database system.
+!    
+!    Includes automatic unit conversion based on manure type:
+!      - 1 lb/1000 gal = 119.82 ppm (liquid/slurry types)
+!      - 1 lb/ton = 500 ppm (solid/semi-solid types)
 !    Conversion factor determined by manure type column (typ).
 !--------------------------------------------------------------------
 subroutine manure_parm_read

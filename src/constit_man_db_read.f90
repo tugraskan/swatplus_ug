@@ -1,4 +1,16 @@
-      subroutine constit_man_db_read
+!--------------------------------------------------------------------
+!  constit_man_db_read
+!    Read and initialize the manure-specific constituent database 
+!    from constituents_man.cs. This database is separate from the 
+!    general constituent database (constituents.cs) and is used 
+!    specifically for fertilizer/manure constituent applications.
+!    
+!    The subroutine also consolidates reading of all fertilizer
+!    constituent files (*.man) and performs early crosswalking
+!    to pre-compute array indices for optimal performance during
+!    fertilizer applications.
+!--------------------------------------------------------------------
+subroutine constit_man_db_read
       
       use basin_module
       use input_file_module
@@ -43,26 +55,26 @@
         if (eof < 0) exit
         read (106,*,iostat=eof) cs_man_db%num_paths
         if (eof < 0) exit
-        allocate (cs_man_db%paths(cs_man_db%num_paths))
+        allocate (cs_man_db%paths(0:cs_man_db%num_paths))
         allocate (cs_man_db%path_num(0:cs_man_db%num_paths), source = 0)
         read (106,*,iostat=eof) (cs_man_db%paths(i), i = 1, cs_man_db%num_paths)
         if (eof < 0) exit
         read (106,*,iostat=eof) cs_man_db%num_metals
         if (eof < 0) exit
-        allocate (cs_man_db%metals(cs_man_db%num_metals))
+        allocate (cs_man_db%metals(0:cs_man_db%num_metals))
         allocate (cs_man_db%metals_num(0:cs_man_db%num_metals), source = 0)
         read (106,*,iostat=eof) (cs_man_db%metals(i), i = 1, cs_man_db%num_metals)
         if (eof < 0) exit
         !salt ions
         read (106,*,iostat=eof) cs_man_db%num_salts
         if (eof < 0) exit
-        allocate (cs_man_db%salts(cs_man_db%num_salts))
+        allocate (cs_man_db%salts(0:cs_man_db%num_salts))
         allocate (cs_man_db%salts_num(0:cs_man_db%num_salts), source = 0)
         read (106,*,iostat=eof) (cs_man_db%salts(i), i = 1, cs_man_db%num_salts)
         !other constituents
         read (106,*,iostat=eof) cs_man_db%num_cs
         if (eof < 0) exit
-        allocate (cs_man_db%cs(cs_man_db%num_cs))
+        allocate (cs_man_db%cs(0:cs_man_db%num_cs))
         allocate (cs_man_db%cs_num (0:cs_man_db%num_cs), source = 0)
         read (106,*,iostat=eof) (cs_man_db%cs(i), i = 1, cs_man_db%num_cs)
         exit
@@ -157,7 +169,8 @@ subroutine fert_constituent_crosswalk
         if (ifrt == 0) cycle  ! skip null entry
         
         ! --- Pesticide crosswalk ---
-        if (allocated(pest_fert_soil_ini) .and. manure_db(ifrt)%pest /= '') then
+        if (allocated(pest_fert_soil_ini) .and. size(pest_fert_soil_ini) > 0 .and. &
+            manure_db(ifrt)%pest /= '') then
           do i = 1, size(pest_fert_soil_ini)
             if (trim(manure_db(ifrt)%pest) == trim(pest_fert_soil_ini(i)%name)) then
               manure_db(ifrt)%pest_idx = i
@@ -167,7 +180,8 @@ subroutine fert_constituent_crosswalk
         end if
         
         ! --- Pathogen crosswalk ---
-        if (allocated(path_fert_soil_ini) .and. manure_db(ifrt)%path /= '') then
+        if (allocated(path_fert_soil_ini) .and. size(path_fert_soil_ini) > 0 .and. &
+            manure_db(ifrt)%path /= '') then
           do i = 1, size(path_fert_soil_ini)
             if (trim(manure_db(ifrt)%path) == trim(path_fert_soil_ini(i)%name)) then
               manure_db(ifrt)%path_idx = i
@@ -177,7 +191,8 @@ subroutine fert_constituent_crosswalk
         end if
         
         ! --- Salt crosswalk ---
-        if (allocated(salt_fert_soil_ini) .and. manure_db(ifrt)%salt /= '') then
+        if (allocated(salt_fert_soil_ini) .and. size(salt_fert_soil_ini) > 0 .and. &
+            manure_db(ifrt)%salt /= '') then
           do i = 1, size(salt_fert_soil_ini)
             if (trim(manure_db(ifrt)%salt) == trim(salt_fert_soil_ini(i)%name)) then
               manure_db(ifrt)%salt_idx = i
@@ -187,7 +202,8 @@ subroutine fert_constituent_crosswalk
         end if
         
         ! --- Heavy metal crosswalk ---
-        if (allocated(hmet_fert_soil_ini) .and. manure_db(ifrt)%hmet /= '') then
+        if (allocated(hmet_fert_soil_ini) .and. size(hmet_fert_soil_ini) > 0 .and. &
+            manure_db(ifrt)%hmet /= '') then
           do i = 1, size(hmet_fert_soil_ini)
             if (trim(manure_db(ifrt)%hmet) == trim(hmet_fert_soil_ini(i)%name)) then
               manure_db(ifrt)%hmet_idx = i
@@ -197,7 +213,8 @@ subroutine fert_constituent_crosswalk
         end if
         
         ! --- Generic constituent crosswalk ---
-        if (allocated(cs_fert_soil_ini) .and. manure_db(ifrt)%cs /= '') then
+        if (allocated(cs_fert_soil_ini) .and. size(cs_fert_soil_ini) > 0 .and. &
+            manure_db(ifrt)%cs /= '') then
           do i = 1, size(cs_fert_soil_ini)
             if (trim(manure_db(ifrt)%cs) == trim(cs_fert_soil_ini(i)%name)) then
               manure_db(ifrt)%cs_idx = i
