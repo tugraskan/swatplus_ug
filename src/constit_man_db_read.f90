@@ -149,8 +149,8 @@ subroutine fert_constituent_crosswalk
       integer :: ifrt = 0     ! fertilizer counter
       integer :: i = 0        ! array counter
       
-      ! Exit if no extended fertilizer database exists
-      if (.not. allocated(manure_db)) return
+      ! Exit if no extended fertilizer database exists or if empty
+      if (.not. allocated(manure_db) .or. size(manure_db) <= 1) return
       
       ! Crosswalk each fertilizer entry
       do ifrt = 1, size(manure_db)
