@@ -1,8 +1,10 @@
       subroutine pl_fert (ifrt, frt_kg, fertop)
       
 !!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine applies N and P specified by date and
-!!    amount in the management file (.mgt)
+!!    this subroutine applies mineral and organic N and P specified by
+!!    date and amount in the management file (.mgt).  After updating
+!!    soil nutrient pools, any associated pesticide, pathogen, salt or
+!!    heavy metal loads are added via fert_constituents_apply.
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -14,9 +16,9 @@
       use fertilizer_data_module
       use basin_module
       use organic_mineral_mass_module
+      use constituent_mass_module
       use hru_module, only : ihru, fertn, fertp, fertnh3, fertno3, fertorgn, fertorgp, fertp,  &
         fertsolp  
-
       implicit none 
       
       real :: rtof             !none          |weighting factor used to partition the 
@@ -34,7 +36,6 @@
       real :: meta_fr                     !              |fraction of metabolic applied to layer
       real :: pool_fr                     !              |fraction of structural or lignin applied to layer
       logical :: manure_flag
-
       manure_flag = .false.
       org_frt%m = 0.
       org_frt%c = 0.
@@ -147,6 +148,14 @@
       fertorgp = frt_kg * fertdb(ifrt)%forgp  
       fertn = fertn + frt_kg * (fertdb(ifrt)%fminn + fertdb(ifrt)%forgn)
       fertp = fertp + frt_kg * (fertdb(ifrt)%fminp + fertdb(ifrt)%forgp)
+
+
+      !! apply constituents associated with this fertilizer
+      !! the helper cross-references pest/path/salt/hmet/cs names from
+      !! fertilizer_ext.frt and distributes the resulting loads
+      if (ifrt > 0) then
+        call fert_constituents_apply(j, ifrt, frt_kg, fertop)
+      end if
       
       return
       end subroutine pl_fert
