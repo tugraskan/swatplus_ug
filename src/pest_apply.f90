@@ -32,15 +32,26 @@
       if (pcom(j)%lai_sum > 1.e-6) then
         do ipl = 1, pcom(j)%npl
           pl_frac = pcom(j)%plg(ipl)%lai / pcom(j)%lai_sum
-          cs_pl(j)%pl_on(ipl)%pest(ipest) = cs_pl(j)%pl_on(ipl)%pest(ipest) + gc * pl_frac * pest_kg
+          !! check bounds to prevent segmentation fault
+          if (allocated(cs_pl(j)%pl_on(ipl)%pest) .and. ipest <= size(cs_pl(j)%pl_on(ipl)%pest)) then
+            cs_pl(j)%pl_on(ipl)%pest(ipest) = cs_pl(j)%pl_on(ipl)%pest(ipest) + gc * pl_frac * pest_kg
+          end if
         end do
       end if
       surf_frac = chemapp_db(pestop)%surf_frac
-      cs_soil(j)%ly(1)%pest(ipest) = cs_soil(j)%ly(1)%pest(ipest) + (1. - gc) * surf_frac * pest_kg
-      cs_soil(j)%ly(2)%pest(ipest) = cs_soil(j)%ly(2)%pest(ipest) + (1. - gc) * (1. - surf_frac) * pest_kg
+      !! check bounds to prevent segmentation fault
+      if (allocated(cs_soil(j)%ly(1)%pest) .and. ipest <= size(cs_soil(j)%ly(1)%pest)) then
+        cs_soil(j)%ly(1)%pest(ipest) = cs_soil(j)%ly(1)%pest(ipest) + (1. - gc) * surf_frac * pest_kg
+      end if
+      if (allocated(cs_soil(j)%ly(2)%pest) .and. ipest <= size(cs_soil(j)%ly(2)%pest)) then
+        cs_soil(j)%ly(2)%pest(ipest) = cs_soil(j)%ly(2)%pest(ipest) + (1. - gc) * (1. - surf_frac) * pest_kg
+      end if
       
-      hpestb_d(j)%pest(ipest)%apply_f = gc * pest_kg
-      hpestb_d(j)%pest(ipest)%apply_s = (1. - gc) * pest_kg
+      !! check bounds to prevent segmentation fault on output arrays
+      if (allocated(hpestb_d(j)%pest) .and. ipest <= size(hpestb_d(j)%pest)) then
+        hpestb_d(j)%pest(ipest)%apply_f = gc * pest_kg
+        hpestb_d(j)%pest(ipest)%apply_s = (1. - gc) * pest_kg
+      end if
 
       return
       end subroutine pest_apply

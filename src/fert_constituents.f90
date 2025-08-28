@@ -51,7 +51,10 @@ subroutine fert_constituents_apply(j, ifrt, frt_kg, fertop)
             if (manure_db(ifrt)%pest_idx > 0) then
               do ipest = 1, cs_man_db%num_pests
                 pest_kg = frt_kg * pest_fert_soil_ini(manure_db(ifrt)%pest_idx)%soil(ipest)
-                if (pest_kg > 0.) call pest_apply(j, ipest, pest_kg, fertop)
+                !! check if pesticide index is valid for global pesticide arrays
+                if (pest_kg > 0. .and. ipest <= cs_db%num_pests) then
+                  call pest_apply(j, ipest, pest_kg, fertop)
+                end if
               end do
             end if
           end if
