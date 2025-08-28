@@ -35,7 +35,6 @@
       call cs_uptake_read
       call cs_reactions_read
       call cs_urban_read
-      call cs_fert_read
       
       call topo_read
       call field_read

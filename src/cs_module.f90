@@ -58,16 +58,6 @@
       real :: cs_basin_yr(87) = 0.
       real :: cs_basin_aa(87) = 0.
       
-      !constituent fertilizer
-      type fert_db_cs
-        character(len=16) :: fertnm = " "
-        real :: seo4 = 0.           !! kg seo4/ha      |fertilizer load of seo4 (kg/ha)
-        real :: seo3 = 0.           !! kg seo3/ha      |fertilizer load of seo3 (kg/ha)
-        real :: boron = 0.          !! kg boron/ha     |fertilizer load of boron (kg/ha)
-      end type fert_db_cs
-      type (fert_db_cs), dimension(:),allocatable, save :: fert_cs
-      integer :: fert_cs_flag = 0
-      
       !cs uptake
       real, dimension(:,:), allocatable :: cs_uptake_kg         !specified daily constituent mass taken up by crop roots (kg/ha)
       integer :: cs_uptake_on = 0                               !flag for simulating constituent uptake
