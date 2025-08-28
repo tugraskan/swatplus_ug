@@ -1,4 +1,6 @@
  DIAGNOSTICS.OUT FILE
+ cosy_lum2                               mgt_01A                                  not found in management.sch
+ cosy_lum                                mgt_02                                   not found in management.sch
  corn_lum                                CORN_rot                                 not found in management.sch
  agrr_lum                                AGRR_rot                                 not found in management.sch
  soyb_lum                                SOYB_rot                                 not found in management.sch

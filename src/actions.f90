@@ -310,8 +310,7 @@ subroutine actions (ob_cur, ob_num, idtbl)
               ifertop = d_tbl%act_app(iac)            !surface application fraction from chem app data base
 
               call pl_manure (ifrt, frt_kg, ifertop)
-              call salt_fert(j,ifrt,frt_kg,ifertop) !rtb salt 
-              call cs_fert(j,ifrt,frt_kg,ifertop) !rtb cs
+              call salt_fert(j,ifrt,frt_kg,ifertop) !rtb salt
               if (pco%mgtout == "y") then
                 write (2612,*) j, time%yrc, time%mo, time%day_mo, mgt%op_char, " MANURE ", &
                   phubase(j), pcom(j)%plcur(ipl)%phuacc, soil(j)%sw, pl_mass(j)%tot(ipl)%m,           &

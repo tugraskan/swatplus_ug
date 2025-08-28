@@ -170,6 +170,8 @@
 
       !! apply constituents associated with fertilizer
       !! this mirrors pl_fert but accounts for wetland operations
-      call fert_constituents_apply(j, ifrt, frt_kg, fertop)
+      if (ifrt > 0) then
+        call fert_constituents_apply(j, ifrt, frt_kg, fertop)
+      end if
       return
       end subroutine pl_fert_wet

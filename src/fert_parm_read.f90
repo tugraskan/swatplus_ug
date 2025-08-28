@@ -71,7 +71,7 @@ subroutine fert_parm_read
               allocate (manure_db(0:imax))
               do it = 1, imax
                 read (107,*,iostat=eof) manure_db(it)%base, &
-                      manure_db(it)%name,manure_db(it)%csv,  &
+                      manure_db(it)%name,manure_db(it)%om_name,  &
                       manure_db(it)%pest, manure_db(it)%path, &
                       manure_db(it)%salt, manure_db(it)%hmet, manure_db(it)%cs
                 if (eof < 0) exit
