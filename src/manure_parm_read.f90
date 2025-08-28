@@ -23,6 +23,7 @@ subroutine manure_parm_read
    
       integer :: it = 0                     !!none      |counter
       character (len=80) :: manure_file = "manure_om.man"        !!          |filename for manure file
+      character (len=256) :: title = ""     !!          |title of file
       character (len=256) :: header = ""     !!          |header of file
       integer :: eof = 0                    !!          |end of file
       integer :: unit = 107                 !!          |unit number for file
@@ -42,6 +43,7 @@ subroutine manure_parm_read
           db_mx%manureparm = 0
       else
             open (unit,file=manure_file)
+            read(unit,'(A)',iostat=eof) title
             read(unit,'(A)',iostat=eof) header   ! skip header line
             do while (eof == 0)
                 read(unit,*,iostat=eof) 
@@ -50,6 +52,7 @@ subroutine manure_parm_read
             end do
             allocate (manure_om_db(0:imax))       ! allocate array for all records
             rewind(unit)
+            read(unit,'(A)',iostat=eof) title
             read(unit,'(A)',iostat=eof) header
             do it = 1, imax
                 read (unit,*,iostat=eof) manure_om_db(it)%name, &
@@ -73,10 +76,10 @@ subroutine manure_parm_read
                 
                 !! Apply unit conversions
                 !! Determine conversion factor based on manure type column
-                !! 1 lb/1000 gal = 119.82 ppm for liquid and slurry
+                !! 1 lb/1000 gal = 119.82 ppm for Liquid and Slurry
                 !! 1 lb/ton = 500 ppm for solid and semi-solid
-                if (trim(manure_om_db(it)%typ) == 'liquid' .or. trim(manure_om_db(it)%typ) == 'slurry') then
-                    conversion_factor = 119.82  ! 1 lb/1000 gal = 119.82 ppm for liquid/slurry
+                if (trim(manure_om_db(it)%typ) == 'Liquid' .or. trim(manure_om_db(it)%typ) == 'Slurry') then
+                    conversion_factor = 119.82  ! 1 lb/1000 gal = 119.82 ppm for Liquid/Slurry
                 else
                     conversion_factor = 500.0   ! 1 lb/ton = 500 ppm for solid/semi-solid
                 endif
@@ -115,6 +118,7 @@ subroutine manure_parm_read
             if (size(manure_db) > 0 .and. size(manure_om_db) > 0) then
               do i = 1, size(manure_db)
                 do it = 1, size(manure_om_db)
+                  ! todo add a null check here to exit out
                   if (trim(manure_db(i)%om_name) == trim(manure_om_db(it)%name)) then
                     manure_db(i)%manucontent = manure_om_db(it)
                     exit  ! Stop searching once a match is found

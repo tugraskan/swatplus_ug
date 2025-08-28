@@ -1,6 +1,168 @@
                    SWAT+               
-             Revision unknown  
+             Revision 61.0.2.11-258-g66030fe  
       Soil & Water Assessment Tool    
-GNU (13.3.0), 2025-08-27 19:02:55, Linux
+IntelLLVM (2025.1.1), 2025-08-28 15:44:28, Linux
     Program reading . . . executing
 
+
+  Date of Sim   8/28/2025 Time  16:50:38
+ reading from pet file                   Time  16:50:38
+ reading from precipitation file         Time  16:50:38
+ reading from temperature file           Time  16:50:38
+ reading from solar radiation file       Time  16:50:38
+ reading from relative humidity file     Time  16:50:38
+ reading from wind file                  Time  16:50:38
+ reading from wgn file                   Time  16:50:38
+ reading from wx station file            Time  16:50:38
+  Original Simulation            1   1  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            1   2  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            1   3  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            1   4  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            1   5  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            1   6  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            1   7  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            1   8  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            1   9  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            1  10  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            1  11  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            1  12  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            1  13  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            1  14  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            1  15  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            1  16  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            1  17  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            1  18  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            1  19  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            1  20  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            1  21  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            1  22  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            1  23  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            1  24  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            1  25  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            1  26  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            1  27  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            1  28  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            1  29  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            1  30  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            1  31  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            2   1  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            2   2  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            2   3  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            2   4  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            2   5  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            2   6  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            2   7  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            2   8  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            2   9  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            2  10  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            2  11  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            2  12  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            2  13  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            2  14  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            2  15  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            2  16  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            2  17  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            2  18  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            2  19  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            2  20  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            2  21  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            2  22  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            2  23  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            2  24  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            2  25  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            2  26  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            2  27  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            2  28  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            3   1  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            3   2  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            3   3  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            3   4  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            3   5  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            3   6  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            3   7  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            3   8  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            3   9  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            3  10  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            3  11  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            3  12  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            3  13  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            3  14  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            3  15  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            3  16  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            3  17  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            3  18  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            3  19  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            3  20  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            3  21  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            3  22  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            3  23  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            3  24  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            3  25  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            3  26  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            3  27  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            3  28  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            3  29  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            3  30  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            3  31  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            4   1  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            4   2  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            4   3  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            4   4  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            4   5  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            4   6  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            4   7  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            4   8  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            4   9  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            4  10  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            4  11  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            4  12  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            4  13  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            4  14  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            4  15  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            4  16  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            4  17  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            4  18  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            4  19  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            4  20  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            4  21  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            4  22  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            4  23  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            4  24  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            4  25  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            4  26  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            4  27  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            4  28  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            4  29  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            4  30  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            5   1  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            5   2  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            5   3  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            5   4  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            5   5  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            5   6  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            5   7  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            5   8  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            5   9  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            5  10  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            5  11  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            5  12  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            5  13  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            5  14  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            5  15  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            5  16  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            5  17  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            5  18  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            5  19  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            5  20  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            5  21  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            5  22  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            5  23  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            5  24  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            5  25  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            5  26  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            5  27  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            5  28  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            5  29  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            5  30  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            5  31  1975 Yr    1 of   46 Time  16:50:48
+  Original Simulation            6   1  1975 Yr    1 of   46 Time  16:50:48
