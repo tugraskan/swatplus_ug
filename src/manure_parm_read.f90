@@ -6,6 +6,7 @@
 !    copied into the manure database for later use.
 !    Includes unit conversion: 1 lb/1000 gal = 119.82 ppm (liquid/slurry)
 !                             1 lb/ton = 500 ppm (solid/semi-solid)
+!    Conversion factor determined by manure type column (typ).
 !--------------------------------------------------------------------
 subroutine manure_parm_read
       
@@ -24,7 +25,6 @@ subroutine manure_parm_read
       logical :: i_exist                    !!none      |check to determine if file exists
       integer :: i
       real :: conversion_factor             !!          |unit conversion factor
-      logical :: is_liquid                  !!          |flag to determine if manure is liquid/slurry
 
       eof = 0
       imax = 0
@@ -67,15 +67,24 @@ subroutine manure_parm_read
                 if (eof < 0) exit
                 
                 !! Apply unit conversions
-                !! Determine if manure is liquid/slurry or solid/semi-solid based on moisture content
-                !! Generally, >85% moisture is considered liquid, <85% is solid/semi-solid
-                is_liquid = manure_om_db(it)%pct_moist > 85.0
-                
-                if (is_liquid) then
+                !! Determine conversion factor based on manure type column
+                !! 1 lb/1000 gal = 119.82 ppm for liquid and slurry
+                !! 1 lb/ton = 500 ppm for solid and semi-solid
+                if (trim(manure_om_db(it)%typ) == 'liquid' .or. trim(manure_om_db(it)%typ) == 'slurry') then
                     conversion_factor = 119.82  ! 1 lb/1000 gal = 119.82 ppm for liquid/slurry
                 else
                     conversion_factor = 500.0   ! 1 lb/ton = 500 ppm for solid/semi-solid
                 endif
+                
+                !! Legacy moisture-based logic (commented out for reference):
+                !! Determine if manure is liquid/slurry or solid/semi-solid based on moisture content
+                !! Generally, >85% moisture is considered liquid, <85% is solid/semi-solid
+                !is_liquid = manure_om_db(it)%pct_moist > 85.0
+                !if (is_liquid) then
+                !    conversion_factor = 119.82  ! 1 lb/1000 gal = 119.82 ppm for liquid/slurry
+                !else
+                !    conversion_factor = 500.0   ! 1 lb/ton = 500 ppm for solid/semi-solid
+                !endif
                 
                 !! Convert variables from tot_c to water
                 manure_om_db(it)%tot_c = manure_om_db(it)%tot_c * conversion_factor
