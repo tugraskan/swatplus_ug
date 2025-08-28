@@ -1,9 +1,9 @@
-pest.man: pesticide concentrations in fertilizers for testing
+xxpest.man: pesticide concentrations in fertilizers for testing
 name                          conc_pest1    
 no_pest              
-  roundup                     0.000                 
-  aatrex                      0.000         
-  dual                        0.000         
+  roundup                     0.030                 
+  aatrex                      0.02300         
+  dual                        0.1000         
 med_pest
   roundup                     0.002         
   aatrex                      0.040           

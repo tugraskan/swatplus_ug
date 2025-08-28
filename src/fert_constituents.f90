@@ -7,6 +7,7 @@
 !    from the appropriate *.man file for the fertilizer in question.  
 !    The resulting mass is partitioned between plant and soil pools 
 !    according to the application option.
+!@TODO Call * applies
 !--------------------------------------------------------------------
 subroutine fert_constituents_apply(j, ifrt, frt_kg, fertop)
 
@@ -51,7 +52,7 @@ subroutine fert_constituents_apply(j, ifrt, frt_kg, fertop)
             if (manure_db(ifrt)%pest_idx > 0) then
               do ipest = 1, cs_man_db%num_pests
                 pest_kg = frt_kg * pest_fert_soil_ini(manure_db(ifrt)%pest_idx)%soil(ipest)
-                if (pest_kg > 0.) call pest_apply(j, ipest, pest_kg, fertop)
+                !!if (pest_kg > 0.) call pest_apply(j, ipest, pest_kg, fertop)
               end do
             end if
           end if
@@ -67,7 +68,7 @@ subroutine fert_constituents_apply(j, ifrt, frt_kg, fertop)
             if (manure_db(ifrt)%path_idx > 0) then
               do ipath = 1, cs_man_db%num_paths
                 path_kg = frt_kg * path_fert_soil_ini(manure_db(ifrt)%path_idx)%soil(ipath)
-                if (path_kg > 0.) call path_apply(j, ipath, path_kg, fertop)
+                !!if (path_kg > 0.) call path_apply(j, ipath, path_kg, fertop)
               end do
             end if
           end if
@@ -83,7 +84,7 @@ subroutine fert_constituents_apply(j, ifrt, frt_kg, fertop)
             if (manure_db(ifrt)%salt_idx > 0) then
               do isalt = 1, size(salt_fert_soil_ini(manure_db(ifrt)%salt_idx)%soil)
                 salt_kg = frt_kg * salt_fert_soil_ini(manure_db(ifrt)%salt_idx)%soil(isalt)
-                if (salt_kg > 0.) call salt_apply(j, isalt, salt_kg, fertop)
+                !!if (salt_kg > 0.) call salt_apply(j, isalt, salt_kg, fertop)
               end do
             end if
           end if
@@ -99,7 +100,7 @@ subroutine fert_constituents_apply(j, ifrt, frt_kg, fertop)
             if (manure_db(ifrt)%hmet_idx > 0) then
               do ihmet = 1, size(hmet_fert_soil_ini(manure_db(ifrt)%hmet_idx)%soil)
                 hmet_kg = frt_kg * hmet_fert_soil_ini(manure_db(ifrt)%hmet_idx)%soil(ihmet)
-                if (hmet_kg > 0.) call hmet_apply(j, ihmet, hmet_kg, fertop)
+                !!if (hmet_kg > 0.) call hmet_apply(j, ihmet, hmet_kg, fertop)
               end do
             end if
           end if
@@ -115,7 +116,7 @@ subroutine fert_constituents_apply(j, ifrt, frt_kg, fertop)
             if (manure_db(ifrt)%cs_idx > 0) then
               do ics = 1, size(cs_fert_soil_ini(manure_db(ifrt)%cs_idx)%soil)
                 cs_kg = frt_kg * cs_fert_soil_ini(manure_db(ifrt)%cs_idx)%soil(ics)
-                if (cs_kg > 0.) call cs_apply(j, ics, cs_kg, fertop)
+                !!if (cs_kg > 0.) call cs_apply(j, ics, cs_kg, fertop)
               end do
             end if
           end if
