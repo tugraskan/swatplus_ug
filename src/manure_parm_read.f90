@@ -1,9 +1,11 @@
 !--------------------------------------------------------------------
 !  manure_parm_read
 !    Load manure attribute information from the
-!    fp5-manure-content-defaults-swat.csv table.  When fertilizer
-!    records reference a CSV name, the corresponding attributes are
+!    manure_om.man table.  When fertilizer
+!    records reference an om_name, the corresponding attributes are
 !    copied into the manure database for later use.
+!    Includes unit conversion: 1 lb/1000 gal = 119.82 ppm (liquid/slurry)
+!                             1 lb/ton = 500 ppm (solid/semi-solid)
 !--------------------------------------------------------------------
 subroutine manure_parm_read
       
@@ -14,74 +16,93 @@ subroutine manure_parm_read
       implicit none
    
       integer :: it = 0                     !!none      |counter
-      character (len=80) :: csv = "fp5-manure-content-defaults-swat.csv"        !!          |filename for csv file
+      character (len=80) :: manure_file = "manure_om.man"        !!          |filename for manure file
       character (len=256) :: header = ""     !!          |header of file
-      character (len=1000) :: csv_line = ""  !! line for csv file
       integer :: eof = 0                    !!          |end of file
       integer :: unit = 107                 !!          |unit number for file
       integer :: imax = 0                   !!none      |determine max number for array (imax) and total number in file
       logical :: i_exist                    !!none      |check to determine if file exists
       integer :: i
-
+      real :: conversion_factor             !!          |unit conversion factor
+      logical :: is_liquid                  !!          |flag to determine if manure is liquid/slurry
 
       eof = 0
       imax = 0
 
       
-      !! --- inquire if fp5-manure-content-defaults-swat.csv exists --- !!
-      inquire (file=csv, exist=i_exist)
-      if (.not. i_exist .or. csv == "null") then
-          allocate (manure_csv(0:0))
+      !! --- inquire if manure_om.man exists --- !!
+      inquire (file=manure_file, exist=i_exist)
+      if (.not. i_exist .or. manure_file == "null") then
+          allocate (manure_om_db(0:0))
           db_mx%manureparm = 0
       else
-            open (unit,file=csv)
+            open (unit,file=manure_file)
             read(unit,'(A)',iostat=eof) header   ! skip header line
             do while (eof == 0)
-                read(unit,'(A)',iostat=eof) csv_line
+                read(unit,*,iostat=eof) 
                 if (eof < 0) exit
                 imax = imax + 1                ! count number of records
             end do
-            allocate (manure_csv(0:imax))       ! allocate array for all records
+            allocate (manure_om_db(0:imax))       ! allocate array for all records
             rewind(unit)
             read(unit,'(A)',iostat=eof) header
             do it = 1, imax
-                read (unit,*,iostat=eof) manure_csv(it)%manure_region, &
-                     manure_csv(it)%manure_source, &
-                     manure_csv(it)%manure_type, &
-                     manure_csv(it)%pct_moisture, &
-                     manure_csv(it)%pct_solids, &
-                     manure_csv(it)%total_c, &
-                     manure_csv(it)%total_n, &
-                     manure_csv(it)%inorganic_n, &
-                     manure_csv(it)%organic_n, &
-                     manure_csv(it)%total_p2o5, &
-                     manure_csv(it)%inorganic_p2o5, &
-                     manure_csv(it)%organic_p2o5, &
-                     manure_csv(it)%inorganic_p, &
-                     manure_csv(it)%organic_p, &
-                     manure_csv(it)%solids, &
-                     manure_csv(it)%water, &
-                     manure_csv(it)%units, &
-                     manure_csv(it)%sample_size, &
-                     manure_csv(it)%summary_level, &
-                     manure_csv(it)%data_source
-                manure_csv(it)%manure_name = trim(manure_csv(it)%manure_region)//"_"//trim(manure_csv(it)%manure_source)//"_"// &
-                     trim(manure_csv(it)%manure_type)
+                read (unit,*,iostat=eof) manure_om_db(it)%name, &
+                     manure_om_db(it)%region, &
+                     manure_om_db(it)%source, &
+                     manure_om_db(it)%typ, &
+                     manure_om_db(it)%pct_moist, &
+                     manure_om_db(it)%pct_solid, &
+                     manure_om_db(it)%tot_c, &
+                     manure_om_db(it)%tot_n, &
+                     manure_om_db(it)%inorg_n, &
+                     manure_om_db(it)%org_n, &
+                     manure_om_db(it)%tot_p2o5, &
+                     manure_om_db(it)%inorg_p2o5, &
+                     manure_om_db(it)%org_p2o5, &
+                     manure_om_db(it)%inorg_p, &
+                     manure_om_db(it)%org_p, &
+                     manure_om_db(it)%solids, &
+                     manure_om_db(it)%water
                 if (eof < 0) exit
+                
+                !! Apply unit conversions
+                !! Determine if manure is liquid/slurry or solid/semi-solid based on moisture content
+                !! Generally, >85% moisture is considered liquid, <85% is solid/semi-solid
+                is_liquid = manure_om_db(it)%pct_moist > 85.0
+                
+                if (is_liquid) then
+                    conversion_factor = 119.82  ! 1 lb/1000 gal = 119.82 ppm for liquid/slurry
+                else
+                    conversion_factor = 500.0   ! 1 lb/ton = 500 ppm for solid/semi-solid
+                endif
+                
+                !! Convert variables from tot_c to water
+                manure_om_db(it)%tot_c = manure_om_db(it)%tot_c * conversion_factor
+                manure_om_db(it)%tot_n = manure_om_db(it)%tot_n * conversion_factor
+                manure_om_db(it)%inorg_n = manure_om_db(it)%inorg_n * conversion_factor
+                manure_om_db(it)%org_n = manure_om_db(it)%org_n * conversion_factor
+                manure_om_db(it)%tot_p2o5 = manure_om_db(it)%tot_p2o5 * conversion_factor
+                manure_om_db(it)%inorg_p2o5 = manure_om_db(it)%inorg_p2o5 * conversion_factor
+                manure_om_db(it)%org_p2o5 = manure_om_db(it)%org_p2o5 * conversion_factor
+                manure_om_db(it)%inorg_p = manure_om_db(it)%inorg_p * conversion_factor
+                manure_om_db(it)%org_p = manure_om_db(it)%org_p * conversion_factor
+                manure_om_db(it)%solids = manure_om_db(it)%solids * conversion_factor
+                manure_om_db(it)%water = manure_om_db(it)%water * conversion_factor
             end do
             close (unit)
 
             db_mx%manureparm = imax
 
-            ! Crosswalk the csv attribute records with fertilizer_ext.frt
-            ! entries.  When the csv name matches the csv field in the
-            ! fertilizer record, copy the manure attributes into the
+            ! Crosswalk the manure_om.man records with fertilizer_ext.frt
+            ! entries.  When the om_name matches the name field in the
+            ! manure_om.man record, copy the manure attributes into the
             ! manure_db so they are available during simulations.
-            if (size(manure_db) > 0 .and. size(manure_csv) > 0) then
+            if (size(manure_db) > 0 .and. size(manure_om_db) > 0) then
               do i = 1, size(manure_db)
-                do it = 1, size(manure_csv)
-                  if (trim(manure_db(i)%csv) == trim(manure_csv(it)%manure_name)) then
-                    manure_db(i)%manucontent = manure_csv(it)
+                do it = 1, size(manure_om_db)
+                  if (trim(manure_db(i)%om_name) == trim(manure_om_db(it)%name)) then
+                    manure_db(i)%manucontent = manure_om_db(it)
                     exit  ! Stop searching once a match is found
                   end if
                 end do
