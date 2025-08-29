@@ -9,10 +9,6 @@ This technical guide provides detailed implementation specifications for the SWA
 1. [System Architecture](#system-architecture)
 2. [File Formats and Data Structures](#file-formats-and-data-structures)
 3. [Implementation Details](#implementation-details)
-4. [API Reference](#api-reference)
-5. [Performance Analysis](#performance-analysis)
-6. [Testing and Validation](#testing-and-validation)
-7. [Migration Guide](#migration-guide)
 
 ## System Architecture
 
@@ -181,10 +177,14 @@ sulfate                  320.0
 #### Initialization Sequence:
 ```fortran
 subroutine initialize_fertilizer_constituent_system()
+  ! System initialization with error handling
+  
+  write(std_lun, *) "Initializing fertilizer-constituent system..."
+  
   ! 1. Load traditional or extended fertilizer database
   call load_fertilizer_database()
   
-  ! 2. Load manure organic matter database
+  ! 2. Load manure organic matter database  
   call load_manure_database()
   
   ! 3. Load constituent linkage tables
@@ -195,6 +195,11 @@ subroutine initialize_fertilizer_constituent_system()
   
   ! 5. Validate data consistency
   call validate_fertilizer_constituent_data()
+  
+  ! 6. Build lookup tables for performance
+  call build_lookup_tables()
+  
+  write(std_lun, *) "Fertilizer-constituent system initialized successfully"
 end subroutine
 ```
 
@@ -202,20 +207,259 @@ end subroutine
 ```fortran
 subroutine load_fertilizer_database()
   logical :: i_exist_ext, i_exist_std
+  character(len=80) :: header_line
+  integer :: i, num_records
   
   ! Check for extended fertilizer file first
   inquire (file='fertilizer_ext.frt', exist=i_exist_ext)
   inquire (file='fertilizer.frt', exist=i_exist_std)
   
   if (i_exist_ext) then
+    write(std_lun, *) "Loading extended fertilizer database..."
     call load_extended_fertilizer_format()
     fertilizer_format = 'extended'
   else if (i_exist_std) then
+    write(std_lun, *) "Loading standard fertilizer database..."
     call load_standard_fertilizer_format()
     fertilizer_format = 'standard'
   else
-    call error_exit("No fertilizer database file found")
+    call error_exit("No fertilizer database file found (fertilizer.frt or fertilizer_ext.frt)")
   endif
+  
+  write(std_lun, *) "Loaded", db_mx%fertparm, "fertilizer records"
+end subroutine
+
+subroutine load_extended_fertilizer_format()
+  integer :: i, eof
+  character(len=500) :: line
+  
+  open(unit=107, file='fertilizer_ext.frt', status='old')
+  
+  ! Skip header lines
+  read(107, *) ! Skip comment line
+  read(107, *) ! Skip column headers
+  
+  i = 0
+  do
+    read(107, '(a)', iostat=eof) line
+    if (eof /= 0) exit
+    
+    i = i + 1
+    if (i > mx_ferts) then
+      call error_exit("Too many fertilizer records. Increase mx_ferts parameter")
+    endif
+    
+    read(line, *) fertdb(i)%fertnm, fertdb(i)%fminn, fertdb(i)%fminp, &
+                  fertdb(i)%forgn, fertdb(i)%forgp, fertdb(i)%fnh3n, &
+                  fertdb(i)%om_name, fertdb(i)%pathogens, fertdb(i)%description
+    
+    ! Clean up names
+    fertdb(i)%fertnm = trim(adjustl(fertdb(i)%fertnm))
+    fertdb(i)%om_name = trim(adjustl(fertdb(i)%om_name))
+  enddo
+  
+  db_mx%fertparm = i
+  close(107)
+end subroutine
+
+subroutine load_standard_fertilizer_format()
+  integer :: i, eof
+  character(len=500) :: line
+  
+  open(unit=107, file='fertilizer.frt', status='old')
+  
+  ! Skip header lines
+  read(107, *) ! Skip comment line
+  read(107, *) ! Skip column headers
+  
+  i = 0
+  do
+    read(107, '(a)', iostat=eof) line
+    if (eof /= 0) exit
+    
+    i = i + 1
+    if (i > mx_ferts) then
+      call error_exit("Too many fertilizer records. Increase mx_ferts parameter")
+    endif
+    
+    read(line, *) fertdb(i)%fertnm, fertdb(i)%fminn, fertdb(i)%fminp, &
+                  fertdb(i)%forgn, fertdb(i)%forgp, fertdb(i)%fnh3n, &
+                  fertdb(i)%pathogens, fertdb(i)%description
+    
+    ! Set om_name to null for standard format
+    fertdb(i)%om_name = "null"
+    fertdb(i)%fertnm = trim(adjustl(fertdb(i)%fertnm))
+  enddo
+  
+  db_mx%fertparm = i
+  close(107)
+end subroutine
+```
+
+#### Manure Database Loading:
+```fortran
+subroutine load_manure_database()
+  logical :: i_exist
+  integer :: i, eof
+  character(len=500) :: line
+  
+  inquire(file='manure_om.man', exist=i_exist)
+  if (.not. i_exist) then
+    write(std_lun, *) "Warning: manure_om.man not found. Manure linking disabled."
+    db_mx%manureparm = 0
+    return
+  endif
+  
+  write(std_lun, *) "Loading manure organic matter database..."
+  
+  open(unit=108, file='manure_om.man', status='old')
+  
+  ! Skip header lines
+  read(108, *) ! Skip comment line
+  read(108, *) ! Skip column headers
+  
+  i = 0
+  do
+    read(108, '(a)', iostat=eof) line
+    if (eof /= 0) exit
+    
+    i = i + 1
+    if (i > mx_manure) then
+      call error_exit("Too many manure records. Increase mx_manure parameter")
+    endif
+    
+    read(line, *) manure_om_db(i)%name, manure_om_db(i)%region, &
+                  manure_om_db(i)%source, manure_om_db(i)%typ, &
+                  manure_om_db(i)%pct_moist, manure_om_db(i)%pct_solid, &
+                  manure_om_db(i)%tot_c, manure_om_db(i)%tot_n, &
+                  manure_om_db(i)%inorg_n, manure_om_db(i)%org_n, &
+                  manure_om_db(i)%tot_p2o5, manure_om_db(i)%inorg_p2o5, &
+                  manure_om_db(i)%org_p2o5
+    
+    ! Clean up names and calculate derived properties
+    manure_om_db(i)%name = trim(adjustl(manure_om_db(i)%name))
+    manure_om_db(i)%typ = trim(adjustl(manure_om_db(i)%typ))
+    
+    ! Calculate derived phosphorus values (P2O5 to P conversion: factor 0.436)
+    manure_om_db(i)%inorg_p = manure_om_db(i)%inorg_p2o5 * 0.436
+    manure_om_db(i)%org_p = manure_om_db(i)%org_p2o5 * 0.436
+    
+    ! Calculate total solids and water content
+    manure_om_db(i)%solids = manure_om_db(i)%pct_solid
+    manure_om_db(i)%water = manure_om_db(i)%pct_moist
+  enddo
+  
+  db_mx%manureparm = i
+  close(108)
+  
+  write(std_lun, *) "Loaded", db_mx%manureparm, "manure organic matter records"
+end subroutine
+```
+
+#### Constituent Linkage Loading:
+```fortran
+subroutine load_constituent_linkages()
+  ! Load different types of constituent linkage files
+  call load_pesticide_linkages()
+  call load_pathogen_linkages()
+  call load_salt_linkages()
+  call load_heavy_metal_linkages()
+end subroutine
+
+subroutine load_pesticide_linkages()
+  logical :: i_exist
+  integer :: i, j, eof
+  character(len=80) :: pest_name
+  real :: concentration
+  
+  inquire(file='pest.man', exist=i_exist)
+  if (.not. i_exist) then
+    write(std_lun, *) "pest.man not found. Pesticide tracking disabled."
+    return
+  endif
+  
+  write(std_lun, *) "Loading pesticide linkages..."
+  
+  ! Initialize concentration array to zero
+  if (allocated(pest_fert_ini)) then
+    do i = 1, cs_db%num_pests
+      do j = 1, db_mx%fertparm
+        pest_fert_ini(i)%conc(j) = 0.0
+      enddo
+    enddo
+  endif
+  
+  open(unit=109, file='pest.man', status='old')
+  read(109, *) ! Skip header
+  read(109, *) ! Skip column headers
+  
+  do
+    read(109, *, iostat=eof) pest_name, concentration
+    if (eof /= 0) exit
+    
+    ! Find pesticide index
+    do i = 1, cs_db%num_pests
+      if (trim(pest_db(i)%name) == trim(pest_name)) then
+        ! Find fertilizer indices and set concentrations
+        do j = 1, db_mx%fertparm
+          if (fertdb(j)%is_manure) then
+            pest_fert_ini(i)%conc(j) = concentration
+          endif
+        enddo
+        exit
+      endif
+    enddo
+  enddo
+  
+  close(109)
+end subroutine
+
+subroutine load_pathogen_linkages()
+  logical :: i_exist
+  integer :: i, j, eof
+  character(len=80) :: path_name
+  real :: cfu_per_gram
+  
+  inquire(file='path.man', exist=i_exist)
+  if (.not. i_exist) then
+    write(std_lun, *) "path.man not found. Pathogen tracking disabled."
+    return
+  endif
+  
+  write(std_lun, *) "Loading pathogen linkages..."
+  
+  ! Initialize concentration array to zero
+  if (allocated(path_fert_ini)) then
+    do i = 1, cs_db%num_paths
+      do j = 1, db_mx%fertparm
+        path_fert_ini(i)%conc(j) = 0.0
+      enddo
+    enddo
+  endif
+  
+  open(unit=110, file='path.man', status='old')
+  read(110, *) ! Skip header
+  read(110, *) ! Skip column headers
+  
+  do
+    read(110, *, iostat=eof) path_name, cfu_per_gram
+    if (eof /= 0) exit
+    
+    ! Find pathogen index
+    do i = 1, cs_db%num_paths
+      if (trim(path_db(i)%name) == trim(path_name)) then
+        ! Set concentrations for manure-based fertilizers
+        do j = 1, db_mx%fertparm
+          if (fertdb(j)%is_manure) then
+            path_fert_ini(i)%conc(j) = cfu_per_gram
+          endif
+        enddo
+        exit
+      endif
+    enddo
+  enddo
+  
+  close(110)
 end subroutine
 ```
 
@@ -223,8 +467,16 @@ end subroutine
 ```fortran
 subroutine compute_fertilizer_manure_indices()
   integer :: i, j
+  integer :: matched_count = 0
+  
+  write(std_lun, *) "Computing fertilizer-manure crosswalking indices..."
   
   do i = 1, db_mx%fertparm
+    ! Initialize values
+    fertdb(i)%manure_idx = 0
+    fertdb(i)%is_manure = .false.
+    fertdb(i)%conversion_factor = 0.0
+    
     if (trim(fertdb(i)%om_name) /= "" .and. trim(fertdb(i)%om_name) /= "null") then
       ! Find matching manure record
       do j = 1, db_mx%manureparm
@@ -232,20 +484,27 @@ subroutine compute_fertilizer_manure_indices()
           ! Store pre-computed index
           fertdb(i)%manure_idx = j
           fertdb(i)%is_manure = .true.
+          matched_count = matched_count + 1
           
           ! Set unit conversion factor
           call set_conversion_factor(fertdb(i), manure_om_db(j))
           
+          write(std_lun, *) "  Linked fertilizer '", trim(fertdb(i)%fertnm), &
+                           "' to manure '", trim(manure_om_db(j)%name), "'"
           exit
         endif
       enddo
       
       ! Warn if no match found
       if (fertdb(i)%manure_idx == 0) then
-        call warning("No manure database match for fertilizer", fertdb(i)%fertnm)
+        write(std_lun, *) "Warning: No manure database match for fertilizer '", &
+                         trim(fertdb(i)%fertnm), "' with om_name '", &
+                         trim(fertdb(i)%om_name), "'"
       endif
     endif
   enddo
+  
+  write(std_lun, *) "Crosswalking complete:", matched_count, "fertilizer-manure links established"
 end subroutine
 ```
 
@@ -259,7 +518,7 @@ subroutine set_conversion_factor(fert_rec, manure_rec)
   
   select case (trim(manure_rec%typ))
     case ('liquid')
-      ! 1 lb/1000 gal = 119.82 ppm
+      ! 1 lb/1000 gal = 119.82 ppm (liquid manure density ~8.34 lb/gal)
       fert_rec%conversion_factor = 119.82
       
     case ('slurry')
@@ -267,7 +526,7 @@ subroutine set_conversion_factor(fert_rec, manure_rec)
       fert_rec%conversion_factor = 119.82
       
     case ('solid', 'semi-solid')
-      ! 1 lb/ton = 500 ppm
+      ! 1 lb/ton = 500 ppm (2000 lb/ton conversion)
       fert_rec%conversion_factor = 500.0
       
     case ('compost')
@@ -276,9 +535,13 @@ subroutine set_conversion_factor(fert_rec, manure_rec)
       
     case default
       ! Default to solid conversion with warning
-      call warning("Unknown manure type, using solid conversion", manure_rec%typ)
+      write(std_lun, *) "Warning: Unknown manure type '", trim(manure_rec%typ), &
+                       "', using solid conversion (500 ppm/lb/ton)"
       fert_rec%conversion_factor = 500.0
   end select
+  
+  write(std_lun, *) "  Set conversion factor:", fert_rec%conversion_factor, &
+                   "for manure type:", trim(manure_rec%typ)
 end subroutine
 ```
 
@@ -291,7 +554,25 @@ function convert_constituent_loading(base_rate_kg_ha, conc_ppm, conversion_facto
   real :: loading_kg_ha                    ! Resulting constituent loading
   
   ! Convert ppm to kg/kg, then multiply by application rate
+  ! Formula: loading = rate * concentration * conversion / 1,000,000
   loading_kg_ha = base_rate_kg_ha * conc_ppm * conversion_factor / 1.0e6
+  
+  ! Apply minimum threshold to avoid numerical issues
+  if (loading_kg_ha < 1.0e-12) loading_kg_ha = 0.0
+end function
+
+function convert_pathogen_loading(base_rate_kg_ha, cfu_per_g, conversion_factor) result(loading_cfu_ha)
+  real, intent(in) :: base_rate_kg_ha      ! Fertilizer application rate
+  real, intent(in) :: cfu_per_g            ! Pathogen concentration (CFU/g)
+  real, intent(in) :: conversion_factor    ! Unit conversion factor
+  real :: loading_cfu_ha                   ! Resulting pathogen loading (CFU/ha)
+  
+  ! Convert CFU/g to CFU/ha based on application rate
+  ! 1 kg = 1000 g, so multiply by 1000
+  loading_cfu_ha = base_rate_kg_ha * cfu_per_g * 1000.0
+  
+  ! Apply minimum threshold
+  if (loading_cfu_ha < 1.0) loading_cfu_ha = 0.0
 end function
 ```
 
@@ -305,19 +586,40 @@ subroutine fert_constituents_apply(j, ifrt, frt_kg, fertop)
   real, intent(in) :: frt_kg         ! Application rate (kg/ha)
   integer, intent(in) :: fertop      ! Application method
   
+  ! Input validation
+  if (j <= 0 .or. j > nhru) then
+    write(std_lun, *) "Error: Invalid HRU number", j
+    return
+  endif
+  
+  if (ifrt <= 0 .or. ifrt > db_mx%fertparm) then
+    write(std_lun, *) "Error: Invalid fertilizer ID", ifrt
+    return
+  endif
+  
+  if (frt_kg <= 0.0) then
+    return  ! No application, skip constituent calculations
+  endif
+  
   ! Only apply constituents for manure-based fertilizers
   if (.not. fertdb(ifrt)%is_manure) return
   
-  ! Apply each constituent type
-  call apply_pesticide_constituents(j, ifrt, frt_kg, fertop)
-  call apply_pathogen_constituents(j, ifrt, frt_kg, fertop)
-  call apply_salt_constituents(j, ifrt, frt_kg, fertop)
-  call apply_heavy_metal_constituents(j, ifrt, frt_kg, fertop)
-  call apply_other_constituents(j, ifrt, frt_kg, fertop)
+  ! Check if constituent tracking is enabled
+  if (.not. cs_db%constituents_active) return
+  
+  ! Apply each constituent type if enabled
+  if (cs_db%pest_active) call apply_pesticide_constituents(j, ifrt, frt_kg, fertop)
+  if (cs_db%path_active) call apply_pathogen_constituents(j, ifrt, frt_kg, fertop)
+  if (cs_db%salt_active) call apply_salt_constituents(j, ifrt, frt_kg, fertop)
+  if (cs_db%hmet_active) call apply_heavy_metal_constituents(j, ifrt, frt_kg, fertop)
+  
+  ! Update daily application tracking
+  hru_fert_const(j)%daily_applications = hru_fert_const(j)%daily_applications + 1
+  hru_fert_const(j)%total_fert_applied = hru_fert_const(j)%total_fert_applied + frt_kg
 end subroutine
 ```
 
-#### Pesticide Application Example:
+#### Pesticide Application Implementation:
 ```fortran
 subroutine apply_pesticide_constituents(j, ifrt, frt_kg, fertop)
   integer, intent(in) :: j, ifrt, fertop
@@ -325,38 +627,336 @@ subroutine apply_pesticide_constituents(j, ifrt, frt_kg, fertop)
   
   integer :: ipest, soil_layer
   real :: pest_loading_kg_ha, surface_fraction, subsurface_fraction
+  real :: layer_thickness_ratio
   
   if (cs_db%num_pests == 0) return
   if (.not. allocated(pest_fert_ini)) return
   
-  ! Get application fractions
-  surface_fraction = chemapp_db(fertop)%surf_frac
+  ! Get application method parameters
+  if (fertop > 0 .and. fertop <= db_mx%chemapp) then
+    surface_fraction = chemapp_db(fertop)%surf_frac
+  else
+    surface_fraction = 0.7  ! Default: 70% surface application
+  endif
   subsurface_fraction = 1.0 - surface_fraction
   
+  ! Apply each pesticide
   do ipest = 1, cs_db%num_pests
-    ! Calculate pesticide loading
-    pest_loading_kg_ha = convert_constituent_loading(frt_kg, &
-                         pest_fert_ini(ipest)%conc(ifrt), &
-                         fertdb(ifrt)%conversion_factor)
-    
-    ! Apply to soil layers
-    do soil_layer = 1, 2
-      if (soil_layer == 1) then
-        ! Surface layer application
-        pest_mass_layer = pest_loading_kg_ha * surface_fraction
-      else
-        ! Subsurface layer application
-        pest_mass_layer = pest_loading_kg_ha * subsurface_fraction
-      endif
+    if (pest_fert_ini(ipest)%conc(ifrt) > 0.0) then
+      ! Calculate pesticide loading (kg/ha)
+      pest_loading_kg_ha = convert_constituent_loading(frt_kg, &
+                           pest_fert_ini(ipest)%conc(ifrt), &
+                           fertdb(ifrt)%conversion_factor)
       
-      ! Update soil pesticide mass
-      hru_pest_soil(j)%pest(ipest)%soil(soil_layer) = &
-        hru_pest_soil(j)%pest(ipest)%soil(soil_layer) + pest_mass_layer
+      ! Apply to soil layers based on application method
+      do soil_layer = 1, min(soil(j)%nly, 3)  ! Apply to top 3 layers max
+        select case (soil_layer)
+          case (1)
+            ! Surface layer gets majority of application
+            pest_mass_layer = pest_loading_kg_ha * surface_fraction
+            
+          case (2)
+            ! Second layer gets subsurface fraction
+            pest_mass_layer = pest_loading_kg_ha * subsurface_fraction * 0.8
+            
+          case (3)
+            ! Third layer gets remaining subsurface fraction
+            pest_mass_layer = pest_loading_kg_ha * subsurface_fraction * 0.2
+            
+          case default
+            pest_mass_layer = 0.0
+        end select
+        
+        ! Update soil pesticide mass
+        hru_pest_soil(j)%pest(ipest)%soil(soil_layer) = &
+          hru_pest_soil(j)%pest(ipest)%soil(soil_layer) + pest_mass_layer
+        
+        ! Update daily balance arrays
+        hpestb_d(j)%pest(ipest)%fert = hpestb_d(j)%pest(ipest)%fert + pest_mass_layer
+        
+        ! Update annual balance arrays
+        hpestb_a(j)%pest(ipest)%fert = hpestb_a(j)%pest(ipest)%fert + pest_mass_layer
+      enddo
       
-      ! Update balance arrays
-      hpestb_d(j)%pest(ipest)%fert = hpestb_d(j)%pest(ipest)%fert + pest_mass_layer
-    enddo
+      ! Track total pesticide applied for this HRU
+      hru_pest_soil(j)%pest(ipest)%tot_fert = &
+        hru_pest_soil(j)%pest(ipest)%tot_fert + pest_loading_kg_ha
+    endif
   enddo
+end subroutine
+```
+
+#### Pathogen Application Implementation:
+```fortran
+subroutine apply_pathogen_constituents(j, ifrt, frt_kg, fertop)
+  integer, intent(in) :: j, ifrt, fertop
+  real, intent(in) :: frt_kg
+  
+  integer :: ipath, soil_layer
+  real :: path_loading_cfu_ha, surface_fraction
+  real :: survival_factor, temperature_factor
+  
+  if (cs_db%num_paths == 0) return
+  if (.not. allocated(path_fert_ini)) return
+  
+  ! Get application method parameters
+  if (fertop > 0 .and. fertop <= db_mx%chemapp) then
+    surface_fraction = chemapp_db(fertop)%surf_frac
+  else
+    surface_fraction = 0.9  ! Default: 90% surface for pathogens
+  endif
+  
+  ! Calculate environmental survival factors
+  call calculate_pathogen_survival_factors(j, survival_factor, temperature_factor)
+  
+  ! Apply each pathogen
+  do ipath = 1, cs_db%num_paths
+    if (path_fert_ini(ipath)%conc(ifrt) > 0.0) then
+      ! Calculate pathogen loading (CFU/ha)
+      path_loading_cfu_ha = convert_pathogen_loading(frt_kg, &
+                            path_fert_ini(ipath)%conc(ifrt), &
+                            fertdb(ifrt)%conversion_factor)
+      
+      ! Apply survival factors
+      path_loading_cfu_ha = path_loading_cfu_ha * survival_factor * temperature_factor
+      
+      ! Apply to soil layers (pathogens mainly stay in surface layers)
+      do soil_layer = 1, min(soil(j)%nly, 2)  ! Apply to top 2 layers only
+        select case (soil_layer)
+          case (1)
+            ! Surface layer gets majority of pathogens
+            path_mass_layer = path_loading_cfu_ha * surface_fraction
+            
+          case (2)
+            ! Second layer gets remaining fraction
+            path_mass_layer = path_loading_cfu_ha * (1.0 - surface_fraction)
+            
+          case default
+            path_mass_layer = 0.0
+        end select
+        
+        ! Update soil pathogen count
+        hru_path_soil(j)%path(ipath)%soil(soil_layer) = &
+          hru_path_soil(j)%path(ipath)%soil(soil_layer) + path_mass_layer
+        
+        ! Update balance arrays
+        hpathb_d(j)%path(ipath)%fert = hpathb_d(j)%path(ipath)%fert + path_mass_layer
+        hpathb_a(j)%path(ipath)%fert = hpathb_a(j)%path(ipath)%fert + path_mass_layer
+      enddo
+      
+      ! Track total pathogen loading
+      hru_path_soil(j)%path(ipath)%tot_fert = &
+        hru_path_soil(j)%path(ipath)%tot_fert + path_loading_cfu_ha
+    endif
+  enddo
+end subroutine
+
+subroutine calculate_pathogen_survival_factors(j, survival_factor, temperature_factor)
+  integer, intent(in) :: j
+  real, intent(out) :: survival_factor, temperature_factor
+  
+  real :: soil_temp, soil_moisture, ph_factor
+  
+  ! Get current environmental conditions
+  soil_temp = soil(j)%phys(1)%tmp
+  soil_moisture = soil(j)%phys(1)%wc / soil(j)%phys(1)%fc
+  
+  ! Temperature survival factor (pathogens survive better in cooler conditions)
+  if (soil_temp < 5.0) then
+    temperature_factor = 0.9  ! High survival in cold
+  else if (soil_temp < 15.0) then
+    temperature_factor = 0.7  ! Medium survival in cool
+  else if (soil_temp < 25.0) then
+    temperature_factor = 0.4  ! Lower survival in warm
+  else
+    temperature_factor = 0.1  ! Low survival in hot
+  endif
+  
+  ! Moisture survival factor (pathogens need moisture)
+  if (soil_moisture > 0.8) then
+    survival_factor = 0.8  ! High survival when very moist
+  else if (soil_moisture > 0.4) then
+    survival_factor = 0.6  ! Medium survival when moderately moist
+  else if (soil_moisture > 0.1) then
+    survival_factor = 0.3  ! Lower survival when dry
+  else
+    survival_factor = 0.05  ! Very low survival when very dry
+  endif
+end subroutine
+```
+
+#### Salt Application Implementation:
+```fortran
+subroutine apply_salt_constituents(j, ifrt, frt_kg, fertop)
+  integer, intent(in) :: j, ifrt, fertop
+  real, intent(in) :: frt_kg
+  
+  integer :: isalt, soil_layer
+  real :: salt_loading_kg_ha, distribution_fraction
+  real :: leaching_factor
+  
+  if (cs_db%num_salts == 0) return
+  if (.not. allocated(salt_fert_ini)) return
+  
+  ! Calculate leaching factor based on soil properties
+  call calculate_salt_leaching_factor(j, leaching_factor)
+  
+  ! Apply each salt constituent
+  do isalt = 1, cs_db%num_salts
+    if (salt_fert_ini(isalt)%conc(ifrt) > 0.0) then
+      ! Calculate salt loading (kg/ha)
+      salt_loading_kg_ha = convert_constituent_loading(frt_kg, &
+                           salt_fert_ini(isalt)%conc(ifrt), &
+                           fertdb(ifrt)%conversion_factor)
+      
+      ! Distribute salts through soil profile (salts are mobile)
+      do soil_layer = 1, min(soil(j)%nly, 5)  ! Apply to top 5 layers
+        ! Distribution decreases with depth but salts can leach
+        distribution_fraction = exp(-0.5 * real(soil_layer - 1)) * leaching_factor
+        
+        salt_mass_layer = salt_loading_kg_ha * distribution_fraction
+        
+        ! Update soil salt concentration
+        hru_salt_soil(j)%salt(isalt)%soil(soil_layer) = &
+          hru_salt_soil(j)%salt(isalt)%soil(soil_layer) + salt_mass_layer
+        
+        ! Update balance arrays
+        hsaltb_d(j)%salt(isalt)%fert = hsaltb_d(j)%salt(isalt)%fert + salt_mass_layer
+        hsaltb_a(j)%salt(isalt)%fert = hsaltb_a(j)%salt(isalt)%fert + salt_mass_layer
+      enddo
+      
+      ! Track total salt loading
+      hru_salt_soil(j)%salt(isalt)%tot_fert = &
+        hru_salt_soil(j)%salt(isalt)%tot_fert + salt_loading_kg_ha
+    endif
+  enddo
+end subroutine
+
+subroutine calculate_salt_leaching_factor(j, leaching_factor)
+  integer, intent(in) :: j
+  real, intent(out) :: leaching_factor
+  
+  real :: soil_permeability, drainage_factor
+  
+  ! Get soil hydraulic properties
+  soil_permeability = soil(j)%phys(1)%k
+  
+  ! Calculate leaching potential based on permeability
+  if (soil_permeability > 50.0) then
+    leaching_factor = 1.5  ! High leaching in sandy soils
+  else if (soil_permeability > 10.0) then
+    leaching_factor = 1.0  ! Normal leaching in loamy soils
+  else if (soil_permeability > 1.0) then
+    leaching_factor = 0.7  ! Reduced leaching in clay soils
+  else
+    leaching_factor = 0.3  ! Minimal leaching in tight soils
+  endif
+end subroutine
+```
+
+#### Heavy Metal Application Implementation:
+```fortran
+subroutine apply_heavy_metal_constituents(j, ifrt, frt_kg, fertop)
+  integer, intent(in) :: j, ifrt, fertop
+  real, intent(in) :: frt_kg
+  
+  integer :: ihmet, soil_layer
+  real :: hmet_loading_kg_ha, sorption_factor
+  real :: ph_factor, organic_matter_factor
+  
+  if (cs_db%num_hmets == 0) return
+  if (.not. allocated(hmet_fert_ini)) return
+  
+  ! Calculate sorption factors based on soil properties
+  call calculate_heavy_metal_sorption(j, sorption_factor, ph_factor, organic_matter_factor)
+  
+  ! Apply each heavy metal constituent
+  do ihmet = 1, cs_db%num_hmets
+    if (hmet_fert_ini(ihmet)%conc(ifrt) > 0.0) then
+      ! Calculate heavy metal loading (kg/ha)
+      hmet_loading_kg_ha = convert_constituent_loading(frt_kg, &
+                           hmet_fert_ini(ihmet)%conc(ifrt), &
+                           fertdb(ifrt)%conversion_factor)
+      
+      ! Apply sorption factors (heavy metals bind strongly to soil)
+      hmet_loading_kg_ha = hmet_loading_kg_ha * sorption_factor * ph_factor * organic_matter_factor
+      
+      ! Heavy metals accumulate primarily in surface layers
+      do soil_layer = 1, min(soil(j)%nly, 3)  ! Apply to top 3 layers
+        select case (soil_layer)
+          case (1)
+            ! Surface layer gets most heavy metals (80%)
+            hmet_mass_layer = hmet_loading_kg_ha * 0.8
+            
+          case (2)
+            ! Second layer gets some (15%)
+            hmet_mass_layer = hmet_loading_kg_ha * 0.15
+            
+          case (3)
+            ! Third layer gets minimal (5%)
+            hmet_mass_layer = hmet_loading_kg_ha * 0.05
+            
+          case default
+            hmet_mass_layer = 0.0
+        end select
+        
+        ! Update soil heavy metal concentration
+        hru_hmet_soil(j)%hmet(ihmet)%soil(soil_layer) = &
+          hru_hmet_soil(j)%hmet(ihmet)%soil(soil_layer) + hmet_mass_layer
+        
+        ! Update balance arrays
+        hhmetb_d(j)%hmet(ihmet)%fert = hhmetb_d(j)%hmet(ihmet)%fert + hmet_mass_layer
+        hhmetb_a(j)%hmet(ihmet)%fert = hhmetb_a(j)%hmet(ihmet)%fert + hmet_mass_layer
+      enddo
+      
+      ! Track total heavy metal loading
+      hru_hmet_soil(j)%hmet(ihmet)%tot_fert = &
+        hru_hmet_soil(j)%hmet(ihmet)%tot_fert + hmet_loading_kg_ha
+    endif
+  enddo
+end subroutine
+
+subroutine calculate_heavy_metal_sorption(j, sorption_factor, ph_factor, organic_matter_factor)
+  integer, intent(in) :: j
+  real, intent(out) :: sorption_factor, ph_factor, organic_matter_factor
+  
+  real :: soil_ph, organic_carbon_pct, clay_content
+  
+  ! Get soil chemical and physical properties
+  soil_ph = soil(j)%ly(1)%ph
+  organic_carbon_pct = soil(j)%ly(1)%carbon * 100.0
+  clay_content = soil(j)%ly(1)%clay
+  
+  ! pH factor (higher pH increases sorption)
+  if (soil_ph > 7.5) then
+    ph_factor = 1.2  ! High sorption in alkaline soils
+  else if (soil_ph > 6.5) then
+    ph_factor = 1.0  ! Normal sorption in neutral soils
+  else if (soil_ph > 5.5) then
+    ph_factor = 0.8  ! Reduced sorption in slightly acid soils
+  else
+    ph_factor = 0.5  ! Low sorption in acid soils
+  endif
+  
+  ! Organic matter factor (more OM increases sorption)
+  if (organic_carbon_pct > 3.0) then
+    organic_matter_factor = 1.3  ! High sorption with high OM
+  else if (organic_carbon_pct > 1.5) then
+    organic_matter_factor = 1.0  ! Normal sorption with medium OM
+  else if (organic_carbon_pct > 0.5) then
+    organic_matter_factor = 0.8  ! Reduced sorption with low OM
+  else
+    organic_matter_factor = 0.6  ! Low sorption with very low OM
+  endif
+  
+  ! Base sorption factor from clay content
+  if (clay_content > 40.0) then
+    sorption_factor = 1.2  ! High sorption in clay soils
+  else if (clay_content > 20.0) then
+    sorption_factor = 1.0  ! Normal sorption in loamy soils
+  else
+    sorption_factor = 0.7  ! Lower sorption in sandy soils
+  endif
 end subroutine
 ```
 
@@ -370,15 +970,30 @@ logical, dimension(:), allocatable :: fertilizer_is_manure
 real, dimension(:), allocatable :: fertilizer_conversion_factors
 
 subroutine build_lookup_tables()
+  integer :: i
+  
+  write(std_lun, *) "Building performance lookup tables..."
+  
+  ! Allocate lookup arrays
   allocate(fertilizer_to_manure_map(db_mx%fertparm))
   allocate(fertilizer_is_manure(db_mx%fertparm))
   allocate(fertilizer_conversion_factors(db_mx%fertparm))
   
+  ! Populate lookup arrays for fast runtime access
   do i = 1, db_mx%fertparm
     fertilizer_to_manure_map(i) = fertdb(i)%manure_idx
     fertilizer_is_manure(i) = fertdb(i)%is_manure
     fertilizer_conversion_factors(i) = fertdb(i)%conversion_factor
   enddo
+  
+  write(std_lun, *) "Lookup tables built successfully"
+end subroutine
+
+subroutine cleanup_lookup_tables()
+  ! Deallocate lookup arrays when done
+  if (allocated(fertilizer_to_manure_map)) deallocate(fertilizer_to_manure_map)
+  if (allocated(fertilizer_is_manure)) deallocate(fertilizer_is_manure)
+  if (allocated(fertilizer_conversion_factors)) deallocate(fertilizer_conversion_factors)
 end subroutine
 ```
 
@@ -392,301 +1007,6 @@ type constituent_arrays
 end type constituent_arrays
 
 type(constituent_arrays) :: pest_data, path_data, salt_data, hmet_data, cs_data
-```
-
-## API Reference
-
-### 1. Core Functions
-
-#### `fert_constituents_apply`
-```fortran
-subroutine fert_constituents_apply(j, ifrt, frt_kg, fertop)
-  integer, intent(in) :: j           ! HRU number (1 to num_hrus)
-  integer, intent(in) :: ifrt        ! Fertilizer ID (1 to db_mx%fertparm)
-  real, intent(in) :: frt_kg         ! Application rate (kg/ha)
-  integer, intent(in) :: fertop      ! Application method ID
-```
-**Purpose**: Master routine for applying all constituents associated with a fertilizer application.
-
-**Usage Example**:
-```fortran
-! Apply 25 kg/ha of dairy manure using surface application (method 1)
-call fert_constituents_apply(hru_id, dairy_fert_id, 25.0, 1)
-```
-
-#### `convert_constituent_loading`
-```fortran
-function convert_constituent_loading(base_rate_kg_ha, conc_ppm, conversion_factor) result(loading_kg_ha)
-  real, intent(in) :: base_rate_kg_ha    ! Base application rate
-  real, intent(in) :: conc_ppm           ! Constituent concentration
-  real, intent(in) :: conversion_factor  ! Unit conversion factor
-  real :: loading_kg_ha                  ! Resulting loading
-```
-**Purpose**: Convert constituent concentration to mass loading based on fertilizer application rate.
-
-#### `lookup_manure_properties`
-```fortran
-function lookup_manure_properties(fertilizer_id) result(manure_props)
-  integer, intent(in) :: fertilizer_id
-  type(manure_organic_matter_data) :: manure_props
-```
-**Purpose**: Retrieve manure properties for a given fertilizer ID.
-
-### 2. Utility Functions
-
-#### `validate_fertilizer_constituent_linkage`
-```fortran
-logical function validate_fertilizer_constituent_linkage(ifrt, constituent_type) result(is_valid)
-  integer, intent(in) :: ifrt              ! Fertilizer ID
-  character(len=*), intent(in) :: constituent_type  ! 'pest', 'path', 'salt', etc.
-```
-**Purpose**: Check if a fertilizer has valid constituent linkages.
-
-#### `get_constituent_concentration`
-```fortran
-function get_constituent_concentration(ifrt, constituent_id, constituent_type) result(concentration)
-  integer, intent(in) :: ifrt              ! Fertilizer ID
-  integer, intent(in) :: constituent_id    ! Constituent index
-  character(len=*), intent(in) :: constituent_type
-  real :: concentration                     ! Concentration (ppm or CFU/g)
-```
-**Purpose**: Retrieve constituent concentration for specific fertilizer-constituent combination.
-
-### 3. Configuration Functions
-
-#### `set_constituent_application_method`
-```fortran
-subroutine set_constituent_application_method(constituent_type, application_method)
-  character(len=*), intent(in) :: constituent_type    ! 'pest', 'path', etc.
-  integer, intent(in) :: application_method           ! Application method ID
-```
-**Purpose**: Configure how specific constituent types are applied (surface vs. incorporated).
-
-#### `enable_constituent_tracking`
-```fortran
-subroutine enable_constituent_tracking(constituent_types)
-  character(len=*), dimension(:), intent(in) :: constituent_types
-```
-**Purpose**: Enable tracking for specific constituent types.
-
-## Performance Analysis
-
-### 1. Computational Complexity
-
-#### Initialization Phase:
-- **Database Loading**: O(n_fertilizers + n_manure_types + n_constituents)
-- **Crosswalking**: O(n_fertilizers × n_manure_types)
-- **Index Building**: O(n_fertilizers × n_constituents)
-
-#### Runtime Phase:
-- **Constituent Application**: O(n_constituents × n_soil_layers)
-- **Mass Balance Updates**: O(n_constituents)
-- **Output Generation**: O(n_constituents × n_time_steps)
-
-### 2. Memory Usage
-
-#### Static Allocation:
-```fortran
-! Typical memory requirements
-! Fertilizer database: ~1 KB per fertilizer type
-! Manure database: ~2 KB per manure type  
-! Constituent linkages: ~0.1 KB per fertilizer-constituent pair
-! Balance arrays: ~0.5 KB per HRU per constituent
-```
-
-#### Dynamic Scaling:
-```fortran
-! Memory usage scaling relationships
-total_memory_kb = 1.0 * n_fertilizers + &
-                  2.0 * n_manure_types + &
-                  0.1 * n_fertilizers * n_constituents + &
-                  0.5 * n_hrus * n_constituents
-```
-
-### 3. Performance Benchmarks
-
-#### Typical Performance Characteristics:
-```
-System Configuration: Intel i7-8700K, 32GB RAM, GNU Fortran 9.3
-Watershed Size: 1000 HRUs, 50 fertilizer types, 20 constituents
-
-Initialization Time: ~0.2 seconds
-Daily Constituent Application: ~0.05 seconds per 1000 applications
-Memory Usage: ~50 MB for constituent data structures
-```
-
-#### Optimization Guidelines:
-1. **Pre-compute Indices**: Build lookup tables during initialization
-2. **Batch Operations**: Process multiple HRUs simultaneously where possible
-3. **Memory Alignment**: Use structure-of-arrays for large datasets
-4. **Compiler Optimization**: Enable `-O3` and vectorization flags
-
-## Testing and Validation
-
-### 1. Unit Tests
-
-#### Database Loading Tests:
-```fortran
-subroutine test_fertilizer_database_loading()
-  ! Test standard format loading
-  call load_test_fertilizer_database('test_fertilizer.frt')
-  assert(db_mx%fertparm == expected_count)
-  
-  ! Test extended format loading
-  call load_test_fertilizer_database('test_fertilizer_ext.frt')
-  assert(fertdb(1)%om_name == expected_om_name)
-end subroutine
-```
-
-#### Crosswalking Tests:
-```fortran
-subroutine test_fertilizer_manure_crosswalking()
-  ! Setup test data
-  fertdb(1)%om_name = "test_manure"
-  manure_om_db(1)%name = "test_manure"
-  
-  ! Perform crosswalking
-  call compute_fertilizer_manure_indices()
-  
-  ! Verify results
-  assert(fertdb(1)%manure_idx == 1)
-  assert(fertdb(1)%is_manure == .true.)
-end subroutine
-```
-
-#### Unit Conversion Tests:
-```fortran
-subroutine test_unit_conversions()
-  real :: result
-  
-  ! Test liquid manure conversion
-  result = convert_constituent_loading(1000.0, 100.0, 119.82)
-  assert(abs(result - 0.01198) < 1.0e-6)
-  
-  ! Test solid manure conversion
-  result = convert_constituent_loading(1000.0, 100.0, 500.0)
-  assert(abs(result - 0.05000) < 1.0e-6)
-end subroutine
-```
-
-### 2. Integration Tests
-
-#### Full System Test:
-```fortran
-subroutine test_full_constituent_application()
-  integer :: hru_id = 1, fert_id = 5
-  real :: initial_mass, final_mass, expected_addition
-  
-  ! Record initial constituent mass
-  initial_mass = sum(hru_pest_soil(hru_id)%pest(:)%soil(:))
-  
-  ! Apply fertilizer with constituents
-  call fert_constituents_apply(hru_id, fert_id, 50.0, 1)
-  
-  ! Check mass balance
-  final_mass = sum(hru_pest_soil(hru_id)%pest(:)%soil(:))
-  expected_addition = calculate_expected_constituent_mass(fert_id, 50.0)
-  
-  assert(abs((final_mass - initial_mass) - expected_addition) < mass_balance_tolerance)
-end subroutine
-```
-
-### 3. Validation Datasets
-
-#### Test Case 1: Simple Fertilizer Application
-```
-Input:
-- Fertilizer: urea (no constituents)
-- Application: 100 kg/ha
-Expected Output:
-- No constituent mass changes
-- No balance array updates
-```
-
-#### Test Case 2: Manure Application with Pesticides
-```
-Input:
-- Fertilizer: dairy_liquid (linked to dairy_fresh_liquid manure)
-- Pesticide: atrazine at 2.5 ppm
-- Application: 20 tons/ha (20,000 kg/ha)
-Expected Output:
-- Atrazine loading: 20,000 * 2.5 * 119.82 / 1,000,000 = 5.99 kg/ha
-- Distribution: 70% surface layer, 30% subsurface layer (assuming surf_frac = 0.7)
-```
-
-#### Test Case 3: Multi-Constituent Complex Application
-```
-Input:
-- Fertilizer: poultry_litter (multiple constituents)
-- Constituents: E. coli (1000 CFU/g), phosphorus (3.2%), nitrogen (2.8%)
-- Application: 5 tons/ha (5,000 kg/ha)
-Expected Output:
-- E. coli loading: 5,000 * 1000 * 500 / 1,000,000 = 2,500 CFU/ha
-- Phosphorus loading: 5,000 * 32,000 * 500 / 1,000,000 = 80 kg/ha
-- Nitrogen loading: 5,000 * 28,000 * 500 / 1,000,000 = 70 kg/ha
-```
-
-## Migration Guide
-
-### 1. Upgrading from Standard to Extended Format
-
-#### Step 1: Backup Existing Files
-```bash
-cp fertilizer.frt fertilizer.frt.backup
-cp -r existing_simulation_directory backup_directory
-```
-
-#### Step 2: Create Extended Fertilizer File
-```fortran
-! Add om_name column to existing fertilizer.frt
-! Example conversion:
-! OLD: dairy_fresh  0.00500  0.00200  0.01100  0.00400  0.66000  fresh_manure  DairyFreshManure
-! NEW: dairy_fresh  0.00500  0.00200  0.01100  0.00400  0.66000  dairy_fresh_liquid  fresh_manure  DairyFreshManure
-```
-
-#### Step 3: Create Manure Database
-```fortran
-! Create manure_om.man file with corresponding entries
-! Example:
-! dairy_fresh_liquid  midwest  cattle  liquid  92.0  8.0  2.1  0.3  0.15  0.15  0.8  0.4  0.4
-```
-
-#### Step 4: Update Constituent Linkage Files
-```fortran
-! Ensure *.man files have entries for all fertilizer types
-! pest.man, path.man, salt.man, hmet.man, cs.man
-```
-
-### 2. Compatibility Considerations
-
-#### Backward Compatibility:
-- Standard `fertilizer.frt` format remains fully supported
-- Existing simulations continue to work without modification
-- Extended features are opt-in via file presence detection
-
-#### Forward Compatibility:
-- Extended format is designed for future enhancements
-- Additional columns can be added without breaking existing parsers
-- Modular constituent system supports new constituent types
-
-### 3. Common Migration Issues
-
-#### Issue 1: Missing Manure Database Entries
-```
-Error: No manure database match for fertilizer 'dairy_fresh'
-Solution: Ensure all om_name entries in fertilizer_ext.frt have corresponding entries in manure_om.man
-```
-
-#### Issue 2: Unit Conversion Problems
-```
-Warning: Unknown manure type 'custom_type', using solid conversion
-Solution: Use standard manure types ('liquid', 'solid', 'slurry', 'compost') or extend the conversion logic
-```
-
-#### Issue 3: Missing Constituent Linkage Files
-```
-Error: Constituent linkage file 'pest.man' not found
-Solution: Create constituent linkage files even if they contain zero concentrations for all fertilizers
 ```
 
 ---
