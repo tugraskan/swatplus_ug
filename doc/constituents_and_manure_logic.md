@@ -276,61 +276,153 @@ subroutine fert_constituent_crosswalk
 end subroutine
 ```
 
-### 4. Constituent Application During Manure Application
+### 4. Manure Constituent Initialization Process
 
-When manure is applied, constituents are distributed based on pre-computed indices:
+The manure constituent system follows a complex multi-step initialization process that differs significantly from the regular constituent approach:
 
+#### Step 1: Manure-Specific Database Allocation
 ```fortran
-subroutine fert_constituents_apply(j, ifrt, frt_kg, fertop)
-  ! Apply pesticides
-  if (cs_man_db%num_pests > 0 .and. manure_db(ifrt)%pest_idx > 0) then
-    do ipest = 1, cs_man_db%num_pests
-      pest_kg = frt_kg * pest_fert_ini(manure_db(ifrt)%pest_idx)%ppm(ipest)
-      ! call pest_apply(j, ipest, pest_kg, fertop)
-    end do
-  end if
+subroutine constit_man_db_init
+  ! Allocate arrays based on manure database dimensions
+  npmx = cs_man_db%num_pests + cs_man_db%num_paths + cs_man_db%num_metals + 
+         cs_man_db%num_salts + cs_man_db%num_cs
   
-  ! Apply pathogens, salts, heavy metals, other constituents similarly...
+  ! Allocate manure constituent arrays (separate from regular cs_soil)
+  allocate (manure_pest(npmx), source = 0.)
+  allocate (manure_path(npmx), source = 0.)
+  allocate (manure_hmet(npmx), source = 0.)
+  allocate (manure_salt(npmx), source = 0.)
+  allocate (manure_cs(npmx), source = 0.)
 end subroutine
 ```
 
-## Manure and Organic Matter Mixing
-
-SWAT+ uses three different carbon cycling models, each with distinct approaches to manure and organic matter mixing:
-
-### Model Selection (bsn_cc%cswat parameter)
-
-- **cswat = 0**: Original SWAT static carbon model
-- **cswat = 1**: C-FARM model  
-- **cswat = 2**: SWAT-C (CENTURY-based) model
-
-### Organic Matter Pool Structure
-
-The organic matter system uses the `organic_mass` type for all pools:
-
+#### Step 2: Crosswalk Index Pre-computation
 ```fortran
-type organic_mass
-  real :: m = 0.   ! kg/ha - total object mass
-  real :: c = 0.   ! kg/ha - carbon mass  
-  real :: n = 0.   ! kg/ha - organic nitrogen mass
-  real :: p = 0.   ! kg/ha - organic phosphorus mass
-end type organic_mass
+subroutine fert_constituent_crosswalk
+  ! This is the key difference from regular fertilizers
+  ! Regular fertilizers use direct indexing, manure uses string-based crosswalking
+  
+  do ifrt = 1, size(manure_db)
+    ! Initialize all indices to zero (no linkage)
+    manure_db(ifrt)%pest_idx = 0
+    manure_db(ifrt)%path_idx = 0
+    manure_db(ifrt)%salt_idx = 0
+    manure_db(ifrt)%hmet_idx = 0
+    manure_db(ifrt)%cs_idx = 0
+    
+    ! Pesticide crosswalk - find matching names and store indices
+    if (trim(manure_db(ifrt)%pest) /= '') then
+      do i = 1, size(pest_fert_ini)
+        if (trim(manure_db(ifrt)%pest) == trim(pest_fert_ini(i)%name)) then
+          manure_db(ifrt)%pest_idx = i  ! Pre-compute index for fast access
+          exit
+        end if
+      end do
+      if (manure_db(ifrt)%pest_idx == 0) then
+        write(*,*) 'Warning: Pesticide profile not found:', trim(manure_db(ifrt)%pest)
+      end if
+    end if
+    
+    ! Pathogen crosswalk
+    if (trim(manure_db(ifrt)%path) /= '') then
+      do i = 1, size(path_fert_ini)
+        if (trim(manure_db(ifrt)%path) == trim(path_fert_ini(i)%name)) then
+          manure_db(ifrt)%path_idx = i
+          exit
+        end if
+      end do
+    end if
+    
+    ! Salt, heavy metal, and general constituent crosswalks follow same pattern...
+  end do
+end subroutine
 ```
 
-### Pool Types in SWAT-C Model (cswat = 2)
+#### Step 3: Runtime Performance Optimization
+The crosswalking system provides significant performance benefits during simulation:
 
-1. **Fresh Residue Pools:**
-   - `meta` - Metabolic litter pool (easily decomposable)
-   - `str` - Structural litter pool (resistant, contains lignin)
-   - `lig` - Lignin pool (very resistant)
+**Initialization Time (one-time cost):**
+- String matching across all fertilizer-constituent combinations: O(n×m)
+- Memory allocation for index storage: O(n)
 
-2. **Soil Organic Matter Pools:**
-   - `hs` - Slow humus pool (intermediate decomposition)
-   - `hp` - Passive humus pool (very slow decomposition)
-   - `microb` - Microbial biomass pool
+**Runtime Application (repeated throughout simulation):**
+- Direct array access using pre-computed indices: O(1)
+- No string comparisons during daily applications
 
-3. **Manure Pool:**
-   - `man` - Specific manure pool for C-FARM model
+### 5. Constituent Application During Manure Application
+
+The application process uses the pre-computed indices for efficient constituent distribution:
+
+```fortran
+subroutine fert_constituents_apply(j, ifrt, frt_kg, fertop)
+  ! Surface/subsurface partitioning
+  surf_frac = chemapp_db(fertop)%surf_frac
+  
+  ! Apply pesticides using pre-computed crosswalk indices
+  if (cs_man_db%num_pests > 0 .and. manure_db(ifrt)%pest_idx > 0) then
+    idx = manure_db(ifrt)%pest_idx  ! Pre-computed during initialization
+    do ipest = 1, cs_man_db%num_pests
+      pest_conc = pest_fert_ini(idx)%ppm(ipest)  ! Direct array access
+      pest_kg_surf = surf_frac * frt_kg * pest_conc
+      pest_kg_sub = (1. - surf_frac) * frt_kg * pest_conc
+      
+      ! Add to soil pesticide pools
+      cs_soil(j)%ly(1)%pest(ipest) = cs_soil(j)%ly(1)%pest(ipest) + pest_kg_surf
+      cs_soil(j)%ly(2)%pest(ipest) = cs_soil(j)%ly(2)%pest(ipest) + pest_kg_sub
+    end do
+  end if
+  
+  ! Apply pathogens (similar pattern with different units)
+  if (cs_man_db%num_paths > 0 .and. manure_db(ifrt)%path_idx > 0) then
+    idx = manure_db(ifrt)%path_idx
+    do ipath = 1, cs_man_db%num_paths
+      path_cfu = path_fert_ini(idx)%cfu(ipath) * frt_kg  ! CFU/g × kg = total CFU
+      ! Distribute to soil pathogen pools with environmental decay factors
+      call pathogen_distribution(j, ipath, path_cfu, fertop)
+    end do
+  end if
+  
+  ! Heavy metals, salts, and general constituents follow similar patterns
+end subroutine
+```
+
+### 6. Key Differences from Regular Constituent System
+
+| Aspect | Regular Fertilizer Constituents | Manure Constituent System |
+|--------|--------------------------------|---------------------------|
+| **Database Structure** | Single `cs_db` with direct concentrations | Separate `cs_man_db` + crosswalk files |
+| **Initialization Complexity** | Simple: read → allocate → assign | Complex: read → crosswalk → pre-compute → assign |
+| **String Matching** | None (direct indexing) | During initialization only (performance optimized) |
+| **Memory Overhead** | Minimal (direct arrays) | Higher (crosswalk indices + concentration arrays) |
+| **Flexibility** | Fixed fertilizer-constituent linkages | Dynamic linkages via *.man files |
+| **Error Handling** | Database consistency guaranteed | Requires validation of crosswalk linkages |
+| **Performance** | O(1) allocation | O(1) runtime after O(n×m) initialization |
+
+#### Initialization Flow Comparison:
+
+**Regular System:**
+```
+constituents.cs → cs_db → cs_hru_init.f90 → direct allocation
+                   ↓
+            fertilizer_ext.frt → direct concentrations
+```
+
+**Manure System:**
+```
+constituents_man.cs → cs_man_db → pest.man, path.man, salt.man, hmet.man, cs.man
+                        ↓              ↓
+               fertilizer_ext.frt → crosswalk → pre-computed indices → allocation
+```
+
+The manure system's added complexity enables more flexible constituent management at the cost of increased initialization overhead and memory usage, making it ideal for detailed research applications where precise constituent tracking is required.
+
+## Carbon Cycling Models
+
+SWAT+ supports three carbon cycling approaches (`bsn_cc%cswat`):
+
+- **cswat = 0**: Static carbon (simple active/stable pools)
+- **cswat = 1**: C-FARM model (dedicated manure pool with 10:1 C:N ratio)  
+- **cswat = 2**: SWAT-C model (metabolic, structural, lignin, humus pools)
 
 ## Regular vs Manure Constituent Logic
 
@@ -360,44 +452,125 @@ The fundamental difference between regular fertilizer and manure constituent log
 - No C:N ratio calculations or temperature dependencies
 - Calls separate `cs_fert()` for constituent applications
 
-**Code Flow:**
+**Code Flow and Linkages:**
 ```fortran
 subroutine pl_fert(ifrt, frt_kg, fertop)
-  ! Add mineral nutrients directly
+  ! LINKAGE 1: Direct fertilizer database access
+  ! Uses ifrt index to access fertdb(ifrt) structure containing N,P concentrations
+  ! No string matching - direct array indexing for performance
+  
+  ! Add mineral nutrients directly to soil mineral pools
   soil1(j)%mn(l)%no3 = soil1(j)%mn(l)%no3 + fr_ly * frt_kg * fertdb(ifrt)%fminn
   soil1(j)%mn(l)%nh4 = soil1(j)%mn(l)%nh4 + fr_ly * frt_kg * fertdb(ifrt)%fnh3n
+  soil1(j)%mp(l)%lab = soil1(j)%mp(l)%lab + fr_ly * frt_kg * fertdb(ifrt)%fminp
   
-  ! Add organic nutrients based on carbon model
+  ! LINKAGE 2: Carbon model selection determines organic matter allocation
+  ! Links to bsn_cc%cswat parameter read from basin configuration
   if (bsn_cc%cswat == 0) then
-    ! Static carbon model - simple allocation
+    ! Static carbon model - links to soil1%hact (active humus) and soil1%hsta (stable humus)
     soil1(j)%hact(l)%n = soil1(j)%hact(l)%n + (1. - rtof) * fr_ly * frt_kg * fertdb(ifrt)%forgn
+    soil1(j)%hact(l)%p = soil1(j)%hact(l)%p + (1. - rtof) * fr_ly * frt_kg * fertdb(ifrt)%forgp
+    soil1(j)%hsta(l)%n = soil1(j)%hsta(l)%n + rtof * fr_ly * frt_kg * fertdb(ifrt)%forgn
+    soil1(j)%hsta(l)%p = soil1(j)%hsta(l)%p + rtof * fr_ly * frt_kg * fertdb(ifrt)%forgp
+    
   else if (bsn_cc%cswat == 1) then  
-    ! C-FARM model - manure-specific pools
+    ! C-FARM model - links to dedicated soil1%man (manure) pool
+    ! Fixed 10:1 C:N ratio assumption
     soil1(j)%man(l)%c = soil1(j)%man(l)%c + fr_ly * frt_kg * fertdb(ifrt)%forgn * 10.
     soil1(j)%man(l)%n = soil1(j)%man(l)%n + fr_ly * frt_kg * fertdb(ifrt)%forgn
+    soil1(j)%man(l)%p = soil1(j)%man(l)%p + fr_ly * frt_kg * fertdb(ifrt)%forgp
+    
   else if (bsn_cc%cswat == 2) then
-    ! SWAT-C model - complex allocation to multiple pools
-    soil1(j)%meta(l) = soil1(j)%meta(l) + pool_fr * org_frt
-    soil1(j)%str(l) = soil1(j)%str(l) + pool_fr * org_frt  
+    ! SWAT-C model - links to multiple decomposition pools
+    ! Calculates dynamic allocation based on fertilizer characteristics
+    call organic_fraction_calc(ifrt, org_allocation)  ! Returns allocation fractions
+    
+    ! Links to soil1%meta (metabolic), soil1%str (structural), soil1%lig (lignin)
+    soil1(j)%meta(l)%c = soil1(j)%meta(l)%c + fr_ly * frt_kg * org_allocation%meta_c
+    soil1(j)%meta(l)%n = soil1(j)%meta(l)%n + fr_ly * frt_kg * org_allocation%meta_n
+    soil1(j)%str(l)%c = soil1(j)%str(l)%c + fr_ly * frt_kg * org_allocation%str_c
+    soil1(j)%str(l)%n = soil1(j)%str(l)%n + fr_ly * frt_kg * org_allocation%str_n
+    soil1(j)%lig(l)%c = soil1(j)%lig(l)%c + fr_ly * frt_kg * org_allocation%lig_c
   end if
   
-  ! Apply constituents through separate routine
-  call cs_fert(j, ifrt, frt_kg, fertop)  ! Simple linear allocation
+  ! LINKAGE 3: Constituent application through separate specialized routine
+  ! Links to fert_cs structure for constituent concentrations
+  ! Uses cs_soil arrays for constituent mass tracking
+  call cs_fert(j, ifrt, frt_kg, fertop)
 end subroutine
 
-subroutine cs_fert(jj,ifrt,frt_kg,fertop)
-  ! Simple constituent allocation
-  do l=1,2  ! Split between top two layers
-    xx = chemapp_db(fertop)%surf_frac  ! Surface fraction for layer 1
-    if (l == 2) xx = 1. - xx            ! Subsurface fraction for layer 2
+subroutine cs_fert(jj, ifrt, frt_kg, fertop)
+  ! DETAILED CONSTITUENT ALLOCATION LOGIC:
+  
+  ! LINKAGE 4: Application method controls surface/subsurface distribution
+  ! Links to chemapp_db(fertop) structure containing application parameters
+  surf_frac = chemapp_db(fertop)%surf_frac  ! Read from chemical application database
+  
+  ! LINKAGE 5: Layer-specific allocation (typically top 2 layers)
+  do l = 1, min(2, soil(jj)%nly)  ! Prevent array bounds errors
+    if (l == 1) then
+      xx = surf_frac  ! Surface application fraction
+    else
+      xx = 1. - surf_frac  ! Subsurface application fraction
+    endif
     
-    ! Direct linear allocation from fertilizer database
-    cs_soil(jj)%ly(l)%cs(1) = cs_soil(jj)%ly(l)%cs(1) + (xx * frt_kg * fert_cs(ifrt)%seo4)
-    cs_soil(jj)%ly(l)%cs(2) = cs_soil(jj)%ly(l)%cs(2) + (xx * frt_kg * fert_cs(ifrt)%seo3)
-    cs_soil(jj)%ly(l)%cs(3) = cs_soil(jj)%ly(l)%cs(3) + (xx * frt_kg * fert_cs(ifrt)%boron)
+    ! LINKAGE 6: Direct constituent mass allocation to soil pools
+    ! Links to cs_soil(jj)%ly(l)%cs arrays (dissolved constituent mass kg/ha)
+    ! Links to fert_cs(ifrt) structure (constituent concentrations in fertilizer)
+    if (cs_db%num_cs > 0 .and. fert_cs_flag == 1) then
+      do ics = 1, cs_db%num_cs
+        mass_applied = xx * frt_kg * fert_cs(ifrt)%constituent(ics)
+        cs_soil(jj)%ly(l)%cs(ics) = cs_soil(jj)%ly(l)%cs(ics) + mass_applied
+        
+        ! LINKAGE 7: Balance tracking for output reporting
+        hcsb_d(jj)%cs(ics)%fert = hcsb_d(jj)%cs(ics)%fert + mass_applied
+      end do
+    end if
+    
+    ! LINKAGE 8: Concentration updates for transport processes
+    ! Links to soil water content and bulk density for concentration calculations
+    if (soil(jj)%phys(l)%st > 0.) then
+      water_vol = soil(jj)%phys(l)%st * 10.  ! mm to L/m2
+      do ics = 1, cs_db%num_cs
+        ! Update dissolved concentration (mg/L)
+        cs_soil(jj)%ly(l)%csc(ics) = (cs_soil(jj)%ly(l)%cs(ics) * 1000.) / water_vol
+      end do
+    end if
   end do
+  
+  ! LINKAGE 9: Runoff and leaching availability
+  ! Constituents in cs_soil arrays become available for:
+  ! - Surface runoff (layer 1 dissolved constituents)
+  ! - Lateral flow (all layers dissolved constituents)  
+  ! - Percolation/leaching (dissolved constituents in deepest layers)
+  ! - Plant uptake (available dissolved fraction)
 end subroutine
 ```
+
+### Key System Linkages in Regular Fertilizer Logic:
+
+1. **Database Linkages:**
+   - `ifrt` → `fertdb(ifrt)` → nutrient concentrations (N, P)
+   - `ifrt` → `fert_cs(ifrt)` → constituent concentrations (Se, B, etc.)
+   - `fertop` → `chemapp_db(fertop)` → application method parameters
+
+2. **Soil Pool Linkages:**
+   - **Minerals:** `soil1%mn` (NO3, NH4), `soil1%mp` (labile P)
+   - **Organics:** Model-dependent (`hact/hsta`, `man`, or `meta/str/lig`)
+   - **Constituents:** `cs_soil%ly%cs` (dissolved mass), `cs_soil%ly%csc` (concentration)
+
+3. **Process Linkages:**
+   - **Transport:** Dissolved constituents → runoff, lateral flow, percolation
+   - **Decomposition:** Organic pools → mineralization routines
+   - **Plant Uptake:** Available nutrients → plant growth routines
+   - **Balance Tracking:** `hcsb_d` arrays → daily output summaries
+
+4. **Configuration Linkages:**
+   - `bsn_cc%cswat` → carbon cycling model selection
+   - `fert_cs_flag` → constituent application enable/disable
+   - `cs_db%num_cs` → number of constituents tracked
+
+The regular fertilizer system's strength lies in its direct linkages and minimal computational overhead, making it suitable for large-scale simulations where detailed constituent tracking is needed but complex biogeochemical processes can be simplified.
 
 ### Manure Application (`pl_manure.f90`)
 
