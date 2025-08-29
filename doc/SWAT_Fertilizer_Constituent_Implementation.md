@@ -179,8 +179,6 @@ sulfate                  320.0
 subroutine initialize_fertilizer_constituent_system()
   ! System initialization with error handling
   
-  write(std_lun, *) "Initializing fertilizer-constituent system..."
-  
   ! 1. Load traditional or extended fertilizer database
   call load_fertilizer_database()
   
@@ -198,8 +196,6 @@ subroutine initialize_fertilizer_constituent_system()
   
   ! 6. Build lookup tables for performance
   call build_lookup_tables()
-  
-  write(std_lun, *) "Fertilizer-constituent system initialized successfully"
 end subroutine
 ```
 
@@ -215,18 +211,14 @@ subroutine load_fertilizer_database()
   inquire (file='fertilizer.frt', exist=i_exist_std)
   
   if (i_exist_ext) then
-    write(std_lun, *) "Loading extended fertilizer database..."
     call load_extended_fertilizer_format()
     fertilizer_format = 'extended'
   else if (i_exist_std) then
-    write(std_lun, *) "Loading standard fertilizer database..."
     call load_standard_fertilizer_format()
     fertilizer_format = 'standard'
   else
     call error_exit("No fertilizer database file found (fertilizer.frt or fertilizer_ext.frt)")
   endif
-  
-  write(std_lun, *) "Loaded", db_mx%fertparm, "fertilizer records"
 end subroutine
 
 subroutine load_extended_fertilizer_format()
@@ -305,12 +297,9 @@ subroutine load_manure_database()
   
   inquire(file='manure_om.man', exist=i_exist)
   if (.not. i_exist) then
-    write(std_lun, *) "Warning: manure_om.man not found. Manure linking disabled."
     db_mx%manureparm = 0
     return
   endif
-  
-  write(std_lun, *) "Loading manure organic matter database..."
   
   open(unit=108, file='manure_om.man', status='old')
   
@@ -351,15 +340,13 @@ subroutine load_manure_database()
   
   db_mx%manureparm = i
   close(108)
-  
-  write(std_lun, *) "Loaded", db_mx%manureparm, "manure organic matter records"
 end subroutine
 ```
 
 #### Constituent Linkage Loading:
 ```fortran
 subroutine load_constituent_linkages()
-  ! Load different types of constituent linkage files
+  ! Load different types of constituent linkage files using existing routine
   call load_pesticide_linkages()
   call load_pathogen_linkages()
   call load_salt_linkages()
@@ -368,99 +355,120 @@ end subroutine
 
 subroutine load_pesticide_linkages()
   logical :: i_exist
-  integer :: i, j, eof
-  character(len=80) :: pest_name
-  real :: concentration
+  integer :: i, j
   
   inquire(file='pest.man', exist=i_exist)
   if (.not. i_exist) then
-    write(std_lun, *) "pest.man not found. Pesticide tracking disabled."
     return
   endif
   
-  write(std_lun, *) "Loading pesticide linkages..."
+  ! Use existing fert_constituent_file_read routine
+  call fert_constituent_file_read('pest.man', cs_db%num_pests)
   
-  ! Initialize concentration array to zero
-  if (allocated(pest_fert_ini)) then
+  ! Map loaded data to pesticide arrays
+  if (allocated(fert_arr)) then
     do i = 1, cs_db%num_pests
       do j = 1, db_mx%fertparm
-        pest_fert_ini(i)%conc(j) = 0.0
+        if (fertdb(j)%is_manure) then
+          ! Find matching pesticide and fertilizer
+          pest_fert_ini(i)%conc(j) = get_constituent_concentration('pest', i, j)
+        endif
       enddo
     enddo
   endif
-  
-  open(unit=109, file='pest.man', status='old')
-  read(109, *) ! Skip header
-  read(109, *) ! Skip column headers
-  
-  do
-    read(109, *, iostat=eof) pest_name, concentration
-    if (eof /= 0) exit
-    
-    ! Find pesticide index
-    do i = 1, cs_db%num_pests
-      if (trim(pest_db(i)%name) == trim(pest_name)) then
-        ! Find fertilizer indices and set concentrations
-        do j = 1, db_mx%fertparm
-          if (fertdb(j)%is_manure) then
-            pest_fert_ini(i)%conc(j) = concentration
-          endif
-        enddo
-        exit
-      endif
-    enddo
-  enddo
-  
-  close(109)
 end subroutine
 
 subroutine load_pathogen_linkages()
   logical :: i_exist
-  integer :: i, j, eof
-  character(len=80) :: path_name
-  real :: cfu_per_gram
+  integer :: i, j
   
   inquire(file='path.man', exist=i_exist)
   if (.not. i_exist) then
-    write(std_lun, *) "path.man not found. Pathogen tracking disabled."
     return
   endif
   
-  write(std_lun, *) "Loading pathogen linkages..."
+  ! Use existing fert_constituent_file_read routine
+  call fert_constituent_file_read('path.man', cs_db%num_paths)
   
-  ! Initialize concentration array to zero
-  if (allocated(path_fert_ini)) then
+  ! Map loaded data to pathogen arrays
+  if (allocated(fert_arr)) then
     do i = 1, cs_db%num_paths
       do j = 1, db_mx%fertparm
-        path_fert_ini(i)%conc(j) = 0.0
+        if (fertdb(j)%is_manure) then
+          path_fert_ini(i)%conc(j) = get_constituent_concentration('path', i, j)
+        endif
       enddo
     enddo
   endif
-  
-  open(unit=110, file='path.man', status='old')
-  read(110, *) ! Skip header
-  read(110, *) ! Skip column headers
-  
-  do
-    read(110, *, iostat=eof) path_name, cfu_per_gram
-    if (eof /= 0) exit
-    
-    ! Find pathogen index
-    do i = 1, cs_db%num_paths
-      if (trim(path_db(i)%name) == trim(path_name)) then
-        ! Set concentrations for manure-based fertilizers
-        do j = 1, db_mx%fertparm
-          if (fertdb(j)%is_manure) then
-            path_fert_ini(i)%conc(j) = cfu_per_gram
-          endif
-        enddo
-        exit
-      endif
-    enddo
-  enddo
-  
-  close(110)
 end subroutine
+
+subroutine load_salt_linkages()
+  logical :: i_exist
+  integer :: i, j
+  
+  inquire(file='salt.man', exist=i_exist)
+  if (.not. i_exist) then
+    return
+  endif
+  
+  ! Use existing fert_constituent_file_read routine
+  call fert_constituent_file_read('salt.man', cs_db%num_salts)
+  
+  ! Map loaded data to salt arrays
+  if (allocated(fert_arr)) then
+    do i = 1, cs_db%num_salts
+      do j = 1, db_mx%fertparm
+        if (fertdb(j)%is_manure) then
+          salt_fert_ini(i)%conc(j) = get_constituent_concentration('salt', i, j)
+        endif
+      enddo
+    enddo
+  endif
+end subroutine
+
+subroutine load_heavy_metal_linkages()
+  logical :: i_exist
+  integer :: i, j
+  
+  inquire(file='hmet.man', exist=i_exist)
+  if (.not. i_exist) then
+    return
+  endif
+  
+  ! Use existing fert_constituent_file_read routine
+  call fert_constituent_file_read('hmet.man', cs_db%num_hmets)
+  
+  ! Map loaded data to heavy metal arrays
+  if (allocated(fert_arr)) then
+    do i = 1, cs_db%num_hmets
+      do j = 1, db_mx%fertparm
+        if (fertdb(j)%is_manure) then
+          hmet_fert_ini(i)%conc(j) = get_constituent_concentration('hmet', i, j)
+        endif
+      enddo
+    enddo
+  endif
+end subroutine
+
+function get_constituent_concentration(const_type, const_idx, fert_idx) result(concentration)
+  character(len=*), intent(in) :: const_type
+  integer, intent(in) :: const_idx, fert_idx
+  real :: concentration
+  
+  integer :: i
+  
+  concentration = 0.0
+  
+  ! Find matching constituent and fertilizer in fert_arr
+  do i = 1, size(fert_arr)
+    if (trim(fert_arr(i)%name) == trim(fertdb(fert_idx)%fertnm)) then
+      if (const_idx <= size(fert_arr(i)%ppm)) then
+        concentration = fert_arr(i)%ppm(const_idx)
+      endif
+      exit
+    endif
+  enddo
+end function
 ```
 
 #### Crosswalking Implementation:
@@ -468,8 +476,6 @@ end subroutine
 subroutine compute_fertilizer_manure_indices()
   integer :: i, j
   integer :: matched_count = 0
-  
-  write(std_lun, *) "Computing fertilizer-manure crosswalking indices..."
   
   do i = 1, db_mx%fertparm
     ! Initialize values
@@ -488,23 +494,11 @@ subroutine compute_fertilizer_manure_indices()
           
           ! Set unit conversion factor
           call set_conversion_factor(fertdb(i), manure_om_db(j))
-          
-          write(std_lun, *) "  Linked fertilizer '", trim(fertdb(i)%fertnm), &
-                           "' to manure '", trim(manure_om_db(j)%name), "'"
           exit
         endif
       enddo
-      
-      ! Warn if no match found
-      if (fertdb(i)%manure_idx == 0) then
-        write(std_lun, *) "Warning: No manure database match for fertilizer '", &
-                         trim(fertdb(i)%fertnm), "' with om_name '", &
-                         trim(fertdb(i)%om_name), "'"
-      endif
     endif
   enddo
-  
-  write(std_lun, *) "Crosswalking complete:", matched_count, "fertilizer-manure links established"
 end subroutine
 ```
 
@@ -534,14 +528,9 @@ subroutine set_conversion_factor(fert_rec, manure_rec)
       fert_rec%conversion_factor = 500.0
       
     case default
-      ! Default to solid conversion with warning
-      write(std_lun, *) "Warning: Unknown manure type '", trim(manure_rec%typ), &
-                       "', using solid conversion (500 ppm/lb/ton)"
+      ! Default to solid conversion
       fert_rec%conversion_factor = 500.0
   end select
-  
-  write(std_lun, *) "  Set conversion factor:", fert_rec%conversion_factor, &
-                   "for manure type:", trim(manure_rec%typ)
 end subroutine
 ```
 
@@ -587,19 +576,9 @@ subroutine fert_constituents_apply(j, ifrt, frt_kg, fertop)
   integer, intent(in) :: fertop      ! Application method
   
   ! Input validation
-  if (j <= 0 .or. j > nhru) then
-    write(std_lun, *) "Error: Invalid HRU number", j
-    return
-  endif
-  
-  if (ifrt <= 0 .or. ifrt > db_mx%fertparm) then
-    write(std_lun, *) "Error: Invalid fertilizer ID", ifrt
-    return
-  endif
-  
-  if (frt_kg <= 0.0) then
-    return  ! No application, skip constituent calculations
-  endif
+  if (j <= 0 .or. j > nhru) return
+  if (ifrt <= 0 .or. ifrt > db_mx%fertparm) return
+  if (frt_kg <= 0.0) return
   
   ! Only apply constituents for manure-based fertilizers
   if (.not. fertdb(ifrt)%is_manure) return
@@ -972,8 +951,6 @@ real, dimension(:), allocatable :: fertilizer_conversion_factors
 subroutine build_lookup_tables()
   integer :: i
   
-  write(std_lun, *) "Building performance lookup tables..."
-  
   ! Allocate lookup arrays
   allocate(fertilizer_to_manure_map(db_mx%fertparm))
   allocate(fertilizer_is_manure(db_mx%fertparm))
@@ -985,8 +962,6 @@ subroutine build_lookup_tables()
     fertilizer_is_manure(i) = fertdb(i)%is_manure
     fertilizer_conversion_factors(i) = fertdb(i)%conversion_factor
   enddo
-  
-  write(std_lun, *) "Lookup tables built successfully"
 end subroutine
 
 subroutine cleanup_lookup_tables()
