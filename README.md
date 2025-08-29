@@ -77,6 +77,11 @@ __The following sections are emphasizing various development aspects.__
 
 - [FORTRAN Coding Conventions (alpha)](doc/coding_conventions.md)
 
+- **Constituent System Documentation**:
+  - [SWAT+ Constituent System Architecture](doc/SWAT_Constituent_System_Architecture.md)
+  - [Manure-Focused Constituent System](doc/SWAT_Manure_Constituent_Architecture.md)
+  - [Fertilizer-Constituent Linking Implementation](doc/SWAT_Fertilizer_Constituent_Implementation.md)
+
 ## Documentation and References
 
 [SWAT+ Source Documentation on GitHub](https://swat-model.github.io/swatplus)
