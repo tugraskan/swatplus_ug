@@ -55,13 +55,13 @@
         allocate (walloa_out(imax))
 
         do iwro = 1, imax
-          read (107,*,iostat=eof) header
+          read (107,'(A)',iostat=eof) header
           if (eof < 0) exit
           read (107,*,iostat=eof) wallo(iwro)%name, wallo(iwro)%rule_typ, wallo(iwro)%src_obs, &
                                                     wallo(iwro)%dmd_obs
           
           if (eof < 0) exit
-          read (107,*,iostat=eof) header
+          read (107,'(A)',iostat=eof) header
           if (eof < 0) exit
           num_objs = wallo(iwro)%src_obs
           allocate (wallo(iwro)%src(num_objs))
@@ -83,7 +83,7 @@
           end do
           
           !! read demand object data
-          read (107,*,iostat=eof) header
+          read (107,'(A)',iostat=eof) header
           if (eof < 0) exit
           do idmd = 1, num_objs
             read (107,*,iostat=eof) i
