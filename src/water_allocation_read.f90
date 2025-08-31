@@ -416,8 +416,41 @@
         do iwtow = 1, imax
           read (107,*,iostat=eof) header
           if (eof < 0) exit 
-          read (107,*,iostat=eof) wtow(iwtow)%name, wtow(iwtow)%init, wtow(iwtow)%stor_mx,    &
-                                            wtow(iwtow)%lag_days, wtow(iwtow)%loss_fr
+          read (107,*,iostat=eof) i, wtow(iwtow)%name, wtow(iwtow)%stor_mx,    &
+                                            wtow(iwtow)%lag_days, wtow(iwtow)%loss_fr, &
+                                            num_src
+          if (eof < 0) exit
+          
+          !! allocate and read aquifer loss data
+          allocate (wtow(iwtow)%aqu_loss(num_src))
+          
+          !! re-read the line to get all aquifer data
+          backspace (107)
+          if (num_src == 1) then
+            read (107,*,iostat=eof) i, wtow(iwtow)%name, wtow(iwtow)%stor_mx,    &
+                                            wtow(iwtow)%lag_days, wtow(iwtow)%loss_fr, &
+                                            num_src, &
+                                            wtow(iwtow)%aqu_loss(1)%aqu_num, wtow(iwtow)%aqu_loss(1)%frac
+            wtow(iwtow)%aqu_loss(1)%num = 1
+          else if (num_src == 2) then
+            read (107,*,iostat=eof) i, wtow(iwtow)%name, wtow(iwtow)%stor_mx,    &
+                                            wtow(iwtow)%lag_days, wtow(iwtow)%loss_fr, &
+                                            num_src, &
+                                            wtow(iwtow)%aqu_loss(1)%aqu_num, wtow(iwtow)%aqu_loss(1)%frac, &
+                                            wtow(iwtow)%aqu_loss(2)%aqu_num, wtow(iwtow)%aqu_loss(2)%frac
+            wtow(iwtow)%aqu_loss(1)%num = 1
+            wtow(iwtow)%aqu_loss(2)%num = 2
+          else if (num_src == 3) then
+            read (107,*,iostat=eof) i, wtow(iwtow)%name, wtow(iwtow)%stor_mx,    &
+                                            wtow(iwtow)%lag_days, wtow(iwtow)%loss_fr, &
+                                            num_src, &
+                                            wtow(iwtow)%aqu_loss(1)%aqu_num, wtow(iwtow)%aqu_loss(1)%frac, &
+                                            wtow(iwtow)%aqu_loss(2)%aqu_num, wtow(iwtow)%aqu_loss(2)%frac, &
+                                            wtow(iwtow)%aqu_loss(3)%aqu_num, wtow(iwtow)%aqu_loss(3)%frac
+            wtow(iwtow)%aqu_loss(1)%num = 1
+            wtow(iwtow)%aqu_loss(2)%num = 2
+            wtow(iwtow)%aqu_loss(3)%num = 3
+          end if
         end do
       end do
       end if
@@ -482,8 +515,41 @@
         do ipipe = 1, imax
           read (107,*,iostat=eof) header
           if (eof < 0) exit 
-          read (107,*,iostat=eof) pipe(ipipe)%name, pipe(ipipe)%init, pipe(ipipe)%stor_mx,    &
-                                            pipe(ipipe)%lag_days, pipe(ipipe)%loss_fr
+          read (107,*,iostat=eof) i, pipe(ipipe)%name, pipe(ipipe)%stor_mx,    &
+                                            pipe(ipipe)%lag_days, pipe(ipipe)%loss_fr, &
+                                            num_src
+          if (eof < 0) exit
+          
+          !! allocate and read aquifer loss data
+          allocate (pipe(ipipe)%aqu_loss(num_src))
+          
+          !! re-read the line to get all aquifer data
+          backspace (107)
+          if (num_src == 1) then
+            read (107,*,iostat=eof) i, pipe(ipipe)%name, pipe(ipipe)%stor_mx,    &
+                                            pipe(ipipe)%lag_days, pipe(ipipe)%loss_fr, &
+                                            num_src, &
+                                            pipe(ipipe)%aqu_loss(1)%aqu_num, pipe(ipipe)%aqu_loss(1)%frac
+            pipe(ipipe)%aqu_loss(1)%num = 1
+          else if (num_src == 2) then
+            read (107,*,iostat=eof) i, pipe(ipipe)%name, pipe(ipipe)%stor_mx,    &
+                                            pipe(ipipe)%lag_days, pipe(ipipe)%loss_fr, &
+                                            num_src, &
+                                            pipe(ipipe)%aqu_loss(1)%aqu_num, pipe(ipipe)%aqu_loss(1)%frac, &
+                                            pipe(ipipe)%aqu_loss(2)%aqu_num, pipe(ipipe)%aqu_loss(2)%frac
+            pipe(ipipe)%aqu_loss(1)%num = 1
+            pipe(ipipe)%aqu_loss(2)%num = 2
+          else if (num_src == 3) then
+            read (107,*,iostat=eof) i, pipe(ipipe)%name, pipe(ipipe)%stor_mx,    &
+                                            pipe(ipipe)%lag_days, pipe(ipipe)%loss_fr, &
+                                            num_src, &
+                                            pipe(ipipe)%aqu_loss(1)%aqu_num, pipe(ipipe)%aqu_loss(1)%frac, &
+                                            pipe(ipipe)%aqu_loss(2)%aqu_num, pipe(ipipe)%aqu_loss(2)%frac, &
+                                            pipe(ipipe)%aqu_loss(3)%aqu_num, pipe(ipipe)%aqu_loss(3)%frac
+            pipe(ipipe)%aqu_loss(1)%num = 1
+            pipe(ipipe)%aqu_loss(2)%num = 2
+            pipe(ipipe)%aqu_loss(3)%num = 3
+          end if
         end do
       end do
       end if
