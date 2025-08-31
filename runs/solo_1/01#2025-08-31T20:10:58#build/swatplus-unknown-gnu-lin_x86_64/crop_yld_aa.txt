@@ -1,0 +1,5 @@
+ ceap_07010101             SWAT+ @TODAY@        MODULAR Rev @YEAR@.@SWAT_VERSION@   April 17_NAM          
+                                                                            --YIELD (kg/ha)--
+  jday   mon   day    yr    unit PLANTNM                         MASS          C           N           P
+   366    12    31  2000       1    soyb                                             1651.457     743.156     115.437      12.716
+   366    12    31  2000       1    rye                                                 0.000       0.000       0.000       0.000

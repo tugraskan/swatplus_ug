@@ -82,8 +82,11 @@
                                                                   wallo(iwro)%src(i)%limit_mon
           end do
           
-          !! read demand object data
-          read (107,*,iostat=eof) header
+          !! skip blank line between source and demand objects
+          read (107,'(A)',iostat=eof) header  ! Read blank line as string
+          if (eof < 0) exit
+          !! read demand object data header
+          read (107,'(A)',iostat=eof) header  ! Read column header line
           if (eof < 0) exit
           do idmd = 1, num_objs
             read (107,*,iostat=eof) i

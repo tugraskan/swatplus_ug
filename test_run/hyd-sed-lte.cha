@@ -1,0 +1,5 @@
+sed_lcha Generated from M:\Constructor\HUC8_models\models\07010101.accdb Time: 2/13/2025 7:45:37 PM
+      NAME       ORDER         WD         DP         SLP     LEN    MANN        K  EROD_FACT  COV_FACT     SINU  EQ_SLP    D50   CLAY  CARBON   DRY_BD  SIDE_SLP  BED_LOAD    FPS    FPN  N_CONC  P_CONC  P_BIO
+  cha_1     1            6.694694  0.9750555      0.0001   0.545   0.005        0    0.02415   0.60091      1.2    1.75    0.3  26.82     0.4  0.98322         1         0   0.01   0.05      10       5    0.3
+  cha_2     1             8.47493  0.5994114   0.0023849   5.341   0.005  0.00084    0.02507   0.48018     1.12    1.75   0.73  25.92     0.4  1.57454         1       0.2   0.01   0.05      10       5    0.3
+   

@@ -1,0 +1,371 @@
+lum_dtl Generated from M:\Constructor\HUC8_models\models\07010101.accdb Time: 2/13/2025 7:47:51 PM
+36
+
+               DTBL_NAME      CONDS       ALTS       ACTS
+              cn2_update          2          2          2
+  COND_VAR   OBJ   OBJ_NUMB LIM_VAR LIM_OP LIM_CONST  ALT1  ALT2
+ days_harv   hru          0    null      -         1     -     =                                                
+ phu_plant   hru          0 phu_mat      -       0.1     >     -                                                
+   ACT_TYP   OBJ OBJ_NUM         ACT_NAME ACT_OPTION CONST CONST2 FILE_POINTER  OUT1  OUT2
+ cn_update   hru       0 increase_cn_harv     abschg     6      1         null     n     y                                                
+ cn_update   hru       0    lower_cn_grow     abschg    -3      1         null     y     n                                                
+
+               DTBL_NAME      CONDS       ALTS       ACTS
+        control_drainage          6          4          4
+   COND_VAR   OBJ   OBJ_NUMB LIM_VAR LIM_OP LIM_CONST  ALT1  ALT2  ALT3  ALT4
+  days_harv   hru          0    null      -        14     -     >     -     -                                    
+       jday   hru          0    null      -       295     -     >     -     -                                    
+       jday   hru          0    null      -        65     =     -     -     -                                    
+  phu_plant   hru          0    null      -         1     -     -     -     >                                    
+  phu_plant   hru          0    null      -       0.5     -     -     >     -                                    
+ soil_water   hru          0      fc      *       0.5     -     -     <     -                                    
+       ACT_TYP   OBJ OBJ_NUM     ACT_NAME ACT_OPTION CONST CONST2 FILE_POINTER  OUT1  OUT2  OUT3  OUT4
+ drain_control   hru       0  open_summer       null     1      1         null     n     n     n     y                                    
+ drain_control   hru       0 close_summer       null     0      1         null     n     n     y     n                                    
+ drain_control   hru       0   close_fall       null     0      1         null     n     y     n     n                                    
+ drain_control   hru       0  open_spring       null     1      1         null     y     n     n     n                                    
+
+               DTBL_NAME      CONDS       ALTS       ACTS
+           enlistduo_app          3          2          2
+  COND_VAR   OBJ   OBJ_NUMB LIM_VAR LIM_OP LIM_CONST  ALT1  ALT2
+ phu_base0   hru          0    null      -      0.15     -     >                                                
+ phu_base0   hru          0    null      -       0.1     >     -                                                
+      prob  null          0    null      -      0.07     <     -                                                
+    ACT_TYP   OBJ OBJ_NUM ACT_NAME ACT_OPTION CONST CONST2 FILE_POINTER  OUT1  OUT2
+ pest_apply   hru       0 preplant    roundup     2      1    broadcast     y     y                                                
+ pest_apply   hru       0 preplant   dacamine     1      1    broadcast     y     y                                                
+
+               DTBL_NAME      CONDS       ALTS       ACTS
+               fall_plow          3          3          2
+  COND_VAR   OBJ   OBJ_NUMB LIM_VAR LIM_OP LIM_CONST  ALT1  ALT2  ALT3
+ days_harv   hru          0    null      -         6     -     =     -                                          
+ days_harv   hru          0    null      -         3     =     -     -                                          
+ phu_base0   hru          0    null      -      0.12     -     -     >                                          
+ ACT_TYP   OBJ OBJ_NUM      ACT_NAME ACT_OPTION CONST CONST2 FILE_POINTER  OUT1  OUT2  OUT3
+ tillage   hru       0 fieldcultivat    fldcult     0      2         null     n     y     y                                          
+ tillage   hru       0 moldboardplow   mldboard     0      1         null     y     n     n                                          
+
+               DTBL_NAME      CONDS       ALTS       ACTS
+              fert_rot_1          6          3          3
+  COND_VAR   OBJ   OBJ_NUMB LIM_VAR LIM_OP LIM_CONST  ALT1  ALT2  ALT3
+  n_stress   hru          0    null      -       0.9     -     <     -                                          
+ phu_base0   hru          0    null      -      0.12     >     -     -                                          
+ phu_plant   hru          0 phu_mat      -       1.1     -     <     -                                          
+ plant_gro   hru          0       y      -         1     -     =     -                                          
+  year_rot   hru          0    null      -         2     -     -     >                                          
+  year_rot   hru          0    null      -         1     =     =     -                                          
+   ACT_TYP   OBJ OBJ_NUM       ACT_NAME ACT_OPTION CONST CONST2 FILE_POINTER  OUT1  OUT2  OUT3
+ fertilize   hru       0     side_dress       urea    50      2    broadcast     n     y     n                                          
+ fertilize   hru       0 ammonia_spring    anh_nh3   160      1       inject     y     n     n                                          
+ rot_reset   hru       0        reset_1       null     1      1         null     n     n     y                                          
+
+               DTBL_NAME      CONDS       ALTS       ACTS
+          fert_sprg_side          5          3          3
+  COND_VAR   OBJ   OBJ_NUMB LIM_VAR LIM_OP LIM_CONST  ALT1  ALT2  ALT3
+  p_stress   hru          0    null      -       0.9     -     -     <                                          
+ phu_base0   hru          0    null      -      0.12     >     -     -                                          
+ phu_plant   hru          0 phu_mat      -      1.05     -     <     <                                          
+ plant_gro   hru          0       y      -         0     -     =     =                                          
+  year_rot   hru          0    null      -         1     =     =     -                                          
+   ACT_TYP   OBJ OBJ_NUM       ACT_NAME ACT_OPTION CONST CONST2 FILE_POINTER  OUT1  OUT2  OUT3
+ fertilize   hru       0     side_dress     elem_p    30      1    broadcast     n     n     y                                          
+ fertilize   hru       0     side_dress       urea    50      2    broadcast     n     y     n                                          
+ fertilize   hru       0 ammonia_spring    anh_nh3   160      1       inject     y     n     n                                          
+
+               DTBL_NAME      CONDS       ALTS       ACTS
+         fert_stess_test          4          2          2
+  COND_VAR   OBJ   OBJ_NUMB LIM_VAR LIM_OP LIM_CONST  ALT1  ALT2
+  n_stress   hru          0    null      -       0.9     <     -                                                
+  p_stress   hru          0    null      -       0.9     -     <                                                
+ phu_plant   hru          0 phu_mat      -      1.05     <     <                                                
+ plant_gro   hru          0       y      -         1     =     =                                                
+   ACT_TYP   OBJ OBJ_NUM   ACT_NAME ACT_OPTION CONST CONST2 FILE_POINTER  OUT1  OUT2
+ fertilize   hru       0 side_dress     elem_p    50      2    broadcast     n     y                                                
+ fertilize   hru       0 side_dress     elem_n    50      5    broadcast     y     n                                                
+
+               DTBL_NAME      CONDS       ALTS       ACTS
+              forest_cut          2          1          1
+    COND_VAR   OBJ   OBJ_NUMB LIM_VAR LIM_OP LIM_CONST  ALT1
+ cur_yrs_mat   hru          0    null      -        20     =                                                      
+        jday   hru          0    null      -       295     =                                                      
+ ACT_TYP   OBJ OBJ_NUM  ACT_NAME ACT_OPTION CONST CONST2 FILE_POINTER  OUT1
+ harvest   hru       0 tree_harv       frsd     0      0   forest_cut     y                                                      
+
+               DTBL_NAME      CONDS       ALTS       ACTS
+            graze_summer          3          1          1
+ COND_VAR   OBJ   OBJ_NUMB LIM_VAR LIM_OP LIM_CONST  ALT1
+  biomass   hru          0    null      -      3000     >                                                      
+     jday   hru          0    null      -       200     <                                                      
+     jday   hru          0    null      -       120     >                                                      
+ ACT_TYP   OBJ OBJ_NUM    ACT_NAME ACT_OPTION CONST CONST2 FILE_POINTER  OUT1
+   graze   hru       0 summer_high  beef_high     0      0         null     y                                                      
+
+               DTBL_NAME      CONDS       ALTS       ACTS
+            graze_winter          3          2          1
+ COND_VAR   OBJ   OBJ_NUMB LIM_VAR LIM_OP LIM_CONST  ALT1  ALT2
+  biomass   hru          0    null      -      3000     >     >                                                
+     jday   hru          0    null      -        85     -     <                                                
+     jday   hru          0    null      -       295     >     -                                                
+ ACT_TYP   OBJ OBJ_NUM   ACT_NAME ACT_OPTION CONST CONST2 FILE_POINTER  OUT1  OUT2
+   graze   hru       0 winter_low   beef_low     0      0         null     y     y                                                
+
+               DTBL_NAME      CONDS       ALTS       ACTS
+             hay_cutting          3          1          1
+   COND_VAR   OBJ   OBJ_NUMB LIM_VAR LIM_OP LIM_CONST  ALT1
+    biomass   hru          0    null      -      3000     >                                                      
+  phu_plant   hru          0 phu_mat      -       0.5     >                                                      
+ soil_water   hru          0      fc      *         2     <                                                      
+ ACT_TYP   OBJ OBJ_NUM ACT_NAME ACT_OPTION CONST CONST2 FILE_POINTER  OUT1
+ harvest   hru       0 hay_harv       alfa     0      3      biomass     y                                                      
+
+               DTBL_NAME      CONDS       ALTS       ACTS
+              irr_opt_sw          2          1          1
+   COND_VAR   OBJ   OBJ_NUMB LIM_VAR LIM_OP LIM_CONST  ALT1
+  plant_gro   hru          0       y      -         0     =                                                      
+ soil_water   hru          0      fc      *       0.5     <                                                      
+    ACT_TYP   OBJ OBJ_NUM  ACT_NAME ACT_OPTION CONST CONST2 FILE_POINTER  OUT1
+ irr_demand   hru       0 sprinkler  sprinkler    25     20         null     y                                                      
+
+               DTBL_NAME      CONDS       ALTS       ACTS
+            irr_reduc_sw          2          1          1
+   COND_VAR   OBJ   OBJ_NUMB LIM_VAR LIM_OP LIM_CONST  ALT1
+  plant_gro   hru          0       y      -         0     =                                                      
+ soil_water   hru          0      fc      *      0.35     <                                                      
+    ACT_TYP   OBJ OBJ_NUM  ACT_NAME ACT_OPTION CONST CONST2 FILE_POINTER  OUT1
+ irr_demand   hru       0 sprinkler  sprinkler    25     20         null     y                                                      
+
+               DTBL_NAME      CONDS       ALTS       ACTS
+            irr_str8_aqu          1          1          1
+ COND_VAR   OBJ   OBJ_NUMB LIM_VAR LIM_OP LIM_CONST  ALT1
+ w_stress   hru          0    null      -       0.8     <                                                      
+  ACT_TYP   OBJ OBJ_NUM  ACT_NAME ACT_OPTION CONST CONST2 FILE_POINTER  OUT1
+ irrigate   aqu       1 sprinkler  sprinkler    25     20         null     y                                                      
+
+               DTBL_NAME      CONDS       ALTS       ACTS
+            irr_str8_cha          1          1          2
+ COND_VAR   OBJ   OBJ_NUMB LIM_VAR LIM_OP LIM_CONST  ALT1
+ w_stress   hru          0    null      -       0.8     <                                                      
+    ACT_TYP   OBJ OBJ_NUM  ACT_NAME ACT_OPTION CONST CONST2 FILE_POINTER  OUT1
+ irr_demand   hru       0 sprinkler  sprinkler    25     20        unlim     y                                                      
+   irrigate   cha       1 sprinkler  sprinkler    25     20         null     y                                                      
+
+               DTBL_NAME      CONDS       ALTS       ACTS
+            irr_str8_dmd          1          1          1
+ COND_VAR   OBJ   OBJ_NUMB LIM_VAR LIM_OP LIM_CONST  ALT1
+ w_stress   hru          0    null      -       0.8     <                                                      
+    ACT_TYP   OBJ OBJ_NUM  ACT_NAME ACT_OPTION CONST CONST2 FILE_POINTER  OUT1
+ irr_demand   hru       0 sprinkler  sprinkler    40     20         null     y                                                      
+
+               DTBL_NAME      CONDS       ALTS       ACTS
+            irr_str8_res          1          1          1
+ COND_VAR   OBJ   OBJ_NUMB LIM_VAR LIM_OP LIM_CONST  ALT1
+ w_stress   hru          0    null      -       0.8     <                                                      
+  ACT_TYP   OBJ OBJ_NUM  ACT_NAME ACT_OPTION CONST CONST2 FILE_POINTER  OUT1
+ irrigate   res       1 sprinkler  sprinkler    25     20         null     y                                                      
+
+               DTBL_NAME      CONDS       ALTS       ACTS
+        irr_str8_res_aqu          3          3          3
+ COND_VAR   OBJ   OBJ_NUMB LIM_VAR LIM_OP LIM_CONST  ALT1  ALT2  ALT3
+  aqu_dep   aqu          1    null      -        50     -     <     >                                          
+      vol   res          1    pvol      *      0.75     >     <     <                                          
+ w_stress   hru          0    null      -       0.8     <     <     <                                          
+  ACT_TYP   OBJ OBJ_NUM  ACT_NAME ACT_OPTION CONST CONST2 FILE_POINTER  OUT1  OUT2  OUT3
+ irrigate unlim       0 sprinkler  sprinkler    25     20         null     n     n     y                                          
+ irrigate   aqu       1 sprinkler  sprinkler    25     20         null     n     y     n                                          
+ irrigate   res       1 sprinkler  sprinkler    25     20         null     y     n     n                                          
+
+               DTBL_NAME      CONDS       ALTS       ACTS
+          irr_str8_unlim          1          1          1
+ COND_VAR   OBJ   OBJ_NUMB LIM_VAR LIM_OP LIM_CONST  ALT1
+ w_stress   hru          0    null      -       0.8     <                                                      
+    ACT_TYP   OBJ OBJ_NUM  ACT_NAME ACT_OPTION CONST CONST2 FILE_POINTER  OUT1
+ irr_demand   hru       0 sprinkler  sprinkler    25     20        unlim     y                                                      
+
+               DTBL_NAME      CONDS       ALTS       ACTS
+          irr_str9_unlim          1          1          1
+ COND_VAR   OBJ   OBJ_NUMB LIM_VAR LIM_OP LIM_CONST  ALT1
+ w_stress   hru          0    null      -       0.9     <                                                      
+    ACT_TYP   OBJ OBJ_NUM  ACT_NAME ACT_OPTION CONST CONST2 FILE_POINTER  OUT1
+ irr_demand   hru       0 sprinkler  sprinkler    25     20        unlim     y                                                      
+
+               DTBL_NAME      CONDS       ALTS       ACTS
+            mulch_till_1          2          2          2
+  COND_VAR   OBJ   OBJ_NUMB LIM_VAR LIM_OP LIM_CONST  ALT1  ALT2
+ days_harv   hru          0    null      -         3     -     =                                                
+ phu_base0   hru          0    null      -      0.12     >     -                                                
+ ACT_TYP   OBJ OBJ_NUM    ACT_NAME ACT_OPTION CONST CONST2 FILE_POINTER  OUT1  OUT2
+ tillage   hru       0 chisel_plow   chisplow     0      1         null     n     y                                                
+ tillage   hru       0 tandem_disk   tandemrg     0      1         null     y     n                                                
+
+               DTBL_NAME      CONDS       ALTS       ACTS
+            mulch_till_2          2          2          2
+  COND_VAR   OBJ   OBJ_NUMB LIM_VAR LIM_OP LIM_CONST  ALT1  ALT2
+ phu_base0   hru          0    null      -      0.12     -     >                                                
+ phu_base0   hru          0    null      -      0.11     >     -                                                
+ ACT_TYP   OBJ OBJ_NUM    ACT_NAME ACT_OPTION CONST CONST2 FILE_POINTER  OUT1  OUT2
+ tillage   hru       0 tandem_disk   tandemrg     0      1         null     n     y                                                
+ tillage   hru       0 chisel_plow   chisplow     0      1         null     y     n                                                
+
+               DTBL_NAME      CONDS       ALTS       ACTS
+           no_tile_drain          1          1          1
+  COND_VAR   OBJ   OBJ_NUMB LIM_VAR LIM_OP LIM_CONST  ALT1
+ day_start   hru          0    null      -         1     =                                                      
+       ACT_TYP   OBJ OBJ_NUM     ACT_NAME ACT_OPTION CONST CONST2 FILE_POINTER  OUT1
+ drain_control   hru       0 close_always       null     0      1         null     y                                                      
+
+               DTBL_NAME      CONDS       ALTS       ACTS
+                 no_till          1          1          1
+  COND_VAR   OBJ   OBJ_NUMB LIM_VAR LIM_OP LIM_CONST  ALT1
+ phu_base0   hru          0    null      -      0.15     >                                                      
+ ACT_TYP   OBJ OBJ_NUM ACT_NAME ACT_OPTION CONST CONST2 FILE_POINTER  OUT1
+ tillage   hru       0 planting   zerotill     0      1         null     y                                                      
+
+               DTBL_NAME      CONDS       ALTS       ACTS
+              pl_end_sum          2          3          1
+  COND_VAR   OBJ   OBJ_NUMB LIM_VAR LIM_OP LIM_CONST  ALT1  ALT2  ALT3
+      jday   hlt          0    null      -       330     -     -     =                                          
+ phu_base0   hlt          0    null      -       0.5     >     <     -                                          
+  ACT_TYP   OBJ OBJ_NUM   ACT_NAME ACT_OPTION CONST CONST2 FILE_POINTER  OUT1  OUT2  OUT3
+ grow_end   hlt       0 end_growth       file     0      0         null     y     n     y                                          
+
+               DTBL_NAME      CONDS       ALTS       ACTS
+             pl_grow_sum          2          2          1
+  COND_VAR   OBJ   OBJ_NUMB LIM_VAR LIM_OP LIM_CONST  ALT1  ALT2
+ phu_base0   hlt          0    null      -       0.2     <     -                                                
+ phu_base0   hlt          0    null      -      0.15     >     <                                                
+   ACT_TYP   OBJ OBJ_NUM     ACT_NAME ACT_OPTION CONST CONST2 FILE_POINTER  OUT1  OUT2
+ grow_init   hlt       0 start_growth       file     0      0         null     y     n                                                
+
+               DTBL_NAME      CONDS       ALTS       ACTS
+             pl_hv_ccsws         10         10          7
+   COND_VAR   OBJ   OBJ_NUMB LIM_VAR LIM_OP LIM_CONST  ALT1  ALT2  ALT3  ALT4  ALT5  ALT6  ALT7  ALT8  ALT9 ALT10
+  days_harv   hru          0    null      -         7     -     -     =     =     -     -     -     -     -     -
+       jday   hru          0    null      -       350     -     -     -     -     -     -     -     =     =     -
+       jday   hru          0    null      -       150     -     -     -     -     -     -     -     -     -     =
+  phu_base0   hru          0    null      -      0.15     >     >     -     -     -     -     -     -     -     -
+  phu_plant   hru          0 phu_mat      -      1.15     -     -     -     -     >     >     >     -     -     -
+ soil_water   hru          0      fc      *         2     <     <     -     <     <     <     <     -     -     -
+   year_rot   hru          0    null      -         3     <     -     -     -     <     -     -     <     -     -
+   year_rot   hru          0    null      -         2     -     -     -     -     -     >     -     -     >     -
+   year_rot   hru          0    null      -         3     -     =     -     =     -     -     -     -     -     -
+   year_rot   hru          0    null      -         4     -     -     =     -     -     -     =     -     -     =
+      ACT_TYP   OBJ OBJ_NUM   ACT_NAME ACT_OPTION CONST CONST2 FILE_POINTER  OUT1  OUT2  OUT3  OUT4  OUT5  OUT6  OUT7  OUT8  OUT9 OUT10
+ harvest_kill   hru       0 grain_harv       corn     0      0         null     n     n     n     n     y     n     n     y     n     n
+ harvest_kill   hru       0 grain_harv       soyb     0      0         null     n     n     n     n     n     y     n     n     y     n
+ harvest_kill   hru       0 grain_harv       wwht     0      0         null     n     n     n     n     n     n     y     n     n     y
+        plant   hru       0 plant_corn       corn     0      0         null     y     n     n     n     n     n     n     n     n     n
+        plant   hru       0 plant_soyb       soyb     0      0         null     n     y     y     n     n     n     n     n     n     n
+        plant   hru       0 plant_wwht       wwht     0      0         null     n     n     n     y     n     n     n     n     n     n
+    rot_reset   hru       0    reset_4       null     1      1         null     n     n     n     n     n     n     n     n     n     n
+
+               DTBL_NAME      CONDS       ALTS       ACTS
+         pl_hv_covercrop          2          2          2
+  COND_VAR   OBJ   OBJ_NUMB LIM_VAR LIM_OP LIM_CONST  ALT1  ALT2
+ days_harv   hru          0    null      -         3     >     -                                                
+ phu_base0   hru          0    null      -      0.12     -     >                                                
+ ACT_TYP   OBJ OBJ_NUM   ACT_NAME ACT_OPTION CONST CONST2 FILE_POINTER  OUT1  OUT2
+    kill   hru       0 kill_cover        rye     0      1         null     n     y                                                
+   plant   hru       0      plant        rye     0      1         null     y     n                                                
+
+               DTBL_NAME      CONDS       ALTS       ACTS
+        pl_hv_covercrop2          2          2          2
+  COND_VAR   OBJ   OBJ_NUMB LIM_VAR LIM_OP LIM_CONST  ALT1  ALT2
+ days_harv   hru          0    null      -      0.75     >     -                                                
+ phu_base0   hru          0    null      -      0.12     -     >                                                
+ ACT_TYP   OBJ OBJ_NUM   ACT_NAME ACT_OPTION CONST CONST2 FILE_POINTER  OUT1  OUT2
+    kill   hru       0 kill_cover        rye     0      1         null     n     y                                                
+   plant   hru       0      plant        rye     0      1         null     y     n                                                
+
+               DTBL_NAME      CONDS       ALTS       ACTS
+           pl_hv_summer1          6          5          3
+   COND_VAR   OBJ   OBJ_NUMB LIM_VAR LIM_OP LIM_CONST  ALT1  ALT2  ALT3  ALT4  ALT5
+       jday   hru          0    null      -       350     -     -     =     -     -                              
+  phu_base0   hru          0    null      -       0.3     -     -     -     -     >                              
+  phu_base0   hru          0    null      -      0.15     >     -     -     -     -                              
+  phu_plant   hru          0 phu_mat      -      1.15     -     >     -     -     -                              
+ soil_water   hru          0      fc      *         2     <     <     -     -     -                              
+   year_rot   hru          0    null      -         1     -     -     -     >     -                              
+      ACT_TYP   OBJ OBJ_NUM   ACT_NAME ACT_OPTION CONST CONST2 FILE_POINTER  OUT1  OUT2  OUT3  OUT4  OUT5
+ harvest_kill   hru       0 grain_harv       crop     0      1        grain     n     y     y     n     n                              
+        plant   hru       0      plant       crop     0      1         null     y     n     n     n     y                              
+    rot_reset   hru       0    reset_1       null     1      1         null     n     n     n     y     n                              
+
+               DTBL_NAME      CONDS       ALTS       ACTS
+      pl_hv_summer1_corn          6          5          3
+   COND_VAR   OBJ   OBJ_NUMB LIM_VAR LIM_OP LIM_CONST  ALT1  ALT2  ALT3  ALT4  ALT5
+       jday   hru          0    null      -       350     -     -     =     -     -                              
+  phu_base0   hru          0    null      -       0.3     -     -     -     -     >                              
+  phu_base0   hru          0    null      -      0.15     >     -     -     -     -                              
+  phu_plant   hru          0 phu_mat      -      1.15     -     >     -     -     -                              
+ soil_water   hru          0      fc      *         2     <     <     -     -     -                              
+   year_rot   hru          0    null      -         1     -     -     -     >     -                              
+      ACT_TYP   OBJ OBJ_NUM   ACT_NAME ACT_OPTION CONST CONST2 FILE_POINTER  OUT1  OUT2  OUT3  OUT4  OUT5
+ harvest_kill   hru       0 grain_harv       corn     0      1        grain     n     y     y     n     n                              
+        plant   hru       0 plant_corn       corn     0      1         null     y     n     n     n     y                              
+    rot_reset   hru       0    reset_1       null     1      1         null     n     n     n     y     n                              
+
+               DTBL_NAME      CONDS       ALTS       ACTS
+           pl_hv_summer2          7          9          5
+   COND_VAR   OBJ   OBJ_NUMB LIM_VAR LIM_OP LIM_CONST  ALT1  ALT2  ALT3  ALT4  ALT5  ALT6  ALT7  ALT8  ALT9
+       jday   hru          0    null      -       350     -     -     -     -     =     =     -     -     -      
+  phu_base0   hru          0    null      -       0.3     -     -     -     -     -     -     -     >     >      
+  phu_base0   hru          0    null      -      0.15     >     >     -     -     -     -     -     -     -      
+  phu_plant   hru          0 phu_mat      -      1.15     -     -     >     >     -     -     -     -     -      
+ soil_water   hru          0      fc      *         2     <     <     <     <     -     -     -     -     -      
+   year_rot   hru          0    null      -         2     -     =     -     =     -     =     >     -     =      
+   year_rot   hru          0    null      -         1     =     -     =     -     =     -     -     =     -      
+      ACT_TYP   OBJ OBJ_NUM    ACT_NAME ACT_OPTION CONST CONST2 FILE_POINTER  OUT1  OUT2  OUT3  OUT4  OUT5  OUT6  OUT7  OUT8  OUT9
+ harvest_kill   hru       0  grain_harv      crop2     0      0         null     n     n     n     y     n     y     n     n     n      
+ harvest_kill   hru       0  grain_harv      crop1     0      0         null     n     n     y     n     y     n     n     n     n      
+        plant   hru       0 plant_crop2      crop2     0      0         null     n     y     n     n     n     n     n     n     y      
+        plant   hru       0 plant_crop1      crop1     0      0         null     y     n     n     n     n     n     n     y     n      
+    rot_reset   hru       0     reset_2       null     1      1         null     n     n     n     n     n     n     y     n     n      
+
+               DTBL_NAME      CONDS       ALTS       ACTS
+ pl_hv_summer2_corn_soyb          7          9          5
+   COND_VAR   OBJ   OBJ_NUMB LIM_VAR LIM_OP LIM_CONST  ALT1  ALT2  ALT3  ALT4  ALT5  ALT6  ALT7  ALT8  ALT9
+       jday   hru          0    null      -       350     -     -     -     -     =     =     -     -     -      
+  phu_base0   hru          0    null      -       0.3     -     -     -     -     -     -     -     >     >      
+  phu_base0   hru          0    null      -      0.15     >     >     -     -     -     -     -     -     -      
+  phu_plant   hru          0 phu_mat      -      1.15     -     -     >     >     -     -     -     -     -      
+ soil_water   hru          0      fc      *         2     <     <     <     <     -     -     -     -     -      
+   year_rot   hru          0    null      -         2     -     =     -     =     -     =     >     -     =      
+   year_rot   hru          0    null      -         1     =     -     =     -     =     -     -     =     -      
+      ACT_TYP   OBJ OBJ_NUM   ACT_NAME ACT_OPTION CONST CONST2 FILE_POINTER  OUT1  OUT2  OUT3  OUT4  OUT5  OUT6  OUT7  OUT8  OUT9
+ harvest_kill   hru       0 grain_harv       soyb     0      0         null     n     n     n     y     n     y     n     n     n      
+ harvest_kill   hru       0 grain_harv       corn     0      0         null     n     n     y     n     y     n     n     n     n      
+        plant   hru       0 plant_soyb       soyb     0      0         null     n     y     n     n     n     n     n     n     y      
+        plant   hru       0 plant_corn       corn     0      0         null     y     n     n     n     n     n     n     y     n      
+    rot_reset   hru       0    reset_2       null     1      1         null     n     n     n     n     n     n     y     n     n      
+
+               DTBL_NAME      CONDS       ALTS       ACTS
+           pl_hv_winter1          6          4          3
+   COND_VAR   OBJ   OBJ_NUMB LIM_VAR LIM_OP LIM_CONST  ALT1  ALT2  ALT3  ALT4
+       jday   hru          0    null      -       200     -     -     =     -                                    
+  phu_base0   hru          0    null      -      0.85     >     -     -     -                                    
+  phu_plant   hru          0 phu_mat      -      1.15     -     >     -     -                                    
+ soil_water   hru          0      fc      *         2     <     <     -     -                                    
+   year_rot   hru          0    null      -         1     =     =     =     -                                    
+   year_rot   hru          0    null      -         1     -     -     -     >                                    
+      ACT_TYP   OBJ OBJ_NUM   ACT_NAME ACT_OPTION CONST CONST2 FILE_POINTER  OUT1  OUT2  OUT3  OUT4
+ harvest_kill   hru       0 grain_harv       crop     0      0         null     n     y     y     n                                    
+        plant   hru       0      plant       crop     0      0         null     y     n     n     n                                    
+    rot_reset   hru       0    reset_1       null     1      1         null     n     n     n     y                                    
+
+               DTBL_NAME      CONDS       ALTS       ACTS
+                pst_unif          1          1          1
+  COND_VAR   OBJ   OBJ_NUMB LIM_VAR LIM_OP LIM_CONST  ALT1
+ prob_unif   0.3        121    null      -       181     =                                                      
+    ACT_TYP   OBJ OBJ_NUM ACT_NAME ACT_OPTION CONST CONST2 FILE_POINTER  OUT1
+ pest_apply   hru       0  ffa_app        ffa  0.33      1       inject     y                                                      
+
+               DTBL_NAME      CONDS       ALTS       ACTS
+             spring_plow          3          3          3
+  COND_VAR   OBJ   OBJ_NUMB LIM_VAR LIM_OP LIM_CONST  ALT1  ALT2  ALT3
+ days_harv   hru          0    null      -         3     -     -     =                                          
+ phu_base0   hru          0    null      -      0.12     -     >     -                                          
+ phu_base0   hru          0    null      -      0.11     >     -     -                                          
+ ACT_TYP   OBJ OBJ_NUM      ACT_NAME ACT_OPTION CONST CONST2 FILE_POINTER  OUT1  OUT2  OUT3
+ tillage   hru       0   chisel_plow   chisplow     0      1         null     n     n     y                                          
+ tillage   hru       0 fieldcultivat    fldcult     0      1         null     n     y     n                                          
+ tillage   hru       0 moldboardplow   mldboard     0      1         null     y     n     n                                          

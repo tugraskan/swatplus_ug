@@ -1,0 +1,3 @@
+res_con Generated from M:\Constructor\HUC8_models\models\07010101.accdb Time: 2/13/2025 7:47:41 PM
+          ID      NAME      GIS_ID      AREA        LAT         LON         ELEV         RES            WST             CST     OVFL        RULE        OUT_TOT     obj_typ1    obj_id1  hyd_typ1  frac1
+           1      res_1     1           44275.77    47.38478    -94.89665   425          1              weather1        0       0           0           0           0

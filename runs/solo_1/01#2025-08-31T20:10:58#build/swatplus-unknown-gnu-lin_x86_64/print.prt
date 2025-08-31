@@ -1,0 +1,46 @@
+print Generated from Y:\HUC8_models\models\01010002.accdb Time: 8/3/2020 5:30:37 PM
+ N_Yrs_SKIP   JD_START  YRC_START     JD_END    YRC_END   INTERVAL
+          0          0          0          0          0          1
+ aa_int_cnt
+          0
+ CSVOUT DBOUT CDFOUT
+      n     n      n
+ CROPYLD MGTOUT HYDCON FDCOUT
+       a      y      n      y
+       OBJECTS     DAILY   MONTHLY    YEARLY     AVANN
+      basin_wb         n         y         y         y
+      basin_nb         n         y         y         y
+      basin_ls         n         y         y         y
+      basin_pw         n         y         y         y
+     basin_aqu         n         n         n         y
+     basin_res         n         n         n         n
+     basin_cha         n         n         n         n
+  basin_sd_cha         n         n         y         y
+     basin_psc         n         n         n         n
+     region_wb         n         n         y         y
+     region_nb         n         n         n         n
+     region_ls         n         n         n         n
+     region_pw         n         n         n         n
+    region_aqu         n         n         n         n
+    region_res         n         n         n         n
+    region_cha         n         n         n         n
+ region_sd_cha         n         n         y         y
+    region_psc         n         n         n         n
+     lsunit_wb         n         n         y         y
+     lsunit_nb         n         n         y         y
+     lsunit_ls         n         n         y         y
+     lsunit_pw         n         n         n         y
+        hru_wb         n         n         y         y
+        hru_nb         n         n         y         y
+        hru_ls         y         n         y         y
+        hru_pw         n         n         y         y
+    hru-lte_wb         n         n         n         n
+    hru-lte_nb         n         n         n         n
+    hru-lte_ls         n         n         n         n
+    hru-lte_pw         n         n         n         n
+       channel         n         n         n         y
+    channel_sd         n         y         y         y
+       aquifer         n         n         y         y
+     reservoir         n         n         y         y
+        recall         n         n         n         n
+           hyd         n         n         n         n

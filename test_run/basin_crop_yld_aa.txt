@@ -1,0 +1,4 @@
+ ceap_07010101             SWAT+ @TODAY@        MODULAR Rev @YEAR@.@SWAT_VERSION@   April 17_NAM          
+       year      plant_no   plant_name       harv_area(ha)     yld(t)          yld(t/ha)      
+        2000           1 soyb                                       4.725000       7.803134       1.651457    
+        2000           2 rye                                       0.0000000E+00  0.0000000E+00  0.0000000E+00
