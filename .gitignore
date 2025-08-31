@@ -113,3 +113,8 @@ ford.md
 /data/Osu_1hru/basin_wb_aa.txt
 /data/Osu_1hru/basin_wb_yr.txt
 /data/Osu_1hru/aquifer_aa.txt
+
+# Model output files - exclude from version control
+*.out
+fort.*
+*.ini
