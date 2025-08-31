@@ -224,8 +224,6 @@
         allocate (wtp_cs_treat(imax))
 
         do iwtp = 1, imax
-          read (107,*,iostat=eof) header
-          if (eof < 0) exit 
           read (107,*,iostat=eof) i, wtp(iwtp)%name, wtp(iwtp)%stor_mx,    &
                                             wtp(iwtp)%lag_days, wtp(iwtp)%loss_fr, &
                                             wtp(iwtp)%org_min, wtp(iwtp)%pests, &
@@ -315,8 +313,6 @@
         allocate (wuse_cs_efflu(imax))
 
         do iwuse = 1, imax
-          read (107,*,iostat=eof) header
-          if (eof < 0) exit 
           read (107,*,iostat=eof) i, wuse(iwuse)%name, wuse(iwuse)%stor_mx,    &
                                             wuse(iwuse)%lag_days, wuse(iwuse)%loss_fr, &
                                             wuse(iwuse)%org_min, wuse(iwuse)%pests, &
@@ -621,8 +617,6 @@
         allocate (om_treat_name(imax))
 
         do iom_tr = 1, imax
-          read (107,*,iostat=eof) header
-          if (eof < 0) exit 
           read (107,*,iostat=eof) om_treat_name(iom_tr), wtp_om_treat(iom_tr)
         end do
       end do
