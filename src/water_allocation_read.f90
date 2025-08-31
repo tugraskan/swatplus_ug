@@ -226,16 +226,12 @@
         do iwtp = 1, imax
           read (107,*,iostat=eof) header
           if (eof < 0) exit 
-          read (107,*,iostat=eof) i
+          read (107,*,iostat=eof) i, wtp(iwtp)%name, wtp(iwtp)%stor_mx,    &
+                                            wtp(iwtp)%lag_days, wtp(iwtp)%loss_fr, &
+                                            wtp(iwtp)%org_min, wtp(iwtp)%pests, &
+                                            wtp(iwtp)%paths, wtp(iwtp)%salts, &
+                                            wtp(iwtp)%constit, wtp(iwtp)%descrip
           if (eof < 0) exit
-          backspace (107)
-          read (107,*,iostat=eof) k, wtp(iwtp)
-          if (eof < 0) exit
-          read (107,*,iostat=eof) header
-          if (eof < 0) exit
-          
-          !! read concentratin of treated organics - water, sediment and nutrients
-          read (107,*,iostat=eof) wtp_om_treat(iwtp)
           
           !! read pseticide concentrations of treated water
           if (cs_db%num_pests > 0) then
@@ -321,13 +317,12 @@
         do iwuse = 1, imax
           read (107,*,iostat=eof) header
           if (eof < 0) exit 
-          read (107,*,iostat=eof) wuse(iwuse)%name
+          read (107,*,iostat=eof) i, wuse(iwuse)%name, wuse(iwuse)%stor_mx,    &
+                                            wuse(iwuse)%lag_days, wuse(iwuse)%loss_fr, &
+                                            wuse(iwuse)%org_min, wuse(iwuse)%pests, &
+                                            wuse(iwuse)%paths, wuse(iwuse)%salts, &
+                                            wuse(iwuse)%constit, wuse(iwuse)%descrip
           if (eof < 0) exit
-          read (107,*,iostat=eof) header
-          if (eof < 0) exit
-          
-          !! read concentratin of treated organics - water, sediment and nutrients
-          read (107,*,iostat=eof) wuse_om_efflu(iwuse)
           
           !! crosswalk organic mineral with 
           do iom = 1, db_mx%om_use
@@ -424,15 +419,16 @@
           !! allocate and read aquifer loss data
           allocate (wtow(iwtow)%aqu_loss(num_src))
           
-          !! re-read the line to get all aquifer data
+          !! re-read the line to get all aquifer data based on number of aquifers
           backspace (107)
-          if (num_src == 1) then
+          select case (num_src)
+          case (1)
             read (107,*,iostat=eof) i, wtow(iwtow)%name, wtow(iwtow)%stor_mx,    &
                                             wtow(iwtow)%lag_days, wtow(iwtow)%loss_fr, &
                                             num_src, &
                                             wtow(iwtow)%aqu_loss(1)%aqu_num, wtow(iwtow)%aqu_loss(1)%frac
             wtow(iwtow)%aqu_loss(1)%num = 1
-          else if (num_src == 2) then
+          case (2)
             read (107,*,iostat=eof) i, wtow(iwtow)%name, wtow(iwtow)%stor_mx,    &
                                             wtow(iwtow)%lag_days, wtow(iwtow)%loss_fr, &
                                             num_src, &
@@ -440,7 +436,7 @@
                                             wtow(iwtow)%aqu_loss(2)%aqu_num, wtow(iwtow)%aqu_loss(2)%frac
             wtow(iwtow)%aqu_loss(1)%num = 1
             wtow(iwtow)%aqu_loss(2)%num = 2
-          else if (num_src == 3) then
+          case (3)
             read (107,*,iostat=eof) i, wtow(iwtow)%name, wtow(iwtow)%stor_mx,    &
                                             wtow(iwtow)%lag_days, wtow(iwtow)%loss_fr, &
                                             num_src, &
@@ -450,7 +446,12 @@
             wtow(iwtow)%aqu_loss(1)%num = 1
             wtow(iwtow)%aqu_loss(2)%num = 2
             wtow(iwtow)%aqu_loss(3)%num = 3
-          end if
+          case default
+            !! Default to single aquifer if invalid number
+            wtow(iwtow)%aqu_loss(1)%aqu_num = 1
+            wtow(iwtow)%aqu_loss(1)%frac = 1.0
+            wtow(iwtow)%aqu_loss(1)%num = 1
+          end select
         end do
       end do
       end if
@@ -523,15 +524,16 @@
           !! allocate and read aquifer loss data
           allocate (pipe(ipipe)%aqu_loss(num_src))
           
-          !! re-read the line to get all aquifer data
+          !! re-read the line to get all aquifer data based on number of aquifers
           backspace (107)
-          if (num_src == 1) then
+          select case (num_src)
+          case (1)
             read (107,*,iostat=eof) i, pipe(ipipe)%name, pipe(ipipe)%stor_mx,    &
                                             pipe(ipipe)%lag_days, pipe(ipipe)%loss_fr, &
                                             num_src, &
                                             pipe(ipipe)%aqu_loss(1)%aqu_num, pipe(ipipe)%aqu_loss(1)%frac
             pipe(ipipe)%aqu_loss(1)%num = 1
-          else if (num_src == 2) then
+          case (2)
             read (107,*,iostat=eof) i, pipe(ipipe)%name, pipe(ipipe)%stor_mx,    &
                                             pipe(ipipe)%lag_days, pipe(ipipe)%loss_fr, &
                                             num_src, &
@@ -539,7 +541,7 @@
                                             pipe(ipipe)%aqu_loss(2)%aqu_num, pipe(ipipe)%aqu_loss(2)%frac
             pipe(ipipe)%aqu_loss(1)%num = 1
             pipe(ipipe)%aqu_loss(2)%num = 2
-          else if (num_src == 3) then
+          case (3)
             read (107,*,iostat=eof) i, pipe(ipipe)%name, pipe(ipipe)%stor_mx,    &
                                             pipe(ipipe)%lag_days, pipe(ipipe)%loss_fr, &
                                             num_src, &
@@ -549,7 +551,12 @@
             pipe(ipipe)%aqu_loss(1)%num = 1
             pipe(ipipe)%aqu_loss(2)%num = 2
             pipe(ipipe)%aqu_loss(3)%num = 3
-          end if
+          case default
+            !! Default to single aquifer if invalid number
+            pipe(ipipe)%aqu_loss(1)%aqu_num = 1
+            pipe(ipipe)%aqu_loss(1)%frac = 1.0
+            pipe(ipipe)%aqu_loss(1)%num = 1
+          end select
         end do
       end do
       end if
