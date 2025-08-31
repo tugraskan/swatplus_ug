@@ -210,6 +210,7 @@
       if (.not. i_exist .or. 'water_treat.wal' == "null") then
         allocate (wtp_om_treat(0:0))
         allocate (wtp_cs_treat(0:0))
+        allocate (wtp(0:0))
       else
       do 
         open (107,file='water_treat.wal')
@@ -222,6 +223,7 @@
         
         allocate (wtp_om_treat(imax))
         allocate (wtp_cs_treat(imax))
+        allocate (wtp(imax))
 
         do iwtp = 1, imax
           read (107,*,iostat=eof) i, wtp(iwtp)%name, wtp(iwtp)%stor_mx,    &
@@ -299,6 +301,7 @@
       if (.not. i_exist .or. 'water_use.wal' == "null") then
         allocate (wuse_om_efflu(0:0))
         allocate (wuse_cs_efflu(0:0))
+        allocate (wuse(0:0))
       else
       do 
         open (107,file='water_use.wal')
@@ -311,6 +314,7 @@
         
         allocate (wuse_om_efflu(imax))
         allocate (wuse_cs_efflu(imax))
+        allocate (wuse(imax))
 
         do iwuse = 1, imax
           read (107,*,iostat=eof) i, wuse(iwuse)%name, wuse(iwuse)%stor_mx,    &
