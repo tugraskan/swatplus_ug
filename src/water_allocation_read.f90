@@ -227,9 +227,7 @@
         read (107,*,iostat=eof) titldum
         if (eof < 0) exit
         read (107,*,iostat=eof) imax
-        ! Skip empty line and read column header
-        read (107,'(A)',iostat=eof) header  ! Read empty line as string to not skip it
-        read (107,'(A)',iostat=eof) header  ! Read column header line
+        read (107,*,iostat=eof) header  ! Read column header line
         db_mx%wtp_db = imax
         if (eof < 0) exit
         
@@ -352,9 +350,7 @@
         read (107,*,iostat=eof) titldum
         if (eof < 0) exit
         read (107,*,iostat=eof) imax
-        ! Skip empty line and read column header
-        read (107,'(A)',iostat=eof) header  ! Read empty line as string to not skip it
-        read (107,'(A)',iostat=eof) header  ! Read column header line
+        read (107,*,iostat=eof) header  ! Read column header line
         db_mx%wuse_db = imax
         if (eof < 0) exit
         
@@ -479,10 +475,44 @@
         allocate (wtow(imax))
 
         do iwtow = 1, imax
-          read (107,*,iostat=eof) header
+          read (107,*,iostat=eof) k, wtow(iwtow)%name, wtow(iwtow)%stor_mx,    &
+                                            wtow(iwtow)%lag_days, wtow(iwtow)%loss_fr, &
+                                            num_objs  ! read number of aquifers for loss
           if (eof < 0) exit 
-          read (107,*,iostat=eof) wtow(iwtow)%name, wtow(iwtow)%init, wtow(iwtow)%stor_mx,    &
-                                            wtow(iwtow)%lag_days, wtow(iwtow)%loss_fr
+          
+          ! allocate aquifer loss array and read aquifer data
+          allocate(wtow(iwtow)%aqu_loss(num_objs))
+          
+          ! backspace and re-read the entire line including aquifer data
+          backspace (107)
+          if (num_objs == 1) then
+            read (107,*,iostat=eof) k, wtow(iwtow)%name, wtow(iwtow)%stor_mx,    &
+                                              wtow(iwtow)%lag_days, wtow(iwtow)%loss_fr, &
+                                              num_objs, wtow(iwtow)%aqu_loss(1)%aqu_num, &
+                                              wtow(iwtow)%aqu_loss(1)%frac
+            wtow(iwtow)%aqu_loss(1)%num = 1
+          else if (num_objs == 2) then
+            read (107,*,iostat=eof) k, wtow(iwtow)%name, wtow(iwtow)%stor_mx,    &
+                                              wtow(iwtow)%lag_days, wtow(iwtow)%loss_fr, &
+                                              num_objs, wtow(iwtow)%aqu_loss(1)%aqu_num, &
+                                              wtow(iwtow)%aqu_loss(1)%frac, &
+                                              wtow(iwtow)%aqu_loss(2)%aqu_num, &
+                                              wtow(iwtow)%aqu_loss(2)%frac
+            wtow(iwtow)%aqu_loss(1)%num = 1
+            wtow(iwtow)%aqu_loss(2)%num = 2
+          else if (num_objs == 3) then
+            read (107,*,iostat=eof) k, wtow(iwtow)%name, wtow(iwtow)%stor_mx,    &
+                                              wtow(iwtow)%lag_days, wtow(iwtow)%loss_fr, &
+                                              num_objs, wtow(iwtow)%aqu_loss(1)%aqu_num, &
+                                              wtow(iwtow)%aqu_loss(1)%frac, &
+                                              wtow(iwtow)%aqu_loss(2)%aqu_num, &
+                                              wtow(iwtow)%aqu_loss(2)%frac, &
+                                              wtow(iwtow)%aqu_loss(3)%aqu_num, &
+                                              wtow(iwtow)%aqu_loss(3)%frac
+            wtow(iwtow)%aqu_loss(1)%num = 1
+            wtow(iwtow)%aqu_loss(2)%num = 2
+            wtow(iwtow)%aqu_loss(3)%num = 3
+          end if
         end do
       end do
       end if
@@ -545,10 +575,44 @@
         allocate (pipe(imax))
 
         do ipipe = 1, imax
-          read (107,*,iostat=eof) header
+          read (107,*,iostat=eof) k, pipe(ipipe)%name, pipe(ipipe)%stor_mx,    &
+                                            pipe(ipipe)%lag_days, pipe(ipipe)%loss_fr, &
+                                            num_objs  ! read number of aquifers for loss
           if (eof < 0) exit 
-          read (107,*,iostat=eof) pipe(ipipe)%name, pipe(ipipe)%init, pipe(ipipe)%stor_mx,    &
-                                            pipe(ipipe)%lag_days, pipe(ipipe)%loss_fr
+          
+          ! allocate aquifer loss array and read aquifer data
+          allocate(pipe(ipipe)%aqu_loss(num_objs))
+          
+          ! backspace and re-read the entire line including aquifer data
+          backspace (107)
+          if (num_objs == 1) then
+            read (107,*,iostat=eof) k, pipe(ipipe)%name, pipe(ipipe)%stor_mx,    &
+                                              pipe(ipipe)%lag_days, pipe(ipipe)%loss_fr, &
+                                              num_objs, pipe(ipipe)%aqu_loss(1)%aqu_num, &
+                                              pipe(ipipe)%aqu_loss(1)%frac
+            pipe(ipipe)%aqu_loss(1)%num = 1
+          else if (num_objs == 2) then
+            read (107,*,iostat=eof) k, pipe(ipipe)%name, pipe(ipipe)%stor_mx,    &
+                                              pipe(ipipe)%lag_days, pipe(ipipe)%loss_fr, &
+                                              num_objs, pipe(ipipe)%aqu_loss(1)%aqu_num, &
+                                              pipe(ipipe)%aqu_loss(1)%frac, &
+                                              pipe(ipipe)%aqu_loss(2)%aqu_num, &
+                                              pipe(ipipe)%aqu_loss(2)%frac
+            pipe(ipipe)%aqu_loss(1)%num = 1
+            pipe(ipipe)%aqu_loss(2)%num = 2
+          else if (num_objs == 3) then
+            read (107,*,iostat=eof) k, pipe(ipipe)%name, pipe(ipipe)%stor_mx,    &
+                                              pipe(ipipe)%lag_days, pipe(ipipe)%loss_fr, &
+                                              num_objs, pipe(ipipe)%aqu_loss(1)%aqu_num, &
+                                              pipe(ipipe)%aqu_loss(1)%frac, &
+                                              pipe(ipipe)%aqu_loss(2)%aqu_num, &
+                                              pipe(ipipe)%aqu_loss(2)%frac, &
+                                              pipe(ipipe)%aqu_loss(3)%aqu_num, &
+                                              pipe(ipipe)%aqu_loss(3)%frac
+            pipe(ipipe)%aqu_loss(1)%num = 1
+            pipe(ipipe)%aqu_loss(2)%num = 2
+            pipe(ipipe)%aqu_loss(3)%num = 3
+          end if
         end do
       end do
       end if
@@ -613,9 +677,8 @@
         allocate (om_treat_name(imax))
 
         do iom_tr = 1, imax
-          read (107,*,iostat=eof) header
-          if (eof < 0) exit 
           read (107,*,iostat=eof) om_treat_name(iom_tr), wtp_om_treat(iom_tr)
+          if (eof < 0) exit 
         end do
       end do
       end if
@@ -680,9 +743,8 @@
         allocate (om_use_name(imax))
 
         do iom_use = 1, imax
-          read (107,*,iostat=eof) header
-          if (eof < 0) exit 
           read (107,*,iostat=eof) om_use_name(iom_use), wuse_om_efflu(iom_use)
+          if (eof < 0) exit 
         end do
       end do
       end if
