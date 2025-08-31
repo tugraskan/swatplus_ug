@@ -1,9 +1,0 @@
- DIAGNOSTICS.OUT FILE
- 2127801                                 soyb                                     not found in plant.ini
- 2127802                                 swht                                     not found in plant.ini
- 2127803                                 swht                                     not found in plant.ini
- weather01.pcp                                     file not found (pgage)
- weather01.tmp                                     file not found (tgage)
- sim                                               file not found (petgage)
- weather01                                         file not found (atmodep)
- file not found (basins_carbon.tes)
