@@ -113,3 +113,12 @@ ford.md
 /data/Osu_1hru/basin_wb_aa.txt
 /data/Osu_1hru/basin_wb_yr.txt
 /data/Osu_1hru/aquifer_aa.txt
+
+# Build output files  
+*.out
+codes.bsn
+diagnostics.out
+erosion.txt
+files_out.out
+simulation.out
+area_calc.out
