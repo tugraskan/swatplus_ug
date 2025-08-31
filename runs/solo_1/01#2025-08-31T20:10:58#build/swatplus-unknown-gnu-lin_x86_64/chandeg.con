@@ -1,9 +1,0 @@
-lcha_con Generated from M:\Constructor\HUC8_models\models\07010101.accdb Time: 2/13/2025 7:47:39 PM
-          ID      NAME  GIS_ID      AREA       LAT        LON   ELEV        LCHA           WST         CST   OVFL        RULE     OUT_TOT  obj_typ1  obj_id1  hyd_typ1  frac1
-           1     cha_1       1   7660.98  47.53102  -95.22852    442           1  weather1           0      0           0           0       
-           2     cha_2       1   2440.35  47.53102  -95.22852    442           2  weather2           0      0           0           0       
-
-
-
-
-           

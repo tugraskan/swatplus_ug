@@ -1,6 +1,0 @@
-hru_dat Generated from M:\Constructor\HUC8_models\models\07010101.accdb Time: 2/13/2025 7:42:16 PM
-          ID    NAME    TOPO    HYDRO   SOIL    LU_MGT     SOIL_INI           SURF_STOR   SNOW   FIELD
-           1    HRU_1   hu_1    hy1     430423  2127801  ini_2127801                null  snow1  field1
-           2    HRU_2   hu_2    hy2     430574  2127802  ini_2127802                null  snow1  field1
-           3    HRU_3   hu_3    hy3     397609  2127803  ini_2127803                null  snow1  field1
-           

@@ -1,7 +1,0 @@
-water_treat.wal -- concentrations after water treatment
-  3   number of treatments
-
-id   name      stormax_m3     lag_days   loss_fr    org_min   pests_ppm  paths_cfu  salts_ppm    constit_ppm   description
- 1   wtp1      10000.           10.       0.01     wtp1_om     null       null       null         null        level_1_treatment
- 2   wtp2      10000.           10.       0.01     wtp2_om     null       null       null         null        level_2_treatment
- 3   wtp3      10000.           10.       0.01     wtp3_om     null       null       null         null        level_3_treatment

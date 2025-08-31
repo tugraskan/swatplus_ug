@@ -1,3 +1,0 @@
- ceap_07010101             SWAT+ @TODAY@        MODULAR Rev @YEAR@.@SWAT_VERSION@   April 17_NAM          
-         day          yr        unit           str_c             lig_c         meta_c          man_c          hum_c         phum_c       mb_c 
-          --          --          --           kg/ha             kg/ha          kg/ha          kg/ha          kg/ha          kg/ha          kg/ha

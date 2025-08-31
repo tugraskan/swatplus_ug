@@ -1,4 +1,0 @@
- ceap_07010101             SWAT+ @TODAY@        MODULAR Rev @YEAR@.@SWAT_VERSION@   April 17_NAM          
- HRU_TOTC                  hru_totc.txt
-        jday          yr        unit    soil_tot_c   plant_tot_c     rsd_tot_c 
-          --          --          --          kg/ha         kg/ha         kg/ha

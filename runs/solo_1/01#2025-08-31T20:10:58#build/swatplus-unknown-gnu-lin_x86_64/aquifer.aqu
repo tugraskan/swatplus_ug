@@ -1,4 +1,0 @@
-aqu_dat Generated from M:\Constructor\HUC8_models\models\07010101.accdb Time: 2/13/2025 7:40:46 PM
-          ID             NAME  AQU_INI  GW_FLO  DEP_BOT  DEP_WT  NO3_N  SOL_P  CARBON  FLO_DIST  FLO_MAX  ALPHA_BF       REVAP  RCHG_DP  SPEC_YLD  HL_NO3N   FLO_MIN  REVAP_MIN
-           1  aqu_1  default    0.05       15       1      0      0     0.5        50        1     0.048           0     0.05       0.1       50         1          2
-           2  aqu_2  default    0.05       15       1      0      0     0.5        50        1     0.048           0     0.05       0.1       50         1          2

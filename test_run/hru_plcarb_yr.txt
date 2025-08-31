@@ -1,4 +1,0 @@
- ceap_07010101             SWAT+ @TODAY@        MODULAR Rev @YEAR@.@SWAT_VERSION@   April 17_NAM          
-        jday        mon        day         yr            unit              gis_id     name                  npp_c         harv_c         drop_c      grazeat_c         emit_c
-                                                                                                          kg C/ha        kg C/ha        kg C/ha        kg C/ha        kg C/ha
-         366          12          31        2000           1               2127801 2127801.0         0.0000000E+00   743.1556      0.0000000E+00   2877.797      0.0000000E+00  0.0000000E+00
