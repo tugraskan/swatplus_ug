@@ -242,7 +242,7 @@
           
           !! read pathogen concentrations of treated water
           if (cs_db%num_paths > 0) then
-            allocate (wtp_cs_treat(iwtp)%pest(cs_db%num_paths))
+            allocate (wtp_cs_treat(iwtp)%path(cs_db%num_paths))
             read (107,*,iostat=eof) header
             read (107,*,iostat=eof) wtp_cs_treat(iwtp)%path
           end if
