@@ -79,7 +79,8 @@
             if (eof < 0) exit
             backspace (107)
               read (107,*,iostat=eof) k, wallo(iwro)%src(i)%ob_typ, wallo(iwro)%src(i)%ob_num,    &
-                                                                  wallo(iwro)%src(i)%limit_mon
+                                      wallo(iwro)%src(i)%avail_typ, &
+                                      (wallo(iwro)%src(i)%limit_mon(k), k=1,12)
           end do
           
           !! read demand object data

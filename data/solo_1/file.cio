@@ -12,7 +12,7 @@ RECALL    recall.rec
 DR    delratio.del    dr_om.del    dr_pest.del    dr_path.del    dr_hmet.dle    dr_salt.del
 AQUIFER    initial.aqu    aquifer.aqu
 HERD    animal.hrd    herd.hrd    ranch.hrd
-WATER_RIGHTS    "null"    null    null
+WATER_RIGHTS    water_allocation.wro    null    null
 LINK    chan-surf.lin    "null"
 HYDROLOGY    hydrology.hyd    topography.hyd    field.fld
 STRUCTURAL    tiledrain.str    septic.str    filterstrip.str    grassedww.str    bmpuser.str
