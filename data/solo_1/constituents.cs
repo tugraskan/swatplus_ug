@@ -1,11 +1,8 @@
 constituents.cs -- active pesticides and pathogens for water treatment testing
-3
-aatrex  atrazine
-lasso   lasso
-roundup roundup
+1
+aatrex lasso roundup
 2
-e_coli  e_coli_bacteria
-crypto  cryptosporidium
+e_coli  crypto
 0
 
 0

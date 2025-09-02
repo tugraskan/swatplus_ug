@@ -8,7 +8,7 @@
       "program": "${command:cmake.launchTargetPath}",
       "args": [],
       "stopAtEntry": false,
-      "cwd": "/mnt/c/Users/taci.ugraskan/source/repos/Data/solo_1",
+      "cwd": "${workspaceFolder}/Data/solo_1",
       "externalConsole": false,
       "MIMode": "gdb",
       "miDebuggerPath": "/usr/bin/gdb",
