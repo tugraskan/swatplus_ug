@@ -341,7 +341,7 @@
           
           !! read pathogen concentrations of treated water
           if (cs_db%num_paths > 0) then
-            allocate (wuse_cs_efflu(iwuse)%pest(cs_db%num_paths))
+            allocate (wuse_cs_efflu(iwuse)%path(cs_db%num_paths))
             read (107,*,iostat=eof) header
             read (107,*,iostat=eof) wuse_cs_efflu(iwuse)%path
           end if
@@ -395,7 +395,7 @@
 
       inquire (file='water_tower.wal', exist=i_exist)
       if (.not. i_exist .or. 'water_tower.wal' == "null") then
-        allocate (wtow(0:0))
+        if (.not. allocated(wtow)) allocate (wtow(0:0))
       else
       do 
         open (107,file='water_tower.wal')
@@ -406,7 +406,7 @@
         !db_mx%water_treat = imax
         if (eof < 0) exit
         
-        allocate (wtow(imax))
+        if (.not. allocated(wtow)) allocate (wtow(imax))
 
         do iwtow = 1, imax
           read (107,*,iostat=eof) header
@@ -417,7 +417,7 @@
           if (eof < 0) exit
           
           !! allocate and read aquifer loss data
-          allocate (wtow(iwtow)%aqu_loss(num_src))
+          if (.not. allocated(wtow(iwtow)%aqu_loss)) allocate (wtow(iwtow)%aqu_loss(num_src))
           
           !! re-read the line to get all aquifer data based on number of aquifers
           backspace (107)
