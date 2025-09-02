@@ -151,7 +151,7 @@
               (wallo(iwro)%dmd(i)%rcv(isrc), ircv = 1, num_rcv)
             
             !! zero output variables for summing
-            do isrc = 1, num_objs
+            do isrc = 1, num_src
               wallod_out(iwro)%dmd(i)%src(isrc) = walloz
               wallom_out(iwro)%dmd(i)%src(isrc) = walloz
               walloy_out(iwro)%dmd(i)%src(isrc) = walloz
