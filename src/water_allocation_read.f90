@@ -147,9 +147,9 @@
             backspace (107)
             read (107,*,iostat=eof) k, wallo(iwro)%dmd(i)%ob_typ, wallo(iwro)%dmd(i)%ob_num,            &
               wallo(iwro)%dmd(i)%dmd_typ, wallo(iwro)%dmd(i)%dmd_typ_name, wallo(iwro)%dmd(i)%amount,   &
-              wallo(iwro)%dmd(i)%right, wallo(iwro)%dmd(i)%src_num, wallo(iwro)%dmd(i)%rcv_num,         &
-              (wallo(iwro)%dmd(i)%src(isrc), isrc = 1, num_src),                                        &
-              (wallo(iwro)%dmd(i)%rcv(ircv), ircv = 1, num_rcv)
+              wallo(iwro)%dmd(i)%right, wallo(iwro)%dmd(i)%rcv_num, wallo(iwro)%dmd(i)%src_num,         &
+              wallo(iwro)%dmd(i)%dtl_rcv_fr, (wallo(iwro)%dmd(i)%rcv(ircv), ircv = 1, num_rcv),        &
+              wallo(iwro)%dmd(i)%dtl_src_fr, (wallo(iwro)%dmd(i)%src(isrc), isrc = 1, num_src)
             
             !! set src_wal links to main source objects
             do isrc = 1, num_src
