@@ -1,5 +1,13 @@
 obj_prt Generated from M:\Constructor\HUC8_models\models\07010101.accdb Time: 2/13/2025 7:44:00 PM
           ID  OBJ_TYP  OBJ_TYP_NO  HYD_TYP                 FILENAME
-           1      out           1      tot     070101010101_con.out
-           2      out           2      tot     070101010102_con.out
+           1      hru           1      tot               hru_wb_aa.txt
+           2      hru           2      tot               hru_wb_aa.txt  
+           3      hru           3      tot               hru_wb_aa.txt
+           4      aqu           1      tot               basin_aqu_aa.txt
+           5      aqu           2      tot               basin_aqu_aa.txt
+           6      res           1      tot               reservoir_aa.txt
+           7      sdc           1      tot               channel_sd_aa.txt
+           8      sdc           2      tot               channel_sd_aa.txt
+           9      out           1      tot     070101010101_con.out
+          10      out           2      tot     070101010102_con.out
        
