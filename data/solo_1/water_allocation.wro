@@ -8,7 +8,20 @@ Source Objects (SRC_NUM OB_TYP OB_NUM SRCMIN_DTL JAN_MIN-DEC_MIN)
          3    cha        2    null      0.05    0.05    0.05    0.05    0.05    0.05    0.05    0.05    0.05    0.05    0.05    0.05
          4    aqu        2    null       13.     13      13      13      13      13      13      13      13      13      13      13
          5    out        1    null       0.8     0.8     0.8     0.8     0.5     0.5     0.5     0.5     0.5     0.8     0.8     0.8
-Demand Objects
+Demand Objects (DMD_NUM OB_TYP OB_NUM DMD_TYP DMD_TYP_NAME AMOUNT RIGHT RCV_NUM SRC_NUM DTL_RCV_FR RCV_OBJECTS DTL_SRC_FR SRC_OBJECTS)
+! DMD_NUM:      Sequential demand object number
+! OB_TYP:       Demand object type (out, wtp, use, hru, etc.)
+! OB_NUM:       Demand object number
+! DMD_TYP:      Demand type (null, dtbl, ave_day, etc.)
+! DMD_TYP_NAME: Demand type name (null, irr_str8_dmd, etc.)
+! AMOUNT:       Demand amount (m3/day or ha-m)
+! RIGHT:        Water right (sr=senior, jr=junior)
+! RCV_NUM:      Number of receiving objects for this demand
+! SRC_NUM:      Number of source objects for this demand
+! DTL_RCV_FR:   Decision table for receiving object fractions
+! RCV_OBJECTS:  Receiving object data (rcv_typ rcv_num conv_typ conv_num frac comp)
+! DTL_SRC_FR:   Decision table for source object fractions  
+! SRC_OBJECTS:  Source object data (src_typ src_num conv_typ conv_num frac comp)
 1 out 1 null null 4.0 sr 0 1 null null 0 res 1 pipe 1 1.0 n
 2 wtp 1 ave_day null 4.0 sr 1 1 null res 1 pipe 1 1.0 n null 0 stor 1 pipe 2 1.0 n
 3 use 1 ave_day null 2.0 sr 1 1 null stor 1 pipe 3 1.0 n null 0 wtp 2 pipe 5 1.0 n
