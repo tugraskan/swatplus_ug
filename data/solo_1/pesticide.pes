@@ -2,7 +2,7 @@ pest_db Generated from M:\Constructor\HUC8_models\models\07010101.accdb Time: 2/
         NAME  SOIL_ADS  FRAC_WASH  HL_FOLIAGE  HL_SOIL    SOLUB  AQ_REAC  AQ_VOLAT  MOL_WT  AQ_RESUS  AQ_SETTLE  BEN_ACT_DEP  BEN_BURY  BEN_REAC
       1sutan       400        0.3           1       13       44                                                                                 
       2plus2        20       0.95          10       21   660000                                                                                 
-      aatrex       171       0.45           5       60       33                                                                                 
+      aatrex       171       0.45           5       60       33        1        1   215.68        1        1        0.1        1        1
        abate    100000       0.65           5       30        0                                                                                 
     acaraben      2000       0.05          10       20       13                                                                                 
     accelera        20        0.9           7        7   100000                                                                                 
@@ -124,7 +124,7 @@ pest_db Generated from M:\Constructor\HUC8_models\models\07010101.accdb Time: 2/
      lannate        72       0.55         0.5       30    58000                                                                                 
     larvadex       200       0.95          30      150   136000                                                                                 
       larvin       350        0.7           4        7     19.1                                                                                 
-       lasso       170        0.4           3       15      240                                                                                 
+       lasso       170        0.4           3       15      240        1        1   269.77        1        1        0.1        1        1
        limit      1000        0.7           8       20       10                                                                                 
      lontrel         6       0.95           2       30   300000                                                                                 
        lorox       400        0.6          15       60       75                                                                                 
@@ -176,7 +176,7 @@ pest_db Generated from M:\Constructor\HUC8_models\models\07010101.accdb Time: 2/
      ridomil        50        0.7          30       70     8400                                                                                 
      ro-neet       430        0.5           2       30       95                                                                                 
      ronstar      3200        0.5          20       60      0.7                                                                                 
-     roundup     24000        0.6         2.5       47   900000                                                                                 
+     roundup     24000        0.6         2.5       47   900000        1        1   169.07        1        1        0.1        1        1                                                                                 
       rovral       700        0.4           5       14     13.9                                                                                 
     royalslo        20       0.95          10       30   400000                                                                                 
      rubigan       600        0.4          30      360       14                                                                                 
