@@ -19,6 +19,7 @@
       integer :: i = 0                !none       |counter
       integer :: k = 0                !none       |counter
       integer :: isrc = 0             !none       |counter
+      integer :: jsrc = 0             !none       |counter  
       integer :: ircv = 0             !none       |counter
       integer :: iwro = 0             !none       |number of water allocation objects
       integer :: num_objs = 0
@@ -148,10 +149,22 @@
               wallo(iwro)%dmd(i)%dmd_typ, wallo(iwro)%dmd(i)%dmd_typ_name, wallo(iwro)%dmd(i)%amount,   &
               wallo(iwro)%dmd(i)%right, wallo(iwro)%dmd(i)%src_num, wallo(iwro)%dmd(i)%rcv_num,         &
               (wallo(iwro)%dmd(i)%src(isrc), isrc = 1, num_src),                                        &
-              (wallo(iwro)%dmd(i)%rcv(isrc), ircv = 1, num_rcv)
+              (wallo(iwro)%dmd(i)%rcv(ircv), ircv = 1, num_rcv)
+            
+            !! set src_wal links to main source objects
+            do isrc = 1, num_src
+              !! find the corresponding source object in the main source list
+              do jsrc = 1, wallo(iwro)%src_obs
+                if (wallo(iwro)%dmd(i)%src(isrc)%src_typ == wallo(iwro)%src(jsrc)%ob_typ .and. &
+                    wallo(iwro)%dmd(i)%src(isrc)%src_num == wallo(iwro)%src(jsrc)%ob_num) then
+                  wallo(iwro)%dmd(i)%src(isrc)%src_wal = jsrc
+                  exit
+                end if
+              end do
+            end do
             
             !! zero output variables for summing
-            do isrc = 1, num_objs
+            do isrc = 1, num_src
               wallod_out(iwro)%dmd(i)%src(isrc) = walloz
               wallom_out(iwro)%dmd(i)%src(isrc) = walloz
               walloy_out(iwro)%dmd(i)%src(isrc) = walloz
