@@ -148,7 +148,7 @@
               wallo(iwro)%dmd(i)%dmd_typ, wallo(iwro)%dmd(i)%dmd_typ_name, wallo(iwro)%dmd(i)%amount,   &
               wallo(iwro)%dmd(i)%right, wallo(iwro)%dmd(i)%src_num, wallo(iwro)%dmd(i)%rcv_num,         &
               (wallo(iwro)%dmd(i)%src(isrc), isrc = 1, num_src),                                        &
-              (wallo(iwro)%dmd(i)%rcv(isrc), ircv = 1, num_rcv)
+              (wallo(iwro)%dmd(i)%rcv(ircv), ircv = 1, num_rcv)
             
             !! zero output variables for summing
             do isrc = 1, num_src
