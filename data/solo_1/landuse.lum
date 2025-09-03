@@ -1,5 +1,5 @@
 lulc_hru Generated from M:\Constructor\HUC8_models\models\07010101.accdb Time: 2/13/2025 7:43:22 PM
      NAME      CAL_GRP      PLNT_COM                                 MGT          CN2      CONS_PRAC  URBAN           URB_RO        OV_MANN   TILE    SEP           VFS         GRWW    BMP
-  2127801     row_crop          soyb        soyb_cmz_02_intense_dry_3877      rc_sr_g  up_down_slope   null             null   convtill_res   null   null          null   grwway_med   null
-  2127802  close_grown          swht          swht_cmz_02_notill_dry_571   sg_cr_sr_g  up_down_slope   null             null  notill_2-9res   null   null          null         null   null
-  2127803  close_grown          swht        swht_cmz_02_reduced_dry_3863      sg_sr_g  up_down_slope   null             null   convtill_res   null   null          null         null   null
+  2127801     row_crop          soyb        null      rc_sr_g  up_down_slope   null             null   convtill_res   null   null          null   grwway_med   null
+  2127802  close_grown          swht          null   sg_cr_sr_g  up_down_slope   null             null  notill_2-9res   null   null          null         null   null
+  2127803  close_grown          swht        null      sg_sr_g  up_down_slope   null             null   convtill_res   null   null          null         null   null

@@ -1,4 +1,4 @@
- ceap_07010101             SWAT+ @TODAY@        MODULAR Rev @YEAR@.@SWAT_VERSION@   April 17_NAM          
+ ceap_07010101             SWAT+ 2025-09-03        MODULAR Rev 2025.61.0.2.5-474-g1a4c1fa                 
  BSN_TOTC                basin_totc.txt
         jday          yr        unit    soil_tot_c   plant_tot_c     rsd_tot_c 
           --          --          --          kg/ha         kg/ha         kg/ha
