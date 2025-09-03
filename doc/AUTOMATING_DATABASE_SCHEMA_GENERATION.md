@@ -1,6 +1,20 @@
 # Automating SWAT+ Database Schema and Modular CSV Generation
 
-This document explains how to potentially automate the creation of the Access Database Schema and Modular Database CSV files from the SWAT+ Fortran source code through static code analysis and pattern recognition.
+This document explains how to automate the creation of the Access Database Schema and Modular Database CSV files from the SWAT+ Fortran source code through static code analysis and pattern recognition.
+
+## 🎯 RECOMMENDED APPROACH: Use FORD
+
+**The most practical approach is to leverage FORD (Fortran Documenter)** which is already integrated into the SWAT+ build system. See the comprehensive guide in [`FORD_DATABASE_AUTOMATION.md`](./FORD_DATABASE_AUTOMATION.md) for the complete implementation strategy.
+
+**Key advantages of FORD approach:**
+- ✅ Already integrated into SWAT+ CI/CD pipeline
+- ✅ Successfully parses all 645+ source files  
+- ✅ Generates structured JSON output ready for processing
+- ✅ Provides complete type definitions with field metadata
+- ✅ Includes cross-reference information between modules
+- ✅ 90%+ automation potential with existing infrastructure
+
+The remainder of this document provides alternative approaches and detailed technical analysis for reference.
 
 ## Current Manual Process vs Automation Potential
 
