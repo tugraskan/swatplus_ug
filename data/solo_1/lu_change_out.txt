@@ -1,2 +1,2 @@
- ceap_07010101             SWAT+ @TODAY@        MODULAR Rev @YEAR@.@SWAT_VERSION@   April 17_NAM          
+ ceap_07010101             SWAT+ 2025-09-03        MODULAR Rev 2025.61.0.2.5-474-g1a4c1fa                 
           hru       year         mon         day     operation   lu_before         lu_after

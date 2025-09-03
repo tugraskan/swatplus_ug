@@ -1,5 +1,7 @@
  ceap_07010101            
-           1
+           3
    iwst                                  name                   land_use                                       slope      hydgrp                                                                                                                                                                                                                              null          null
     ---                                  ----                   --------                                         m/m      ------                                                                                                                                                                                                                              null          null
-       1                                 2127801.0               2127801                                       0.2430E-01 B                           null            null
+       1                                 HRU_1                   2127801                                       0.2430E-01 B                           null            null
+       2                                 HRU_2                   2127802                                       0.1409E-01 C                           null            null
+       3                                 HRU_3                   2127803                                       0.3265E-02 C                           null            null

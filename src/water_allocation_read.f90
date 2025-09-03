@@ -19,6 +19,7 @@
       integer :: i = 0                !none       |counter
       integer :: k = 0                !none       |counter
       integer :: isrc = 0             !none       |counter
+      integer :: jsrc = 0             !none       |counter  
       integer :: ircv = 0             !none       |counter
       integer :: iwro = 0             !none       |number of water allocation objects
       integer :: num_objs = 0
@@ -79,7 +80,8 @@
             if (eof < 0) exit
             backspace (107)
               read (107,*,iostat=eof) k, wallo(iwro)%src(i)%ob_typ, wallo(iwro)%src(i)%ob_num,    &
-                                                                  wallo(iwro)%src(i)%limit_mon
+                                      wallo(iwro)%src(i)%avail_typ, &
+                                      (wallo(iwro)%src(i)%limit_mon(k), k=1,12)
           end do
           
           !! read demand object data
@@ -92,7 +94,8 @@
             backspace (107)
             read (107,*,iostat=eof) k, wallo(iwro)%dmd(i)%ob_typ, wallo(iwro)%dmd(i)%ob_num,            &
               wallo(iwro)%dmd(i)%dmd_typ, wallo(iwro)%dmd(i)%dmd_typ_name, wallo(iwro)%dmd(i)%amount,   &
-              wallo(iwro)%dmd(i)%right, wallo(iwro)%dmd(i)%src_num, wallo(iwro)%dmd(i)%rcv_num
+              wallo(iwro)%dmd(i)%right, wallo(iwro)%dmd(i)%rcv_num, wallo(iwro)%dmd(i)%src_num !, &
+              !wallo(iwro)%dmd(i)%dtl_rcv_fr, wallo(iwro)%dmd(i)%dtl_src_fr
             num_src = wallo(iwro)%dmd(i)%src_num
             allocate (wallo(iwro)%dmd(i)%src(num_src))
             allocate (wallod_out(iwro)%dmd(i)%src(num_src))
@@ -145,12 +148,25 @@
             backspace (107)
             read (107,*,iostat=eof) k, wallo(iwro)%dmd(i)%ob_typ, wallo(iwro)%dmd(i)%ob_num,            &
               wallo(iwro)%dmd(i)%dmd_typ, wallo(iwro)%dmd(i)%dmd_typ_name, wallo(iwro)%dmd(i)%amount,   &
-              wallo(iwro)%dmd(i)%right, wallo(iwro)%dmd(i)%src_num, wallo(iwro)%dmd(i)%rcv_num,         &
-              (wallo(iwro)%dmd(i)%src(isrc), isrc = 1, num_src),                                        &
-              (wallo(iwro)%dmd(i)%rcv(isrc), ircv = 1, num_rcv)
+              wallo(iwro)%dmd(i)%right, wallo(iwro)%dmd(i)%rcv_num, wallo(iwro)%dmd(i)%src_num,         &
+              !wallo(iwro)%dmd(i)%dtl_rcv_fr, wallo(iwro)%dmd(i)%dtl_src_fr, &
+              (wallo(iwro)%dmd(i)%rcv(ircv), ircv = 1, num_rcv),                                        &
+              (wallo(iwro)%dmd(i)%src(isrc), isrc = 1, num_src)
+            
+            !! set src_wal links to main source objects
+            !do isrc = 1, num_src
+              !! find the corresponding source object in the main source list
+              !do jsrc = 1, wallo(iwro)%src_obs
+                !if (wallo(iwro)%dmd(i)%src(isrc)%src_typ == wallo(iwro)%src(jsrc)%ob_typ .and. &
+                    !wallo(iwro)%dmd(i)%src(isrc)%src_num == wallo(iwro)%src(jsrc)%ob_num) then
+                  !wallo(iwro)%dmd(i)%src(isrc)%src_wal = jsrc
+                  !exit
+                !end if
+              !end do
+            !end do
             
             !! zero output variables for summing
-            do isrc = 1, num_objs
+            do isrc = 1, num_src
               wallod_out(iwro)%dmd(i)%src(isrc) = walloz
               wallom_out(iwro)%dmd(i)%src(isrc) = walloz
               walloy_out(iwro)%dmd(i)%src(isrc) = walloz
@@ -210,6 +226,7 @@
       if (.not. i_exist .or. 'water_treat.wal' == "null") then
         allocate (wtp_om_treat(0:0))
         allocate (wtp_cs_treat(0:0))
+        allocate (wtp(0:0))
       else
       do 
         open (107,file='water_treat.wal')
@@ -222,20 +239,15 @@
         
         allocate (wtp_om_treat(imax))
         allocate (wtp_cs_treat(imax))
+        allocate (wtp(imax))
 
         do iwtp = 1, imax
-          read (107,*,iostat=eof) header
-          if (eof < 0) exit 
-          read (107,*,iostat=eof) i
+          read (107,*,iostat=eof) i, wtp(iwtp)%name, wtp(iwtp)%stor_mx,    &
+                                            wtp(iwtp)%lag_days, wtp(iwtp)%loss_fr, &
+                                            wtp(iwtp)%org_min, wtp(iwtp)%pests, &
+                                            wtp(iwtp)%paths, wtp(iwtp)%salts, &
+                                            wtp(iwtp)%constit, wtp(iwtp)%descrip
           if (eof < 0) exit
-          backspace (107)
-          read (107,*,iostat=eof) k, wtp(iwtp)
-          if (eof < 0) exit
-          read (107,*,iostat=eof) header
-          if (eof < 0) exit
-          
-          !! read concentratin of treated organics - water, sediment and nutrients
-          read (107,*,iostat=eof) wtp_om_treat(iwtp)
           
           !! read pseticide concentrations of treated water
           if (cs_db%num_pests > 0) then
@@ -246,7 +258,7 @@
           
           !! read pathogen concentrations of treated water
           if (cs_db%num_paths > 0) then
-            allocate (wtp_cs_treat(iwtp)%pest(cs_db%num_paths))
+            allocate (wtp_cs_treat(iwtp)%path(cs_db%num_paths))
             read (107,*,iostat=eof) header
             read (107,*,iostat=eof) wtp_cs_treat(iwtp)%path
           end if
@@ -305,6 +317,7 @@
       if (.not. i_exist .or. 'water_use.wal' == "null") then
         allocate (wuse_om_efflu(0:0))
         allocate (wuse_cs_efflu(0:0))
+        allocate (wuse(0:0))
       else
       do 
         open (107,file='water_use.wal')
@@ -317,17 +330,15 @@
         
         allocate (wuse_om_efflu(imax))
         allocate (wuse_cs_efflu(imax))
+        allocate (wuse(imax))
 
         do iwuse = 1, imax
-          read (107,*,iostat=eof) header
-          if (eof < 0) exit 
-          read (107,*,iostat=eof) wuse(iwuse)%name
+          read (107,*,iostat=eof) i, wuse(iwuse)%name, wuse(iwuse)%stor_mx,    &
+                                            wuse(iwuse)%lag_days, wuse(iwuse)%loss_fr, &
+                                            wuse(iwuse)%org_min, wuse(iwuse)%pests, &
+                                            wuse(iwuse)%paths, wuse(iwuse)%salts, &
+                                            wuse(iwuse)%constit, wuse(iwuse)%descrip
           if (eof < 0) exit
-          read (107,*,iostat=eof) header
-          if (eof < 0) exit
-          
-          !! read concentratin of treated organics - water, sediment and nutrients
-          read (107,*,iostat=eof) wuse_om_efflu(iwuse)
           
           !! crosswalk organic mineral with 
           do iom = 1, db_mx%om_use
@@ -346,7 +357,7 @@
           
           !! read pathogen concentrations of treated water
           if (cs_db%num_paths > 0) then
-            allocate (wuse_cs_efflu(iwuse)%pest(cs_db%num_paths))
+            allocate (wuse_cs_efflu(iwuse)%path(cs_db%num_paths))
             read (107,*,iostat=eof) header
             read (107,*,iostat=eof) wuse_cs_efflu(iwuse)%path
           end if
@@ -400,7 +411,7 @@
 
       inquire (file='water_tower.wal', exist=i_exist)
       if (.not. i_exist .or. 'water_tower.wal' == "null") then
-        allocate (wtow(0:0))
+        if (.not. allocated(wtow)) allocate (wtow(0:0))
       else
       do 
         open (107,file='water_tower.wal')
@@ -411,13 +422,52 @@
         !db_mx%water_treat = imax
         if (eof < 0) exit
         
-        allocate (wtow(imax))
+        if (.not. allocated(wtow)) allocate (wtow(imax))
 
         do iwtow = 1, imax
           read (107,*,iostat=eof) header
           if (eof < 0) exit 
-          read (107,*,iostat=eof) wtow(iwtow)%name, wtow(iwtow)%init, wtow(iwtow)%stor_mx,    &
-                                            wtow(iwtow)%lag_days, wtow(iwtow)%loss_fr
+          read (107,*,iostat=eof) i, wtow(iwtow)%name, wtow(iwtow)%stor_mx,    &
+                                            wtow(iwtow)%lag_days, wtow(iwtow)%loss_fr, &
+                                            num_src
+          if (eof < 0) exit
+          
+          !! allocate and read aquifer loss data
+          if (.not. allocated(wtow(iwtow)%aqu_loss)) allocate (wtow(iwtow)%aqu_loss(num_src))
+          
+          !! re-read the line to get all aquifer data based on number of aquifers
+          backspace (107)
+          select case (num_src)
+          case (1)
+            read (107,*,iostat=eof) i, wtow(iwtow)%name, wtow(iwtow)%stor_mx,    &
+                                            wtow(iwtow)%lag_days, wtow(iwtow)%loss_fr, &
+                                            num_src, &
+                                            wtow(iwtow)%aqu_loss(1)%aqu_num, wtow(iwtow)%aqu_loss(1)%frac
+            wtow(iwtow)%aqu_loss(1)%num = 1
+          case (2)
+            read (107,*,iostat=eof) i, wtow(iwtow)%name, wtow(iwtow)%stor_mx,    &
+                                            wtow(iwtow)%lag_days, wtow(iwtow)%loss_fr, &
+                                            num_src, &
+                                            wtow(iwtow)%aqu_loss(1)%aqu_num, wtow(iwtow)%aqu_loss(1)%frac, &
+                                            wtow(iwtow)%aqu_loss(2)%aqu_num, wtow(iwtow)%aqu_loss(2)%frac
+            wtow(iwtow)%aqu_loss(1)%num = 1
+            wtow(iwtow)%aqu_loss(2)%num = 2
+          case (3)
+            read (107,*,iostat=eof) i, wtow(iwtow)%name, wtow(iwtow)%stor_mx,    &
+                                            wtow(iwtow)%lag_days, wtow(iwtow)%loss_fr, &
+                                            num_src, &
+                                            wtow(iwtow)%aqu_loss(1)%aqu_num, wtow(iwtow)%aqu_loss(1)%frac, &
+                                            wtow(iwtow)%aqu_loss(2)%aqu_num, wtow(iwtow)%aqu_loss(2)%frac, &
+                                            wtow(iwtow)%aqu_loss(3)%aqu_num, wtow(iwtow)%aqu_loss(3)%frac
+            wtow(iwtow)%aqu_loss(1)%num = 1
+            wtow(iwtow)%aqu_loss(2)%num = 2
+            wtow(iwtow)%aqu_loss(3)%num = 3
+          case default
+            !! Default to single aquifer if invalid number
+            wtow(iwtow)%aqu_loss(1)%aqu_num = 1
+            wtow(iwtow)%aqu_loss(1)%frac = 1.0
+            wtow(iwtow)%aqu_loss(1)%num = 1
+          end select
         end do
       end do
       end if
@@ -482,8 +532,47 @@
         do ipipe = 1, imax
           read (107,*,iostat=eof) header
           if (eof < 0) exit 
-          read (107,*,iostat=eof) pipe(ipipe)%name, pipe(ipipe)%init, pipe(ipipe)%stor_mx,    &
-                                            pipe(ipipe)%lag_days, pipe(ipipe)%loss_fr
+          read (107,*,iostat=eof) i, pipe(ipipe)%name, pipe(ipipe)%stor_mx,    &
+                                            pipe(ipipe)%lag_days, pipe(ipipe)%loss_fr, &
+                                            num_src
+          if (eof < 0) exit
+          
+          !! allocate and read aquifer loss data
+          allocate (pipe(ipipe)%aqu_loss(num_src))
+          
+          !! re-read the line to get all aquifer data based on number of aquifers
+          backspace (107)
+          select case (num_src)
+          case (1)
+            read (107,*,iostat=eof) i, pipe(ipipe)%name, pipe(ipipe)%stor_mx,    &
+                                            pipe(ipipe)%lag_days, pipe(ipipe)%loss_fr, &
+                                            num_src, &
+                                            pipe(ipipe)%aqu_loss(1)%aqu_num, pipe(ipipe)%aqu_loss(1)%frac
+            pipe(ipipe)%aqu_loss(1)%num = 1
+          case (2)
+            read (107,*,iostat=eof) i, pipe(ipipe)%name, pipe(ipipe)%stor_mx,    &
+                                            pipe(ipipe)%lag_days, pipe(ipipe)%loss_fr, &
+                                            num_src, &
+                                            pipe(ipipe)%aqu_loss(1)%aqu_num, pipe(ipipe)%aqu_loss(1)%frac, &
+                                            pipe(ipipe)%aqu_loss(2)%aqu_num, pipe(ipipe)%aqu_loss(2)%frac
+            pipe(ipipe)%aqu_loss(1)%num = 1
+            pipe(ipipe)%aqu_loss(2)%num = 2
+          case (3)
+            read (107,*,iostat=eof) i, pipe(ipipe)%name, pipe(ipipe)%stor_mx,    &
+                                            pipe(ipipe)%lag_days, pipe(ipipe)%loss_fr, &
+                                            num_src, &
+                                            pipe(ipipe)%aqu_loss(1)%aqu_num, pipe(ipipe)%aqu_loss(1)%frac, &
+                                            pipe(ipipe)%aqu_loss(2)%aqu_num, pipe(ipipe)%aqu_loss(2)%frac, &
+                                            pipe(ipipe)%aqu_loss(3)%aqu_num, pipe(ipipe)%aqu_loss(3)%frac
+            pipe(ipipe)%aqu_loss(1)%num = 1
+            pipe(ipipe)%aqu_loss(2)%num = 2
+            pipe(ipipe)%aqu_loss(3)%num = 3
+          case default
+            !! Default to single aquifer if invalid number
+            pipe(ipipe)%aqu_loss(1)%aqu_num = 1
+            pipe(ipipe)%aqu_loss(1)%frac = 1.0
+            pipe(ipipe)%aqu_loss(1)%num = 1
+          end select
         end do
       end do
       end if
@@ -548,8 +637,6 @@
         allocate (om_treat_name(imax))
 
         do iom_tr = 1, imax
-          read (107,*,iostat=eof) header
-          if (eof < 0) exit 
           read (107,*,iostat=eof) om_treat_name(iom_tr), wtp_om_treat(iom_tr)
         end do
       end do

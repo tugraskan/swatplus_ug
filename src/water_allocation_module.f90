@@ -23,7 +23,6 @@
 
       !! demand source objects
       type demand_source_objects
-        character (len=25) :: dtbl = ""         !decision table name to set fractions of each source (if used-not null)
         integer :: src_wal                      !sequential source number as listed in wallo object
         character (len=10) :: src_typ = ""      !source object type
         integer :: src_num = 0                  !number of the source object
@@ -35,7 +34,6 @@
         
       !! demand receiving objects
       type demand_receiving_objects
-        character (len=25) :: dtbl = ""         !decision table name to set fractions of each source (if used-not null)
         character (len=10) :: rcv_typ = ""      !receiving object type
         integer :: rcv_num = 0                  !number of the receiving object
         character (len=10) :: conv_typ = ""     !conveyance type - pipe or pump

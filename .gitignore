@@ -40,6 +40,7 @@ _ReSharper*/
 *.vfproj
 *.u2d
 *.OUT
+*.out
 *.o
 *.mod
 *.ico
@@ -113,3 +114,13 @@ ford.md
 /data/Osu_1hru/basin_wb_aa.txt
 /data/Osu_1hru/basin_wb_yr.txt
 /data/Osu_1hru/aquifer_aa.txt
+# Additional patterns for output files
+*.ini
+fort.*
+area_calc.out
+checker.out
+co2.out
+diagnostics.out
+erosion.out
+files_out.out
+simulation.out
