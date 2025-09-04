@@ -1,0 +1,255 @@
+# SWAT+ Parameter Extraction Configuration
+# This file controls which parameters are extracted and how they are processed
+
+# Types to include in parameter extraction
+include_types:
+  # Database types (primary parameter sources)
+  - "*_db"          # Database tables (e.g., plant_db, soil_db)
+  - "*_parms"       # Parameter collections
+  - "*_init"        # Initial condition parameters
+  - "*_data"        # Data structure types
+  
+  # Specific important types
+  - "file_cio"      # Master configuration
+  - "time_sim"      # Simulation timing
+  - "print_prt"     # Output control
+  - "object_*"      # Object definitions
+
+# Patterns to exclude from extraction
+exclude_patterns:
+  - "temp_*"        # Temporary variables
+  - "*_scratch"     # Scratch/working variables
+  - "*_z"           # Zero/temporary structures
+  - "test_*"        # Test variables
+  - "*_tmp"         # Temporary structures
+
+# Field-level exclusions
+exclude_fields:
+  - "pad"           # Padding fields
+  - "spare"         # Spare/unused fields
+  - "reserved"      # Reserved fields
+  - "dummy"         # Dummy placeholders
+
+# Default file mappings for known types
+file_mappings:
+  # Database files
+  plant_db: "plants.plt"
+  fertilizer_db: "fertilizer.frt"
+  tillage_db: "tillage.til"
+  pesticide_db: "pesticide.pes"
+  pathogen_db: "pathogens.pth"
+  metals_db: "metals.mtl"
+  salt_db: "salt.slt"
+  urban_db: "urban.urb"
+  septic_db: "septic.sep"
+  snow_db: "snow.sno"
+  
+  # Configuration files
+  file_cio: "file.cio"
+  time_sim: "time.sim"
+  print_prt: "print.prt"
+  object_prt: "object.prt"
+  object_cnt: "object.cnt"
+  
+  # HRU and spatial data
+  hru_data: "hru-data.hru"
+  hru_lte_data: "hru-lte.hru"
+  
+  # Water body data
+  channel_data: "channel.cha"
+  reservoir_data: "reservoir.res"
+  wetland_data: "wetland.wet"
+  aquifer_data: "aquifer.aqu"
+  
+  # Weather data
+  weather_sta: "weather-sta.cli"
+  weather_wgn: "weather-wgn.cli"
+  
+  # Connection files
+  hru_con: "hru.con"
+  rtu_con: "rout_unit.con"
+  cha_con: "channel.con"
+
+# Classification rules for parameter categorization
+classification_rules:
+  PLANT:
+    keywords: ["plant", "crop", "vegetation", "leaf", "root", "biomass", "lai"]
+    types: ["plant_db", "crop_db"]
+    
+  SOIL:
+    keywords: ["soil", "layer", "horizon", "depth", "texture", "bulk"]
+    types: ["soil_db", "sol_*"]
+    
+  HYDROLOGY:
+    keywords: ["water", "hydro", "flow", "runoff", "infiltration", "percolation"]
+    types: ["hyd_*", "water_*"]
+    
+  CLIMATE:
+    keywords: ["weather", "climate", "temperature", "precipitation", "solar", "wind"]
+    types: ["weather_*", "climate_*", "wgn_*"]
+    
+  NUTRIENTS:
+    keywords: ["nitrogen", "phosphorus", "nutrient", "organic", "mineral"]
+    types: ["nut_*", "nitrogen_*", "phosphorus_*"]
+    
+  SEDIMENT:
+    keywords: ["sediment", "erosion", "deposition", "transport"]
+    types: ["sed_*", "erosion_*"]
+    
+  CHANNEL:
+    keywords: ["channel", "stream", "river", "routing"]
+    types: ["channel_*", "cha_*", "rtu_*"]
+    
+  RESERVOIR:
+    keywords: ["reservoir", "pond", "wetland", "lake"]
+    types: ["reservoir_*", "res_*", "wetland_*", "wet_*"]
+    
+  GROUNDWATER:
+    keywords: ["aquifer", "groundwater", "gw", "baseflow"]
+    types: ["aquifer_*", "aqu_*", "gw_*"]
+    
+  URBAN:
+    keywords: ["urban", "city", "street", "impervious"]
+    types: ["urban_*", "street_*"]
+    
+  MANAGEMENT:
+    keywords: ["management", "tillage", "fertilizer", "irrigation", "harvest"]
+    types: ["mgt_*", "tillage_*", "fertilizer_*", "irrigation_*"]
+    
+  SIMULATION:
+    keywords: ["simulation", "time", "control", "period"]
+    types: ["time_*", "sim_*", "control_*"]
+    
+  OUTPUT:
+    keywords: ["output", "print", "report", "summary"]
+    types: ["print_*", "output_*", "object_*"]
+
+# Data type mappings from Fortran to CSV
+data_type_mappings:
+  fortran_to_csv:
+    "real": "numeric"
+    "double precision": "numeric"
+    "integer": "integer"
+    "character": "string"
+    "logical": "string"
+    
+  # Character length inference
+  character_length:
+    default: 255
+    name_fields: 40
+    code_fields: 20
+    description_fields: 500
+
+# Units standardization
+unit_mappings:
+  # Common unit variations
+  "none": ""
+  "dimensionless": ""
+  "fraction": "frac"
+  "percent": "%"
+  "degrees": "deg"
+  "celsius": "deg C"
+  "fahrenheit": "deg F"
+  
+  # Length units
+  "meter": "m"
+  "meters": "m"
+  "millimeter": "mm"
+  "millimeters": "mm"
+  "centimeter": "cm"
+  "centimeters": "cm"
+  
+  # Area units
+  "hectare": "ha"
+  "hectares": "ha"
+  "square meter": "m2"
+  "square meters": "m2"
+  
+  # Mass units
+  "kilogram": "kg"
+  "kilograms": "kg"
+  "gram": "g"
+  "grams": "g"
+  "metric ton": "Mg"
+  "metric tons": "Mg"
+  
+  # Time units
+  "day": "d"
+  "days": "d"
+  "year": "yr"
+  "years": "yr"
+  "month": "mo"
+  "months": "mo"
+
+# Validation rules
+validation:
+  # Required fields for each parameter
+  required_fields:
+    - "database_field_name"
+    - "description"
+    - "data_type"
+    - "database_table"
+    
+  # Field length limits
+  field_limits:
+    database_field_name: 40
+    description: 500
+    units: 50
+    default_value: 100
+    
+  # Parameter ID range
+  parameter_id:
+    start: 1
+    max: 99999
+    
+  # Quality checks
+  quality_checks:
+    min_parameters_per_type: 1
+    max_parameters_per_type: 200
+    description_min_length: 5
+    require_units_for_numeric: true
+
+# Output formatting
+output:
+  csv:
+    # CSV-specific settings
+    encoding: "utf-8"
+    delimiter: ","
+    quote_char: '"'
+    include_bom: false
+    
+    # Column ordering (matches existing CSV structure)
+    column_order:
+      - "Unique ID"
+      - "Broad_Classification"
+      - "SWAT_File"
+      - "database_table"
+      - "DATABASE_FIELD_NAME"
+      - "SWAT_Header_Name"
+      - "Text_File_Structure"
+      - "Position_in_File"
+      - "Line_in_file"
+      - "Swat_code type"
+      - "SWAT_Code_Variable_Name"
+      - "Description"
+      - "Core"
+      - "Units"
+      - "Data_Type"
+      - "Minimum_Range"
+      - "Maximum_Range"
+      - "Default_Value"
+      - "Number_Decimal_Places"
+      - "Primary_Key"
+      - "Foreign_Key"
+      - "Foreign_Table"
+      - "Foreign_Variable"
+      - "Doc_Path"
+      - "Use_in_DB"
+      - "Parm_Doc_Name"
+  
+  # Metadata inclusion
+  metadata:
+    include_header: true
+    include_comments: true
+    include_statistics: true
+    timestamp_format: "%Y-%m-%d %H:%M:%S"

@@ -1,0 +1,262 @@
+# SWAT+ Database Schema Configuration
+# This file controls database schema generation settings
+
+# Database configuration
+database:
+  name: "swatplus_parameters"
+  description: "SWAT+ Parameter Database - Auto-generated from Fortran source code"
+  version: "1.0"
+  
+  # Database-specific settings
+  settings:
+    character_set: "utf8mb4"
+    collation: "utf8mb4_unicode_ci"
+    engine: "InnoDB"  # For MySQL
+    
+  # Table defaults
+  table_defaults:
+    auto_increment_start: 1
+    row_format: "DYNAMIC"
+    create_if_not_exists: true
+
+# Data type mappings from CSV/Fortran to SQL
+type_mappings:
+  # Basic type mappings
+  string: "VARCHAR"
+  numeric: "DOUBLE"
+  integer: "INTEGER"
+  boolean: "BOOLEAN"
+  
+  # Fortran-specific mappings
+  real: "DOUBLE"
+  "double precision": "DOUBLE"
+  character: "VARCHAR"
+  logical: "BOOLEAN"
+  
+  # Size specifications
+  varchar_sizes:
+    default: 255
+    name: 100
+    code: 20
+    description: 500
+    units: 50
+    file_path: 255
+    
+  # Numeric precision
+  numeric_precision:
+    double: [15, 6]      # precision, scale
+    float: [7, 3]
+    decimal: [10, 4]
+
+# Column specifications
+columns:
+  # Standard columns for all tables
+  standard_columns:
+    id:
+      type: "INTEGER"
+      auto_increment: true
+      primary_key: true
+      not_null: true
+      comment: "Auto-generated primary key"
+      
+    created_at:
+      type: "TIMESTAMP"
+      default: "CURRENT_TIMESTAMP"
+      not_null: true
+      comment: "Record creation timestamp"
+      
+    updated_at:
+      type: "TIMESTAMP"
+      default: "CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"
+      not_null: true
+      comment: "Record last update timestamp"
+  
+  # Common field patterns
+  field_patterns:
+    name_fields:
+      type: "VARCHAR(100)"
+      not_null: true
+      index: true
+      comment: "Descriptive name"
+      
+    code_fields:
+      type: "VARCHAR(20)"
+      not_null: false
+      index: true
+      comment: "Short code identifier"
+      
+    description_fields:
+      type: "TEXT"
+      not_null: false
+      comment: "Detailed description"
+      
+    unit_fields:
+      type: "VARCHAR(50)"
+      not_null: false
+      comment: "Units of measurement"
+      
+    value_fields:
+      type: "DOUBLE"
+      not_null: false
+      comment: "Numeric value"
+
+# Index configuration
+indexes:
+  # Automatic index creation rules
+  auto_indexes:
+    primary_key: true
+    foreign_key: true
+    unique_constraints: true
+    
+  # Performance indexes
+  performance_indexes:
+    name_fields: true
+    code_fields: true
+    type_fields: true
+    category_fields: true
+    
+  # Index naming convention
+  naming:
+    primary_key: "pk_{table}"
+    foreign_key: "fk_{table}_{column}"
+    index: "idx_{table}_{column}"
+    unique: "uk_{table}_{column}"
+
+# Constraints
+constraints:
+  # Foreign key configuration
+  foreign_keys:
+    on_delete: "RESTRICT"
+    on_update: "CASCADE"
+    validate: true
+    
+  # Check constraints
+  check_constraints:
+    numeric_ranges: true
+    enum_values: true
+    date_ranges: true
+    
+  # Unique constraints
+  unique_constraints:
+    parameter_names: true
+    table_field_combinations: true
+
+# Table organization
+table_organization:
+  # Table prefixes for grouping
+  prefixes:
+    parameter: "parm_"
+    lookup: "lkp_"
+    reference: "ref_"
+    config: "cfg_"
+    
+  # Table relationships
+  relationships:
+    # Core parameter tables
+    core_tables:
+      - "plant_db"
+      - "soil_db"
+      - "climate_db"
+      - "hydrology_db"
+      
+    # Configuration tables
+    config_tables:
+      - "file_cio"
+      - "time_sim"
+      - "print_prt"
+      
+    # Reference/lookup tables
+    lookup_tables:
+      - "units_ref"
+      - "data_types_ref"
+      - "classifications_ref"
+
+# Schema validation
+validation:
+  # Table validation rules
+  table_rules:
+    min_columns: 2
+    max_columns: 50
+    require_primary_key: true
+    
+  # Column validation rules
+  column_rules:
+    max_name_length: 64
+    reserved_words_check: true
+    naming_convention: "snake_case"
+    
+  # Data validation
+  data_rules:
+    null_checks: true
+    range_checks: true
+    format_checks: true
+
+# Documentation generation
+documentation:
+  # Include in schema
+  include_comments: true
+  include_descriptions: true
+  include_examples: true
+  
+  # Documentation format
+  format:
+    comment_style: "-- "
+    line_length: 80
+    include_metadata: true
+    
+  # Schema documentation sections
+  sections:
+    header: true
+    table_list: true
+    table_details: true
+    relationships: true
+    indexes: true
+    constraints: true
+
+# Export options
+export:
+  # SQL dialects
+  dialects:
+    mysql: true
+    postgresql: true
+    sqlite: true
+    access: true
+    
+  # Output formatting
+  formatting:
+    indent: "  "
+    uppercase_keywords: true
+    line_endings: "\n"
+    
+  # File organization
+  file_structure:
+    single_file: false
+    separate_tables: true
+    separate_indexes: true
+    separate_constraints: true
+
+# Advanced features
+advanced:
+  # Partitioning (for large tables)
+  partitioning:
+    enabled: false
+    strategy: "RANGE"
+    column: "created_at"
+    
+  # Views generation
+  views:
+    parameter_summary: true
+    table_relationships: true
+    data_statistics: true
+    
+  # Stored procedures
+  procedures:
+    parameter_validation: true
+    data_import: true
+    statistics_calculation: true
+    
+  # Triggers
+  triggers:
+    audit_trail: false
+    data_validation: true
+    automatic_timestamps: true
