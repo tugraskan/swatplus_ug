@@ -7,6 +7,7 @@
       call cli_staread
 
       call constit_db_read
+      call constit_man_db_read      !! read manure-specific constituent database
       call pest_metabolite_read     !! read pesticide metabolites
       call soil_plant_init
       call solt_db_read
@@ -35,6 +36,13 @@
       call cs_reactions_read
       call cs_urban_read
       call cs_fert_read
+      
+      !manure constituent reads
+      call pest_man_read
+      call path_man_read
+      call hmet_man_read
+      call salt_man_read
+      call cs_man_read
       
       call topo_read
       call field_read
