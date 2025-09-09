@@ -119,33 +119,6 @@
         end type mallo_header_units
       type (mallo_header_units) :: mallo_hdr_units 
       
-      interface operator (+)
-        module procedure mallout_add
-      end interface
-
-      interface operator (/)
-        module procedure mallo_div_const
-      end interface   
-
       contains
-
-      !! routines for hydrograph module
-      function mallout_add (mallo1, mallo2) result (mallo3)
-        type (source_manure_output), intent (in) :: mallo1
-        type (source_manure_output), intent (in) :: mallo2
-        type (source_manure_output) :: mallo3
-        mallo3%stor = mallo1%stor
-        mallo3%prod = mallo1%prod + mallo2%prod
-        mallo3%withdr = mallo1%withdr + mallo2%withdr
-      end function mallout_add
-
-      function mallo_div_const (mallo1, const) result (mallo2)
-        type (source_manure_output), intent (in) :: mallo1
-        real, intent (in) :: const
-        type (source_manure_output) :: mallo2
-        mallo2%stor = mallo1%stor
-        mallo2%prod = mallo1%prod / const
-        mallo2%withdr = mallo1%withdr / const
-      end function mallo_div_const
 
       end module manure_allocation_module

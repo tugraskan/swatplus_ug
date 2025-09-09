@@ -54,7 +54,7 @@
           frt_kg = mallo(imallo)%dmd(idmd)%manure_amt%app_t_ha      !amount applied in kg/ha
           ifertop = mallo(imallo)%dmd(idmd)%manure_amt%app_method   !surface application fraction from chem app data base
           ihru = mallo(imallo)%dmd(idmd)%ob_num                        !hru number
-          call pl_fert (ifrt, frt_kg, ifertop)
+          call pl_manure (ifrt, frt_kg, ifertop)
           mallo(imallo)%dmd(idmd)%manure_amt = manure_amtz
           
           !! subtract manure from source

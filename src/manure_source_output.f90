@@ -13,7 +13,9 @@
       !! loop through and print each demand object
       do isrc = 1, mallo(imallo)%src_obs
         !! sum output (stored, produced, and withdrawals for each source
-        mallo(imallo)%src(isrc)%bal_m = mallo(imallo)%src(isrc)%bal_m + mallo(imallo)%src(isrc)%bal_d
+        mallo(imallo)%src(isrc)%bal_m%stor = mallo(imallo)%src(isrc)%bal_m%stor + mallo(imallo)%src(isrc)%bal_d%stor
+        mallo(imallo)%src(isrc)%bal_m%prod = mallo(imallo)%src(isrc)%bal_m%prod + mallo(imallo)%src(isrc)%bal_d%prod
+        mallo(imallo)%src(isrc)%bal_m%withdr = mallo(imallo)%src(isrc)%bal_m%withdr + mallo(imallo)%src(isrc)%bal_d%withdr
       
 !!!!! daily print
         if (pco%water_allo%d == "y") then   !!using region water balance print codes for now
@@ -32,7 +34,9 @@
 !!!!! monthly print
         if (time%end_mo == 1) then
           !! sum output (stored, produced, and withdrawals for each source
-          mallo(imallo)%src(isrc)%bal_y = mallo(imallo)%src(isrc)%bal_y + mallo(imallo)%src(isrc)%bal_m
+          mallo(imallo)%src(isrc)%bal_y%stor = mallo(imallo)%src(isrc)%bal_y%stor + mallo(imallo)%src(isrc)%bal_m%stor
+          mallo(imallo)%src(isrc)%bal_y%prod = mallo(imallo)%src(isrc)%bal_y%prod + mallo(imallo)%src(isrc)%bal_m%prod
+          mallo(imallo)%src(isrc)%bal_y%withdr = mallo(imallo)%src(isrc)%bal_y%withdr + mallo(imallo)%src(isrc)%bal_m%withdr
           
           if (pco%water_allo%m == "y") then
           write (3202,100) time%day, time%mo, time%day_mo, time%yrc, idmd, mallo(imallo)%src(isrc)%num,                &
@@ -52,7 +56,9 @@
 !!!!! yearly print
       if (time%end_yr == 1) then
           !! sum output (stored, produced, and withdrawals for each source
-          mallo(imallo)%src(isrc)%bal_a = mallo(imallo)%src(isrc)%bal_a + mallo(imallo)%src(isrc)%bal_y
+          mallo(imallo)%src(isrc)%bal_a%stor = mallo(imallo)%src(isrc)%bal_a%stor + mallo(imallo)%src(isrc)%bal_y%stor
+          mallo(imallo)%src(isrc)%bal_a%prod = mallo(imallo)%src(isrc)%bal_a%prod + mallo(imallo)%src(isrc)%bal_y%prod
+          mallo(imallo)%src(isrc)%bal_a%withdr = mallo(imallo)%src(isrc)%bal_a%withdr + mallo(imallo)%src(isrc)%bal_y%withdr
           
         if (pco%water_allo%y == "y") then
           write (3204,100) time%day, time%mo, time%day_mo, time%yrc, idmd, mallo(imallo)%src(isrc)%num,                &
@@ -71,7 +77,9 @@
 !!!!! average annual print
       if (time%end_sim == 1) then
           !! sum output (stored, produced, and withdrawals for each source
-          mallo(imallo)%src(isrc)%bal_a = mallo(imallo)%src(isrc)%bal_a / time%yrs_prt
+          mallo(imallo)%src(isrc)%bal_a%stor = mallo(imallo)%src(isrc)%bal_a%stor / time%yrs_prt
+          mallo(imallo)%src(isrc)%bal_a%prod = mallo(imallo)%src(isrc)%bal_a%prod / time%yrs_prt
+          mallo(imallo)%src(isrc)%bal_a%withdr = mallo(imallo)%src(isrc)%bal_a%withdr / time%yrs_prt
           
         if (pco%water_allo%a == "y") then
         write (3206,100) time%day, time%mo, time%day_mo, time%yrc, idmd, mallo(imallo)%src(isrc)%num,                &
