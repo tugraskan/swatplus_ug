@@ -162,33 +162,6 @@
         end type wallo_header_units
       type (wallo_header_units) :: wallo_hdr_units 
       
-      interface operator (+)
-        module procedure wallout_add
-      end interface
-
-      interface operator (/)
-        module procedure wallo_div_const
-      end interface   
-
       contains
-
-      !! routines for hydrograph module
-      function wallout_add (wallo1, wallo2) result (wallo3)
-        type (source_output), intent (in) :: wallo1
-        type (source_output), intent (in) :: wallo2
-        type (source_output) :: wallo3
-        wallo3%demand = wallo1%demand + wallo2%demand
-        wallo3%withdr = wallo1%withdr + wallo2%withdr
-        wallo3%unmet = wallo1%unmet + wallo2%unmet
-      end function wallout_add
-
-      function wallo_div_const (wallo1, const) result (wallo2)
-        type (source_output), intent (in) :: wallo1
-        real, intent (in) :: const
-        type (source_output) :: wallo2
-        wallo2%demand = wallo1%demand / const
-        wallo2%withdr = wallo1%withdr / const
-        wallo2%unmet = wallo1%unmet / const
-      end function wallo_div_const
 
       end module water_allocation_module

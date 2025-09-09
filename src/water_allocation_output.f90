@@ -15,8 +15,12 @@
       
         !! sum output (demand, withdrawals, and unmet) for each source
         do isrc = 1, wallo(iwallo)%dmd(idmd)%dmd_src_obs
-          wallom_out(iwallo)%dmd(idmd)%src(isrc) = wallom_out(iwallo)%dmd(idmd)%src(isrc) +         &
-                                                          wallod_out(iwallo)%dmd(idmd)%src(isrc)
+          wallom_out(iwallo)%dmd(idmd)%src(isrc)%demand = wallom_out(iwallo)%dmd(idmd)%src(isrc)%demand +         &
+                                                          wallod_out(iwallo)%dmd(idmd)%src(isrc)%demand
+          wallom_out(iwallo)%dmd(idmd)%src(isrc)%withdr = wallom_out(iwallo)%dmd(idmd)%src(isrc)%withdr +         &
+                                                          wallod_out(iwallo)%dmd(idmd)%src(isrc)%withdr
+          wallom_out(iwallo)%dmd(idmd)%src(isrc)%unmet = wallom_out(iwallo)%dmd(idmd)%src(isrc)%unmet +         &
+                                                          wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet
         end do
       
 !!!!! daily print
@@ -44,8 +48,12 @@
         if (time%end_mo == 1) then
           !! sum output (demand, withdrawals, and unmet) for each source
           do isrc = 1, wallo(iwallo)%dmd(idmd)%dmd_src_obs
-            walloy_out(iwallo)%dmd(idmd)%src(isrc) = walloy_out(iwallo)%dmd(idmd)%src(isrc) +         &
-                                                          wallom_out(iwallo)%dmd(idmd)%src(isrc)
+            walloy_out(iwallo)%dmd(idmd)%src(isrc)%demand = walloy_out(iwallo)%dmd(idmd)%src(isrc)%demand +         &
+                                                          wallom_out(iwallo)%dmd(idmd)%src(isrc)%demand
+            walloy_out(iwallo)%dmd(idmd)%src(isrc)%withdr = walloy_out(iwallo)%dmd(idmd)%src(isrc)%withdr +         &
+                                                          wallom_out(iwallo)%dmd(idmd)%src(isrc)%withdr
+            walloy_out(iwallo)%dmd(idmd)%src(isrc)%unmet = walloy_out(iwallo)%dmd(idmd)%src(isrc)%unmet +         &
+                                                          wallom_out(iwallo)%dmd(idmd)%src(isrc)%unmet
           end do
 
           if (pco%water_allo%m == "y") then
@@ -74,8 +82,12 @@
       if (time%end_yr == 1) then
         !! sum output (demand, withdrawals, and unmet) for each source
         do isrc = 1, wallo(iwallo)%dmd(idmd)%dmd_src_obs
-          walloa_out(iwallo)%dmd(idmd)%src(isrc) = walloa_out(iwallo)%dmd(idmd)%src(isrc) +         &
-                                                          walloy_out(iwallo)%dmd(idmd)%src(isrc)
+          walloa_out(iwallo)%dmd(idmd)%src(isrc)%demand = walloa_out(iwallo)%dmd(idmd)%src(isrc)%demand +         &
+                                                          walloy_out(iwallo)%dmd(idmd)%src(isrc)%demand
+          walloa_out(iwallo)%dmd(idmd)%src(isrc)%withdr = walloa_out(iwallo)%dmd(idmd)%src(isrc)%withdr +         &
+                                                          walloy_out(iwallo)%dmd(idmd)%src(isrc)%withdr
+          walloa_out(iwallo)%dmd(idmd)%src(isrc)%unmet = walloa_out(iwallo)%dmd(idmd)%src(isrc)%unmet +         &
+                                                          walloy_out(iwallo)%dmd(idmd)%src(isrc)%unmet
         end do
           
         if (pco%water_allo%y == "y") then
@@ -104,7 +116,9 @@
       if (time%end_sim == 1) then
         !! sum output (demand, withdrawals, and unmet) for each source
         do isrc = 1, wallo(iwallo)%dmd(idmd)%dmd_src_obs
-          walloa_out(iwallo)%dmd(idmd)%src(isrc) = walloa_out(iwallo)%dmd(idmd)%src(isrc) / time%yrs_prt
+          walloa_out(iwallo)%dmd(idmd)%src(isrc)%demand = walloa_out(iwallo)%dmd(idmd)%src(isrc)%demand / time%yrs_prt
+          walloa_out(iwallo)%dmd(idmd)%src(isrc)%withdr = walloa_out(iwallo)%dmd(idmd)%src(isrc)%withdr / time%yrs_prt
+          walloa_out(iwallo)%dmd(idmd)%src(isrc)%unmet = walloa_out(iwallo)%dmd(idmd)%src(isrc)%unmet / time%yrs_prt
         end do
 
         if (pco%water_allo%a == "y") then
