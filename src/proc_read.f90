@@ -44,6 +44,9 @@
       call salt_man_read
       call cs_man_read
       
+      !crosswalk manure constituents with fertilizer database
+      call constit_man_crosswalk
+      
       call topo_read
       call field_read
       call hydrol_read

@@ -215,7 +215,7 @@ end subroutine
 
 ### 1. Database Initialization
 
-The manure constituent loading process begins with reading the manure-specific constituent database from `constituents_man.cs`:
+The manure constituent loading process begins with reading the manure-specific constituent database from `constituents_man.cs` using `constit_man_db_read.f90`:
 
 ```fortran
 subroutine constit_man_db_read
@@ -230,18 +230,33 @@ subroutine constit_man_db_read
   read (106,*) (cs_man_db%salts(i), i = 1, cs_man_db%num_salts)
   read (106,*) cs_man_db%num_cs         ! Number of other constituents
   read (106,*) (cs_man_db%cs(i), i = 1, cs_man_db%num_cs)
+  
+  ! Performs basic crosswalking with existing pesticide and pathogen databases
+  ! to populate cs_man_db%pest_num and cs_man_db%path_num arrays
 end subroutine
 ```
 
 ### 2. Concentration Data Loading
 
-For each constituent type, SWAT+ reads concentration files (*.man files):
+For each constituent type, SWAT+ reads concentration files (*.man files) using dedicated read subroutines that follow the repository's established pattern:
 
-- `pest.man` - Pesticide concentrations in manures
-- `path.man` - Pathogen concentrations in manures  
-- `salt.man` - Salt concentrations in manures
-- `hmet.man` - Heavy metal concentrations in manures
-- `cs.man` - Other constituent concentrations in manures
+- `pest_man_read.f90` - Reads `pest.man` for pesticide concentrations in manures
+- `path_man_read.f90` - Reads `path.man` for pathogen concentrations in manures  
+- `salt_man_read.f90` - Reads `salt.man` for salt concentrations in manures
+- `hmet_man_read.f90` - Reads `hmet.man` for heavy metal concentrations in manures
+- `cs_man_read.f90` - Reads `cs.man` for other constituent concentrations in manures
+
+Each of these subroutines follows the same pattern:
+
+```fortran
+subroutine pest_man_read
+  inquire (file="pest.man", exist=i_exist)
+  if (i_exist) then
+    call fert_constituent_file_read("pest.man", cs_man_db%num_pests)
+    call MOVE_ALLOC(fert_arr, pest_fert_ini)
+  end if
+end subroutine
+```
 
 **File Format Example (pest.man):**
 ```
@@ -257,10 +272,13 @@ high_pest_manure
 
 ### 3. Fertilizer-Constituent Crosswalking
 
-The system performs crosswalking to link fertilizer records with constituent concentration data:
+The system performs crosswalking to link fertilizer records with constituent concentration data using a dedicated `constit_man_crosswalk.f90` subroutine:
 
 ```fortran
-subroutine fert_constituent_crosswalk
+subroutine constit_man_crosswalk
+  ! Perform crosswalking of fertilizer linkage table names with constituent arrays
+  ! This populates direct array indices to eliminate string matching during application
+  
   do ifrt = 1, size(manure_db)
     ! Pesticide crosswalk
     if (manure_db(ifrt)%pest /= '') then
@@ -276,78 +294,40 @@ subroutine fert_constituent_crosswalk
 end subroutine
 ```
 
-### 4. Manure Constituent Initialization Process
+This crosswalking process is called after all individual constituent read subroutines have completed in `proc_read.f90`:
 
-The manure constituent system follows a complex multi-step initialization process that differs significantly from the regular constituent approach:
+### 4. Initialization Process Flow
 
-#### Step 1: Manure-Specific Database Allocation
+The manure constituent system follows a well-structured initialization process in `proc_read.f90`:
+
 ```fortran
-subroutine constit_man_db_init
-  ! Allocate arrays based on manure database dimensions
-  npmx = cs_man_db%num_pests + cs_man_db%num_paths + cs_man_db%num_metals + 
-         cs_man_db%num_salts + cs_man_db%num_cs
+subroutine proc_read
+  ! ... other initialization steps ...
   
-  ! Allocate manure constituent arrays (separate from regular cs_soil)
-  allocate (manure_pest(npmx), source = 0.)
-  allocate (manure_path(npmx), source = 0.)
-  allocate (manure_hmet(npmx), source = 0.)
-  allocate (manure_salt(npmx), source = 0.)
-  allocate (manure_cs(npmx), source = 0.)
+  call constit_db_read              ! Read general constituent database  
+  call constit_man_db_read          ! Read manure-specific constituent database
+  
+  ! ... other constituent initialization steps ...
+  
+  ! Individual constituent read subroutines (following repository pattern)
+  call pest_man_read                ! Read pest.man concentrations
+  call path_man_read                ! Read path.man concentrations  
+  call hmet_man_read                ! Read hmet.man concentrations
+  call salt_man_read                ! Read salt.man concentrations
+  call cs_man_read                  ! Read cs.man concentrations
+  
+  ! Crosswalk fertilizer database with constituent arrays
+  call constit_man_crosswalk        ! Populate fertilizer-constituent linkage indices
+  
+  ! ... remaining initialization steps ...
 end subroutine
 ```
 
-#### Step 2: Crosswalk Index Pre-computation
-```fortran
-subroutine fert_constituent_crosswalk
-  ! This is the key difference from regular fertilizers
-  ! Regular fertilizers use direct indexing, manure uses string-based crosswalking
-  
-  do ifrt = 1, size(manure_db)
-    ! Initialize all indices to zero (no linkage)
-    manure_db(ifrt)%pest_idx = 0
-    manure_db(ifrt)%path_idx = 0
-    manure_db(ifrt)%salt_idx = 0
-    manure_db(ifrt)%hmet_idx = 0
-    manure_db(ifrt)%cs_idx = 0
-    
-    ! Pesticide crosswalk - find matching names and store indices
-    if (trim(manure_db(ifrt)%pest) /= '') then
-      do i = 1, size(pest_fert_ini)
-        if (trim(manure_db(ifrt)%pest) == trim(pest_fert_ini(i)%name)) then
-          manure_db(ifrt)%pest_idx = i  ! Pre-compute index for fast access
-          exit
-        end if
-      end do
-      if (manure_db(ifrt)%pest_idx == 0) then
-        write(*,*) 'Warning: Pesticide profile not found:', trim(manure_db(ifrt)%pest)
-      end if
-    end if
-    
-    ! Pathogen crosswalk
-    if (trim(manure_db(ifrt)%path) /= '') then
-      do i = 1, size(path_fert_ini)
-        if (trim(manure_db(ifrt)%path) == trim(path_fert_ini(i)%name)) then
-          manure_db(ifrt)%path_idx = i
-          exit
-        end if
-      end do
-    end if
-    
-    ! Salt, heavy metal, and general constituent crosswalks follow same pattern...
-  end do
-end subroutine
-```
-
-#### Step 3: Runtime Performance Optimization
-The crosswalking system provides significant performance benefits during simulation:
-
-**Initialization Time (one-time cost):**
-- String matching across all fertilizer-constituent combinations: O(n×m)
-- Memory allocation for index storage: O(n)
-
-**Runtime Application (repeated throughout simulation):**
-- Direct array access using pre-computed indices: O(1)
-- No string comparisons during daily applications
+**Key Characteristics:**
+1. **Separation of Concerns:** Database reading, file reading, and crosswalking are handled by separate subroutines
+2. **Repository Pattern Compliance:** Each constituent type has its own dedicated read subroutine  
+3. **Performance Optimization:** Crosswalking is done once during initialization to pre-compute indices
+4. **Modular Design:** Each step can be modified independently without affecting others
 
 ### 5. Constituent Application During Manure Application
 
@@ -864,7 +844,12 @@ salm_hi
 1. **Initialization Phase:**
    ```fortran
    call constit_man_db_read          ! Read constituent database
-   call fert_constituent_crosswalk   ! Link fertilizers to constituents
+   call pest_man_read                ! Read pest.man concentrations  
+   call path_man_read                ! Read path.man concentrations
+   call hmet_man_read                ! Read hmet.man concentrations
+   call salt_man_read                ! Read salt.man concentrations
+   call cs_man_read                  ! Read cs.man concentrations
+   call constit_man_crosswalk        ! Link fertilizers to constituents
    ```
 
 2. **Daily Application Phase:**
