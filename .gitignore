@@ -40,6 +40,9 @@ _ReSharper*/
 *.vfproj
 *.u2d
 *.OUT
+*.out
+*.bsn
+*.txt
 *.o
 *.mod
 *.ico
