@@ -77,6 +77,10 @@ __The following sections are emphasizing various development aspects.__
 
 - [FORTRAN Coding Conventions (alpha)](doc/coding_conventions.md)
 
+### Input File Documentation
+- [HRU.CON File Reference](doc/hru_con_quick_reference.md)
+- [HRU.CON Technical Documentation](doc/hru_con_documentation.md)
+
 ## Documentation and References
 
 [SWAT+ Source Documentation on GitHub](https://swat-model.github.io/swatplus)
