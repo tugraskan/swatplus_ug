@@ -290,6 +290,14 @@ class SWATPlusConnectivityAnalyzer:
 
 def main():
     """Main function."""
+    if len(sys.argv) > 1 and sys.argv[1] in ['--help', '-h', 'help']:
+        print(__doc__)
+        print("\nUsage Examples:")
+        print("  python analyze_connectivity.py                    # Analyze current directory")
+        print("  python analyze_connectivity.py data/Osu_1hru     # Analyze specific project")
+        print("  python analyze_connectivity.py /path/to/swat/project")
+        return 0
+        
     if len(sys.argv) > 1:
         project_path = sys.argv[1]
     else:
@@ -297,6 +305,7 @@ def main():
         
     if not os.path.exists(project_path):
         print(f"Error: Path {project_path} does not exist")
+        print("Use 'python analyze_connectivity.py --help' for usage information")
         return 1
         
     analyzer = SWATPlusConnectivityAnalyzer(project_path)
