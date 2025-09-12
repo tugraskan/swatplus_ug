@@ -165,8 +165,24 @@ cat object.cnt
 ```
 
 ### 2. Trace Flow Paths
+
+#### Understanding HRU-Routing Unit Assignment
+
+SWAT+ assigns HRUs to routing units using **explicit range-based definitions** in the `rout_unit.def` file:
+
+```
+# Format: ru_id ru_name elem_total hru_start -hru_end  
+760 rtu3941 2 3886 -3913
+```
+
+This means:
+- **Routing Unit 760** (named "rtu3941") contains **HRUs 3886 through 3913**
+- The negative sign indicates a range: all HRUs from 3886 to 3913 are assigned to this routing unit
+- **HRU 3895** is explicitly assigned to routing unit 760 because 3886 ≤ 3895 ≤ 3913
+
+#### Flow Path Tracing Steps:
 1. Start with `object.cnt` to understand spatial object hierarchy
-2. Use `rout_unit.def` to see which HRUs are grouped together
+2. Use `rout_unit.def` to see which HRUs are grouped together (explicit range assignments)
 3. Check `rout_unit.con` to see downstream connections
 4. Follow the chain: HRU → Routing Unit → Channel/Outlet
 

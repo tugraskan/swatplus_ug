@@ -92,20 +92,34 @@ class SWATPlusConnectivityAnalyzer:
             for line in lines[2:]:  # Skip header
                 if line.strip():
                     parts = line.split()
-                    if len(parts) >= 4:
+                    if len(parts) >= 5:
                         ru_id = int(parts[0])
                         ru_name = parts[1]
                         elem_total = int(parts[2])
                         
-                        # Read element list
+                        # Handle HRU ranges (format: start_hru -end_hru)
                         elements = []
-                        for i in range(3, min(len(parts), 3 + elem_total)):
-                            elements.append(int(parts[i]))
+                        if elem_total > 0 and len(parts) >= 5:
+                            hru_start = int(parts[3])
+                            hru_end_str = parts[4]
+                            
+                            # Handle negative numbers (range format)
+                            if hru_end_str.startswith('-'):
+                                hru_end = int(hru_end_str[1:])  # Remove minus sign
+                                # Generate range of HRU IDs
+                                for hru_id in range(hru_start, hru_end + 1):
+                                    elements.append(hru_id)
+                            else:
+                                # Single HRU or different format
+                                elements.append(hru_start)
+                                if len(parts) > 4:
+                                    elements.append(int(hru_end_str))
                             
                         self.routing_units[ru_id] = {
                             'name': ru_name,
                             'elements': elements,
-                            'element_count': elem_total
+                            'element_count': len(elements),
+                            'hru_range': f"{hru_start}-{hru_end}" if 'hru_end' in locals() else str(hru_start)
                         }
                         
         # Read routing unit connections
@@ -226,6 +240,68 @@ class SWATPlusConnectivityAnalyzer:
             'affected_hrus': other_hrus if hru_routing_unit else [],
             'downstream_channels': downstream_channels,
             'downstream_aquifers': downstream_aquifers
+        }
+        
+    def analyze_specific_hru_connectivity(self, target_hru_id):
+        """Analyze connectivity for a specific HRU (e.g., HRU 3895)."""
+        if target_hru_id not in self.hru_data:
+            print(f"HRU {target_hru_id} not found in model")
+            return
+            
+        print(f"\n=== DETAILED CONNECTIVITY ANALYSIS FOR HRU {target_hru_id} ===")
+        
+        target_hru = self.hru_data[target_hru_id]
+        print(f"HRU Details:")
+        print(f"  Name: {target_hru['name']}")
+        print(f"  Area: {target_hru['area_ha']:.5f} ha")
+        print(f"  Coordinates: {target_hru['lat']:.5f}°N, {target_hru['lon']:.5f}°W")
+        print(f"  Elevation: {target_hru['elevation']:.1f} m")
+        
+        # Find which routing unit this HRU belongs to
+        hru_routing_unit = None
+        for ru_id, ru_data in self.routing_units.items():
+            if target_hru_id in ru_data.get('elements', []):
+                hru_routing_unit = ru_id
+                break
+                
+        if hru_routing_unit:
+            ru_info = self.routing_units[hru_routing_unit]
+            print(f"\nRouting Unit Assignment:")
+            print(f"  Routing Unit: {hru_routing_unit} ({ru_info['name']})")
+            print(f"  HRU Range: {ru_info.get('hru_range', 'N/A')}")
+            print(f"  Total HRUs in RU: {len(ru_info['elements'])}")
+            print(f"  All HRUs: {ru_info['elements']}")
+            
+            # Show upstream HRUs in the same routing unit (potential sources of flow)
+            upstream_hrus = []
+            for hru_id in ru_info['elements']:
+                if hru_id != target_hru_id and hru_id in self.hru_data:
+                    other_hru = self.hru_data[hru_id]
+                    if other_hru['elevation'] > target_hru['elevation']:
+                        upstream_hrus.append((hru_id, other_hru))
+                        
+            if upstream_hrus:
+                print(f"\nUpstream HRUs (same routing unit, higher elevation):")
+                upstream_hrus.sort(key=lambda x: x[1]['elevation'], reverse=True)
+                for hru_id, hru_data in upstream_hrus:
+                    elev_diff = hru_data['elevation'] - target_hru['elevation']
+                    print(f"  HRU {hru_id}: {hru_data['area_ha']:.3f} ha at {hru_data['elevation']:.1f}m (+{elev_diff:.1f}m higher)")
+                    
+            # Show how burns in upstream HRUs would affect this HRU
+            if upstream_hrus:
+                print(f"\nBurn Impact Analysis:")
+                print(f"  - Burns in any of the {len(upstream_hrus)} upstream HRUs would increase curve numbers")
+                print(f"  - Increased surface runoff would flow to HRU {target_hru_id}")
+                print(f"  - Especially significant burns in larger upstream HRUs:")
+                large_upstream = [(hid, hdata) for hid, hdata in upstream_hrus if hdata['area_ha'] > 1.0]
+                for hru_id, hru_data in large_upstream[:5]:  # Show top 5 largest
+                    print(f"    → HRU {hru_id}: {hru_data['area_ha']:.3f} ha")
+                    
+        return {
+            'target_hru': target_hru_id,
+            'routing_unit': hru_routing_unit,
+            'upstream_hrus': [h[0] for h in upstream_hrus] if 'upstream_hrus' in locals() else [],
+            'hru_details': target_hru
         }
         
     def print_summary(self):
