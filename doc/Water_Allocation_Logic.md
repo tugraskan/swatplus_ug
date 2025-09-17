@@ -4,6 +4,8 @@
 
 The SWAT+ water allocation module provides a comprehensive framework for simulating water transfers between different sources and demand objects within a watershed. This system allows for realistic modeling of irrigation, municipal water supply, inter-basin transfers, and other water management scenarios while respecting physical constraints and water rights priorities.
 
+> **Note**: This document supplements the existing "Water Allocation Working Document.docx" with detailed technical documentation of the current implementation. For the latest working notes and development updates, refer to both documents.
+
 ## Key Concepts
 
 ### Water Sources

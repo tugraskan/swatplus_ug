@@ -70,7 +70,7 @@ __The following sections are emphasizing various development aspects.__
 
 * [Configuring, Building, Installing SWAT+ using cmake](doc/Building.md)
 - [Scenario Testing](doc/Testing.md)
-
+- [Water Allocation Logic Documentation](doc/Water_Allocation_Logic.md)
 - [Tagging and Versioning](doc/Tagging.md)
 
 - [Developing in Visual Studio](doc/VS-Win.md)
