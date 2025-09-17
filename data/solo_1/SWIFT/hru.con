@@ -1,5 +1,0 @@
-hru_con Generated from M:\Constructor\HUC8_models\models\07010101.accdb Time: 2/13/2025 7:47:38 PM
-       ID            NAME          GIS_ID     AREA         LAT          LON       LEV   HRU    WST               CST    OVFL   RULE   OUT_TOT
-       1             HRU_1         1          100     47.53102    -95.22852       0.0    1    weather01        0.0    0.0    0.0    2           res         1           tot       1.00000           aqu         1           rhg       1.00000
-       2             HRU_2         2          150     47.53102    -95.22852       0.0    2    weather01        0.0    0.0    0.0    0
-       3             HRU_3         3          300     47.53102    -95.22852       0.0    3    weather01        0.0    0.0    0.0    1      aqu         2           rhg       1.00000

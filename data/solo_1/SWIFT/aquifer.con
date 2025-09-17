@@ -1,8 +1,0 @@
-aqu_con Generated from M:\Constructor\HUC8_models\models\07010101.accdb Time: 2/2/2024 6:04:43 PM
-          ID             NAME       GIS_ID      AREA        LAT         LON             ELEV            AQU          WST            CST     OVFL    RULE    OUT_TOT     obj_typ1    obj_id1  hyd_typ1  frac1
-          1              aqu_1      1           1000      47.53102    -95.22852       400             1            weather1   0       0       0       1           res       1        tot        1.0
-          2              aqu_2      2           3000      47.53102    -95.22852       500             2            weather1   0       0       0
-
-
-
-

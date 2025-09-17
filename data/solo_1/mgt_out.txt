@@ -1,3 +1,3 @@
- ceap_07010101             SWAT+ 2025-09-03        MODULAR Rev 2025.61.0.2.5-474-g1a4c1fa                 
+ ceap_07010101             SWAT+ 2025-09-15        MODULAR Rev 2025.61.0.2.5-359-g015381a                 
          hru        year         mon         day crop/fert/pest operation  phubase        phuplant  soil_water      plant_bioms   surf_rsd       soil_no3      soil_solp         op_var           var1          var2             var3             var4            var5            var6           var7 
          ---         ---         ---         ---       ---         ---       deg_c           deg_c          mm            kg/ha      kg/ha          kg/ha          kg/ha          ---              ---           ---              ---              ---             ---             ---            ---

@@ -11,3 +11,6 @@ id   name      flomax_cms   lag_days   loss_fr    aquifers     aquifer_num1  los
  8   pipe8       15.           0.       0.03        1             1            1.0
  9   pipe9       12.           0.       0.03        1             1            1.0
 10   pipe10      12.           0.       0.03        1             1            1.0
+11   pipe11      15.           0.       0.03        1             1            1.0
+12   pipe12      12.           0.       0.03        1             1            1.0
+13   pipe13      12.           0.       0.03        1             1            1.0
