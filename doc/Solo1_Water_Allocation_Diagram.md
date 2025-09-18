@@ -9,82 +9,109 @@ This diagram illustrates the water allocation system in the `solo_1` test case, 
                            Solo1 Water Allocation System Flow Diagram
                                (High Right First Serve Priority)
 
-   SOURCES                    TRANSFER OBJECTS                    RECEIVING OBJECTS
-┌─────────────┐                                                ┌─────────────────┐
-│   OSRC 1    │────pipe1──>TRN1(outflo)─────────────────────> │     RES 1       │
-│ (Outside    │             0.0 m³/day                        │  (Reservoir)    │
-│  Source)    │                                               │   min: 50%     │
-│ 0.5-0.8 var │                                               └─────────────────┘
-└─────────────┘                                                        │
-                                                                       │ pipe2
-┌─────────────┐                                                       ▼
-│   RES 1     │────pipe2──>TRN2(ave_day)─────────────────────>┌─────────────────┐
-│ (Reservoir) │             1000 m³/day                       │     WTP 1       │
-│  min: 50%   │                                               │  (Treatment)    │
-└─────────────┘                                               │  Level 1        │
-                                                              └─────────────────┘
-┌─────────────┐                                                        │
-│   AQU 2     │─┐                                                      │ pipe3
-│ (Aquifer)   │ │                                                      ▼
-│  max: 13m   │ │                                              ┌─────────────────┐
-│  drawdown   │ │                                              │    STOR 1       │
-└─────────────┘ │                                              │  (Water Tower)  │
-                │                                              │  10,000 m³      │
-                │                                              └─────────────────┘
-                │                                                       │
-                │                                         ┌─────────────┼─────────────┐
-                │                                         │ pipe4       │ pipe5       │
-                │                                         │ (70%)       │ (30%)       │
-                │                                         │ 200 m³/day  │ 300 m³/day  │
-                │                                         ▼             ▼             │
-                │                                  ┌─────────────┐ ┌─────────────┐   │
-                │                                  │   USE 1     │ │   USE 2     │   │
-                │                                  │ (Domestic)  │ │(Industrial) │   │
-                │                                  └─────────────┘ └─────────────┘   │
-                │                                                                    │
-                │                                                      pipe6        │
-                │                                                        │          │
-                │                                                        ▼          │
-                │   ┌────────────>TRN6(dtbl_irr)──────────────────>┌─────────────┐ │
-                │   │              irrigation                       │   HRU 2     │ │
-                │   │              decision table                   │(Irrigation) │ │
-                │   │                                               └─────────────┘ │
-                │   │                                                               │
-                │   │                  pipe6+7                                     │
-                │   │ ┌────────────>TRN11(dtbl_irr)─────────────────>┌─────────────┐ │
-                │   │ │             irrigation                        │   HRU 3     │ │
-                └───┼─┼─pump1──────>primary: RES1, backup: AQU2      │(Irrigation) │ │
-                    │ │             (compensation = yes)             └─────────────┘ │
-                    │ │                                                              │
-                    │ │                  pipe7                                      │
-                    │ │ ┌────────────>TRN12(dtbl_irr)─────────────────>┌─────────────┐ │
-                    │ │ │             irrigation                        │   HRU 4     │ │
-                    └─┼─┼─pump1──────>primary: RES1, backup: AQU2      │(Irrigation) │ │
-                      │ │             (compensation = yes)             └─────────────┘ │
-                      │ │                                                              │
-                      │ │                                                              │
-                      │ └──────────────────────────────────────────────────────────────┘
-                      │
-                      │  TREATMENT CHAIN & EFFLUENT DISCHARGE:
-                      │
-                      │  ┌─────────────┐    pipe5     ┌─────────────┐    pipe5     ┌─────────────┐
-                      └─>│   WTP 2     │─────────────>│   WTP 3     │─────────────>│   CHA 2     │
-                         │(Treatment L2)│   (50%)      │(Treatment L3)│              │ (Channel)   │
-                         └─────────────┘              └─────────────┘              └─────────────┘
-                                │                                        
-                                │ pipe5 (50%)                            
-                                ▼                                        
-                         ┌─────────────┐                                 
-                         │   CHA 1     │                                 
-                         │ (Channel)   │                                 
-                         └─────────────┘                                 
+    SOURCES              TREATMENT & STORAGE              END USERS & DISCHARGE
+                                                         
+  ◆─────────────◆                                      ┏━━━━━━━━━━━━━┓
+  │   OSRC 1    │                                      ┃   USE 1    ┃
+  │ (Outside    │──pipe1──┐                            ┃ (Domestic) ┃
+  │  Source)    │         │                            ┃ 200 m³/day ┃
+  │ 0.5-0.8 var │         │                            ┗━━━━━━━━━━━━━┛
+  ◆─────────────◆         │                                   ▲
+                          │                                   │ pipe4 (70%)
+  ██████████████          │      ╔═══════════════╗            │
+  █   RES 1    █          └─────▶║   ● TRN 1     ║            │
+  █ (Reservoir)█◀─────────────────║   (outflo)    ║     ╭─────────────╮
+  █  min: 50%  █                 ║   0.0 m³/day  ║     │   STOR 1    │
+  ██████████████                 ╚═══════════════╝     │ (Water      │
+       │                                               │  Tower)     │
+       │ pipe2                                         │ 10,000 m³   │
+       │ (1000 m³/day)                                 ╰─────────────╯
+       ▼                                                      │
+  ╔═══════════════╗                                          │ pipe5 (30%)
+  ║   ● TRN 2     ║                                          ▼
+  ║   (ave_day)   ║                                    ┏━━━━━━━━━━━━━┓
+  ║   1000 m³/day ║                                    ┃   USE 2    ┃
+  ╚═══════════════╝                                    ┃(Industrial)┃
+         │                                             ┃ 300 m³/day ┃
+         │ pipe2                                       ┗━━━━━━━━━━━━━┛
+         ▼
+    ▭▭▭▭▭▭▭▭▭▭▭▭▭                                    
+    ▌   WTP 1     ▐                                   
+    ▌ (Treatment) ▐                                   
+    ▌  Level 1    ▐                                   
+    ▭▭▭▭▭▭▭▭▭▭▭▭▭                                     
+         │                                             
+         │ pipe3                                       
+         ▼                                             
+    ╔═══════════════╗                                 
+    ║   ● TRN 3     ║                                 
+    ║   (outflo)    ║                                 
+    ║   variable    ║                                 
+    ╚═══════════════╝                                 
+         │                                             
+         ▼                                             
+    ╭─────────────╮                                   
+    │   STOR 1    │──────────────────────────────────┐
+    │ (Storage)   │                                   │
+    ╰─────────────╯                                   │ pipe6
+                                                      ▼
+                                           ╔═══════════════╗      ▓▓▓▓▓▓▓▓▓▓▓▓▓
+                                           ║   ● TRN 6     ║      ▓   HRU 2   ▓
+                                           ║   (dtbl_irr)  ║─────▶▓(Irrigation)▓
+                                           ║   irrigation  ║      ▓  1 source  ▓
+                                           ╚═══════════════╝      ▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-                         ┌─────────────┐    pipe5     ┌─────────────┐
-                         │   USE 3     │─────────────>│   STOR 1    │
-                         │(Residential)│   (recycle)  │(Water Tower)│
-                         └─────────────┘              └─────────────┘
+  ░░░░░░░░░░░░░░                          IRRIGATION WITH BACKUP:
+  ░   AQU 2    ░                          
+  ░ (Aquifer)  ░─pump1─┐                  ╔═══════════════╗      ▓▓▓▓▓▓▓▓▓▓▓▓▓
+  ░  max: 13m  ░       │                  ║   ● TRN 11    ║      ▓   HRU 3   ▓
+  ░  drawdown  ░       │                  ║   (dtbl_irr)  ║─────▶▓(Irrigation)▓
+  ░░░░░░░░░░░░░░       │                  ║ RES1+AQU2     ║      ▓ 2 sources  ▓
+       ▲               │                  ║ (compensation)║      ▓▓▓▓▓▓▓▓▓▓▓▓▓
+       │               │                  ╚═══════════════╝
+       │               │                           ▲
+       │               │                           │ pipe6+7
+  ██████████████       │                           │
+  █   RES 1    █───────┼───pipe6+7─────────────────┘
+  █ (Reservoir)█       │                  
+  ██████████████       │                  ╔═══════════════╗      ▓▓▓▓▓▓▓▓▓▓▓▓▓
+                       │                  ║   ● TRN 12    ║      ▓   HRU 4   ▓
+                       └─pipe7────────────║   (dtbl_irr)  ║─────▶▓(Irrigation)▓
+                                          ║ RES1+AQU2     ║      ▓ 2 sources  ▓
+                                          ║ (compensation)║      ▓▓▓▓▓▓▓▓▓▓▓▓▓
+                                          ╚═══════════════╝
+
+                        TREATMENT PLANT CHAIN & EFFLUENT:
+
+    ▭▭▭▭▭▭▭▭▭▭▭▭▭    pipe5     ▭▭▭▭▭▭▭▭▭▭▭▭▭    pipe5     ┌─────────────┐
+    ▌   WTP 2     ▐─────────────▶▌   WTP 3     ▐─────────────▶│   CHA 2     │
+    ▌(Treatment L2)▐   (50%)     ▌(Treatment L3)▐              │ (Channel)   │
+    ▭▭▭▭▭▭▭▭▭▭▭▭▭              ▭▭▭▭▭▭▭▭▭▭▭▭▭              └─────────────┘
+         │                                        
+         │ pipe5 (50%)                            
+         ▼                                        
+    ┌─────────────┐                                 
+    │   CHA 1     │                                 
+    │ (Channel)   │                                 
+    └─────────────┘                                 
+
+    ┏━━━━━━━━━━━━━┓    pipe5     ╭─────────────╮
+    ┃   USE 3    ┃─────────────▶│   STOR 1    │
+    ┃(Residential)┃   (recycle)  │ (Storage)   │
+    ┗━━━━━━━━━━━━━┛              ╰─────────────╯
 
 ```
+
+### Shape Legend:
+- **◆ Outside Sources**: Diamond shape for external water sources  
+- **█ Reservoirs**: Solid rectangles for water storage reservoirs
+- **░ Aquifers**: Dotted rectangles for groundwater sources
+- **▭ Treatment Plants**: Thick-border rectangles for water treatment facilities
+- **╭ Storage Towers**: Rounded rectangles for water storage towers  
+- **╔ Transfer Objects**: Double-line rectangles with ● for transfer/pump operations
+- **┃ Municipal Use**: Thick-border rectangles for domestic/industrial users
+- **▓ Irrigation**: Dotted fill rectangles for agricultural irrigation
+- **┌ Channels**: Simple rectangles for stream/river discharge points
 
 ## Transfer Object Details
 
