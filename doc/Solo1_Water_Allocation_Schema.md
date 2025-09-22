@@ -21,12 +21,14 @@ This schema shows the actual connections and object relationships defined in the
 | 4 | ave_day | 200.0 | stor 1 | pipe 4 | use 1 | Storage to domestic use (70%) |
 | 5 | ave_day | 300.0 | stor 1 | pipe 5 | use 2 | Storage to industrial use (30%) |
 | 6 | dtbl_irr | 0.0 | stor 1 | pipe 6 | hru 2 | Storage to irrigation |
-| 7 | outflo | 0.0 | wtp 2 | pipe 5 | cha 1 | Treatment plant 2 to channel 1 (50%) |
-| 8 | outflo | 0.0 | wtp 2 | pipe 5 | wtp 3 | Treatment plant 2 to treatment plant 3 (50%) |
-| 9 | outflo | 0.0 | wtp 3 | pipe 5 | cha 2 | Treatment plant 3 to channel 2 (50%) |
-| 10 | outflo | 0.0 | use 3 | pipe 5 | stor 1 | Residential use recycle to storage (50%) |
-| 11 | dtbl_irr | 0.0 | res 1 + aqu 2 | pipe 6 + pump 1 | hru 3 | Dual-source irrigation with compensation |
-| 12 | dtbl_irr | 0.0 | res 1 + aqu 2 | pipe 7 + pump 1 | hru 4 | Dual-source irrigation with compensation |
+| 7 | outflo | 0.0 | use 1 | pipe 7 | wtp 2 | Domestic use wastewater to treatment plant 2 |
+| 8 | outflo | 0.0 | use 2 | pipe 8 | wtp 2 | Industrial use wastewater to treatment plant 2 |
+| 9 | outflo | 0.0 | wtp 2 | pipe 9 | cha 1 | Treatment plant 2 to channel 1 (50%) |
+| 10 | outflo | 0.0 | wtp 2 | pipe 10 | wtp 3 | Treatment plant 2 to treatment plant 3 (50%) |
+| 11 | outflo | 0.0 | wtp 3 | pipe 11 | cha 2 | Treatment plant 3 to channel 2 (50%) |
+| 12 | outflo | 0.0 | wtp 3 | pipe 12 | stor 1 | Treatment plant 3 recycle to storage (50%) |
+| 13 | dtbl_irr | 0.0 | res 1 + aqu 2 | pipe 13 + pump 1 | hru 3 | Dual-source irrigation with compensation |
+| 14 | dtbl_irr | 0.0 | res 1 + aqu 2 | pipe 13 + pump 1 | hru 1 | Dual-source irrigation with compensation |
 
 ## Connection Schema
 
@@ -47,10 +49,10 @@ SOURCES                    TRANSFERS                     RECEIVERS
       │                                                         │ TRN3
       │                                                         ▼
       │                                                 ┌─────────────┐
-      │                                                 │   STOR 1    │
-      │                                                 │  (Storage)  │
-      │                                                 └─────────────┘
-      │                                                         │
+      │                                                 │   STOR 1    │←┐
+      │                                                 │  (Storage)  │ │ TRN12
+      │                                                 └─────────────┘ │ recycle
+      │                                                         │       │
       │                                     ┌───────────────────┼───────────────────┐
       │                                     │ TRN4              │ TRN5              │ TRN6
       │                                     │ 200 m³/day        │ 300 m³/day        │ irrigation
@@ -59,31 +61,41 @@ SOURCES                    TRANSFERS                     RECEIVERS
       │                             │    USE 1    │     │    USE 2    │     │    HRU 2    │
       │                             │ (Domestic)  │     │(Industrial) │     │(Irrigation) │
       │                             └─────────────┘     └─────────────┘     └─────────────┘
-      │
-      │ TRN11,12 (with compensation)
-      │ ┌─────────────┐
-      └→│   AQU 2     │──TRN11,12──→┌─────────────┐──────→┌─────────────┐
-        │ (Aquifer)   │  (backup)   │   dtbl_irr  │       │  HRU 3,4    │
-        │ (Backup)    │             │ irrigation  │       │(Irrigation) │
-        └─────────────┘             └─────────────┘       └─────────────┘
-
-TREATMENT CHAIN:
-┌─────────────┐    ┌─────────────┐    ┌─────────────┐
-│    WTP 2    │───→│    WTP 3    │───→│    CHA 2    │
-│(Treatment L2)│    │(Treatment L3)│    │ (Channel)   │
-└─────────────┘    └─────────────┘    └─────────────┘
-       │                                       
-       ▼                                       
-┌─────────────┐                                
-│    CHA 1    │                                
-│ (Channel)   │                                
-└─────────────┘                                
-
-RECYCLING:
-┌─────────────┐    ┌─────────────┐
-│    USE 3    │───→│   STOR 1    │
-│(Residential)│    │  (Storage)  │
-└─────────────┘    └─────────────┘
+      │                                     │                   │
+      │                                     │ TRN7              │ TRN8
+      │                                     │ wastewater        │ wastewater
+      │                                     ▼                   ▼
+      │                                     └───────────┬───────────┘
+      │                                                 ▼
+      │                                         ┌─────────────┐
+      │                                         │    WTP 2    │
+      │                                         │(Treatment L2)│
+      │                                         └─────────────┘
+      │                                                 │
+      │                                 ┌───────────────┼───────────────┐
+      │                                 │ TRN9          │ TRN10         │
+      │                                 │ (50%)         │ (50%)         │
+      │                                 ▼               ▼               │
+      │                         ┌─────────────┐ ┌─────────────┐         │
+      │                         │    CHA 1    │ │    WTP 3    │         │
+      │                         │ (Channel)   │ │(Treatment L3)│         │
+      │                         └─────────────┘ └─────────────┘         │
+      │                                                 │               │
+      │                                 ┌───────────────┼───────────────┘
+      │                                 │ TRN11         │
+      │                                 │ (50%)         │
+      │                                 ▼               │
+      │                         ┌─────────────┐         │
+      │                         │    CHA 2    │         │
+      │                         │ (Channel)   │         │
+      │                         └─────────────┘         │
+      │                                                 │
+      │ TRN13,14 (with compensation)                    │
+      │ ┌─────────────┐                                 │
+      └→│   AQU 2     │──TRN13,14─→┌─────────────┐──────→┌─────────────┐
+        │ (Aquifer)   │  (backup)  │   dtbl_irr  │       │  HRU 1,3    │
+        │ (Backup)    │            │ irrigation  │       │(Irrigation) │
+        └─────────────┘            └─────────────┘       └─────────────┘
 ```
 
 ## Key Features
@@ -97,19 +109,24 @@ RECYCLING:
    - **USE 2** (TRN5): Industrial use (300 m³/day)
    - **HRU 2** (TRN6): Irrigation (decision table controlled)
 
-### Multi-Source Irrigation
-- **TRN 11**: Primary from RES 1, backup from AQU 2 → HRU 3
-- **TRN 12**: Primary from RES 1, backup from AQU 2 → HRU 4
-- Compensation enabled: If reservoir cannot meet demand, aquifer automatically provides backup
-
-### Treatment Plant Cascade
+### Wastewater Treatment Chain
+- **USE 1** → **WTP 2** (TRN7): Domestic wastewater to treatment plant 2
+- **USE 2** → **WTP 2** (TRN8): Industrial wastewater to treatment plant 2
 - **WTP 2** splits output (50/50):
-  - To **CHA 1** (TRN7): Direct discharge
-  - To **WTP 3** (TRN8): Further treatment
-- **WTP 3** → **CHA 2** (TRN9): Final treated discharge
+  - To **CHA 1** (TRN9): Direct discharge to channel 1
+  - To **WTP 3** (TRN10): Further treatment at plant 3
+- **WTP 3** splits output (50/50):
+  - To **CHA 2** (TRN11): Final treated discharge to channel 2
+  - To **STOR 1** (TRN12): Recycled water back to storage
+
+### Multi-Source Irrigation
+- **TRN 13**: Primary from RES 1, backup from AQU 2 → HRU 3
+- **TRN 14**: Primary from RES 1, backup from AQU 2 → HRU 1
+- Compensation enabled: If reservoir cannot meet demand, aquifer automatically provides backup
+- Both transfers use pipe 13 and pump 1 for aquifer access
 
 ### Water Recycling
-- **USE 3** → **STOR 1** (TRN10): Residential use returns to storage
+- **WTP 3** → **STOR 1** (TRN12): Treated wastewater returns to storage system
 
 ## Object Summary
 
@@ -118,21 +135,21 @@ RECYCLING:
 - 1 Aquifer (AQU 2) 
 - 1 Outside Source (OSRC 1)
 
-**Receivers**: 11 total
+**Receivers**: 10 total
 - 1 Reservoir (RES 1)
 - 3 Treatment Plants (WTP 1, 2, 3)
 - 1 Storage Tower (STOR 1)
-- 3 Use Objects (USE 1, 2, 3)
-- 3 Irrigation HRUs (HRU 2, 3, 4)
+- 2 Use Objects (USE 1, 2)
+- 3 Irrigation HRUs (HRU 1, 2, 3)
 - 2 Channels (CHA 1, 2)
 
-**Transfer Objects**: 12 total
+**Transfer Objects**: 14 total
 - 3 Fixed daily transfers (TRN 2, 4, 5)
-- 6 Variable outflow transfers (TRN 1, 3, 7, 8, 9, 10)
-- 3 Irrigation transfers with decision table control (TRN 6, 11, 12)
+- 9 Variable outflow transfers (TRN 1, 3, 7, 8, 9, 10, 11, 12)
+- 3 Irrigation transfers with decision table control (TRN 6, 13, 14)
 
 **Infrastructure**: 
-- 13 Pipes (pipe 1-7, pipe 5 shared)
-- 1 Pump (pump 1 for aquifer)
+- 13 Pipes (pipe 1-13, with pipe 13 shared by TRN 13&14)
+- 1 Pump (pump 1 for aquifer access)
 
-This schema represents a comprehensive municipal water supply system with irrigation, treatment, storage, and recycling capabilities, designed to serve multiple demand types while maintaining environmental flows.
+This schema represents a comprehensive municipal water supply system with wastewater treatment, recycling, irrigation, storage, and environmental discharge capabilities, designed to serve multiple demand types while maintaining water reuse and environmental flows.
