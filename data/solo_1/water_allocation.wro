@@ -1,7 +1,7 @@
 Water Allocation Configuration for solo_1 dataset
 1
 Water Allocation Rule Definition       Source  Transfer  Out_Src  Out_Rcv  Wtp   Uses  Stor  Pipe  Canal  Pump  Cha_Src
- 07080209 high_right_first_serve         3       12        1        0      3     2      1    13     0     1       n
+ 07080209 high_right_first_serve         3       14        1        0      3     2      1    13     0     1       n
 Source OBJ_TYP OBJ_NUM LIM_TYP LIM_NAME                        (JAN_MIN-DEC_MIN)
   1    res        1    mon_lim  null     0.5     0.5     0.5     0.5     0.5     0.5     0.5     0.5     0.5     0.5     0.5     0.5
   2    aqu        2    mon_lim  null     13.     13      13      13      13      13      13      13      13      13      13      13
@@ -13,9 +13,11 @@ TRN_NUM TRN_TYP  TRN_TYP_NAME  AMOUNT RIGHT SRC_NUM DTBL_SRC  (SRC_OBJECTS)     
   4     ave_day     null      200.0    sr    1        null    stor 1 pipe 4  0.7 n        			use  1
   5     ave_day     null      300.0    sr    1        null    stor 1 pipe 5  0.3 n        			use  2
   6     dtbl_irr irr_str8_dmd   0.0    sr    1        null    stor 1 pipe 6  1.0 n        			hru  2
-  7     outflo      null        0.0    sr    1        null    wtp  2 pipe 5  0.5 n        			cha  1
-  8     outflo      null        0.0    sr    1        null    wtp  2 pipe 5  0.5 n        			wtp  3
-  9     outflo      null        0.0    sr    1        null    wtp  3 pipe 5  0.5 n        			cha  2
-  10    outflo      null        0.0    sr    1        null    use  3 pipe 5  0.5 n        			stor 1
-  11    dtbl_irr irr_str8_dmd   0.0    sr    2        null    res  1 pipe 6  1.0 n     aqu  2 pump 1  0.0 y     hru  3
-  12    dtbl_irr irr_str8_dmd   0.0    sr    2        null    res  1 pipe 7  1.0 n     aqu  2 pump 1  0.0 y     hru  4
+  7     outflo      null        0.0    sr    1        null    use  1 pipe 7  1.0 n              wtp  2 
+  8     outflo      null        0.0    sr    1        null    use  2 pipe 8  1.0 n              wtp  2 
+  9     outflo      null        0.0    sr    1        null    wtp  2 pipe 9  0.5 n        			cha  1
+  10    outflo      null        0.0    sr    1        null    wtp  2 pipe 10  0.5 n        			wtp  3
+  11    outflo      null        0.0    sr    1        null    wtp  3 pipe 11  0.5 n        			cha  2
+  12    outflo      null        0.0    sr    1        null    wtp  3 pipe 12  0.5 n        			stor 1
+  13    dtbl_irr irr_str8_dmd   0.0    sr    2        null    res  1 pipe 13  1.0 n     aqu  2 pump 1  0.0 y     hru  3
+  14    dtbl_irr irr_str8_dmd   0.0    sr    2        null    res  1 pipe 13  1.0 n     aqu  2 pump 1  0.0 y     hru  1
