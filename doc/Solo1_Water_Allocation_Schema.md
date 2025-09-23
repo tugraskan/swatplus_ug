@@ -18,8 +18,8 @@ This schema shows the actual connections and object relationships defined in the
 | 1 | outflo | 0.0 | osrc 1 | pipe 1 | res 1 | Outside source fills reservoir |
 | 2 | ave_day | 1000.0 | res 1 | pipe 2 | wtp 1 | Reservoir feeds treatment plant |
 | 3 | outflo | 0.0 | wtp 1 | pipe 3 | stor 1 | Treatment plant fills storage |
-| 4 | ave_day | 200.0 | stor 1 | pipe 4 | use 1 | Storage to domestic use (70%) |
-| 5 | ave_day | 300.0 | stor 1 | pipe 5 | use 2 | Storage to industrial use (30%) |
+| 4 | ave_day | 200.0 | stor 1 | pipe 4 | use 1 | Storage to domestic use (200 m³/day) |
+| 5 | ave_day | 300.0 | stor 1 | pipe 5 | use 2 | Storage to industrial use (300 m³/day) |
 | 6 | dtbl_irr | 0.0 | stor 1 | pipe 6 | hru 2 | Storage to irrigation |
 | 7 | outflo | 0.0 | use 1 | pipe 7 | wtp 2 | Domestic use wastewater to treatment plant 2 |
 | 8 | outflo | 0.0 | use 2 | pipe 8 | wtp 2 | Industrial use wastewater to treatment plant 2 |
