@@ -312,36 +312,48 @@ end type
 
 ### Allocation Priority Logic
 
-The system processes water allocations in a hierarchical manner:
+The system processes water allocations sequentially through transfer objects:
 
-1. **Senior Rights First**: All senior water rights are processed before junior rights
-2. **Source Priority**: Within each demand object, sources are accessed in specified order
+1. **Transfer Order**: Transfer objects are processed in the order specified in the configuration file
+2. **Source Priority**: Within each transfer object, sources are accessed in specified order  
 3. **Compensation Rules**: Failed sources trigger compensation from designated backup sources
 
-**Priority Processing Algorithm:**
+**Current Processing Algorithm (from `wallo_control.f90`):**
 ```fortran
-! Process all senior rights first
-do iwallo = 1, num_wallo_objects
-  do idmd = 1, wallo(iwallo)%dmd_obs
-    if (wallo(iwallo)%dmd(idmd)%right == "sr") then
-      call wallo_demand(iwallo, idmd)
-      call wallo_withdraw(iwallo, idmd)
-      call wallo_transfer(iwallo, idmd)
-    end if
-  end do
-end do
-
-! Then process junior rights
-do iwallo = 1, num_wallo_objects
-  do idmd = 1, wallo(iwallo)%dmd_obs  
-    if (wallo(iwallo)%dmd(idmd)%right == "jr") then
-      call wallo_demand(iwallo, idmd)
-      call wallo_withdraw(iwallo, idmd)
-      call wallo_transfer(iwallo, idmd)
-    end if
-  end do
+!! loop through each demand object
+do itrn = 1, wallo(iwallo)%trn_obs
+  
+  !! set demand for each object
+  call wallo_demand (iwallo, itrn, isrc)
+  
+  !! if demand - check source availability and withdraw water
+  if (wallod_out(iwallo)%trn(itrn)%trn_flo > 0.) then
+    
+    !! check if water is available from each source - set withdrawal and unmet
+    do isrc = 1, wallo(iwallo)%trn(itrn)%src_num
+      trn_m3 = wallod_out(iwallo)%trn(itrn)%src(isrc)%demand
+      if (trn_m3 > 1.e-6) then
+        call wallo_withdraw (iwallo, itrn, isrc)
+      end if
+    end do
+    
+    !! loop through sources again to check if compensation is allowed
+    do isrc = 1, wallo(iwallo)%trn(itrn)%src_num
+      if (wallo(iwallo)%trn(itrn)%src(isrc)%comp == "y") then
+        trn_m3 = wallo(iwallo)%trn(itrn)%unmet_m3
+        if (trn_m3 > 1.e-6) then
+          call wallo_withdraw (iwallo, itrn, isrc)
+        end if
+      end if
+    end do
+    
+    !! transfer water to receiving object from all sources
+    call wallo_transfer (iwallo, itrn)
+  end if
 end do
 ```
+
+**Note**: Water rights priority (`sr` for senior, `jr` for junior) is defined in the configuration but priority processing by rights is not currently implemented in the control logic.
 
 ### Constraint Handling
 
@@ -354,15 +366,15 @@ real, dimension(12) :: limit_mon = 0.
 ! ... etc.
 ```
 
-**Dynamic Constraint Evaluation:**
+**Dynamic Constraint Evaluation (from `wallo_control.f90`):**
 ```fortran
-select case (constraint_type)
+select case (wallo(iwallo)%osrc(iosrc)%lim_typ)
   case ("mon_lim")
-    current_limit = source_limit(current_month)
-  case ("dtbl") 
-    call decision_table_evaluation(dtbl_id, current_limit)
+    osrc_om_out(iosrc)%flo = wallo(iwallo)%osrc(iosrc)%limit_mon(time%mo)
+  case ("dtbl")
+    !! use decision table for outflow (not yet implemented)
   case ("recall")
-    current_limit = recall_data(current_day)
+    !! use recall for outflow (not yet implemented)
 end select
 ```
 
@@ -374,19 +386,15 @@ When primary sources cannot meet demand, the system can:
 - Maintain water rights priority during compensation
 - Track compensation usage for reporting
 
-**Compensation Logic:**
+**Compensation Logic (from `wallo_control.f90`):**
 ```fortran
-! First pass - try primary sources
-do isrc = 1, num_sources
-  if (source_available(isrc)) then
-    call withdraw_water(isrc, remaining_demand)
-  end if
-end do
-
-! Second pass - compensation sources for unmet demand
-do isrc = 1, num_sources
-  if (wallo(iwallo)%dmd(idmd)%src(isrc)%comp == "y" .and. remaining_demand > 0) then
-    call withdraw_water(isrc, remaining_demand)
+!! loop through sources again to check if compensation is allowed
+do isrc = 1, wallo(iwallo)%trn(itrn)%src_num
+  if (wallo(iwallo)%trn(itrn)%src(isrc)%comp == "y") then
+    trn_m3 = wallo(iwallo)%trn(itrn)%unmet_m3
+    if (trn_m3 > 1.e-6) then
+      call wallo_withdraw (iwallo, itrn, isrc)
+    end if
   end if
 end do
 ```
