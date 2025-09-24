@@ -1,79 +1,122 @@
 # SWAT+ Water Allocation System - Poster Flowchart
 
-## Simplified Flowchart for Poster Presentation
+## Landscape Flowchart for Poster Presentation
 
-This is a streamlined version of the water allocation flowchart designed specifically for poster presentations, highlighting the main process flow and key subroutines.
+This is a **landscape (left-to-right) layout** of the water allocation flowchart optimized for poster presentations. The horizontal design makes better use of poster space and provides clear visual flow from initialization through daily processing to output generation. All subroutines include detailed call stack information with file references and line numbers.
 
 ```mermaid
-flowchart TD
-    %% Title and Start
-    START([🚀 SWAT+ Water Allocation System]) --> INIT_SETUP
+flowchart LR
+    %% Start and Initialization Phase
+    START([🚀 SWAT+ Water Allocation System]) --> INIT_PHASE
     
-    %% Initialization Phase with Call Stack
-    INIT_SETUP["📁 INITIALIZATION PHASE"]
-    INIT_SETUP --> PROC_OPEN["📊 proc_open()<br/>📍 Called from: Main Program"]
-    PROC_OPEN --> HEADER_CALL["📊 header_water_allocation()<br/>📍 Called from: proc_open()<br/>📄 Opens output files:<br/>• water_allo_day.txt/csv<br/>• water_allo_mon.txt/csv<br/>• water_allo_yr.txt/csv<br/>• water_allo_aa.txt/csv"]
+    subgraph INIT_PHASE ["📁 INITIALIZATION PHASE"]
+        PROC_OPEN["📊 proc_open()<br/>📍 Called from: Main Program"]
+        HEADER_CALL["📊 header_water_allocation()<br/>📍 Called from: proc_open()<br/>📄 Opens output files:<br/>• water_allo_day.txt/csv<br/>• water_allo_mon.txt/csv<br/>• water_allo_yr.txt/csv<br/>• water_allo_aa.txt/csv"]
+        READ_NOTE["📖 water_allocation_read()<br/>📍 Called from: Input processing<br/>📄 Reads input files:<br/>• .wal allocation objects<br/>• Source/demand definitions<br/>• Treatment parameters"]
+        
+        PROC_OPEN --> HEADER_CALL
+        HEADER_CALL --> READ_NOTE
+    end
     
-    %% Note: water_allocation_read is called elsewhere in input processing
-    HEADER_CALL --> READ_NOTE["📖 water_allocation_read()<br/>📍 Called from: Input processing<br/>📄 Reads input files:<br/>• .wal allocation objects<br/>• Source/demand definitions<br/>• Treatment parameters"]
+    %% Daily Processing Phase
+    INIT_PHASE --> DAILY_PHASE
     
-    READ_NOTE --> TIME_LOOP
+    subgraph DAILY_PHASE ["🔄 DAILY PROCESSING"]
+        TIME_LOOP["🔄 time_control()<br/>📍 Called from: Main Program<br/>Daily simulation loop"]
+        
+        subgraph ALLOCATION_PATHS ["🎯 ALLOCATION PATHS"]
+            WALLO_CHECK1{Water allocation<br/>objects exist?<br/>cha_ob == 'n'}
+            DIRECT_CALL["🎯 Direct Path<br/>wallo_control(iwallo)<br/>📍 Called from: time_control()<br/>Line 239: Non-channel objects"]
+            
+            COMMAND_CALL["📋 command()<br/>📍 Called from: time_control()<br/>Line 250: Command processing"]
+            SD_CHANNEL["🌊 sd_channel_control3()<br/>📍 Called from: command()<br/>Line 362: Channel processing"]
+            WALLO_CHECK2{Channel has<br/>water allocation?<br/>sd_ch%wallo > 0}
+            CHANNEL_CALL["🎯 Channel Path<br/>wallo_control(sd_ch%wallo)<br/>📍 Called from: sd_channel_control3()<br/>Line 395: Channel-based allocation"]
+        end
+        
+        TIME_LOOP --> WALLO_CHECK1
+        WALLO_CHECK1 -->|Yes| DIRECT_CALL
+        TIME_LOOP --> COMMAND_CALL
+        COMMAND_CALL --> SD_CHANNEL
+        SD_CHANNEL --> WALLO_CHECK2
+        WALLO_CHECK2 -->|Yes| CHANNEL_CALL
+    end
     
-    %% Daily Simulation Loop with Call Stack
-    TIME_LOOP["🔄 time_control()<br/>📍 Called from: Main Program<br/>Daily simulation loop"]
+    %% Main Processing Phase
+    DAILY_PHASE --> MAIN_PHASE
     
-    TIME_LOOP --> WALLO_CHECK1{Water allocation<br/>objects exist?<br/>cha_ob == 'n'}
-    WALLO_CHECK1 -->|Yes| DIRECT_CALL["🎯 wallo_control(iwallo)<br/>📍 Called from: time_control()<br/>Line 239: Direct call for non-channel objects"]
+    subgraph MAIN_PHASE ["🎯 MAIN CONTROL PROCESSING"]
+        MAIN_CONTROL["🎯 wallo_control(iwallo)<br/>Main allocation orchestrator"]
+        
+        subgraph CORE_SEQUENCE ["Core Processing Sequence"]
+            DEMAND_CALC["💧 wallo_demand()<br/>📍 Line 52<br/>Calculate water demands"]
+            WATER_WITHDRAW["🏗️ wallo_withdraw()<br/>📍 Line 62 & 71<br/>Water extraction<br/>• Primary withdrawal<br/>• Compensation withdrawal"]
+            WATER_TRANSFER["🚰 wallo_transfer()<br/>📍 Line 85<br/>Transfer water to receivers"]
+            TREATMENT_CHECK{Treatment<br/>required?}
+            TREATMENT["🧪 wallo_treatment()<br/>📍 Line 133<br/>Water treatment processing"]
+        end
+        
+        MAIN_CONTROL --> DEMAND_CALC
+        DEMAND_CALC --> WATER_WITHDRAW
+        WATER_WITHDRAW --> WATER_TRANSFER
+        WATER_TRANSFER --> TREATMENT_CHECK
+        TREATMENT_CHECK -->|Yes| TREATMENT
+        TREATMENT_CHECK -->|No| PROCESSING_COMPLETE
+        TREATMENT --> PROCESSING_COMPLETE[Processing Complete]
+    end
     
-    TIME_LOOP --> COMMAND_CALL["📋 command()<br/>📍 Called from: time_control()<br/>Line 250: Command processing loop"]
-    COMMAND_CALL --> SD_CHANNEL["🌊 sd_channel_control3()<br/>📍 Called from: command()<br/>Line 362: Channel processing"]
+    %% Output Phase
+    MAIN_PHASE --> OUTPUT_PHASE
     
-    SD_CHANNEL --> WALLO_CHECK2{Channel has<br/>water allocation?<br/>sd_ch%wallo > 0}
-    WALLO_CHECK2 -->|Yes| CHANNEL_CALL["🎯 wallo_control(sd_ch%wallo)<br/>📍 Called from: sd_channel_control3()<br/>Line 395: Channel-based allocation"]
+    subgraph OUTPUT_PHASE ["📈 OUTPUT PROCESSING"]
+        COMMAND_OUTPUT["📋 command() - Output section<br/>📍 Time check: yrs > nyskip"]
+        OUTPUT_CALL["📈 water_allocation_output(iwallo)<br/>📍 Called from: command()<br/>Line 427: Generate all reports"]
+        
+        subgraph OUTPUT_TYPES ["Output Types Generated"]
+            DAILY_OUT["📄 Daily<br/>water_allo_day.txt/csv"]
+            MONTHLY_OUT["📄 Monthly<br/>water_allo_mon.txt/csv"]
+            YEARLY_OUT["📄 Yearly<br/>water_allo_yr.txt/csv"]
+            AA_OUT["📄 Average Annual<br/>water_allo_aa.txt/csv"]
+        end
+        
+        COMMAND_OUTPUT --> OUTPUT_CALL
+        OUTPUT_CALL --> OUTPUT_TYPES
+    end
     
-    %% Main Control Process with Internal Calls
-    DIRECT_CALL --> MAIN_CONTROL
-    CHANNEL_CALL --> MAIN_CONTROL
-    MAIN_CONTROL["🎯 MAIN CONTROL SUBROUTINE<br/>wallo_control(iwallo)<br/><br/>Internal call sequence:"]
+    %% Loop Control and End
+    OUTPUT_PHASE --> LOOP_CONTROL
+    LOOP_CONTROL{More simulation days?}
+    LOOP_CONTROL -->|Yes| DAILY_PHASE
+    LOOP_CONTROL -->|No| END([✅ Simulation Complete])
     
-    MAIN_CONTROL --> DEMAND_CALC["💧 wallo_demand(iwallo, itrn, isrc)<br/>📍 Called from: wallo_control()<br/>Line 52: Calculate water demands"]
+    %% Connect allocation paths to main processing
+    DIRECT_CALL -.-> MAIN_CONTROL
+    CHANNEL_CALL -.-> MAIN_CONTROL
     
-    DEMAND_CALC --> WATER_WITHDRAW["🏗️ wallo_withdraw(iwallo, itrn, isrc)<br/>📍 Called from: wallo_control()<br/>Line 62 & 71: Water extraction<br/>• Line 62: Primary withdrawal<br/>• Line 71: Compensation withdrawal"]
-    
-    WATER_WITHDRAW --> WATER_TRANSFER["🚰 wallo_transfer(iwallo, itrn)<br/>📍 Called from: wallo_control()<br/>Line 85: Transfer water to receivers"]
-    
-    WATER_TRANSFER --> TREATMENT_CHECK{Treatment<br/>required?}
-    TREATMENT_CHECK -->|Yes| TREATMENT["🧪 wallo_treatment(iwallo, j)<br/>📍 Called from: wallo_control()<br/>Line 133: Water treatment processing"]
-    TREATMENT_CHECK -->|No| OUTPUT_CHECK
-    TREATMENT --> OUTPUT_CHECK
-    
-    %% Output Phase with Call Stack
-    OUTPUT_CHECK --> COMMAND_OUTPUT["📋 command() - Output section<br/>📍 Time check: yrs > nyskip"]
-    COMMAND_OUTPUT --> OUTPUT_CALL["📈 water_allocation_output(iwallo)<br/>📍 Called from: command()<br/>Line 427: Generate all reports"]
-    
-    OUTPUT_CALL --> NEXT_DAY
-    
-    %% Loop Control
-    NEXT_DAY{More simulation days?}
-    NEXT_DAY -->|Yes| TIME_LOOP
-    NEXT_DAY -->|No| END
-    
-    END([✅ Simulation Complete])
-    
-    %% Styling for poster clarity
+    %% Styling for landscape poster clarity
     classDef startEnd fill:#4CAF50,stroke:#2E7D32,stroke-width:3px,color:#fff
     classDef process fill:#2196F3,stroke:#1565C0,stroke-width:2px,color:#fff
     classDef subroutine fill:#FF9800,stroke:#E65100,stroke-width:3px,color:#fff
     classDef decision fill:#9C27B0,stroke:#6A1B9A,stroke-width:2px,color:#fff
-    classDef callstack fill:#E8F5E8,stroke:#2E7D32,stroke-width:2px
+    classDef phase fill:#E8F5E8,stroke:#2E7D32,stroke-width:2px
+    classDef output fill:#FFF3E0,stroke:#F57C00,stroke-width:2px
     
     class START,END startEnd
     class TIME_LOOP,COMMAND_CALL,SD_CHANNEL,COMMAND_OUTPUT process
     class PROC_OPEN,HEADER_CALL,READ_NOTE,DIRECT_CALL,CHANNEL_CALL,MAIN_CONTROL,DEMAND_CALC,WATER_WITHDRAW,WATER_TRANSFER,TREATMENT,OUTPUT_CALL subroutine
-    class WALLO_CHECK1,WALLO_CHECK2,TREATMENT_CHECK,NEXT_DAY decision
+    class WALLO_CHECK1,WALLO_CHECK2,TREATMENT_CHECK,LOOP_CONTROL decision
+    class INIT_PHASE,DAILY_PHASE,MAIN_PHASE,OUTPUT_PHASE phase
+    class DAILY_OUT,MONTHLY_OUT,YEARLY_OUT,AA_OUT output
 ```
 
 ## Key Information for Poster
+
+### 🖼️ **Landscape Layout Benefits**
+- **Left-to-right flow** matches natural reading pattern
+- **Optimized for poster dimensions** (landscape orientation)
+- **Phase-based organization** with clear visual groupings
+- **Subgraphs** separate different processing phases
+- **Better space utilization** for wide poster formats
 
 ### 🔧 Main Subroutines (Detailed Call Stack)
 
