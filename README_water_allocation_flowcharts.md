@@ -13,14 +13,24 @@ This repository contains comprehensive flowcharts documenting the SWAT+ water al
 - Best for: Developers, advanced users, complete system understanding
 
 ### 2. `water_allocation_poster_flowchart.md`
-**Poster-Ready Simplified Flowchart**
+**Poster-Ready Simplified Flowchart with Dual Layouts**
 - Streamlined process flow for presentations
 - Key subroutines highlighted
+- Two layout options: Landscape (with subgraphs) and Top-Down (linear)
 - Essential information condensed
 - Clean visual layout
 - Best for: Conference posters, presentations, quick overview
 
-### 3. `water_allocation_visual_guide.md`
+### 3. `water_allocation_poster_linear_landscape.md`
+**Linear Landscape Flowchart**
+- Simple left-to-right sequential flow
+- No subgraphs or phase groupings
+- Direct conversion of top-down structure to horizontal layout
+- Optimized for wide poster formats
+- Straightforward linear presentation
+- Best for: Wide posters, simple sequential narrative, linear flow preference
+
+### 4. `water_allocation_visual_guide.md`
 **New User Visual Guide**
 - Beginner-friendly explanations
 - Compact diagrams with clear annotations
@@ -28,10 +38,26 @@ This repository contains comprehensive flowcharts documenting the SWAT+ water al
 - Component explanations
 - Best for: New users, training materials, introductory documentation
 
+### 5. `subroutine_hierarchy.md`
+**Developer Reference**
+- Clear call tree showing subroutine relationships
+- Module dependency diagrams
+- Exact calling sequences and code structure
+- Detailed call stack with specific file and line number references
+- Best for: Developers, code navigation, debugging
+
+### 6. `README_water_allocation_flowcharts.md`
+**Usage Instructions**
+- Complete guide on how to use the flowcharts
+- Rendering instructions for different formats (PNG, SVG, PDF)
+- Customization guidance for different audiences
+
 ## How to Use These Flowcharts
 
 ### For Poster Presentations
-1. Use `water_allocation_poster_flowchart.md` as your primary source
+1. **Choose your layout:**
+   - Use `water_allocation_poster_flowchart.md` for dual layout options (landscape with subgraphs or top-down)
+   - Use `water_allocation_poster_linear_landscape.md` for simple linear left-to-right flow
 2. The mermaid diagram can be rendered using:
    - GitHub (automatic rendering)
    - Mermaid Live Editor (https://mermaid.live/)
