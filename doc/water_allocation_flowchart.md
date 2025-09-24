@@ -38,31 +38,50 @@ graph LR
         HRU3[HRU 3<br/>Irrigation]
     end
 
-    %% Primary flows (left to right)
-    OSRC1 -->|pipe 1| RES1
-    RES1 -->|pipe 2<br/>1000 m³/day| WTP1
-    WTP1 -->|pipe 3| STOR1
+    %% Transfer connections based on water_allocation.wro
+    %% TRN_NUM 1: osrc 1 → res 1 via pipe 1
+    OSRC1 -->|"TRN 1: pipe 1<br/>osrc1→res1<br/>outflow"| RES1
     
-    %% Distribution splits
-    STOR1 -->|pipe 4<br/>200 m³/day| USE1
-    STOR1 -->|pipe 5<br/>300 m³/day| USE2
-    STOR1 -->|pipe 6<br/>irrigation| HRU2
+    %% TRN_NUM 2: res 1 → wtp 1 via pipe 2
+    RES1 -->|"TRN 2: pipe 2<br/>res1→wtp1<br/>1000 m³/day"| WTP1
     
-    %% Secondary treatment flows
-    USE1 -->|pipe 7| WTP2
-    USE2 -->|pipe 8| WTP2
-    WTP2 -->|pipe 9<br/>50%| CHA1
-    WTP2 -->|pipe 10<br/>50%| WTP3
+    %% TRN_NUM 3: wtp 1 → stor 1 via pipe 3
+    WTP1 -->|"TRN 3: pipe 3<br/>wtp1→stor1<br/>outflow"| STOR1
     
-    %% Final distribution
-    WTP3 -->|pipe 11<br/>50%| CHA2
-    WTP3 -->|pipe 12<br/>50%| STOR1
+    %% TRN_NUM 4: stor 1 → use 1 via pipe 4
+    STOR1 -->|"TRN 4: pipe 4<br/>stor1→use1<br/>200 m³/day (70%)"| USE1
     
-    %% Direct irrigation with compensation
-    RES1 -->|pipe 13| HRU1
-    RES1 -->|pipe 13| HRU3
-    AQU2 -.->|pump 1<br/>compensation| HRU1
-    AQU2 -.->|pump 1<br/>compensation| HRU3
+    %% TRN_NUM 5: stor 1 → use 2 via pipe 5
+    STOR1 -->|"TRN 5: pipe 5<br/>stor1→use2<br/>300 m³/day (30%)"| USE2
+    
+    %% TRN_NUM 6: stor 1 → hru 2 via pipe 6
+    STOR1 -->|"TRN 6: pipe 6<br/>stor1→hru2<br/>irrigation demand"| HRU2
+    
+    %% TRN_NUM 7: use 1 → wtp 2 via pipe 7
+    USE1 -->|"TRN 7: pipe 7<br/>use1→wtp2<br/>outflow"| WTP2
+    
+    %% TRN_NUM 8: use 2 → wtp 2 via pipe 8
+    USE2 -->|"TRN 8: pipe 8<br/>use2→wtp2<br/>outflow"| WTP2
+    
+    %% TRN_NUM 9: wtp 2 → cha 1 via pipe 9
+    WTP2 -->|"TRN 9: pipe 9<br/>wtp2→cha1<br/>outflow (50%)"| CHA1
+    
+    %% TRN_NUM 10: wtp 2 → wtp 3 via pipe 10
+    WTP2 -->|"TRN 10: pipe 10<br/>wtp2→wtp3<br/>outflow (50%)"| WTP3
+    
+    %% TRN_NUM 11: wtp 3 → cha 2 via pipe 11
+    WTP3 -->|"TRN 11: pipe 11<br/>wtp3→cha2<br/>outflow (50%)"| CHA2
+    
+    %% TRN_NUM 12: wtp 3 → stor 1 via pipe 12 (recycle)
+    WTP3 -->|"TRN 12: pipe 12<br/>wtp3→stor1<br/>outflow (50%) RECYCLE"| STOR1
+    
+    %% TRN_NUM 13: res 1 + aqu 2 → hru 3 via pipe 13 + pump 1
+    RES1 -->|"TRN 13: pipe 13<br/>res1→hru3<br/>irrigation demand"| HRU3
+    AQU2 -.->|"TRN 13: pump 1<br/>aqu2→hru3<br/>compensation"| HRU3
+    
+    %% TRN_NUM 14: res 1 + aqu 2 → hru 1 via pipe 13 + pump 1
+    RES1 -->|"TRN 14: pipe 13<br/>res1→hru1<br/>irrigation demand"| HRU1
+    AQU2 -.->|"TRN 14: pump 1<br/>aqu2→hru1<br/>compensation"| HRU1
 
     %% Styling
     classDef sourceClass fill:#e1f5fe,stroke:#01579b,stroke-width:2px
@@ -78,7 +97,28 @@ graph LR
 
 ## Process Description
 
-This flowchart represents the water allocation system from the `data/solo_1/water_allocation.wro` file. The diagram is organized in left-to-right layers to minimize line crossings and show the logical flow of water through the system.
+This flowchart represents the water allocation system from the `data/solo_1/water_allocation.wro` file. The diagram shows all 14 transfer connections with explicit pipe and pump routing information, organized in left-to-right layers to minimize line crossings.
+
+### Water Transfer Connections
+
+The following table shows each transfer (TRN_NUM) with its source, conveyance, and destination:
+
+| Transfer | Type | Amount | Source Object | Pipe/Pump | Destination | Flow Description |
+|----------|------|--------|---------------|-----------|-------------|------------------|
+| TRN 1 | outflow | - | osrc 1 | pipe 1 | res 1 | Outside source to reservoir |
+| TRN 2 | ave_day | 1000 m³/day | res 1 | pipe 2 | wtp 1 | Reservoir to treatment plant |
+| TRN 3 | outflow | - | wtp 1 | pipe 3 | stor 1 | Treatment plant to storage |
+| TRN 4 | ave_day | 200 m³/day | stor 1 | pipe 4 | use 1 | Storage to municipal use (70%) |
+| TRN 5 | ave_day | 300 m³/day | stor 1 | pipe 5 | use 2 | Storage to industrial use (30%) |
+| TRN 6 | dtbl_irr | demand | stor 1 | pipe 6 | hru 2 | Storage to irrigation |
+| TRN 7 | outflow | - | use 1 | pipe 7 | wtp 2 | Municipal use to secondary treatment |
+| TRN 8 | outflow | - | use 2 | pipe 8 | wtp 2 | Industrial use to secondary treatment |
+| TRN 9 | outflow | - | wtp 2 | pipe 9 | cha 1 | Secondary treatment to channel (50%) |
+| TRN 10 | outflow | - | wtp 2 | pipe 10 | wtp 3 | Secondary to tertiary treatment (50%) |
+| TRN 11 | outflow | - | wtp 3 | pipe 11 | cha 2 | Tertiary treatment to channel (50%) |
+| TRN 12 | outflow | - | wtp 3 | pipe 12 | stor 1 | **RECYCLE**: Tertiary treatment back to storage (50%) |
+| TRN 13 | dtbl_irr | demand | res 1 + aqu 2 | pipe 13 + pump 1 | hru 3 | Reservoir + aquifer compensation to irrigation |
+| TRN 14 | dtbl_irr | demand | res 1 + aqu 2 | pipe 13 + pump 1 | hru 1 | Reservoir + aquifer compensation to irrigation |
 
 ### Layer 1: Water Sources (Left Side)
 1. **Outside Source 1**: External water input with seasonal flow (0.5-0.8 m³/s)
@@ -141,47 +181,46 @@ To view this flowchart:
 
 ### Alternative ASCII Flowchart
 
-For environments without Mermaid support, here's a simplified ASCII representation:
+For environments without Mermaid support, here's a simplified ASCII representation showing transfer numbers:
 
 ```
 SOURCES        PRIMARY         DISTRIBUTION      SECONDARY        DESTINATIONS
                TREATMENT                         TREATMENT
 
-┌─────────────┐     ┌─────┐     ┌─────────────┐     ┌─────┐     ┌──────────────┐
-│Outside Src 1│────▶│WTP 1│────▶│  Storage 1  │     │WTP 2│────▶│  Channel 1   │
-└─────────────┘     └─────┘     └─────────────┘     └─────┘     └──────────────┘
-       │                              │               ▲               │
-       ▼                              ▼               │               ▼
+┌─────────────┐  TRN2 ┌─────┐  TRN3 ┌─────────────┐     ┌─────┐  TRN9 ┌──────────────┐
+│Outside Src 1│──────▶│WTP 1│──────▶│  Storage 1  │     │WTP 2│──────▶│  Channel 1   │
+└─────────────┘       └─────┘       └─────────────┘     └─────┘       └──────────────┘
+    │TRN1                              │TRN4,5,6       ▲TRN7,8            │
+    ▼                                  ▼               │               TRN10▼
 ┌─────────────┐                 ┌──────────┐          │         ┌──────────────┐
-│Reservoir 1  │                 │  Use 1   │─────────▶│         │  Channel 2   │
+│Reservoir 1  │                 │Use1 & Use2│─────────▶│         │    WTP 3     │
 └─────────────┘                 └──────────┘                    └──────────────┘
-       │                              │                               ▲
-       │                              ▼                               │
-       │                        ┌──────────┐     ┌─────┐              │
-       │                        │  Use 2   │────▶│WTP 3│─────────────▶│
-       │                        └──────────┘     └─────┘              │
-       │                              │               │               │
-       │                              ▼               ▼               │
-       │                        ┌──────────┐     ┌─────────────┐      │
-       │                        │  HRU 2   │     │ (recycle to │      │
-       │                        └──────────┘     │ Storage 1)  │      │
-       │                                         └─────────────┘      │
-       ├────────────────────────────────────────────────────────────▶│
-       │                   ┌──────────┐                               │
-       └──────────────────▶│  HRU 1   │                               │
-                           └──────────┘                               │
-┌─────────────┐                  ▲                                    │
-│ Aquifer 2   │                  │                                    │
-│(Pump 1)     │..................│ (compensation)                     │
-└─────────────┘                  ▼                                    │
-       │                   ┌──────────┐                               │
-       └───(compensation)──▶│  HRU 3   │                               │
-                           └──────────┘                               │
-                                                                      │
-Legend:                                                               │
-────▶  Primary flow (pipes)                                          │
-.....▶ Compensation flow (pump)                                      │
-▼▲     Flow direction                                                 │
+    │TRN13,14                         │TRN6                       │TRN11    │TRN12
+    │                                 ▼                          ▼         ▼
+    │                           ┌──────────┐               ┌──────────────┐ │
+    │                           │  HRU 2   │               │  Channel 2   │ │
+    │                           └──────────┘               └──────────────┘ │
+    │                                                                       │
+    ├──────pipe13─────────────────────────────────────────────────────────▶│
+    │                     ┌──────────┐                                      │
+    └────pipe13──────────▶│  HRU 1   │                                      │
+                          └──────────┘                                      │
+┌─────────────┐                ▲                                            │
+│ Aquifer 2   │                │                                            │
+│   (Pump 1)  │................│ (compensation TRN13,14)                    │
+└─────────────┘                ▼                                            │
+    │                    ┌──────────┐                                       │
+    └───pump1(comp)─────▶│  HRU 3   │                         (RECYCLE)────┘
+                         └──────────┘                         
+
+Transfer Numbers (TRN):
+TRN1:  osrc1→res1     TRN8:  use2→wtp2     
+TRN2:  res1→wtp1      TRN9:  wtp2→cha1
+TRN3:  wtp1→stor1     TRN10: wtp2→wtp3
+TRN4:  stor1→use1     TRN11: wtp3→cha2
+TRN5:  stor1→use2     TRN12: wtp3→stor1 (RECYCLE)
+TRN6:  stor1→hru2     TRN13: res1+aqu2→hru3
+TRN7:  use1→wtp2      TRN14: res1+aqu2→hru1
 ```
 
 ### Key Flow Paths
