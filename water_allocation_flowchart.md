@@ -184,23 +184,129 @@ flowchart TD
 - **`hyd_output`**: Hydrograph data structure for water, nutrients, and constituents
 - **`source_output`**: Output tracking for demand, withdrawal, and unmet values
 
-## Subroutine Call Hierarchy
+## Subroutine Call Hierarchy with File and Line References
 
 ```
-Main Simulation Loop (time_control)
-├── Channel Processing (sd_channel_control3)
-│   └── wallo_control(iwallo) ──────────── [MAIN CONTROL]
-│       ├── wallo_demand(iwallo, itrn, isrc) ── [DEMAND CALCULATION]
-│       ├── wallo_withdraw(iwallo, itrn, isrc) ─ [WATER WITHDRAWAL]
-│       ├── wallo_transfer(iwallo, itrn) ────── [WATER TRANSFER]
-│       ├── wallo_treatment(iwallo, j) ──────── [WATER TREATMENT]
-│       └── wallo_use(iwallo, j) ──────────── [WATER USE]
-└── Command Processing (command)
-    └── water_allocation_output(iwallo) ────── [OUTPUT WRITING]
+📁 INITIALIZATION PHASE
+├── Main Program
+│   └── proc_open()                           ← Called from Main Program
+│       └── header_water_allocation()         ← Called from proc_open.f90, Line 17
+│           ├── 📄 Open water_allo_day.txt    ← File handle 3110
+│           ├── 📄 Open water_allo_day.csv    ← File handle 3114  
+│           ├── 📄 Open water_allo_mon.txt    ← File handle 3111
+│           ├── 📄 Open water_allo_mon.csv    ← File handle 3115
+│           ├── 📄 Open water_allo_yr.txt     ← File handle 3112
+│           ├── 📄 Open water_allo_yr.csv     ← File handle 3116
+│           ├── 📄 Open water_allo_aa.txt     ← File handle 3113
+│           └── 📄 Open water_allo_aa.csv     ← File handle 3117
+│
+├── Input Processing Phase
+│   └── water_allocation_read()               ← Called during input processing
+│       ├── 📄 Read .wal files                ← File handle 107
+│       ├── Parse water source objects        ← Channel, reservoir, aquifer, unlimited
+│       ├── Parse water demand objects        ← HRU, municipal, industrial
+│       └── Allocate output arrays           ← wallod_out, wallom_out, walloy_out, walloa_out
 
-Initialization Phase:
-├── water_allocation_read() ──────────────── [INPUT READING]
-└── header_water_allocation() ─────────────── [OUTPUT SETUP]
+🔄 DAILY PROCESSING PHASE  
+├── Main Program
+│   └── time_control()                        ← Called from Main Program
+│       ├── 🎯 Direct Water Allocation Path
+│       │   └── IF wallo(iwallo)%cha_ob == "n"
+│       │       └── wallo_control(j)          ← Called from time_control.f90, Line 239
+│       │                                       Note: j = iwallo (compiler warning fix)
+│       │
+│       └── 📋 Command Processing Path  
+│           └── command()                     ← Called from time_control.f90, Line 250
+│               ├── Object Loop Processing
+│               │   └── IF object type == "channel"
+│               │       └── sd_channel_control3() ← Called from command.f90, Line 362
+│               │           └── IF sd_ch(isdch)%wallo > 0
+│               │               └── wallo_control(sd_ch%wallo) ← Called from sd_channel_control3.f90, Line 395
+│               │
+│               └── 📈 Output Processing
+│                   └── IF time%yrs > pco%nyskip
+│                       └── FOR iwro = 1 to db_mx%wallo_db
+│                           └── water_allocation_output(iwro) ← Called from command.f90, Line 427
+
+🎯 WALLO_CONTROL() INTERNAL SEQUENCE
+├── 🔄 Initialization (Lines 29-36)
+│   ├── wallo(iwallo)%tot = walloz            ← Zero allocation object totals
+│   └── wallod_out arrays = walloz            ← Zero daily output arrays
+│
+├── 🌐 Outside Sources (Lines 40-49)
+│   └── Calculate osrc_om_out(iosrc)%flo      ← Based on limit type (mon_lim, dtbl, recall)
+│
+├── 🔁 Demand Object Loop (itrn = 1 to wallo%trn_obs)
+│   ├── wallo_demand(iwallo, itrn, isrc)      ← Called from wallo_control.f90, Line 52
+│   │   ├── Calculate demand by transfer type  ← outflo, ave_day, rec, dtbl_con, dtbl_lum
+│   │   ├── Set wallod_out%trn_flo            ← Total transfer flow for this demand
+│   │   └── Initialize unmet_m3 = total demand ← Line 96
+│   │
+│   ├── IF wallod_out%trn_flo > 0             ← Line 55
+│   │   ├── wdraw_om_tot = hz                 ← Line 58: Initialize withdrawal hydrograph
+│   │   │
+│   │   ├── 🏗️ Primary Withdrawal Loop (isrc = 1 to src_num)
+│   │   │   └── IF trn_m3 > 1.e-6             ← Line 61
+│   │   │       └── wallo_withdraw(iwallo, itrn, isrc) ← Called from wallo_control.f90, Line 62
+│   │   │           ├── Check source type (cha, res, aqu, unl)
+│   │   │           ├── Apply source-specific limits
+│   │   │           ├── Update source water balances
+│   │   │           └── Record withdrawal and unmet
+│   │   │
+│   │   ├── 🔄 Compensation Loop (isrc = 1 to src_num)
+│   │   │   └── IF wallo%trn%src%comp == "y" ← Line 67
+│   │   │       └── IF unmet_m3 > 1.e-6       ← Line 69
+│   │   │           └── wallo_withdraw(iwallo, itrn, isrc) ← Called from wallo_control.f90, Line 71
+│   │   │
+│   │   ├── 📊 Calculate Total Withdrawal (Lines 77-81)
+│   │   │   └── Sum wallo%trn%withdr_tot from all sources
+│   │   │
+│   │   ├── 🚰 wallo_transfer(iwallo, itrn)    ← Called from wallo_control.f90, Line 85
+│   │   │   └── Apply conveyance losses (pipe/pump efficiency)
+│   │   │
+│   │   └── 💧 Apply Water to Receivers (Lines 88-150)
+│   │       ├── j = wallo%trn%rcv%num         ← Line 88: Get receiver object number
+│   │       └── SELECT CASE wallo%trn%rcv%typ ← Line 89
+│   │           ├── "hru": Irrigation (Lines 91-119)
+│   │           │   ├── Calculate irrigation amount in mm
+│   │           │   ├── Apply irrigation efficiency and runoff
+│   │           │   └── Update HRU water balance
+│   │           ├── "res": Reservoir (Lines 121-123)
+│   │           │   └── res(j) = res(j) + wal_om%h_tot
+│   │           ├── "aqu": Aquifer (Lines 125-127)
+│   │           │   └── aqu(j) = aqu(j) + wal_om%h_tot
+│   │           ├── "wtp": Water Treatment (Lines 129-133)
+│   │           │   └── wallo_treatment(iwallo, j) ← Called from wallo_control.f90, Line 133
+│   │           │       ├── Apply treatment efficiency
+│   │           │       ├── Convert concentrations to mass
+│   │           │       └── Calculate treated outflow
+│   │           ├── "use": Water Use (Lines 135-139)
+│   │           │   └── wallo_use(iwallo, j)    ← Called from wallo_control.f90, Line 139
+│   │           ├── "stor": Storage (Lines 141-143)
+│   │           │   └── wtow_om_stor(j) += wal_om%h_tot
+│   │           └── "canal": Canal (Lines 145-149)
+│   │               └── canal_om_stor(j) += wal_om%h_tot
+│   │
+│   └── 📊 Sum Object Totals (Lines 159-162)
+│       ├── wallo%tot%demand += wallod_out%trn%trn_flo
+│       ├── wallo%tot%withdr += wallo%trn%withdr_tot
+│       └── wallo%tot%unmet += wallo%trn%unmet_m3
+│
+└── 🔚 Return from wallo_control (Line 166)
+
+📈 OUTPUT PROCESSING
+└── water_allocation_output(iwallo)           ← Called from command.f90, Line 427
+    ├── FOR each demand object (idmd = 1 to wallo%dmd_obs)
+    │   ├── Sum source outputs for monthly/yearly/average
+    │   ├── IF pco%water_allo%d == "y"        ← Daily output
+    │   │   └── Write to files 3110 (txt) and 3114 (csv)
+    │   ├── IF pco%water_allo%m == "y"        ← Monthly output  
+    │   │   └── Write to files 3111 (txt) and 3115 (csv)
+    │   ├── IF pco%water_allo%y == "y"        ← Yearly output
+    │   │   └── Write to files 3112 (txt) and 3116 (csv)
+    │   └── IF pco%water_allo%a == "y"        ← Average annual output
+    │       └── Write to files 3113 (txt) and 3117 (csv)
+    └── Return from water_allocation_output
 ```
 
 ## Input/Output Operations

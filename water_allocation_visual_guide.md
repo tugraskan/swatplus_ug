@@ -6,17 +6,33 @@
 graph TB
     subgraph " "
         subgraph "📚 INITIALIZATION (Once per simulation)"
-            A1["📖 water_allocation_read()<br/>Load allocation rules<br/>& object definitions"]
-            A2["📊 header_water_allocation()<br/>Setup output files<br/>& headers"]
+            A1["📖 water_allocation_read()<br/>📍 Called from: Input Processing<br/>📄 Load allocation rules<br/>& object definitions"]
+            A2["📊 header_water_allocation()<br/>📍 Called from: proc_open(), Line 17<br/>📄 Setup output files<br/>& headers"]
             A1 --> A2
         end
         
         subgraph "🔄 DAILY PROCESSING (Every simulation day)"
+            subgraph "⏱️ Time Control Framework"
+                TC["⏱️ time_control()<br/>📍 Called from: Main Program<br/>🔄 Daily simulation loop"]
+                
+                subgraph "🎯 Water Allocation Paths"
+                    TC1["🎯 Direct Path:<br/>wallo_control(j)<br/>📍 Called from: time_control(), Line 239<br/>📝 For non-channel objects (cha_ob=='n')"]
+                    
+                    TC2["📋 Command Path:<br/>command() → sd_channel_control3()<br/>📍 Called from: time_control(), Line 250<br/>📍 Then from: command(), Line 362"]
+                    
+                    TC3["🎯 Channel Path:<br/>wallo_control(sd_ch%wallo)<br/>📍 Called from: sd_channel_control3(), Line 395<br/>📝 For channel-based allocation"]
+                    
+                    TC --> TC1
+                    TC --> TC2
+                    TC2 --> TC3
+                end
+            end
+            
             subgraph "🎯 Main Control Loop"
-                B1["🎯 wallo_control(iwallo)<br/>Main allocation orchestrator"]
+                B1["🎯 wallo_control(iwallo)<br/>📍 Main allocation orchestrator<br/>📋 Process demand objects sequentially"]
                 
                 subgraph "💧 Demand Processing"
-                    C1["💧 wallo_demand()<br/>Calculate water needs"]
+                    C1["💧 wallo_demand()<br/>📍 Called from: wallo_control(), Line 52<br/>📝 Calculate water needs"]
                     C1a["🌾 Irrigation<br/>(crop-based)"]
                     C1b["🏘️ Municipal<br/>(fixed/recall)"]
                     C1c["🏭 Industrial<br/>(decision table)"]
@@ -26,7 +42,7 @@ graph TB
                 end
                 
                 subgraph "🏗️ Water Withdrawal"
-                    D1["🏗️ wallo_withdraw()<br/>Extract from sources"]
+                    D1["🏗️ wallo_withdraw()<br/>📍 Called from: wallo_control()<br/>📝 Line 62: Primary withdrawal<br/>📝 Line 71: Compensation withdrawal<br/>📄 Extract from sources"]
                     D1a["🌊 Channels<br/>(min flow limits)"]
                     D1b["🏞️ Reservoirs<br/>(min level limits)"]
                     D1c["💧 Aquifers<br/>(depth limits)"]
@@ -38,11 +54,13 @@ graph TB
                 end
                 
                 subgraph "🚰 Water Transfer & Treatment"
-                    E1["🚰 wallo_transfer()<br/>Move water to receivers"]
-                    E2["🧪 wallo_treatment()<br/>Optional treatment<br/>(if required)"]
+                    E1["🚰 wallo_transfer()<br/>📍 Called from: wallo_control(), Line 85<br/>📄 Move water to receivers"]
+                    E2["🧪 wallo_treatment()<br/>📍 Called from: wallo_control(), Line 133<br/>📝 Optional treatment<br/>(if receiver type == 'wtp')"]
                     E1 --> E2
                 end
                 
+                TC1 --> B1
+                TC3 --> B1
                 B1 --> C1
                 C1 --> D1
                 D1 --> E1
@@ -50,11 +68,11 @@ graph TB
         end
         
         subgraph "📈 OUTPUT GENERATION (Various frequencies)"
-            F1["📈 water_allocation_output()<br/>Write results to files"]
-            F1a["📄 Daily<br/>(.day files)"]
-            F1b["📄 Monthly<br/>(.mon files)"]
-            F1c["📄 Annual<br/>(.yr files)"]
-            F1d["📄 Average<br/>(.aa files)"]
+            F1["📈 water_allocation_output()<br/>📍 Called from: command(), Line 427<br/>📝 Within time check: yrs > nyskip<br/>📄 Write results to files"]
+            F1a["📄 Daily<br/>(.day files)<br/>File handles: 3110, 3114"]
+            F1b["📄 Monthly<br/>(.mon files)<br/>File handles: 3111, 3115"]
+            F1c["📄 Annual<br/>(.yr files)<br/>File handles: 3112, 3116"]
+            F1d["📄 Average<br/>(.aa files)<br/>File handles: 3113, 3117"]
             F1 --- F1a
             F1 --- F1b
             F1 --- F1c
@@ -62,18 +80,20 @@ graph TB
         end
     end
     
-    A2 --> B1
+    A2 --> TC
     E2 --> F1
-    F1 --> B1
+    F1 --> TC
     
     classDef init fill:#E3F2FD,stroke:#1976D2,stroke-width:2px
     classDef daily fill:#F3E5F5,stroke:#7B1FA2,stroke-width:2px
     classDef subroutine fill:#E8F5E8,stroke:#388E3C,stroke-width:2px
     classDef output fill:#FFF3E0,stroke:#F57C00,stroke-width:2px
     classDef detail fill:#FAFAFA,stroke:#616161,stroke-width:1px
+    classDef callpath fill:#E0F2F1,stroke:#00695C,stroke-width:2px
     
     class A1,A2 init
-    class B1,C1,D1,E1,E2 subroutine
+    class TC,TC2 daily
+    class TC1,TC3,B1,C1,D1,E1,E2 subroutine
     class F1 output
     class C1a,C1b,C1c,D1a,D1b,D1c,D1d,F1a,F1b,F1c,F1d detail
 ```
