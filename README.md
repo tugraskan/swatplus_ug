@@ -77,6 +77,8 @@ __The following sections are emphasizing various development aspects.__
 
 - [FORTRAN Coding Conventions (alpha)](doc/coding_conventions.md)
 
+- [Analyzing Commit Changes](doc/CommitAnalysis.md)
+
 ## Documentation and References
 
 [SWAT+ Source Documentation on GitHub](https://swat-model.github.io/swatplus)
