@@ -10,6 +10,8 @@
         use time_module, only : time
         
         implicit none
+      
+      external :: nut_np_flow
         
         !!transput variables;
         !!  std(:)          : standing dead (kg ha-1)                                               (not used)

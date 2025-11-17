@@ -3,6 +3,8 @@
       use hydrograph_module
     
       implicit none
+      
+      external :: res_allo, res_initial, res_objects, res_read, res_read_conds, res_read_csdb, res_read_hyd, res_read_init, res_read_nut, res_read_salt_cs, res_read_saltdb, res_read_sed
                 
       !! allocate and initialize reservoir variables
       call res_read_hyd

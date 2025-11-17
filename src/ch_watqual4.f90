@@ -12,6 +12,8 @@
       use water_body_module
       
       implicit none
+      
+      external :: rcurv_interp_flo
 
       real :: tday = 0.
       real :: wtmp = 0.

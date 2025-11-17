@@ -39,6 +39,8 @@
       use maximum_data_module
       
       implicit none
+      
+      external :: cli_bounds_check, cli_clgen, cli_precip_control, cli_rhgen, cli_slrgen, cli_tgen, cli_weatgn, cli_wndgen
            
       integer :: ii = 0           !none          |counter       
       integer :: iyp = 0          !none          |year currently being simulated

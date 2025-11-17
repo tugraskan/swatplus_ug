@@ -10,6 +10,8 @@
     
       implicit none
       
+      external :: carbon_read, cn2_init_all, hru_allo, hru_lum_init_all, hru_output_allo, hru_read, hrudb_init, hydro_init, plant_all_init, rte_read_nut, soils_init, structure_init, structure_set_parms, topohyd_init
+      
       integer :: j = 0          !none       |counter
       integer :: ilum = 0       !none       |counter
 
