@@ -494,11 +494,53 @@ day_start = 274  (October 1)
 - After year 5, only October 1 onwards is included
 - Use when: analyzing water year (Oct 1 - Sep 30) and need extended stabilization
 
-## Notes
+## Important Notes About Land Use Changes During Warm-Up
+
+### Land Use Changes Execute During Warm-Up Period
+
+**Critical behavior**: Land use changes specified in `scen_lu.dtl` **DO execute during the warm-up period** (`nyskip` years). This is because:
+
+1. **Evaluation happens before output check**: In `src/time_control.f90`, the conditional land use scenario evaluation (lines 222-230) occurs BEFORE the simulation checks whether to write output based on `nyskip`
+
+2. **lu_change_out.txt is written during warm-up**: The `lu_change_out.txt` file records ALL land use changes, including those that occur during warm-up years, because the write statements in `src/actions.f90` are NOT guarded by `nyskip` checks
+
+3. **HRU output files (hru_ls, hru_nb, etc.) exclude warm-up period**: These output files only contain data AFTER the warm-up period because the calls to `hru_output()` in `src/command.f90` (line 446) are inside the `if (time%yrs > pco%nyskip)` block (line 423)
+
+### Practical Implications
+
+**Example scenario from user:**
+```
+time.sim: simulation runs 2005-2018 (14 years)
+print.prt: nyskip = 3 (3-year warm-up)
+scen_lu.dtl: land use change on jday=1, year_cal=2005
+```
+
+**What happens:**
+- **2005 (Year 1, Day 1)**: Land use change executes, all HRUs change to bsvg_lum
+- **2005-2007**: Warm-up period - model runs with changed land use, but hru_ls and hru_nb outputs are NOT written
+- **2008-2018**: Normal output period - hru_ls and hru_nb outputs ARE written with the changed land use already in effect
+- **lu_change_out.txt**: Contains the 2005 land use change record, even though it occurred during warm-up
+
+**Result**: The hru_ls and hru_nb output files will reflect the changed land use (bsvg_lum) for ALL records because:
+1. The change happened on day 1 of year 1 (2005)
+2. The warm-up allowed the system to stabilize with the new land use (2005-2007)
+3. Output only started in year 4 (2008), by which time the land use was already changed
+
+### Recommendations
+
+1. **If land use change should occur AFTER warm-up**: Set the year condition in `scen_lu.dtl` to trigger after the warm-up period ends
+   - For `nyskip=3` starting in 2005, set `year_cal = 2008` or later
+
+2. **If land use change during warm-up is intentional**: This is useful for:
+   - Testing scenarios where you want the model to stabilize with the new land use before collecting output
+   - Scenarios where the land use change is a baseline condition, not an event to analyze
+
+3. **Always check lu_change_out.txt**: This file shows EXACTLY when land use changes occurred, including during warm-up
+
+## General Notes
 
 - If `scen_lu.dtl` does not exist or is set to "null", no scenario decision tables are loaded
 - If `scen_dtl.upd` does not exist, no scenario updates are active even if `scen_lu.dtl` exists
 - The `lu_change_out.txt` file is always created even if no land use changes occur
 - File unit 3612 is reserved for land use change output throughout the simulation
 - The `file_pointer` field is essential for cross-referencing actions with the appropriate database entries
-- The warm-up period (`nyskip`) affects output writing but the model still runs and land use changes can occur during warm-up
