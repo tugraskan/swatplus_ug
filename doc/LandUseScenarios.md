@@ -78,6 +78,21 @@ case ("lu_change")
   end do
 ```
 
+**IMPORTANT WARNING**: If the `FILE_POINTER` does not match any land use name in `landuse.lum`, the model will:
+1. Set the internal land use index to 0 (invalid)
+2. Still execute the land use change action
+3. Write the change to `lu_change_out.txt` with the invalid name
+4. Potentially cause undefined behavior or model crashes
+
+**Example of incorrect configuration:**
+```
+FILE_POINTER: xbsvg_lum  (doesn't exist in landuse.lum)
+Result in lu_change_out.txt:
+    1  2005  1  1  LU_CHANGE  bsvg_lum  xbsvg_lum  0  0
+```
+
+The model does NOT validate that the `FILE_POINTER` exists before executing the action. Users must ensure the `FILE_POINTER` exactly matches a land use name in `landuse.lum` (case-sensitive, including trailing spaces).
+
 #### Other Uses
 The `file_pointer` field has different meanings depending on the action type:
 - For irrigation: Can be "unlim" for unlimited water source, or a specific water source name
@@ -575,6 +590,69 @@ scen_lu.dtl: land use change on jday=1, year_cal=2005
    - Scenarios where the land use change is a baseline condition, not an event to analyze
 
 3. **Always check lu_change_out.txt**: This file shows EXACTLY when land use changes occurred, including during warm-up
+
+## Troubleshooting
+
+### Invalid FILE_POINTER Names
+
+**Problem**: Land use change appears in `lu_change_out.txt` but model crashes or produces unexpected results.
+
+**Symptoms:**
+```
+lu_change_out.txt shows:
+    1  2005  1  1  LU_CHANGE  bsvg_lum  xbsvg_lum  0  0
+```
+Where `xbsvg_lum` doesn't exist in `landuse.lum`.
+
+**Cause**: The model does NOT validate that `FILE_POINTER` matches an existing land use name during input reading or action execution. If no match is found:
+- Internal land use index is set to 0 (invalid)
+- The action still executes
+- `lu_change_out.txt` records the invalid name
+- Model may crash or produce incorrect results
+
+**Solution:**
+1. Check `landuse.lum` for exact land use names
+2. Ensure `FILE_POINTER` in `scen_lu.dtl` exactly matches (case-sensitive, watch for trailing spaces)
+3. Common mistakes:
+   - Typos: `xbsvg_lum` instead of `bsvg_lum`
+   - Case mismatch: `BSVG_LUM` vs `bsvg_lum`
+   - Extra/missing spaces
+   - Abbreviated names vs full names
+
+**Verification:**
+```bash
+# Check what land use names exist
+grep "^[^!]" landuse.lum | awk '{print $1}' | sort -u
+
+# Compare with FILE_POINTER in scen_lu.dtl
+grep "FILE_POINTER" scen_lu.dtl
+```
+
+### Land Use Change Not Happening
+
+**Problem**: Expected land use change doesn't occur.
+
+**Check:**
+1. **scen_dtl.upd exists and is active**: If this file doesn't exist or the decision table isn't listed, no changes occur
+2. **Conditions are met**: Check that all conditions (jday, year_cal, etc.) match
+3. **MAX_HITS not exceeded**: If `MAX_HITS=1` and change already occurred, it won't happen again
+4. **FILE_POINTER matches**: See above section on invalid names
+
+### Unexpected Timing of Land Use Changes
+
+**Problem**: Land use changes occur during warm-up or at unexpected times.
+
+**Understanding**: Remember that:
+- Land use changes execute during warm-up if conditions are met
+- The `year_cal` in `scen_lu.dtl` is the calendar year, not simulation year
+- With `nyskip=3` starting in 2005, output begins in 2008 but land use changes triggered for 2005 will execute
+
+**Solution**: To change AFTER warm-up, add `nyskip` to the start year:
+```
+time.sim: yrc_start = 2005
+print.prt: nyskip = 3
+scen_lu.dtl: year_cal = 2008  (not 2005)
+```
 
 ## General Notes
 
