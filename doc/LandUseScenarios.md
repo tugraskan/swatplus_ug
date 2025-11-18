@@ -231,7 +231,65 @@ The file uses Fortran unit number 3612 throughout the code.
 
 ## Example Use Case
 
-A typical land use scenario might involve converting agricultural land to forest when certain conditions are met:
+### Example 1: Converting All HRUs to Bluestem-Switchgrass on a Specific Date
+
+This real-world example shows how to change all HRUs to a specific land use (bsvg_lum - bluestem-switchgrass) on January 1, 2005:
+
+**scen_lu.dtl:**
+```
+scen_lu.dtl
+1
+
+        DBTL_NAME                CONDS      ALTS      ACTS       
+   all_to_bsvg                    2          1         1  
+  COND_VAR           OBJ        OBJ_NUMB        LIM_VAR        LIM_OP        LIM_CONST   ALT1 
+   jday              null       0               null           -             1           =       
+   year_cal          null       0               null           -             2005        =       
+   ACT_TYP            OBJ       OBJ_NUMB        ALT_NAME         ALT_OPTION  CONST       CONST2     FILE_POINTER   out1         
+   lu_change         hru        0               lulc_chg_1       null        0           0          bsvg_lum       y   
+```
+
+**scen_dtl.upd:**
+```
+scen_dtl.upd
+1
+   MAX_HITS      NAME              DTABLE
+   1             lulc_chg_1        all_to_bsvg
+```
+
+**Explanation:**
+
+**scen_lu.dtl components:**
+- **DBTL_NAME**: `all_to_bsvg` - Name of the decision table
+- **CONDS**: `2` - Two conditions must be met
+- **ALTS**: `1` - One alternative (rule set)
+- **ACTS**: `1` - One action to perform
+
+**Conditions:**
+1. `jday = 1` - Julian day equals 1 (January 1st)
+2. `year_cal = 2005` - Calendar year equals 2005
+
+**Action:**
+- **ACT_TYP**: `lu_change` - Perform a land use change
+- **OBJ**: `hru` - Apply to HRU objects
+- **OBJ_NUMB**: `0` - Apply to all HRUs (0 means all matching HRUs)
+- **ALT_NAME**: `lulc_chg_1` - Name/identifier for this action (matches NAME in scen_dtl.upd)
+- **ALT_OPTION**: `null` - No additional option needed for lu_change
+- **CONST**: `0` - Not used for lu_change
+- **CONST2**: `0` - Not used for lu_change
+- **FILE_POINTER**: `bsvg_lum` - Name of the land use from landuse.lum database to change to
+- **out1**: `y` - Perform this action when alternative 1 is met
+
+**scen_dtl.upd components:**
+- **MAX_HITS**: `1` - Each HRU can only be changed once
+- **NAME**: `lulc_chg_1` - Identifier that matches ALT_NAME in scen_lu.dtl
+- **DTABLE**: `all_to_bsvg` - Name of the decision table to activate from scen_lu.dtl
+
+**Result:** On January 1, 2005, all HRUs in the watershed will be converted to bluestem-switchgrass land use (bsvg_lum), but only once (MAX_HITS = 1 prevents repeated changes).
+
+### Example 2: Conditional Land Use Change Based on Area
+
+Converting agricultural land to forest when certain conditions are met:
 
 **scen_lu.dtl:**
 ```
@@ -244,7 +302,7 @@ var                      obj   obj_num    lim_var    lim_op  lim_const    alt1
 year                     null       0       null         -    2030         >
 hru_area                 hru        0       null         -    10.0         >
 act_typ                  obj   obj_num    name       option  const    const2    fp          outcome
-lu_change                hru        0       null       null    0.0      0.0       forest      y
+lu_change                hru        0       forest_scen  null    0.0      0.0       forest      y
 ```
 
 **scen_dtl.upd:**
@@ -258,6 +316,184 @@ max_hits    typ         dtbl
 
 This would change HRUs larger than 10 hectares to forest land use after year 2030, but only once per HRU (max_hits = 1).
 
+### Field Descriptions
+
+**In scen_lu.dtl:**
+- **DBTL_NAME/name**: Unique identifier for the decision table
+- **COND_VAR/var**: The condition variable to check (jday, year_cal, hru_area, etc.)
+- **OBJ**: The object type (hru, res, null for time-based conditions)
+- **OBJ_NUMB**: Specific object number (0 = all objects of that type)
+- **LIM_VAR**: Limit variable (used for some conditions)
+- **LIM_OP**: Limit operator (-, *, +)
+- **LIM_CONST**: Limit constant value
+- **ALT1, ALT2, ...**: Alternative values (=, <, >, <=, >=, or specific values)
+- **ACT_TYP**: Type of action (lu_change, irrigate, fertilize, etc.)
+- **ALT_NAME/name**: Name/identifier for the action (can be used to track or reference the action)
+- **ALT_OPTION/option**: Additional option specific to action type
+- **CONST**: First constant (usage depends on action type)
+- **CONST2**: Second constant (usage depends on action type)
+- **FILE_POINTER**: Cross-reference to database entry (e.g., land use name for lu_change)
+- **out1, out2, ...**: Outcome for each alternative (y = perform action, n = don't perform)
+
+**In scen_dtl.upd:**
+- **MAX_HITS**: Maximum number of times the action can be executed (1 = once, 999 = unlimited)
+- **NAME**: Identifier that can match ALT_NAME from scen_lu.dtl (for tracking purposes)
+- **DTABLE**: Name of the decision table from scen_lu.dtl to activate
+
+## Warm-Up Period in SWAT+
+
+### Overview
+The warm-up period (also called the "spin-up" period) is a critical phase in SWAT+ modeling where the model runs for a specified number of years without saving output. This allows the model to stabilize initial conditions such as soil moisture, nutrient pools, and other state variables before meaningful output is collected.
+
+### Purpose
+The warm-up period serves several important functions:
+- **Stabilizes initial conditions**: Allows soil water, nutrients, and other state variables to reach realistic levels
+- **Reduces initialization bias**: Minimizes the impact of arbitrary initial values on simulation results
+- **Improves model accuracy**: Ensures the model reaches a dynamic equilibrium before output is analyzed
+- **Prevents misleading results**: Avoids including unrealistic transition states in calibration and analysis
+
+### Where Specified
+The warm-up period is specified in the **`print.prt`** file using the `nyskip` parameter.
+
+**File location**: Defined in `src/input_file_module.f90`:
+```fortran
+character(len=25) :: prt = "print.prt"
+```
+
+### File Format: print.prt
+
+The first data line in `print.prt` contains the warm-up period specification:
+
+```
+print.prt: 
+nyskip      day_start  yrc_start  day_end   yrc_end   interval  
+0           0          1975       0         2020      1         
+```
+
+**Parameters:**
+- **`nyskip`**: Number of years to skip before writing output (the warm-up period)
+  - `0` = No warm-up, output starts from the first year
+  - `1` = Skip the first year, output starts from year 2
+  - `3` = Skip the first 3 years, output starts from year 4
+  - etc.
+
+- **`day_start`**: Julian day to start printing output (0 = default to day 1)
+- **`yrc_start`**: Year to start printing output (if 0, uses the first year from `time.sim`)
+- **`day_end`**: Julian day to end printing output (0 = default to last day of year)
+- **`yrc_end`**: Year to end printing output (if 0, uses the last year from `time.sim`)
+- **`interval`**: Interval (in days) for printing output
+
+### How It Works
+
+The warm-up period is implemented in the code through several key checks:
+
+**Data Structure** (`src/basin_module.f90`):
+```fortran
+integer :: nyskip = 0              ! number of years to skip output summarization
+character (len=1) :: sw_init = "n" ! n=sw not initialized, y=sw initialized for output
+```
+
+**Usage in Time Control** (`src/time_control.f90`):
+```fortran
+!! sum years of printing for average annual writes
+if (time%yrs > pco%nyskip) then
+  time%yrs_prt = time%yrs_prt + float(time%day_end_yr - time%day_start + 1)
+  time%days_prt = time%days_prt + float(time%day_end_yr - time%day_start + 1)
+else
+  ! In warm-up period, don't accumulate output
+end if
+
+!! set initial soil water for hru, basin and lsu - for checking water balance
+if (pco%sw_init == "n") then
+  if (time%yrs > pco%nyskip) then
+    call basin_sw_init
+    call aqu_pest_output_init
+    pco%sw_init = "y"  ! won't reset again
+  end if
+end if
+```
+
+**Output Control** (`src/command.f90`):
+```fortran
+! print all outflow hydrographs
+if (time%yrs > pco%nyskip) then
+  ! Write output
+end if
+```
+
+### Relationship with time.sim
+
+The `time.sim` file specifies the overall simulation period:
+
+```
+time.sim: 
+day_start  yrc_start   day_end   yrc_end      step  
+0          1975        0         2020         0  
+```
+
+The interaction between `time.sim` and `nyskip` in `print.prt`:
+- **Simulation runs** from `yrc_start` to `yrc_end` (1975-2020 in example = 46 years total)
+- **Output is saved** starting after `nyskip` years
+- **Example**: If `nyskip = 3`, simulation runs 46 years but only saves output for the last 43 years
+
+### Best Practices
+
+**Recommended warm-up periods:**
+- **Minimum**: 1-3 years for most applications
+- **Standard**: 3-5 years for calibration and validation
+- **Extended**: 5-10+ years for:
+  - Long-term nutrient cycling studies
+  - Deep aquifer simulations
+  - Watersheds with large reservoirs
+  - Studies involving soil carbon dynamics
+
+**Important considerations:**
+1. **Climate data**: Ensure you have sufficient climate data to cover both the warm-up period and the analysis period
+2. **Initial conditions**: Even with a warm-up period, reasonable initial conditions (soil moisture, nutrient levels) improve convergence
+3. **Calibration**: Exclude the warm-up period from calibration statistics
+4. **Output files**: The `lu_change_out.txt` and other output files are still created during warm-up, but summary statistics exclude this period
+
+### Reading Process
+
+The warm-up period is read by `basin_print_codes_read` subroutine in `src/basin_print_codes_read.f90`:
+
+```fortran
+inquire (file=in_sim%prt, exist=i_exist)
+if (i_exist .or. in_sim%prt /= "null") then
+  open (107,file=in_sim%prt)
+  read (107,*,iostat=eof) titldum
+  read (107,*,iostat=eof) header
+  read (107,*,iostat=eof) pco%nyskip, pco%day_start, pco%yrc_start, &
+                          pco%day_end, pco%yrc_end, pco%int_day
+  ! ... continue reading output options
+end if
+```
+
+### Example Scenarios
+
+**Example 1: No warm-up**
+```
+nyskip = 0
+```
+- All years included in output
+- Use when: initial conditions are well-known or using a warm-start from previous simulation
+
+**Example 2: Standard warm-up**
+```
+nyskip = 3
+```
+- First 3 years excluded from output
+- Use when: typical calibration/validation study
+
+**Example 3: Extended warm-up with partial year**
+```
+nyskip = 5
+day_start = 274  (October 1)
+```
+- First 5 years excluded from output
+- After year 5, only October 1 onwards is included
+- Use when: analyzing water year (Oct 1 - Sep 30) and need extended stabilization
+
 ## Notes
 
 - If `scen_lu.dtl` does not exist or is set to "null", no scenario decision tables are loaded
@@ -265,3 +501,4 @@ This would change HRUs larger than 10 hectares to forest land use after year 203
 - The `lu_change_out.txt` file is always created even if no land use changes occur
 - File unit 3612 is reserved for land use change output throughout the simulation
 - The `file_pointer` field is essential for cross-referencing actions with the appropriate database entries
+- The warm-up period (`nyskip`) affects output writing but the model still runs and land use changes can occur during warm-up
