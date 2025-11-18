@@ -36,6 +36,8 @@
       use time_module, only : time
       
       implicit none
+      
+      external :: mgt_tillfactor
 
       integer, intent (in) :: jj       !none           |HRU number
       integer, intent (in) :: idtill   !none           |tillage type

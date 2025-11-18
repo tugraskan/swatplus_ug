@@ -20,6 +20,8 @@
       use channel_velocity_module
       
       implicit none     
+      
+      external :: actions, ch_rtmusk, ch_rtpath, ch_rtpest, ch_watqual4, conditions, gwflow_canl, gwflow_gwsw, gwflow_satx, gwflow_tile, rcurv_interp_flo, sd_channel_sediment3, wallo_control
     
       !real :: rcharea                !m^2           |cross-sectional area of flow
       real :: flo_rt = 0.             !m^3/s         |flow rate in reach for day

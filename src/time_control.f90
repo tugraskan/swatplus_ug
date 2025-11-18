@@ -56,6 +56,8 @@
       !use reservoir_data_module
       
       implicit none
+      
+      external :: actions, aqu_pest_output_init, basin_sw_init, calsoft_ave_output, calsoft_sum_output, cli_atmodep_time_control, cli_precip_control, climate_control, command, conditions, mallo_control, xmon
 
       integer :: j = 0               !none          |counter
       integer :: julian_day = 0      !none          |counter

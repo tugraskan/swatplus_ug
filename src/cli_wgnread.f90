@@ -6,6 +6,8 @@
       use climate_module
       
       implicit none
+      
+      external :: cli_initwgn, gcycl
             
       character (len=80) :: titldum = ""!           |title of file
       character (len=80) :: header = "" !           |header of file
