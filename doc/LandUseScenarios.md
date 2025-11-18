@@ -78,23 +78,26 @@ case ("lu_change")
   end do
   ! Validate that FILE_POINTER was found in landuse database
   if (dtbl_scen(i)%act_typ(iac) == 0) then
-    ! Error: FILE_POINTER not found - model will stop with error message
+    ! Warning: FILE_POINTER not found - model will continue but may crash
   end if
 ```
 
-**Validation (as of this update)**: The model now validates that `FILE_POINTER` matches an existing land use name in `landuse.lum` during input file reading. If no match is found, the model will:
-1. Write error message to console and log file (file unit 9000)
+**Validation (as of this update)**: The model now checks that `FILE_POINTER` matches an existing land use name in `landuse.lum` during input file reading. If no match is found, the model will:
+1. Write warning message to console and log file (file unit 9000)
 2. Display the invalid FILE_POINTER name
-3. Show which decision table and action caused the error
-4. Stop execution with a clear error message
+3. Show which decision table and action caused the warning
+4. **Continue execution** (may crash or produce incorrect results)
 
-**Example error message:**
+**Example warning message:**
 ```
-ERROR in scen_lu.dtl: FILE_POINTER 'xbsvg_lum' not found in landuse.lum
+WARNING in scen_lu.dtl: FILE_POINTER 'xbsvg_lum' not found in landuse.lum
   Decision table: all_to_bsvg
   Action: 1
   Check landuse.lum for valid land use names
+  WARNING: This may cause model crashes or incorrect results
 ```
+
+**IMPORTANT**: If you see this warning, the model will attempt to run with an invalid land use index (0), which typically causes crashes or produces incorrect results. It is strongly recommended to fix the FILE_POINTER before running the simulation.
 
 Users must ensure the `FILE_POINTER` exactly matches a land use name in `landuse.lum` (case-sensitive, including trailing spaces).
 
@@ -600,20 +603,21 @@ scen_lu.dtl: land use change on jday=1, year_cal=2005
 
 ### Invalid FILE_POINTER Names
 
-**Problem**: Model stops with error message about FILE_POINTER not found.
+**Problem**: Model displays warning about FILE_POINTER not found, may crash during simulation.
 
-**Error message:**
+**Warning message:**
 ```
-ERROR in scen_lu.dtl: FILE_POINTER 'xbsvg_lum' not found in landuse.lum
+WARNING in scen_lu.dtl: FILE_POINTER 'xbsvg_lum' not found in landuse.lum
   Decision table: all_to_bsvg
   Action: 1
   Check landuse.lum for valid land use names
+  WARNING: This may cause model crashes or incorrect results
 ```
 
-**Cause**: The `FILE_POINTER` specified in `scen_lu.dtl` does not exactly match any land use name in `landuse.lum`. The model now validates FILE_POINTER values during input reading and will stop with a clear error message if an invalid name is found.
+**Cause**: The `FILE_POINTER` specified in `scen_lu.dtl` does not exactly match any land use name in `landuse.lum`. The model will log a warning during input reading but will continue to run, which typically results in crashes or incorrect results when the invalid land use is accessed.
 
 **Solution:**
-1. Check the error message for the invalid FILE_POINTER name
+1. Check the warning message for the invalid FILE_POINTER name
 2. Check `landuse.lum` for exact land use names (case-sensitive, watch for trailing spaces)
 3. Correct the FILE_POINTER in `scen_lu.dtl` to exactly match
 4. Common mistakes:
@@ -621,6 +625,8 @@ ERROR in scen_lu.dtl: FILE_POINTER 'xbsvg_lum' not found in landuse.lum
    - Case mismatch: `BSVG_LUM` vs `bsvg_lum`
    - Extra/missing spaces
    - Abbreviated names vs full names
+
+**Important**: Do not ignore this warning. While the model continues to run, it will likely crash or produce invalid results when attempting to use the invalid land use.
 
 **Verification:**
 ```bash
