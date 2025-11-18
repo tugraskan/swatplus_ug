@@ -14,7 +14,7 @@
 
       implicit none
       
-      external :: copy_file, SYSTEM
+      external :: copy_file
       
       integer :: iaqu = 0
       integer :: icha = 0
