@@ -72,6 +72,10 @@
       
       implicit none
 
+      
+      
+      
+      external :: aunif, cli_dstn1
       real :: xx = 0.                       !varies        |variable to hold calculation results
       real :: lattan = 0.                   !none          |Tan(Latitude)
       real :: x1 = 0.                       !none          |variable to hold calculation results

@@ -39,7 +39,7 @@
       
       implicit none
       
-      external :: curno, soil_awc_init, soil_text_init
+      external :: curno, soil_awc_init, soil_text_init, chg_par, fcgd
 
       character(len=16), intent (in) :: chg_parm            !                |               
       character(len=16), intent (in) :: chg_typ             !variable        |type of change (absval, abschg, pctchg)

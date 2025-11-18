@@ -13,7 +13,7 @@
       
       implicit none
       
-      external :: rcurv_interp_flo
+      external :: rcurv_interp_flo, theta, wq_k2m, wq_semianalyt
 
       real :: tday = 0.
       real :: wtmp = 0.

@@ -25,7 +25,7 @@
       
       implicit none
       
-      external :: rcurv_interp_flo
+      external :: rcurv_interp_flo, qman, theta
       
       integer :: ii = 0     !none              |current day of simulation
       integer :: ihru = 0

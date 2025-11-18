@@ -30,7 +30,7 @@
       
       implicit none
       
-      external :: ero_cfactor, ero_eiusle, ero_ovrsed, ero_pkq, ero_ysed, sq_dailycn, sq_volq
+      external :: ero_cfactor, ero_eiusle, ero_ovrsed, ero_pkq, ero_ysed, sq_dailycn, sq_volq, sq_crackflow
 
       integer :: j = 0            !none          |HRU number 
       real :: ulu = 0.            !              |

@@ -21,7 +21,7 @@
 
       implicit none
       
-      external :: cond_integer, cond_real
+      external :: cond_integer, cond_real, aunif
 
       integer, intent (in)  :: ob_cur         !          |
       integer, intent (in)  :: idtbl          !none      |

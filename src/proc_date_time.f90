@@ -5,7 +5,7 @@
   
       implicit none
       
-      external :: cli_hmeas, cli_petmeas, cli_pmeas, cli_smeas, cli_tmeas, cli_wgnread, cli_wmeas
+      external :: cli_hmeas, cli_petmeas, cli_pmeas, cli_smeas, cli_tmeas, cli_wgnread, cli_wmeas, cli_lapse, jdt
      
       integer :: date_time(8) = 0       !              |
       character*10 b(3)                 !              |

@@ -16,7 +16,7 @@
       
       implicit none
       
-      external :: cal_parm_select
+      external :: cal_parm_select, chg_par
            
       character(len=25) :: chg_parm = ""                      !                |               
       character(len=16) :: chg_typ = ""                       !variable        |type of change (absval, abschg, pctchg)

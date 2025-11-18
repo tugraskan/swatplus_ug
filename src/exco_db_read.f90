@@ -7,7 +7,7 @@
 
       implicit none
       
-      external :: exco_read_om
+      external :: exco_read_om, ee, exco_read_hmet, exco_read_path, exco_read_pest, exco_read_salt
  
       character (len=80) :: titldum = ""
       character (len=80) :: header = ""
