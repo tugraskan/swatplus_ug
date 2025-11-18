@@ -506,6 +506,29 @@ day_start = 274  (October 1)
 
 3. **HRU output files (hru_ls, hru_nb, etc.) exclude warm-up period**: These output files only contain data AFTER the warm-up period because the calls to `hru_output()` in `src/command.f90` (line 446) are inside the `if (time%yrs > pco%nyskip)` block (line 423)
 
+### HRU Arrays and Hydrological Calculations ARE Affected During Warm-Up
+
+**Important clarification**: When a land use change occurs during warm-up, the **HRU internal state is fully modified**, which means:
+
+1. **HRU arrays are updated** (lines 872-873 in `src/actions.f90`):
+   - `hru(j)%land_use_mgt` - land use management index
+   - `hru(j)%land_use_mgt_c` - land use name/character string
+   - `hru(j)%dbs%land_use_mgt` - database land use management
+
+2. **HRU properties are reinitialized** (lines 878-880 in `src/actions.f90`):
+   - `call hru_lum_init(j)` - reinitializes land use management parameters
+   - `call plant_init(1,j)` - resets plant communities and growth parameters
+   - `call cn2_init(j)` - recalculates curve numbers for new land use
+
+3. **All hydrological calculations use the new land use**:
+   - Runoff (via changed curve numbers)
+   - Evapotranspiration (via changed plant parameters)
+   - Erosion (via changed USLE factors)
+   - Nutrient cycling (via changed management practices)
+   - All other processes tied to land use
+
+**Result**: During warm-up years (2005-2007 in the example), the model IS running with the changed land use (bsvg_lum). The soil moisture, nutrient pools, plant growth, and all state variables are evolving based on the new land use characteristics. This is the INTENDED behavior - the warm-up period allows the system to reach equilibrium with the new land use conditions before output recording begins.
+
 ### Practical Implications
 
 **Example scenario from user:**
@@ -516,15 +539,31 @@ scen_lu.dtl: land use change on jday=1, year_cal=2005
 ```
 
 **What happens:**
-- **2005 (Year 1, Day 1)**: Land use change executes, all HRUs change to bsvg_lum
-- **2005-2007**: Warm-up period - model runs with changed land use, but hru_ls and hru_nb outputs are NOT written
-- **2008-2018**: Normal output period - hru_ls and hru_nb outputs ARE written with the changed land use already in effect
-- **lu_change_out.txt**: Contains the 2005 land use change record, even though it occurred during warm-up
+- **2005 (Year 1, Day 1)**: Land use change executes
+  - All HRUs change to bsvg_lum land use
+  - HRU arrays updated: `hru(j)%land_use_mgt`, curve numbers, plant parameters, etc.
+  - Model begins running WITH the new land use characteristics
+  
+- **2005-2007** (warm-up): 
+  - **Model calculations**: All hydrological processes (runoff, ET, erosion) use bsvg_lum land use properties
+  - **State variables evolve**: Soil moisture, nutrient pools, plant growth all develop under bsvg_lum conditions
+  - **Output files**: hru_ls and hru_nb are NOT written (nyskip in effect)
+  
+- **2008-2018** (output period): 
+  - **Model calculations**: Continue with bsvg_lum land use (already stabilized during warm-up)
+  - **Output files**: hru_ls and hru_nb ARE written, showing bsvg_lum land use for all records
+  
+- **lu_change_out.txt**: Contains the 2005 land use change record
 
 **Result**: The hru_ls and hru_nb output files will reflect the changed land use (bsvg_lum) for ALL records because:
 1. The change happened on day 1 of year 1 (2005)
 2. The warm-up allowed the system to stabilize with the new land use (2005-2007)
-3. Output only started in year 4 (2008), by which time the land use was already changed
+   - Soil moisture adjusted to new plant water use
+   - Nutrient pools equilibrated with new management
+   - Surface conditions evolved to new land cover
+3. Output only started in year 4 (2008), by which time the land use was already changed and stabilized
+
+**Why this matters**: If you compare output from a scenario WITH land use change during warm-up vs. WITHOUT land use change, you WILL see differences in runoff, ET, erosion, and nutrients - even though both scenarios only have output starting in 2008. The warm-up scenario has spent 3 years equilibrating to the new land use, while the no-change scenario spent 3 years equilibrating to the original land use.
 
 ### Recommendations
 
