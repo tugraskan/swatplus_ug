@@ -63,6 +63,8 @@
 
       implicit none
       
+      real, external :: qman
+      
       real :: scoef = 0.    !none          |Storage coefficient (fraction of water in
       real :: p = 0.        !m             |wetted perimeter
       !real :: tbase        !not used in this subroutine

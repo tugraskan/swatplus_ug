@@ -15,6 +15,8 @@
       
       implicit none      
       
+      real, external :: theta
+      
       integer, intent (in) :: icmd !command counter (incoming)
       integer, intent (in) :: ihru !HRU number (incoming)
       integer :: icon              !none          |counter (incoming)

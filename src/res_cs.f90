@@ -14,6 +14,8 @@
       
       implicit none      
       
+      real, external :: theta
+      
       integer, intent (in) :: iob
       integer :: jres              !reservoir number (incoming)
       integer :: icon              !none          |counter

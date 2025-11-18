@@ -50,7 +50,7 @@
       
       implicit none
       
-      external :: ch_rchinit, ch_rtday
+      external :: ch_rchinit, ch_rtday, ch_rtmusk
 
       integer :: ii = 0   !units         |description
       real :: qdbank = 0. !m^3 H2O       |streamflow contribution from bank storage

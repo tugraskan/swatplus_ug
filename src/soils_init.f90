@@ -14,7 +14,7 @@
       
       implicit none  
       
-      external :: soil_phys_init, soils_test_adjust
+      external :: soil_phys_init, soils_test_adjust, layersplit
       
 
       integer :: msoils = 0       !none          !ending of loop

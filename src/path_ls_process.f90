@@ -10,6 +10,8 @@
       
       implicit none
 
+      real, external :: theta
+
       integer :: j = 0      !none          |hru number
       integer :: ipath = 0  !none          |pathogen counter
       integer :: ipl = 0    !none          |plant number
@@ -21,7 +23,6 @@
       real :: sol_die_gro = 0.
       real :: bacdiegrosol_out = 0.
       real :: bacdiegroplt_out = 0.
-      real :: theta
       real :: wash_off = 0. !               |pathogen wash off
 
       j = ihru

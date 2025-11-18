@@ -7,6 +7,8 @@
       
       implicit none      
 
+      real, external :: qman
+
       integer, intent (in) :: i     !none           |counter  
       integer :: i_dep = 0          !none           |counter
       integer :: ifp_dep = 0        !none           |counter
@@ -15,7 +17,6 @@
       real :: b = 0.                !m              |bottom width of channel
       real :: p = 0.                !m              |wetting perimeter
       real :: rh = 0.               !m              |hydraulic radius
-      real :: qman                  !m^3/s or m/s   |flow rate or flow velocity
       real :: dep = 0.              !               |
       real :: a_bf = 0.             !               |
       real :: p_bf = 0.             !               |

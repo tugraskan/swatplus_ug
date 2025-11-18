@@ -11,7 +11,7 @@
       
       implicit none      
       
-      external :: rcurv_interp_dep, sd_rating_curve
+      external :: rcurv_interp_dep, sd_rating_curve, qman
 
       real :: kh = 0.
       integer :: idb = 0                !             |
