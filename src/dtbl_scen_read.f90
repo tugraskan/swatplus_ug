@@ -83,6 +83,21 @@
                       exit
                     end if
                   end do
+                  ! Validate that FILE_POINTER was found in landuse database
+                  if (dtbl_scen(i)%act_typ(iac) == 0) then
+                    write (9000,*) "ERROR in scen_lu.dtl: FILE_POINTER '", &
+                                   trim(dtbl_scen(i)%act(iac)%file_pointer), &
+                                   "' not found in landuse.lum"
+                    write (9000,*) "  Decision table: ", trim(dtbl_scen(i)%name)
+                    write (9000,*) "  Action: ", iac
+                    write (*,*) "ERROR in scen_lu.dtl: FILE_POINTER '", &
+                                trim(dtbl_scen(i)%act(iac)%file_pointer), &
+                                "' not found in landuse.lum"
+                    write (*,*) "  Decision table: ", trim(dtbl_scen(i)%name)
+                    write (*,*) "  Action: ", iac
+                    write (*,*) "  Check landuse.lum for valid land use names"
+                    stop
+                  end if
                 end select
                 
             end do

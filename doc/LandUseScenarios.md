@@ -76,22 +76,27 @@ case ("lu_change")
       exit
     end if
   end do
+  ! Validate that FILE_POINTER was found in landuse database
+  if (dtbl_scen(i)%act_typ(iac) == 0) then
+    ! Error: FILE_POINTER not found - model will stop with error message
+  end if
 ```
 
-**IMPORTANT WARNING**: If the `FILE_POINTER` does not match any land use name in `landuse.lum`, the model will:
-1. Set the internal land use index to 0 (invalid)
-2. Still execute the land use change action
-3. Write the change to `lu_change_out.txt` with the invalid name
-4. Potentially cause undefined behavior or model crashes
+**Validation (as of this update)**: The model now validates that `FILE_POINTER` matches an existing land use name in `landuse.lum` during input file reading. If no match is found, the model will:
+1. Write error message to console and log file (file unit 9000)
+2. Display the invalid FILE_POINTER name
+3. Show which decision table and action caused the error
+4. Stop execution with a clear error message
 
-**Example of incorrect configuration:**
+**Example error message:**
 ```
-FILE_POINTER: xbsvg_lum  (doesn't exist in landuse.lum)
-Result in lu_change_out.txt:
-    1  2005  1  1  LU_CHANGE  bsvg_lum  xbsvg_lum  0  0
+ERROR in scen_lu.dtl: FILE_POINTER 'xbsvg_lum' not found in landuse.lum
+  Decision table: all_to_bsvg
+  Action: 1
+  Check landuse.lum for valid land use names
 ```
 
-The model does NOT validate that the `FILE_POINTER` exists before executing the action. Users must ensure the `FILE_POINTER` exactly matches a land use name in `landuse.lum` (case-sensitive, including trailing spaces).
+Users must ensure the `FILE_POINTER` exactly matches a land use name in `landuse.lum` (case-sensitive, including trailing spaces).
 
 #### Other Uses
 The `file_pointer` field has different meanings depending on the action type:
@@ -595,25 +600,23 @@ scen_lu.dtl: land use change on jday=1, year_cal=2005
 
 ### Invalid FILE_POINTER Names
 
-**Problem**: Land use change appears in `lu_change_out.txt` but model crashes or produces unexpected results.
+**Problem**: Model stops with error message about FILE_POINTER not found.
 
-**Symptoms:**
+**Error message:**
 ```
-lu_change_out.txt shows:
-    1  2005  1  1  LU_CHANGE  bsvg_lum  xbsvg_lum  0  0
+ERROR in scen_lu.dtl: FILE_POINTER 'xbsvg_lum' not found in landuse.lum
+  Decision table: all_to_bsvg
+  Action: 1
+  Check landuse.lum for valid land use names
 ```
-Where `xbsvg_lum` doesn't exist in `landuse.lum`.
 
-**Cause**: The model does NOT validate that `FILE_POINTER` matches an existing land use name during input reading or action execution. If no match is found:
-- Internal land use index is set to 0 (invalid)
-- The action still executes
-- `lu_change_out.txt` records the invalid name
-- Model may crash or produce incorrect results
+**Cause**: The `FILE_POINTER` specified in `scen_lu.dtl` does not exactly match any land use name in `landuse.lum`. The model now validates FILE_POINTER values during input reading and will stop with a clear error message if an invalid name is found.
 
 **Solution:**
-1. Check `landuse.lum` for exact land use names
-2. Ensure `FILE_POINTER` in `scen_lu.dtl` exactly matches (case-sensitive, watch for trailing spaces)
-3. Common mistakes:
+1. Check the error message for the invalid FILE_POINTER name
+2. Check `landuse.lum` for exact land use names (case-sensitive, watch for trailing spaces)
+3. Correct the FILE_POINTER in `scen_lu.dtl` to exactly match
+4. Common mistakes:
    - Typos: `xbsvg_lum` instead of `bsvg_lum`
    - Case mismatch: `BSVG_LUM` vs `bsvg_lum`
    - Extra/missing spaces
