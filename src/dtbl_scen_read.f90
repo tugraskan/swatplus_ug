@@ -83,6 +83,14 @@
                       exit
                     end if
                   end do
+                  if (dtbl_scen(i)%act_typ(iac) == 0) then
+                    write (*,*) " "
+                    write (*,*) "DECISION TABLE ERROR: land use change name not found"
+                    write (*,*) "Decision table: ", trim(dtbl_scen(i)%name)
+                    write (*,*) "Land use name: ", trim(dtbl_scen(i)%act(iac)%file_pointer)
+                    write (*,*) " "
+                    stop
+                  end if
                 end select
                 
             end do
