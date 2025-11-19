@@ -1,0 +1,10 @@
+flo_con.dtl: written by SWAT+ editor v3.0.8 on 2025-11-17 21:11 for SWAT+ rev.61.0.1
+1
+
+name                     conds      alts      acts  
+sat_buffer                   1         1         1  
+var                        obj   obj_num           lim_var            lim_op     lim_const      alt1  
+tile_flo                   hru         0              null                 -       0.00000         >  
+act_typ                    obj   obj_num              name            option         const        const2                fp  outcome           
+flow_control            hrucon         1       buffer_tile           min_flo       5.00000       0.00000              null  y   
+

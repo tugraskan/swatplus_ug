@@ -1,0 +1,10 @@
+scen_lu.dtl
+1
+
+        DBTL_NAME                CONDS      ALTS      ACTS       
+   all_to_bsvg                    2          1         1  
+  COND_VAR           OBJ        OBJ_NUMB        LIM_VAR        LIM_OP        LIM_CONST   ALT1 
+   jday              null       0               null           -             1           =       
+   year_cal          null       0               null           -             2005        =       
+   ACT_TYP            OBJ       OBJ_NUMB        ALT_NAME         ALT_OPTION  CONST       CONST2     FILE_POINTER   out1         
+   lu_change         hru        0               lulc_chg_1       null        0           0          bsvg_lum       y   

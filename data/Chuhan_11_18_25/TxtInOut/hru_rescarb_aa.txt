@@ -1,0 +1,3 @@
+ ex1018                    SWAT+ 2025-11-19        MODULAR Rev 2025.61.0.2.5-552-ga4e85d8                 
+        jday        mon        day         yr            unit              gis_id     name                plant_c    rsd_decay_c    harv_stov_c         emit_c
+                                                                                                          kg C/ha        kg C/ha        kg C/ha        kg C/ha

@@ -1,0 +1,4 @@
+scen_dtl.upd
+1
+   MAX_HITS      NAME              DTABLE
+   1             lulc_chg_1        all_to_bsvg

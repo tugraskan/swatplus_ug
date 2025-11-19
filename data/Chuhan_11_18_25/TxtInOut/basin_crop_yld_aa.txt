@@ -1,0 +1,2 @@
+ ex1018                    SWAT+ 2025-11-19        MODULAR Rev 2025.61.0.2.5-552-ga4e85d8                 
+       year      plant_no   plant_name       harv_area(ha)     yld(t)          yld(t/ha)      

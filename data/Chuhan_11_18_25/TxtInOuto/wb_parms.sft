@@ -1,0 +1,13 @@
+wb_parms.sft: written by SWAT+ editor v3.0.8 on 2025-11-17 21:11 for SWAT+ rev.61.0.1
+10
+name                       chg_typ           neg           pos            lo            up  
+cn2                         abschg      -6.00000       6.00000      35.00000      95.00000  
+esco                        abschg      -1.00000       1.00000       0.00000       1.00000  
+latq_co                     abschg      -1.00000       1.00000       0.00000       1.00000  
+petco                       abschg       0.54000       1.85000       0.70000       1.20000  
+slope                       pctchg     -25.00000      25.00000       0.00010       0.90000  
+tconc                       pctchg     -30.00000      30.00000       5.00000     960.00000  
+etco                        abschg      -0.40000       0.40000       0.80000       1.20000  
+perco                       abschg      -0.70000       0.70000       0.00100       1.00000  
+revapc                      abschg      -0.40000       0.40000       0.00000       0.40000  
+cn3_swf                     abschg      -1.20000       1.20000       0.00000       1.00000  

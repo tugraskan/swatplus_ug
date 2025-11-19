@@ -1,0 +1,2 @@
+ ex1018                    SWAT+ Jul 2 2024        MODULAR Rev 2024.61.0.1                                
+         jday        mon          day       year hru     name               total soil carbon (kg/ha) by layer 
