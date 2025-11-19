@@ -1,0 +1,151 @@
+# File Change Types: main vs Nam_Branch_1119
+
+This file categorizes all changes by type (Added, Modified, Deleted)
+
+## Summary by Type
+
+- Added:    1 files
+- Modified: 126 files
+- Deleted:  9 files
+- Renamed:  0 files
+- Other:    0 files
+- TOTAL:    136 files
+
+## Detailed List
+
+A	data/Ames_sub1/carbon_coef.cbn
+D	basin_print_codes_read copy.f90
+D	data/Ames_sub1/carb_coefs.cbn
+D	data/Ames_sub1/lum.dtl
+D	data/hru-data.hru
+D	data/landuse.lum
+D	data/management.sch
+D	src/soil_test_adjust.f90
+D	src/utils.f90
+D	src/wb_check.f90
+M	.gitignore
+M	CMakeLists.txt
+M	data/Ames_sub1/file.cio
+M	data/Ames_sub1/hru-data.hru
+M	data/Ames_sub1/irr.ops
+M	data/Ames_sub1/landuse.lum
+M	data/Ames_sub1/management.sch
+M	data/Ames_sub1/print.prt
+M	data/Ames_sub1/soil_lyr_depths.sol
+M	data/Ames_sub1/soils.sol
+M	data/Ames_sub1/tillage.til
+M	data/Osu_1hru/irr.ops
+M	data/Osu_1hru/lum.dtl
+M	src/actions.f90
+M	src/allocate_parms.f90
+M	src/aqu_1d_control.f90
+M	src/basin_module.f90
+M	src/basin_output.f90
+M	src/basin_print_codes_read.f90
+M	src/basin_prm_default.f90
+M	src/basin_reservoir_output.f90
+M	src/cal_conditions.f90
+M	src/carbon_coef_read.f90
+M	src/carbon_module.f90
+M	src/cbn_rsd_decomp.f90
+M	src/cbn_zhang2.f90
+M	src/ch_read_orders_cal.f90
+M	src/ch_rtmusk.f90
+M	src/ch_rtpest.f90
+M	src/ch_temp.f90
+M	src/ch_watqual4.f90
+M	src/ch_watqual_semi_analitical_function.f90
+M	src/channel_module.f90
+M	src/command.f90
+M	src/conditions.f90
+M	src/constituent_mass_module.f90
+M	src/cs_divert.f90
+M	src/cs_irrig.f90
+M	src/curno.f90
+M	src/ero_cfactor.f90
+M	src/fertilizer_data_module.f90
+M	src/gwflow_ppag.f90
+M	src/header_channel.f90
+M	src/header_water_allocation.f90
+M	src/hru_control.f90
+M	src/hru_dtbl_actions_init.f90
+M	src/hru_module.f90
+M	src/hru_output.f90
+M	src/hru_read.f90
+M	src/hyd_connect.f90
+M	src/hydrograph_module.f90
+M	src/lsu_output.f90
+M	src/main.f90.in
+M	src/mallo_control.f90
+M	src/manure_allocation_module.f90
+M	src/manure_allocation_read.f90
+M	src/manure_demand_output.f90
+M	src/manure_source_output.f90
+M	src/maximum_data_module.f90
+M	src/mgt_harvresidue.f90
+M	src/mgt_newtillmix.f90
+M	src/mgt_sched.f90
+M	src/mgt_tillfactor.f90
+M	src/nut_nminrl.f90
+M	src/nut_orgnc2.f90
+M	src/organic_mineral_mass_module.f90
+M	src/output_landscape_init.f90
+M	src/output_landscape_module.f90
+M	src/pest_apply.f90
+M	src/pest_decay.f90
+M	src/pest_enrsb.f90
+M	src/pest_lch.f90
+M	src/pest_parm_read.f90
+M	src/pest_pesty.f90
+M	src/pest_washp.f90
+M	src/pl_biomass_gro.f90
+M	src/pl_burnop.f90
+M	src/pl_dormant.f90
+M	src/pl_fert.f90
+M	src/pl_graze.f90
+M	src/pl_grow.f90
+M	src/pl_leaf_gro.f90
+M	src/pl_leaf_senes.f90
+M	src/pl_mortality.f90
+M	src/pl_pup.f90
+M	src/pl_pupd.f90
+M	src/pl_root_gro.f90
+M	src/plant_init.f90
+M	src/res_control.f90
+M	src/res_hydro.f90
+M	src/ru_control.f90
+M	src/salt_irrig.f90
+M	src/sd_channel_control.f90
+M	src/sd_channel_control3.f90
+M	src/sd_channel_module.f90
+M	src/sd_channel_sediment3.f90
+M	src/sd_hydsed_init.f90
+M	src/sim_initday.f90
+M	src/soil_carbvar_write.f90
+M	src/soil_module.f90
+M	src/soil_nutcarb_init.f90
+M	src/soil_nutcarb_write.f90
+M	src/soil_phys_init.f90
+M	src/soils_init.f90
+M	src/sq_greenampt.f90
+M	src/sq_surfst.f90
+M	src/stor_surfstor.f90
+M	src/swift_output.f90
+M	src/swr_subwq.f90
+M	src/tiles_data_module.f90
+M	src/till_parm_read.f90
+M	src/tillage_data_module.f90
+M	src/time_control.f90
+M	src/treat_read_om.f90
+M	src/wallo_control.f90
+M	src/wallo_demand.f90
+M	src/wallo_transfer.f90
+M	src/wallo_treatment.f90
+M	src/wallo_withdraw.f90
+M	src/water_allocation_module.f90
+M	src/water_allocation_output.f90
+M	src/water_allocation_read.f90
+M	src/water_body_module.f90
+M	src/wet_all_initial.f90
+M	src/wet_initial.f90
+M	src/zero0.f90
