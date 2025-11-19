@@ -44,7 +44,7 @@
               hru(iihru)%dbs%surf_stor = isstor
               iprop = hru(iihru)%dbs%surf_stor
               hru(iihru)%wet_db = isstor
-                  
+                
               !! initialize orgaincs and minerals in water
               do isp_ini = 1, db_mx%res_init
                 if (wet_dat_c(isstor)%init == res_init_dat_c(isp_ini)%init) then

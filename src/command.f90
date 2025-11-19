@@ -424,7 +424,12 @@
       
         !! print water allocation output
         do iwro =1, db_mx%wallo_db
-          call water_allocation_output (iwro)
+          call wallo_allo_output (iwro)
+          call wallo_trn_output (iwro)
+          call wallo_treat_output (iwro)
+          call wallo_use_output (iwro)
+          !call wallo_osrc_output (iwro)
+          !call wallo_odmd_output (iwro)
         end do
         
         !! print manure allocation output
@@ -466,22 +471,7 @@
               ob(icmd)%hd_aa(ihyd) = ob(icmd)%hd_aa(ihyd) + ob(icmd)%hd(ihyd)
             end do
           end if
-          
-          !! carbon output for testing  ***jga
-          !if ((time%yrc == 2007 .AND. time%day == 213) .OR. (time%yrc == 2010 .AND. time%day == 319)            &
-          !                                              .OR.(time%yrc == 2011 .AND. time%day == 324)) then 
-
-          ! the following was moved to soil_nutcarb_write.f90 by FG.
-          ! if (ihru == 1) then
-          !   if (bsn_cc%cswat /= 2) then
-          !     do nly = 1, soil(ihru)%nly
-          !       soil1(ihru)%tot(nly)%c = soil1(ihru)%hact(nly)%c + soil1(ihru)%hsta(nly)%c + soil1(ihru)%microb(nly)%c
-          !     end do
-          !   end if
-          !   write (9999,*) time%day, time%mo, time%day_mo, time%yrc, ob(ihru)%typ, ob(ihru)%name,           &
-          !                                          (soil1(ihru)%tot(ly)%c/1000.0, ly = 1, soil(ihru)%nly)
-          ! end if
-                                                        
+                         
         if (pco%cb_hru%d == "y") call soil_nutcarb_write(" d")
         if (pco%cb_hru%d == "l") call soil_nutcarb_write("dl")
         if (pco%cb_hru%m == "y" .and. time%end_mo == 1) call soil_nutcarb_write(" m")

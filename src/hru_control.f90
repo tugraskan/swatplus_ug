@@ -36,6 +36,7 @@
       use salt_module !rtb salt
       use cs_module !rtb cs
       use gwflow_module !rtb gwflow
+	    use tillage_data_module
       !use basin_module, only : bsn_cc
       
       implicit none
@@ -362,6 +363,7 @@
 
         !! compute residue decomposition and nitrogen and phosphorus mineralization
         if (bsn_cc%cswat == 2) then
+          if (bmix_eff > 1.e-6) call mgt_newtillmix (ihru, bmix_eff, 0)
           call cbn_rsd_decomp      ! added by JC and FG, modified from nut_minrln.f90
           call cbn_zhang2
         end if
@@ -392,12 +394,12 @@
         !end if
 
         !! check irrigation demand decision table for water allocation (after adding irrigation)
-        if (hru(j)%irr_dmd_dtbl > 0) then
-          id = hru(j)%irr_dmd_dtbl
+        if (hru(j)%irr_trn_dtbl > 0) then
+          id = hru(j)%irr_trn_dtbl
           jj = j
           d_tbl => dtbl_lum(id)
           !! iauto points to pcom(j)%dtbl(iauto) for days between operation
-          iauto = hru(j)%irr_dmd_iauto
+          iauto = hru(j)%irr_trn_iauto
           call conditions (jj, iauto)
           call actions (jj, iob, iauto)
         end if
@@ -472,6 +474,11 @@
           else
             soil(j)%sw_300 = soil(j)%sw_300 + soil(j)%phys(ly)%st
           end if
+        end do
+
+        ! compute total soil water for each layer in mm/mm of water content
+        do ly = 1, soil(j)%nly
+          soil(j)%phys(ly)%tot_sw = (soil(j)%phys(ly)%st / soil(j)%phys(ly)%thick) + soil(j)%phys(ly)%wp 
         end do
         
         !! compute actual ET for day in HRU
@@ -847,6 +854,10 @@
         hpw_d(j)%phubase0 = phubase(j)
 
       ! output_losses
+        !! don't sum during skip years
+        if (time%yrs > pco%nyskip) then
+          bsn_sedbud%upland_t = bsn_sedbud%upland_t + sedyld(j)
+        end if
         hls_d(j)%sedyld = sedyld(j) / hru(j)%area_ha
         hls_d(j)%sedorgn = sedorgn(j)
         hls_d(j)%sedorgp = sedorgp(j)

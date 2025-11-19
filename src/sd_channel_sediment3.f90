@@ -1,5 +1,5 @@
       subroutine sd_channel_sediment3
-
+        
       use climate_module
       use sd_channel_module
       use channel_module
@@ -8,9 +8,10 @@
       use hru_module, only : hru
       use water_body_module
       use reservoir_module
-    
+      use utils
+
       implicit none     
-    
+
       integer :: iob = 0            !               |object number
       integer :: ihru = 0
       integer :: iihru = 0
@@ -62,7 +63,7 @@
       
       ich = isdch
       iob = sp_ob1%chandeg + jrch - 1
-      
+
       ebtm_m = 0.
       ebank_m = 0.
       ebtm_t = 0.
@@ -73,14 +74,14 @@
       bed_ero = hz 
       ch_trans = hz
       ch_wat_d(ich)%precip = 0.
-      
+
       !! calculate channel sed and nutrient processes if inflow > 0
       if (ht1%flo > 1.e-6) then
-      
+
       !! calculate peak daily flow
       pk_rto = sd_ch(ich)%pk_rto * (1. + 2.66 * (ob(icmd)%area_ha / 100.) ** (-.3))
       peakrate = pk_rto * ht1%flo / 86400.     !m3/s
-        
+
       !! interpolate rating curve using peak rate
       call rcurv_interp_flo (ich, peakrate)
       !! use peakrate as flow rate
@@ -88,7 +89,7 @@
       vel = h_rad ** .6666 * Sqrt(sd_ch(ich)%chs) / (sd_ch(ich)%chn + .001)
       vel = peakrate / rcurv%xsec_area
       rttime = sd_ch(ich)%chl / (3.6 * vel)
-                
+
       !! add precip to inflow - km * m * 1000 m/km * ha/10000 m2 = ha
       ch_wat_d(ich)%area_ha = sd_ch(ich)%chl * sd_ch(ich)%chw / 10.
       !! m3 = 10. * mm * ha
@@ -97,7 +98,7 @@
       rto = precip / ht1%flo
       ob(icmd)%tsin(:) = (1. + rto) * ob(icmd)%tsin(:)
       ht1%flo = ht1%flo + precip
-      
+
       !! compute flood plain deposition
       ave_rate = ht1%flo / 86400.     !m3/s
       !sd_ch(ich)%bankfull_flo = 1.           ***jga 
@@ -126,17 +127,16 @@
         trap_eff = sd_ch(ich)%fp_inun_days * trap_eff 
         trap_eff = Min (1., trap_eff)
         fp_dep%sed = trap_eff * ht1%sed
-        
+
         !! deposit Particulate P and N in the floodplain
         fp_dep%orgn = trap_eff * sd_ch(ich)%n_dep_enr * ht1%orgn
         fp_dep%sedp = trap_eff * sd_ch(ich)%p_dep_enr * ht1%sedp
         !! trap nitrate and sol P in flood plain - when not simulating flood plain interactions?
         fp_dep%no3 = 0.         !trap_eff * ht1%no3
         fp_dep%solp = 0.        !trap_eff * ht1%solp
-        
-        !fp_dep = chaz    !***jga
+
         ht1 = ht1 - fp_dep
-        
+
         !! if flood plain link - fill wetlands to emergency
         do ihru = 1, sd_ch(ich)%fp%hru_tot
           iihru = sd_ch(ich)%fp%hru(ihru)
@@ -162,7 +162,7 @@
             end if
           end if
         end do
-            
+
       end if     ! florate_ob > 0.
       
       !! calc bank erosion
@@ -175,7 +175,7 @@
       vel_cr = log10 (2200. * sd_ch(ich)%chd) * (0.0004 * (bd_fac + cohes_fac)) ** 0.5
       !sd_ch(ich)%vcr_coef = 3.                 ***jga 
       vel_cr = sd_ch(ich)%vcr_coef * vel_cr
-      
+
       !! calculate radius of curvature
       rad_curv = ((12. * sd_ch(ich)%chw) * sd_ch(ich)%sinu ** 1.5) /               &
                                             (13. * (sd_ch(ich)%sinu -1.) ** 0.5)
@@ -200,7 +200,7 @@
       else
         ebank_m = 0.
       end if
-      
+
       !! write for Peter
       !if (ich == 2133) then
       write (7777, *) time%day, time%yrc, ich, sd_ch(ich)%chw, sd_ch(ich)%chd, sd_ch(ich)%chl,   &
@@ -227,7 +227,7 @@
       rto = bank_ero%flo / ht1%flo
       ob(icmd)%tsin(:) = (1. - rto) * ob(icmd)%tsin(:)
       ht1 = ht1 + bank_ero
-      
+
       !! calculate channel deposition based on fall velocity - SWRRB book
       !! assume particle size = 0.03 mm -- median silt size
       !vel_fall = 411. * sd_ch(ich)%part_size ** 2     ! m/h

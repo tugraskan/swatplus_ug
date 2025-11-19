@@ -182,5 +182,7 @@
         if (cs_db%num_tot > 0) obcs(icmd)%hd(1) = obcs(icmd)%hin(1)
       end if
 
+
+
       return
       end subroutine res_control
