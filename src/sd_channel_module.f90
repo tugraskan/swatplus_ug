@@ -44,7 +44,7 @@
       
       type swatdeg_sednut_data
         character(len=25) :: name = ""
-        character(len=16) :: order = ""
+        integer :: order = 1
         real :: pk_rto = 1.         !ratio      |ratio of peak to mean daily flow in channel
         real :: fp_inun_days = 5.   !days       |number of days fllod plain is inundated after flood
         real :: n_setl = 0.5        !ratio      |ratio of amount of N settling and sediment settling
@@ -106,6 +106,7 @@
         real :: ebank_t = 0.        !tons       |bank cutting  
         real :: ebtm_t = 0.         !tons       |bed down cutting
         real :: fp_t = 0.           !mm/yr      |flood plain deposition
+        real :: t_ha = 0.           !tons/ha    |sediment load in t/ha  
       end type channel_morphology_output
       type (channel_morphology_output), dimension (:), allocatable :: ch_morph
       type (channel_morphology_output), dimension (12) :: ch_morph_ord

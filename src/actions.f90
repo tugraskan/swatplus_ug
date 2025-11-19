@@ -205,8 +205,8 @@
               irrig(j)%water%flo = rto * aqu_d(iob)%stor                ! organics in irrigation water
               aqu_d(iob)%stor = rto1 * aqu_d(iob)%stor                  ! remainder stays in aquifer
               if (cs_db%num_cs > 0) then
-                cs_irr(iob) = rto * cs_aqu(iob)                           ! constituents in irrigation water
-                cs_aqu(iob) = rto1 * cs_aqu(iob)                          ! remainder stays in aquifer
+                cs_irr(iob) = rto * cs_aqu(iob)                         ! constituents in irrigation water
+                cs_aqu(iob) = rto1 * cs_aqu(iob)                        ! remainder stays in aquifer
               end if
               
             case ("cha", "sdc")
