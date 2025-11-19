@@ -8,4 +8,3 @@ scen_lu.dtl
    year_cal          null       0               null           -             2005        =       
    ACT_TYP            OBJ       OBJ_NUMB        ALT_NAME         ALT_OPTION  CONST       CONST2     FILE_POINTER   out1         
    lu_change         hru        0               lulc_chg_1       null        0           0          xbsvg_lum       y   
-----
