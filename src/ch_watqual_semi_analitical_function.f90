@@ -91,13 +91,15 @@
       real, intent (in) :: tk
       real, intent (in) :: c1
       real, intent (in) :: c2
+      
+      real, external :: wq_semianalyt
+      
       real :: h1 = 0.
       real :: h2 = 0.
       real :: help = 0.
       real :: tm = 0.
       real :: h3 = 0.
       real :: wq_k2m
-      real :: wq_semianalyt
       
       h1 = wq_semianalyt (t1, t2, 0., 0., c1, c2)
       h2 = wq_semianalyt (t1, t2, 0., tk, c1, c2)
