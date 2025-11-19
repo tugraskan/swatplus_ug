@@ -111,6 +111,7 @@
       end type water_treatment_use_data        
       type (water_treatment_use_data), dimension(:), allocatable :: wtp
       type (water_treatment_use_data), dimension(:), allocatable :: wuse
+      type (water_treatment_use_data), dimension(:), allocatable :: osrc
       
       !! outside basin data
       type outside_basin_data
