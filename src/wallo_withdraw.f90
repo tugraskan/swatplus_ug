@@ -89,9 +89,9 @@
           ht2 = (1. - rto) * ht2
           wallod_out(iwallo)%trn(itrn)%src(isrc)%withdr = wallod_out(iwallo)%trn(itrn)%src(isrc)%withdr + trn_m3
         else
-          wallod_out(iwallo)%trn(itrn)%src(isrc)%unmet = wallod_out(iwallo)%trn(itrn)%src(isrc)%unmet + trn_m3
-          wallod_out(iwallo)%trn(itrn)%src(isrc)%unmet = Min (wallod_out(iwallo)%trn(itrn)%src(isrc)%unmet,      &
-                                                                wallod_out(iwallo)%trn(itrn)%src(isrc)%demand)
+          wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet = wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet + dmd_m3
+          wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet = Min (wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet,      &
+                                                                wallod_out(iwallo)%dmd(idmd)%src(isrc)%demand)
         end if
             
         !! reservoir source
@@ -104,52 +104,66 @@
             rto = trn_m3 / res(j)%flo
             wal_omd(iwallo)%trn(itrn)%src(isrc)%hd = rto * res(j)
             res(j) = (1. - rto) * res(j)
-            wallod_out(iwallo)%trn(itrn)%src(isrc)%withdr = wallod_out(iwallo)%trn(itrn)%src(isrc)%withdr + trn_m3
-            
+            wallod_out(iwallo)%dmd(idmd)%src(isrc)%withdr = wallod_out(iwallo)%dmd(idmd)%src(isrc)%withdr + dmd_m3
           else
-            wallod_out(iwallo)%trn(itrn)%src(isrc)%unmet = wallod_out(iwallo)%trn(itrn)%src(isrc)%unmet + trn_m3
-            wallod_out(iwallo)%trn(itrn)%src(isrc)%unmet = Min (wallod_out(iwallo)%trn(itrn)%src(isrc)%unmet,      &
-                                                                wallod_out(iwallo)%trn(itrn)%src(isrc)%demand)
+            wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet = wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet + dmd_m3
+            wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet = Min (wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet,      &
+                                                                wallod_out(iwallo)%dmd(idmd)%src(isrc)%demand)
+          end if
+         
+        !! diversion inflow source
+        case ("div_rec") 
+          j = wallo(iwallo)%dmd(idmd)%src_ob(isrc)%ob_num
+          isrc_wallo = wallo(iwallo)%dmd(idmd)%src(isrc)%src
+          if (wallo(iwallo)%src(isrc)%div_vol > dmd_m3) then
+            irec = wallo(iwallo)%src(isrc)%rec_num !number in recall.rec
+            rto = dmd_m3 / wallo(iwallo)%src(isrc)%div_vol
+            ht5 = (1. - rto) * recall(irec)%hd(time%day,time%yrs)
+            wallo(iwallo)%src(isrc)%div_vol = rto * wallo(iwallo)%src(isrc)%div_vol
+            wallod_out(iwallo)%dmd(idmd)%src(isrc)%withdr = wallod_out(iwallo)%dmd(idmd)%src(isrc)%withdr + dmd_m3
+          else
+            wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet = wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet + dmd_m3
+            wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet = Min (wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet,      &
+                                                                wallod_out(iwallo)%dmd(idmd)%src(isrc)%demand)
           end if
          
         !! aquifer source
         case ("aqu") 
           if(bsn_cc%gwflow == 0) then !proceed with original code
-          j = wallo(iwallo)%trn(itrn)%src(isrc)%num
-          isrc_wallo = wallo(iwallo)%trn(itrn)%src_wal(isrc)
-          avail = (wallo(iwallo)%src(isrc_wallo)%limit_mon(time%mo) - aqu_d(j)%dep_wt)  * aqu_dat(j)%spyld
-          avail = avail * 10000. * aqu_prm(j)%area_ha     !m3 = 10,000*ha*m
-          if (trn_m3 < avail) then
+          j = wallo(iwallo)%dmd(idmd)%src_ob(isrc)%ob_num
+          isrc_wallo = wallo(iwallo)%dmd(idmd)%src(isrc)%src
+          avail = 10. * aqu_d(j)%stor * aqu_prm(j)%area_ha   !m3 = 10*ha*mm
+          if (dmd_m3 < avail) then
             !! only have flow, no3, and minp(solp) for aquifer
-            wal_omd(iwallo)%trn(itrn)%src(isrc)%hd%flo = trn_m3
-            aqu_d(j)%stor = aqu_d(j)%stor - (trn_m3 / (10. * aqu_prm(j)%area_ha))  !mm = m3/(10.*ha)
-            rto =  (trn_m3 / (10. * aqu_prm(j)%area_ha)) / aqu_d(j)%stor  !mm
-            wal_omd(iwallo)%trn(itrn)%src(isrc)%hd%no3 = rto * aqu_d(j)%no3_st
+            ht5%flo = dmd_m3
+            aqu_d(j)%stor = aqu_d(j)%stor - (dmd_m3 / (10. * aqu_prm(j)%area_ha))  !mm = m3/(10.*ha)
+            rto =  Min(1., dmd_m3 / avail)
+            ht5%no3 = rto * aqu_d(j)%no3_st
             aqu_d(j)%no3_st = (1. - rto) * aqu_d(j)%no3_st
             wal_omd(iwallo)%trn(itrn)%src(isrc)%hd%solp = rto * aqu_d(j)%minp
             aqu_d(j)%minp = (1. - rto) * aqu_d(j)%minp
             wallod_out(iwallo)%trn(itrn)%src(isrc)%withdr = wallod_out(iwallo)%trn(itrn)%src(isrc)%withdr + trn_m3
           else
-            wallod_out(iwallo)%trn(itrn)%src(isrc)%unmet = wallod_out(iwallo)%trn(itrn)%src(isrc)%unmet + trn_m3
-            wallod_out(iwallo)%trn(itrn)%src(isrc)%unmet = Min (wallod_out(iwallo)%trn(itrn)%src(isrc)%unmet,      &
-                                                                wallod_out(iwallo)%trn(itrn)%src(isrc)%demand)
+            wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet = wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet + dmd_m3
+            wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet = Min (wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet,      &
+                                                                wallod_out(iwallo)%dmd(idmd)%src(isrc)%demand)
           end if
           elseif(bsn_cc%gwflow == 1) then !gwflow is active; determine pumping amounts from grid cells
             extracted = 0.
-            trn_unmet = 0.
-            hru_demand = trn_m3
-            call gwflow_ppag(wallo(iwallo)%trn(itrn)%num,trn_m3,extracted,trn_unmet)
-            wallod_out(iwallo)%trn(itrn)%src(isrc)%withdr = wallod_out(iwallo)%trn(itrn)%src(isrc)%withdr + extracted
-            wallod_out(iwallo)%trn(itrn)%src(isrc)%unmet = wallod_out(iwallo)%trn(itrn)%src(isrc)%unmet + trn_unmet
-            wallod_out(iwallo)%trn(itrn)%src(isrc)%unmet = Min (wallod_out(iwallo)%trn(itrn)%src(isrc)%unmet,      &
-                                                                wallod_out(iwallo)%trn(itrn)%src(isrc)%demand)
+            dmd_unmet = 0.
+            hru_demand = dmd_m3
+            call gwflow_ppag(wallo(iwallo)%dmd(idmd)%ob_num,dmd_m3,extracted,dmd_unmet)
+            wallod_out(iwallo)%dmd(idmd)%src(isrc)%withdr = wallod_out(iwallo)%dmd(idmd)%src(isrc)%withdr + extracted
+            wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet = wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet + dmd_unmet
+            wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet = Min (wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet,      &
+                                                                wallod_out(iwallo)%dmd(idmd)%src(isrc)%demand)
           endif
         
             !store values
-            wallod_out(iwallo)%trn(itrn)%src(isrc)%withdr = wallod_out(iwallo)%trn(itrn)%src(isrc)%withdr + withdraw
-            wallod_out(iwallo)%trn(itrn)%src(isrc)%unmet = wallod_out(iwallo)%trn(itrn)%src(isrc)%unmet + unmet
-            wallod_out(iwallo)%trn(itrn)%src(isrc)%unmet = Min (wallod_out(iwallo)%trn(itrn)%src(isrc)%unmet,      &
-                                                                wallod_out(iwallo)%trn(itrn)%src(isrc)%demand)
+            wallod_out(iwallo)%dmd(idmd)%src(isrc)%withdr = wallod_out(iwallo)%dmd(idmd)%src(isrc)%withdr + withdraw
+            wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet = wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet + unmet
+            wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet = Min (wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet,      &
+                                                                wallod_out(iwallo)%dmd(idmd)%src(isrc)%demand)
             
           !! unlimited source
           case ("unl")

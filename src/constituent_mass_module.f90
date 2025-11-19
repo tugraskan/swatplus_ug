@@ -117,29 +117,6 @@
       type (constituent_mass), dimension (:), allocatable :: ch_water_init
       type (constituent_mass), dimension (:), allocatable :: ch_benthic_init
       
-      ! water treatment plant storage
-      type (constituent_mass), dimension (:), allocatable :: wtp_cs_stor
-      ! water treatment plant treated concentrations
-      type (constituent_mass), dimension (:), allocatable :: wtp_cs_treat
-      
-      ! water use storage
-      type (constituent_mass), dimension (:), allocatable :: wuse_cs_stor
-      ! water use effluent concentrations
-      type (constituent_mass), dimension (:), allocatable :: wuse_cs_efflu
-      
-      ! canal storage
-      type (constituent_mass), dimension (:), allocatable :: canal_cs_stor
-      
-      ! water tower storage
-      type (constituent_mass), dimension (:), allocatable :: wtow_cs_stor
-      
-      !! water withdrawn from an individual source
-      type (constituent_mass) :: wdraw_cs
-      !! total water withdrawn from all sources
-      type (constituent_mass) :: wdraw_cs_tot
-      !! constituent outflow from an water allocation object - wtp or use
-      type (constituent_mass) :: outflo_cs
-      
       ! storing salt and constituent mass in reservoirs
       type (constituent_mass), dimension (:), allocatable :: res_water
       type (constituent_mass), dimension (:), allocatable :: res_benthic

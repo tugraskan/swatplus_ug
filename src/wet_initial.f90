@@ -123,10 +123,10 @@
               exit
             end if
           end do
-
+          
         if (hru(iihru)%dbs%surf_stor == 0 .and. hru(iihru)%dbsc%surf_stor /= 'null')       & 
               write (9001,*) hru(iihru)%dbsc%surf_stor,"not found (wetland.wet)"
-       
+            
         !! initialize parameters
         hru(iihru)%wet_hc = wet_hyd(iihru)%k  !mm/hr
         !! ha*mm*10. => m**3  - assume entire hru is wet and don't use fractional inputs (for simplicity)

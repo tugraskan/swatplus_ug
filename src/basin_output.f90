@@ -210,7 +210,7 @@
         bwb_a%sw_final = bwb_d%sw_final
         bwb_a%sno_init = sno_init
         bwb_a%sno_final = bwb_d%sno_final
-
+        
         if (pco%wb_bsn%a == "y") then
         write (2053,103) time%day, time%mo, time%day_mo, time%yrc, "       1", "       1", bsn%name, bwb_a, cal_sim, cal_adj
         if (pco%csvout == "y") then 
@@ -236,7 +236,7 @@
         write (2073,100) time%day, time%mo, time%day_mo, time%yrc, "       1", "       1", bsn%name, bls_a
         if (pco%csvout == "y") then 
           write (2077,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, "       1", "       1", bsn%name, bls_a
-        end if
+        end if 
         end if
       end if
       if (time%end_sim == 1) then
@@ -246,7 +246,7 @@
         write (2083,100) time%day, time%mo, time%day_mo, time%yrc, "       1", "       1", bsn%name, bpw_a
         if (pco%csvout == "y") then 
           write (2087,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, "       1", "        1", bsn%name, bpw_a
-        end if
+        end if 
         end if
       end if
       
