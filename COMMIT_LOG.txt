@@ -1,0 +1,765 @@
+* c531fab 1119 Jeffs Nam
+* a3140b6 Comment out write statement for sediment data
+*   a6c7228 Merge pull request #108 from tugraskan/NAM_BRANCH_MAIN
+|\  
+| * cd7a686 0828
+* | 7c76859 Merge pull request #106 from tugraskan/NAM_BRANCH_MAIN
+|\| 
+| * 3c6d260 Add files via upload
+* | eec438f Merge pull request #105 from tugraskan/NAM_BRANCH_MAIN
+|\| 
+| *   2f8cadc Merge pull request #62 from tugraskan/NAM0826
+| |\  
+| | * d598ff5 NAM updates 08262025
+| |/  
+* | 4789240 Merge pull request #102 from tugraskan/NAM_BRANCH_MAIN
+|\| 
+| *   b25a447 Merge pull request #56 from tugraskan/tugraskan-patch-1
+| |\  
+| | * 919a921 Update src/wallo_withdraw.f90
+| | * bdcd18a Update wallo_withdraw.f90
+| |/  
+* | 3881609 Merge pull request #96 from tugraskan/NAM_BRANCH_MAIN
+|\| 
+| * a72bdb4 Update conditional_module.f90
+* | 681d9b0 Merge pull request #91 from tugraskan/NAM_BRANCH_MAIN
+|\| 
+| * 6de1fba updates 07/17
+|/  
+*   0d346da Merge pull request #88 from tugraskan/NAM_BRANCH
+|\  
+| * 452a041 src updates 07092025
+* | 60dd53b Merge pull request #87 from tugraskan/NAM_BRANCH
+|\| 
+| * 32adbbb 07082026
+| *   1b43e51 Merge pull request #26 from swat-model/NAM_Branch
+| |\  
+| |/  
+|/|   
+* | 577e852 Enhance condition handling in cal_conditions and swr_origtile
+* | 98d1538 Merge pull request #74 from tugraskan/NAM_BRANCH
+|\| 
+| * a81254d NAM SRC updates 05272025
+|/  
+*   c68bfb8 Merge pull request #64 from swat-model/main
+|\  
+| * 8a77d61 Merge pull request #63 from tugraskan/main
+|/| 
+| * 64025b4 Update basin_module.f90
+|/  
+*   04e1a6b Merge pull request #61 from tugraskan/main
+|\  
+| *   c555e21 merge
+| |\  
+| |/  
+|/|   
+* |   f06c3f6 Merge branch 'main' into main
+|\ \  
+| * | 73c93ed Changed cbn_zhang2 to not alter org_con%cs for the surface layer and instead use microb_top_rate for the surface layer when calculating potential microbial biomass.
+| * | 87ef57c Made to debug if soil profie depth was less than the greatest soil layer depth in the soil_lyr_depths.sol
+| * | c890298 Add the file soil_lyr_depths.sol to data/Ames_sub1.  This file specifies custom soil depths to be used.
+| * | d462a2d debug the previous commit and  some code clean up in soil_phys_init.f90
+| * | 56aa528 changes made to use custom soil layer depths specified in the file soil_lyr_depths.sol
+| * | f8a8e41 Changes to have bio mixing always occuring when there is not another active tillage event and the soil layer is not frozen.
+| * | 4dae01b Made changes to output no3, nh4, co2 respiration as modified in cbn_zhang2  in hru_carbvar.(txt/csv)
+| * | 3ccbc1d Changes to output org_trans values to hru_org_trans_vars
+| * | b8620cd made change to outpu org_ratio variables to file hru_org_ratio_vars
+| * | 64cf5cb made changes to output_landscape_module to define org_ration header
+| * | 7be409b Made final updates to output org_allo to hru_org_allo_vars and corrected carbon_coef_read.f90 to read in asco2 and apco2
+| * | 70e4d3f Updated code to save org_allo variables as calculated in cbn_zhang2
+| * | 402d255 Updated output_landscape_init and output_landscape module to prepare for output org_allo values.
+| * |   b8a97a2 Merge branch 'swat-model:main' into main
+| |\ \  
+| * | | b0c85d6 Made changes to print.prt in data/Ames_Sub1 to add print object hru_cb_vars
+| * | | f66c8e6 changes made to outpu an initial set of organic control variables to a file called hru_carbvars.  Added new print object in print.prt called hru_cb_vars and fixed bug in the output of hru_cflux.
+| * | |   c81a863 Merge pull request #20 from fgeter/output_org_con_values
+| |\ \ \  
+| | * | | dbb62fd Fixed error in cbn_zhang2 in the use a1co2 coefficient.
+| |/ / /  
+| * | |   e0b4861 Merge pull request #19 from fgeter/2_layer_carbon_coef.cbn
+| |\ \ \  
+| | * \ \   9330cc0 Merge pull request #18 from odav/main
+| | |\ \ \  
+| | | * \ \   81d14be Merge branch 'swat-model:main' into main
+| | | |\ \ \  
+| | | * \ \ \   db361f1 Merge pull request #31 from fgeter/main
+| | | |\ \ \ \  
+| | * | | | | | 942f299 changes made to have carbon_coef.cbn in two layers and added asc02 and apco2 as calibratable parameters.
+| |/ / / / / /  
+| * | | | | | 181fda2 Fixing another occurance where seting org_allo$abco2 was commented out.
+| * | | | | | f98127c minor revision to correct the commenting out of the calculation of org_allo%abc02.
+| * | | | | | 532e70b Made changes to use a1co2 in place of asco2 and apco2 and added a1co2 to be read in from carbon_coef.cbn file.
+| | |/ / / /  
+| |/| | | |   
+| * | | | | cb93173 Merge pull request #17 from odav/swatplus/main
+| |\| | | | 
+| * | | | |   7638cd4 Merge branch 'main' of https://github.com/fgeter/swatplus_fg_fork
+| |\ \ \ \ \  
+| * | | | | | 179633f Changes to read an external file with carbon coefficients that are used in cbn_zhang2.f90.  Added a subroutine called carbon_coef_read.f90 to read the file called  carbon_coef.cbn.  Added that file to the ames data set. The call to carbon_coef_read was put at the end of proc_bsn.f90 subroutine.  cbn_zhang2 was changed to use coefficients in the file if that file is available.  If that file is not available, cbn_zhang2 will use the hard coded coefficient values in cbn_zhang2 as originally coded.
+| | | | | | * 1b4a94c src updates
+| |_|_|_|_|/  
+|/| | | | |   
+* | | | | |   19b9a7a Merge pull request #59 from tugraskan/main
+|\ \ \ \ \ \  
+| |_|_|_|_|/  
+|/| | | | |   
+| * | | | | 1807dbb na
+|/ / / / /  
+* | | | |   8ae040c Merge pull request #57 from jjeong2019/main
+|\ \ \ \ \  
+| * | | | | f15ba79 output files removed
+| * | | | | 6a96a12 Output files added to the list of ignored files.
+| * | | | | 2488b84 Osu_1hru input error fixed.
+| * | | | | 543af3a Update actions.f90
+| * | | | | ea52970 test
+| * | | | | e95f1d9 test
+| * | | | | de9d23f print file is updated.
+| * | | | |   491afff Merge pull request #4 from jjeong2019/paddy_dev
+| |\ \ \ \ \  
+| | * | | | | 71cfe4d Update main.f90.in
+| * | | | | | 3e61a70 Merge pull request #3 from jjeong2019/paddy_dev
+| |\| | | | | 
+| | * | | | | 8d2886f Update print.prt
+| |/ / / / /  
+| * | | | | 49edf67 errors in actions and hru_control are fixed
+| * | | | |   8048249 Merge pull request #2 from jjeong2019/paddy_dev
+| |\ \ \ \ \  
+| | * | | | | fc264de Paddy dataset
+| * | | | | | a335b5d Merge pull request #1 from jjeong2019/paddy_dev
+| |\| | | | | 
+| | |_|_|/ /  
+| |/| | | |   
+| | * | | | 0c9f7bd Paddy module updated
+| |/ / / /  
+* | | | |   ce86be1 Merge pull request #58 from tugraskan/ugs_codespace
+|\ \ \ \ \  
+| |_|_|_|/  
+|/| | | |   
+| * | | | 0608c29 Create Dockerfile
+| * | | | 8413d07 Create devcontainer.json
+|/ / / /  
+* / / / fd45e95 Adding the CITATION.cff file
+|/ / /  
+* | |   09349e7 Merge pull request #54 from odav/main
+|\ \ \  
+| * \ \   dafc1d2 Merge pull request #30 from fgeter/main
+| |\ \ \  
+| | | |/  
+| | |/|   
+| | * |   2508ea7 Merge pull request #16 from odav/main
+| | |\ \  
+| | |/ /  
+| |/| /   
+| | |/    
+| * |   3669634 Merge branch 'swat-model:main' into main
+| |\ \  
+| |/ /  
+|/| |   
+* | |   67a2cc9 Merge pull request #51 from NataljaC/main
+|\ \ \  
+| * | | a0785ed I figured out the answer to everything
+|/ / /  
+| * |   0f092e0 Merge pull request #29 from swat-model/main
+| |\ \  
+| |/ /  
+|/| |   
+* | |   5491a42 Merge pull request #49 from odav/docs
+|\ \ \  
+| * | | c531487 Link integration
+| * | | dfa176b VS for Windows
+| | * |   26f37ad Merge pull request #28 from fgeter/main
+| | |\ \  
+| | | | * 84e7997 Changes to move the percn output to the last column in the hru_ls output files.
+| | | | *   1820dc7 Merge branch 'main' of https://github.com/fgeter/swatplus_fg_fork
+| | | | |\  
+| | | | | * e7da13b Added a comment in hru_control on the call to cbn_rsd_decomp
+| | | | |/  
+| | | |/|   
+| | | * |   537e10d Merge pull request #15 from odav/main
+| | | |\ \  
+| | | |/ /  
+| | |/| |   
+| | * | |   8f9c224 Merge pull request #27 from fgeter/main
+| | |\ \ \  
+| | | | | * 74b595c Minor spelling changes and changed to error stop on duplicate print objects in print.prt file.
+| | | | |/  
+| | | | * 36203d9 Changes made to add percn to hru_ls output files.
+| | | | * 17a37c4 made changes to prevent empty strings from being written out to mgt_out.txt
+| | | | *   9d3e6f0 Merge branch 'main' of https://github.com/fgeter/swatplus_fg_fork
+| | | | |\  
+| | | | |/  
+| | | |/|   
+| | | * |   ebc03a4 Merge pull request #14 from odav/main
+| | | |\ \  
+| | | |/ /  
+| | |/| |   
+| | * | | ff72e84 Merge pull request #26 from fgeter/main
+| |/| | | 
+| * | | |   2b5b542 Merge branch 'swat-model:main' into main
+| |\ \ \ \  
+| |/ / / /  
+|/| | | |   
+* | | | |   c4df212 Merge pull request #47 from tugraskan/02062025
+|\ \ \ \ \  
+| * \ \ \ \   5f79852 Merge branch '02062025' of https://github.com/tugraskan/swatplus_ug into 02062025
+| |\ \ \ \ \  
+| |/ / / / /  
+|/| | | | |   
+| * | | | | 64d11da Uncommented line to ensure LAI is at least the minimum allowable value (alai_min).
+| | | | | * bb5bed9 Made changes to detect duplicate print object codes in the input file print.prt
+| | | | |/  
+| | | | * 23efce5 Changes to intialize hp, hs, microb, to zero for surface layer and changed mgt_schedule to output irrigation name.
+| | | |/  
+| | | * efef7be Made changes to write out hru_cpool_stat file that is written out soil_nutcarb_write.f90 and cleaned up that code so that some carbon output files do not get written out if cswat is not equal to 2.
+| | | *   7f2d610 Merge branch 'main' of https://github.com/fgeter/swatplus_fg_fork
+| | | |\  
+| | | | *   c45107e Merge pull request #13 from odav/main
+| | | | |\  
+| | | |_|/  
+| | |/| |   
+| | * | |   29a41b9 Merge pull request #25 from swat-model/main
+| | |\ \ \  
+| |_|/ / /  
+|/| | | |   
+* | | | |   b67c180 Merge branch 'main' into main
+|\ \ \ \ \  
+| | |/ / /  
+| |/| | |   
+| * | | |   e779a7e Merge pull request #24 from fgeter/main
+| |\ \ \ \  
+| | | |_|/  
+| | |/| |   
+| * | | |   92e0f80 Merge pull request #21 from fgeter/main
+| |\ \ \ \  
+| * \ \ \ \   c8e085b Merge pull request #20 from fgeter/main
+| |\ \ \ \ \  
+| * \ \ \ \ \   61cad65 Merge pull request #19 from fgeter/main
+| |\ \ \ \ \ \  
+* | \ \ \ \ \ \   9ff8938 Merge pull request #46 from tugraskan/02062025
+|\ \ \ \ \ \ \ \  
+| | |_|_|_|_|/ /  
+| |/| | | | | |   
+| * | | | | | | 09420df Added two new real-type variables, `val1` and `val2`,  to the `update_parameters` type. These variables represent the lower and upper bounds of a numerical condition, respectively. Used in cal_conditions and cal_parmchg_read.
+| * | | | | | | b3da29c Add sediment and solution settling parameters
+| * | | | | | | 44fa729 Added two new real variables, `soln_stl_fr` and `solp_stl_fr`,  to the `water_body_data_parameters` type. Used in wet_inital sediment xwalk and res_read.
+| * | | | | | | d997d32 Set wet_prm(iihru)%soln_stl_fr and wet_prm(iihru)%solp_stl_fr to 0.2 in xwalk with sediment inputs.
+| * | | | | | | c55897a Included basin_module. Initialized nutrient-related parameters (phoskd, pperco, psp, nperco, cmn, nperco_lchtile) in hru structure using values from bsn_prm.
+| * | | | | | | 6f22aa5 Added new type `nutrient_parameters` , with real variables `phoskd`, `pperco`, `psp`, `nperco`, `cmn`, and `nperco_lchtile`, all initialized to 0 and measured in kg/m3.
+| * | | | | | | c49e4fe New cases added to handle additional parameters for `hru` ;`cmn_h`, `nperco_h`, `pperco_h`, `phoskd_h`, `psp_h`, and `nperco_lchtile_h`.
+| * | | | | | | 3a09536 Update psp assignment to o `hru(ihru)%nut%psp from `bsn_prm%psp.
+| * | | | | | | ffb8cce Update cosurfsalt calculation to use hru(j)%nut%npercoinstead of bsn_prm%nperco.
+| * | | | | | | f797125 Replaced bsn_prm%phoskd and bsn_prm%pperco with hru(j)%nut%phoskd and hru(j)%nut%pperco in three sections: 1. Soluble P lost in surface runoff. 2. Soluble P leaching through soil layers. 3. P leaching to the next soil layer and tile drainage.
+| * | | | | | | 95d4ff5 Modified nitrate calculation in surface runoff and tile flow to use HRU-specific parameters instead of basin parameters: `bsn_prm%nperco` to `hru(j)%nut%nperco` for surface runoff and `bsn_prm%nperco_lchtile` to `hru(j)%nut%nperco_lchtile` for tile flow.
+| * | | | | | | b3dc2c2 Update cosurfcs calculation to use hru(j)%nut%nperco instead of bsn_prm%nperco.
+| * | | | | | | 06d4609 Changed `rto` calculation to use `hru(j)%nut%psp` instead of `bsn_prm%psp`.
+| * | | | | | | cd9a68a Updated hmn calculation to use `hru(j)%nut%cmn` instead of `bsn_prm%cmn`, shifting the source of the `cmn` parameter from a basin-level to an HRU-level parameter for more localized calculations.
+| * | | | | | | 922d015 Refractored nutrient settling calculations.
+| * | | | | | | 0a995de Added integer variable `nam1`, used in plant parm read
+| * | | | | | | e237679 Included  basin_module. Replaced plclass variable check for "nam1" with loop condition to check bsn_cc%nam1 != 0 flag instead.
+| * | | | | | | 10c2afa Added a new character variable `range` ; Modified the reading logic of cal_upd to handle the new `range` variable. If `range` equals "range", read additional variables; otherwise, read as before.
+| * | | | | | | 203759c Included  `reservoir_module` and `landuse_data_module`. Added new integer variable `icom` used in pl_class condition check. Added condition check for `res_pvol`. Modified `pl_class` condition check to iterate over `pcom(ielem)%npl` and compare `targc` with `lum(icom)%cal_group`. Commented out old `pl_class` condition check.
+| * | | | | | | daae0d8 Comment out unused assignments in basin_output.f90
+| * | | | | | | 8a444d7 Merge branch 'main' of https://github.com/tugraskan/swatplus_ug
+| |\| | | | | | 
+| * | | | | | |   bb8b72c Merge branch 'main' of https://github.com/tugraskan/swatplus_ug
+| |\ \ \ \ \ \ \  
+| * \ \ \ \ \ \ \   c06223a 12/23 - changes to MUSLE C factor and some carbon updates
+| |\ \ \ \ \ \ \ \  
+* | \ \ \ \ \ \ \ \   d21832a Merge pull request #44 from mwtoews/fix-typos
+|\ \ \ \ \ \ \ \ \ \  
+| |_|_|_|/ / / / / /  
+|/| | | | | | | | |   
+| * | | | | | | | | 889136d Fix typos
+|/ / / / / / / / /  
+| | | | | | | | * fd90e36 variable initialization changes
+| | | | | | | | * 3841f25 created cpool output file header and units.
+| | | | | | | |/  
+| | | | | | | * 6e75b36 added cbn_rsd_decomp.f90 to decompose residue in structrual, metabolic and lignin pools.  This subroutine is called before cbn_zhang2.f90.
+| | | | | | | * 5bdace3 Added the ability to print out soil layer data for the files that had soil layer carbon data availabe that are written out in soil_nutcarb_write.f90.
+| | | | | | | * b2e060e Changed cbn_zhang2 to reduce surface and subsurface residue based on decomposition and removed from mgt_killops.f90 the portioning the residue into structural, lig, and meta pools.
+| | | | | | |/  
+| | | | | | * 2d106f8 changes made to create a file called hru_seq_lyr.txt that has the sequestered carbon by layer.
+| | | | | | * 688de41 Made changes to the file hru_cflux_stat so that the cflux output is not cumulative.
+| | | | | | * 5061ff8 Changed header on hru_rsdc_statt to be more clear.
+| | | | | |/  
+| | | | | * 2b1495c removed a comment line in cbn_zhang2
+| | | | | * 96cc66d Changed units in header for hru_cbn_lyr
+| | | | | * b40e8d4 Moved writing the file hru_cbn_lyr to soil_nutcarb_write.
+| | | | | * 3ec9329 summed up soil_prof_(str,meta,lig) to correct the zero output in hry_rsdc_stat.txt
+| | | | | *   458feee Merge branch 'main' of https://github.com/fgeter/swatplus_fg_fork
+| | | | | |\  
+| | | | | |/  
+| | | | |/|   
+| | | | * |   7cd818d Merge pull request #12 from odav/main
+| | | | |\ \  
+| |_|_|_|/ /  
+|/| | | | |   
+* | | | | |   576ce06 Merge pull request #43 from odav/main
+|\ \ \ \ \ \  
+| * \ \ \ \ \   e8d207e Merge pull request #18 from fgeter/main
+| |\ \ \ \ \ \  
+| | | | | | | * e35a0a2 Fixed hard coded switch case statement.
+| | | | | | |/  
+| | | | | | * 9c706fd Made a correction to case 3 in the cbn_zhang2.f90 to reset the till_eff to 1.0 after 30 days.
+| | | | | | * 3bd5381 Changes so that hru_soilc_stat output file reflects only sequestered carbon
+| | | | | | * 2781f5d Simplified the do loop in soil_nutcarb_write.f90 fixed the calculations for tot_org, seq_org, and surf_org.
+| | | | | | * 081ff2e This is a change to begin correcting and seperating total carbon from total sequestered carbon.
+| | | | | | *   a357262 Merge branch 'main' of https://github.com/fgeter/swatplus_fg_fork
+| | | | | | |\  
+| | | |_|_|_|/  
+| | |/| | | |   
+| | * | | | |   9aa0eee Merge pull request #11 from odav/main
+| | |\ \ \ \ \  
+| | |/ / / / /  
+| |/| | | | |   
+| * | | | | |   d32a445 Merge pull request #17 from fgeter/main
+| |\ \ \ \ \ \  
+| | | | | | | * 249813c Reverted cbn_zhang2 back to original decomposition parameters.
+| | | | |_|_|/  
+| | | |/| | |   
+| | | * | | |   0dce35d Merge branch 'main' of https://github.com/fgeter/swatplus_fg_fork
+| | | |\ \ \ \  
+| | | |/ / / /  
+| | |/| | | |   
+| | * | | | |   60221da Merge pull request #10 from odav/main
+| | |\ \ \ \ \  
+| | |/ / / / /  
+| |/| | | | |   
+| * | | | | |   d44ceb4 Merge pull request #16 from fgeter/main
+| |\ \ \ \ \ \  
+| | | | * | | | 2bed304 Fixed error in do loop when calculating total c for each layer in nut_orgnc2.f90
+| | | |/ / / /  
+| | | * / / / 3483e9e Added gw_flow and idc_till to basin module bsn_cc data type. Added gw_flow and idc_till columns to codes.bsn input file Added bsn_cc%idc_till to tillage type select case statement cbn_zhang2.f90
+| | |/ / / /  
+| | * | | |   cb393d0 Merge pull request #9 from odav/main
+| | |\ \ \ \  
+| | |/ / / /  
+| |/| | | |   
+| * | | | |   49d6ac5 Merge pull request #15 from fgeter/main
+| |\ \ \ \ \  
+| | | * \ \ \   6088fc6 Merge branch 'main' of https://github.com/fgeter/swatplus_fg_fork
+| | | |\ \ \ \  
+| | | |/ / / /  
+| | |/| | | |   
+| | * | | | |   ea0da1f Merge pull request #8 from odav/main
+| | |\ \ \ \ \  
+| | |/ / / / /  
+| |/| | | | |   
+| * | | | | |   752f8ca Merge pull request #13 from fgeter/main
+| |\ \ \ \ \ \  
+| * \ \ \ \ \ \   ad06593 Merge pull request #14 from swat-model/main
+| |\ \ \ \ \ \ \  
+| |/ / / / / / /  
+|/| | | | | | |   
+* | | | | | | |   9746525 Merge pull request #38 from pssp240425/patch-2
+|\ \ \ \ \ \ \ \  
+| |_|_|_|_|_|_|/  
+|/| | | | | | |   
+| * | | | | | | 3c21f7c Create management(CTcorn).sch
+|/ / / / / / /  
+| | | | * / / fa0f0bc Initial variable j to be be equal to jj which is the hru number.
+| | | |/ / /  
+| | | * | |   d267a4c Merge branch 'main' of https://github.com/fgeter/swatplus_fg_fork
+| | | |\ \ \  
+| | | |/ / /  
+| | |/| | |   
+| | * | | |   8bb7d19 Merge pull request #7 from odav/main
+| | |\ \ \ \  
+| | |/ / / /  
+| |/| | | |   
+| * | | | |   b2334f0 Merge pull request #12 from fgeter/main
+| |\ \ \ \ \  
+| | | | * | | eaf56ef Changed cbn_zhang2 to use armen kamanian to calculate till_eff.  Changed mgt_newtillmix.f90 to call mgt_tillfactor if cswat equals 2.
+| | | |/ / /  
+| | | * / / 8836780 Temporary change to cbn_zhan2.f90 make decomp parameters the same for all soil layers.
+| | |/ / /  
+| | * | |   3b0cce2 Merge branch 'main' of https://github.com/fgeter/swatplus_fg_fork
+| | |\ \ \  
+| | | * \ \   97799a7 Merge pull request #6 from odav/main
+| | | |\ \ \  
+| | |_|/ / /  
+| |/| | | |   
+| * | | | |   f6544c2 Merge pull request #10 from fgeter/main
+| |\ \ \ \ \  
+| | | |/ / /  
+| | |/| | |   
+| | | * | | fa7f135 made changes to move the freq header to 2nd header line for output from soil_nutcarb_write.f90 and changes to pl_fert.f90 to not add organc carbon and residue for inorganic fertilizer events.
+| | | * | | bb6f220 Made to read_mgtops.f90 read fertilzer correctly and changed pl_fert.f90 to determine if a fert event is manure or not and commented out line that was adding structural carbon incorrectly (in my opinion).
+| | |/ / /  
+| | * | |   3ac2c4a Merge branch 'main' into main
+| | |\ \ \  
+| | |/ / /  
+| |/| | |   
+| * | | |   1e9e0a7 Merge pull request #11 from swat-model/main
+| |\ \ \ \  
+| |/ / / /  
+|/| | | |   
+| * | | |   2e63bb7 Merge pull request #5 from fgeter/main
+| |\ \ \ \  
+| * \ \ \ \   01ce54e Merge pull request #6 from swat-model/main
+| |\ \ \ \ \  
+| | |_|_|/ /  
+| |/| | | |   
+| | | | * |   adbe18d Merge pull request #5 from swat-model/main
+| | | | |\ \  
+| |_|_|_|/ /  
+|/| | | | |   
+* | | | | |   039e912 Merge pull request #37 from tugraskan/jeffs
+|\ \ \ \ \ \  
+| * | | | | | e22cb49 Update plant_parm_read.f90
+|/ / / / / /  
+| | | | * | a1d7f68 Made changes to basin_print_codes_read.f90 to conform the swatplus editor labels
+| | | | * |   ce5022f Merge pull request #4 from swat-model/main
+| | | | |\ \  
+| |_|_|_|/ /  
+|/| | | | |   
+* | | | | |   0937104 Merge pull request #36 from tugraskan/jeffs
+|\ \ \ \ \ \  
+| * \ \ \ \ \   76efbf1 Merge branch 'jeffs' of https://github.com/tugraskan/swatplus_ug into jeffs
+| |\ \ \ \ \ \  
+| | * \ \ \ \ \   1d09f2b Merge branch 'jeffs' of https://github.com/tugraskan/swatplus_ug into jeffs
+| | |\ \ \ \ \ \  
+| |_|/ / / / / /  
+|/| | | | | | |   
+| * | | | | | |   87c3f43 Refactor modules for plant class handling, erosion, sediment, & biomass.
+| |\ \ \ \ \ \ \  
+| |/ / / / / / /  
+|/| / / / / / /   
+| |/ / / / / /    
+| * | | | | | 3bb22ed souirce code updates
+| | | | | * | 85cb4ae Addes hru_cb label to print.prt and changed soil_nutcarb_write to output 7 significant digits to the csv files.
+| | | | | * |   34b0451 Merge branch 'swat-model:main' into main
+| | | | | |\ \  
+| |_|_|_|_|/ /  
+|/| | | | | |   
+* | | | | | |   b5c414e Merge pull request #35 from tugraskan/jeffs
+|\ \ \ \ \ \ \  
+| |_|_|/ / / /  
+|/| | | | | |   
+| * | | | | | 2416697 Merge remote-tracking branch 'origin/jeffs' into jeffs
+| |\| | | | | 
+| | * | | | |   9d5176d Merge branch 'jeffs' of https://github.com/tugraskan/swatplus_ug into jeffs
+| | |\ \ \ \ \  
+| * | \ \ \ \ \   e5bb3d4 12/23 - changes to MUSLE C factor and some carbon updates
+| |\ \ \ \ \ \ \  
+| | |/ / / / / /  
+| |/| / / / / /   
+| | |/ / / / /    
+| | * | | | |   ec1affe Merge branch 'swat-model:main' into jeffs
+| | |\ \ \ \ \  
+| |_|/ / / / /  
+|/| | | | | |   
+* | | | | | |   6dfe431 Merge pull request #34 from tugraskan/1212
+|\ \ \ \ \ \ \  
+| |_|_|/ / / /  
+|/| | | | | /   
+| | |_|_|_|/    
+| |/| | | |     
+| * | | | | 452ba2b commited out hardcoded pcom(j)plcur(ipl)%epco
+| * | | | | 3e18d34 Auto stash before merge of "1212" and "1212a"
+| * | | | | ce92a04 Merge branch '1212a' into 1212
+|/| | | | | 
+| * | | | | 56f2463 Source Code updates 12/12 - Some .vs changes got accidently commited.
+| | * | | | fcf3891 source code updates 12/12 changes to MUSLE C factor and some carbon updates
+| | |/ / /  
+| | * | | 4e45176 src updates 12/12
+| | * | | 861fe57 na
+| | * | | 9d36f84 na
+| | * | |   738a4f0 Merge branch '1210_a' of https://github.com/tugraskan/swatplus_ug into 1210_a
+| | |\ \ \  
+| |_|/ / /  
+|/| | | |   
+| | * | | 9f912cf src updates 12/12
+| |/ / /  
+| | | * 0ff6bdc Changes necessary to combine hru_soilc_stat and hru_cflux_stat into one output file call hru_soilcarb_mb_stat (.txt & .csv).  Original two files are still output until the combined file can be double checked.
+| | |/  
+| | * 148498b changed format of soil carbon output in soil_nutcarb_write to add a output frequency column.
+| | * 0172d0d made changes to command.f90 to call soil_nutcarb_write based on the print flags in print.prt
+| | * abe4d3d Minor change to remove debug print statement and to skip blank lines in reading print.prt
+| | * 1d19d6e Made changes to create print.prt output object "hru_cb"
+| | *   9444c2d Merge commit '6d7c50600ee9f9edab527a53b74d52c0d7efac9e'
+| | |\  
+| | | * 6d7c506 made changes to output the carbon files in soil_nutcarb_write.f90 based on the cb_hru setting in print prt.   Still a work in progress because other carbon files should be included that are not in soil_nutcarb_write.f90
+| | |/  
+| | * f02ee54 Modified basin_print_codes_read.f90 to read outptut objects in any order and to accomodate adding additional output objects without impacting the others.
+| | *   bd6dd3b Merge pull request #3 from swat-model/main
+| | |\  
+| |_|/  
+|/| |   
+* | |   3a6ae13 Merge pull request #33 from fgeter/main
+|\ \ \  
+| | |/  
+| |/|   
+| * |   b064c02 Merge pull request #2 from swat-model/main
+| |\ \  
+| |/ /  
+|/| |   
+* | |   7d0c639 Merge pull request #32 from tugraskan/1210_a
+|\ \ \  
+| | |/  
+| |/|   
+| * | b3b930a Enhance soil residue handling and biomass calculations in pl_mortality
+| * | 0db8866 Update file handling and output in output_landscape_init.f90
+| * | 4ccb648 Enhance perennial dormant period logic and cleanup in Pl_dormant.f90
+| * | ffab7e2 Rename & update output header types/variables in output_landscape_module
+| * | c3951bb Remove residue_mass1 type and variables in organic_mineral_mass_module
+| * | e393bc3 Add variables for stem and seed mass in organic_mineral_mass_module.f90
+| * | 011b76a Initialize mix_clay, mix_silt, and mix_sand to 0 in mgt_newtillmix.f90
+| * | 35c6031 Update total organic content calculation in soil_nutcarb_write.f90
+| * | aa13477 Add pl_manure subroutine for N & P application in pl_manure.f90
+| * | dbed7f8 Refactor soil nutrient allocation and update comments in pl_fert.f90
+| * | aa3db21 Refactor biomass and residue pool handling in mgt_killop.f90
+|/ /  
+| * 363e471 Fixed the order of column print out for hru_soilc_stat.csv to match hru_soilc_stat.txt
+| * d7f4fa6 Changes to CMakePresets to compile/link on windows, linux and mac
+| * 4c1c39d Removed Ninja from Linux build presets.
+| * 8a35f30 test of change to CMakePresets.json to compile, link in both windows and linux
+|/  
+*   d5b086e Merge pull request #30 from tugraskan/1204
+|\  
+| * 8b482a8 Remove unused type definitions from module
+| * c9831d7 RE-Add zero-initialized organic flux variable
+| * 789f3da Remove orgncswat2 and pl_leaf_drop subroutines
+| * d235b84 Update bsn_org_rsd calculation to use soil1 data
+| * 90565b4 Update headers: add vars, fix alignments, rename fields
+| * ee28296 Enhance soil mass modeling with new types and functions
+| * ad72e18 Refactor carbon module variables and types
+| * d07e189 Refactor residue and soil decomposition calculations
+| * 339741b Refactor soil profile calculations and output writes
+| * e18a6a7 Refactor initialization and carbon calculation logic
+| * bf3ab10 Refactor soil mixing and residue initialization
+| * eb22103 Refactor residue management to use new soil1 structure
+| * e4c07a8 Refactor calculations and update coefficients
+| * 8b8ec15 Refactor carbon variable resets and simplify NPP calculation
+| * 4a6b87e Update comments and deactivate channel assignments
+| * b7d6041 Add conditional logic for peak rate calculation
+|/  
+*   344efc6 Merge pull request #26 from fgeter/main
+|\  
+| *   3ad364c Merge pull request #1 from swat-model/main
+| |\  
+| |/  
+|/|   
+* |   1c25953 Merge pull request #24 from arnoldjjms/main
+|\ \  
+| * | 914687a Revised initialization of residue and soil litter. Added residue decomposition routine.
+|/ /  
+* |   370c1a4 Merge pull request #22 from fgeter/main
+|\ \  
+| | * fd6bdd5 Added column  header units to hru_cflux_stat output
+| |/  
+| * 9d38f63 New total for tot_org
+| * 7f72b39 Fixed overwrit ten changes to in carbon_module and command.f90
+|/  
+*   f9b1200 Merge pull request #19 from fgeter/main
+|\  
+| * 07a76f1 fixed a missing end if statement.
+| * 5c06e5b Made a number of changes to accumlate organic flux during a calendar year and output to hru_cflux_stat.txt and hru_cflux_stat.csv
+* |   303eead Merge pull request #18 from swat-model/dev_ug
+|\ \  
+| |/  
+|/|   
+| * c717049 Remove and comment out unused code in dbsc and d_tbl
+| * e08326e Simplify conditions and update variable assignments
+| *   935dc67 Merge branch 'main' into dev_ug
+| |\  
+| |/  
+|/|   
+* | 133b380 Create LICENSE
+* |   7a222b8 Merge pull request #16 from odav/main
+|\ \  
+| * \   117351c Merge pull request #4 from odav/develop
+| |\ \  
+| | * | be74876 update to release notes.
+| * | | 2202899 Merge pull request #3 from odav/develop
+| |\| | 
+| | * | 844f506 added all GNU builds
+| * | | 4e944de Merge pull request #2 from odav/develop
+|/| | | 
+| |/ /  
+| * | ebfbbc4 Set variables to zero that are used to sum up the total soil carbon for each carbon components before summing the soil carbon components in the soil layers and changed what soil carbon constituents would be added to get a  tot_org&c value.
+| * | 66188c7 added gate
+| * | 4b37af9 first ver integration
+| * | 9cb055f added tags
+| * | c1bcf79 fix yaml
+| * | f656b9e test versioning
+| * | d84d35d upgrade to v4 up/download actions API
+| * | 0be40b0 fix typo
+| * | 0863b54 branch build possible now, added compiler tag to exe
+| * | ee1b472 Refactor and enhance residue decomposition and output
+| * |   f6f8307 Merge branch 'develop' of https://github.com/swat-model/swatplus into develop
+| |\ \  
+| | * \   3c907e6 Merge pull request #15 from swat-model/merge_10_07_2024
+| | |\ \  
+| | | * | 6e9a0f7 Expand string lengths for `urb_ro` and `irr_src` variables
+| | | * | 568154c Increase length of various character variables
+| | | * | dab22e1 Remove unused format labels in Fortran source files
+| | | * | b095cf8 truncation fixes
+| | | * | f1e61a3 fixed tabs
+| | | * | e18817a Refactor and enhance various modules and subroutines
+| |_|/ /  
+|/| | |   
+| * | | 576314b Separate write statements for bsn%name and prog
+| |/ /  
+| * |   f320bd6 Merge pull request #13 from swat-model/main
+| |\ \  
+| |/ /  
+|/| |   
+| | *   549654d Merged Main back in
+| | |\  
+| |_|/  
+|/| |   
+* | |   d4c0d08 Merge pull request #12 from odav/main
+|\ \ \  
+| * | | 5476db2 Update README.md
+| * | | 136aebc zip build
+|/ / /  
+* | |   5f932ba Merge pull request #11 from odav/main
+|\ \ \  
+| * \ \   8957aca Merge pull request #1 from swat-model/main
+| |\ \ \  
+| |/ / /  
+|/| | |   
+* | | |   e498f60 Merge pull request #10 from odav/main
+|\ \ \ \  
+| | * | | 93d25e7 updated exe name (compiler/dbg/rel), flags, install; better checks in scenario tests; cleanup
+| |/ / /  
+| * / / 1e8a55b fix for unwanted new lines.
+|/ / /  
+* | |   7444b98 Merge pull request #9 from fgeter/main
+|\ \ \  
+| * | | fd35b37 Updated git ignore
+| * | | 5350f0d Updated swatplus output files in the data folder
+|/ / /  
+* | |   68b1328 Merge branch 'main' of https://github.com/swat-model/swatplus
+|\ \ \  
+| * \ \   d31de48 Merge pull request #8 from swat-model/dev_ug2
+| |\ \ \  
+* | \ \ \   8d2da84 Merge pull request #8 from swat-model/dev_ug2
+|\ \ \ \ \  
+| |/ / / /  
+|/| / / /   
+| |/ / /    
+| * | |   57cebcc Merge branch 'main' into dev_ug2
+| |\ \ \  
+| |/ / /  
+|/| | |   
+* | | |   e030553 Merge pull request #7 from swat-model/dev_ug
+|\ \ \ \  
+| | * | | 7a9273b 08202024 updates sd_channel_control3 : - Updated nutrient transformation logic to ensure accurate updates to organic nitrogen and phosphorus levels. - Corrected logic for `orgn`, `no3`, `sedp`, and `solp` transformations by applying minimum constraints. - Added detailed output routines for channel sediment and nutrient budgets, including deposition, erosion, and concentration calculations. - Cleaned up unnecessary comments and redundant code, and clarified sediment and nutrient handling steps. - Added additional checks and constraints to ensure mass balance consistency across various flow conditions.
+| | | | *   9f116ad -
+| | | | |\  
+| | | | | * e844e51 08192024 updates: swift_outputs: - output header revisions
+| | |_|_|/  
+| |/| | |   
+| | | | * e0f14c3 08192024 updates: swift_outputs: - output header revisions
+| | |_|/  
+| |/| |   
+| * | | f146c70 sd_channel_control3 : - Updated nutrient transformation logic to ensure accurate updates to organic nitrogen and phosphorus levels. - Corrected logic for `orgn`, `no3`, `sedp`, and `solp` transformations by applying minimum constraints. - Added detailed output routines for channel sediment and nutrient budgets, including deposition, erosion, and concentration calculations. - Cleaned up unnecessary comments and redundant code, and clarified sediment and nutrient handling steps. - Added additional checks and constraints to ensure mass balance consistency across various flow conditions.
+| * | | 1b17993 Swift header edits
+| * | |   a28d294 merge issue fixesMerge branch 'dev_merge' into dev_ug
+| |\ \ \  
+| | * | | 39fabde Initialized varables with python script, corrected input data where integers where floats in two input files, trapped underflow errors in three files where an exp function was done on too negative of a number and updated the data/Ames_sub1 output data to reflect the input data changes against the intel complied version.
+| |/ / /  
+|/| | |   
+* | | | 9228b4a fixed typos and build description
+* | | |   a6e901d Merge pull request #5 from fgeter/main
+|\ \ \ \  
+| |_|/ /  
+|/| | |   
+| * | | f8bb6ec Manually coded init changes
+|/ / /  
+| * |   2e94f30 Merge branch 'dev_ug' of https://github.com/swat-model/swatplus into dev_ug
+| |\ \  
+| | * | 9bedbfa source code updates
+| |/ /  
+|/| |   
+| * | 54a9d44 NP_flow.f90 - Subroutine NP_FLOW REMOVED
+|/ /  
+* |   dac8dc9 Merge pull request #2 from fgeter/main
+|\ \  
+| * | 5328905 Removed empty blank line at the begining of CmakeLists file
+* | | f5448b6 Fixed bug.
+| |/  
+|/|   
+* |   598ca80 Merge branch 'main' of https://github.com/swat-model/swatplus
+|\ \  
+| * \   563734f Merge pull request #4 from swat-model/revert-3-main
+| |\ \  
+| | * | c639a8c Revert "Some Fixes to get pesticides running."
+| |/ /  
+* | | ca93295 Reapply "Merge pull request #3 from Mike-Fuchs/main"
+* | | a65eb10 Revert "Merge pull request #3 from Mike-Fuchs/main"
+|/ /  
+* |   5bb0c80 Merge pull request #3 from Mike-Fuchs/main
+|\ \  
+| |/  
+|/|   
+| * ac6918c Fixed bug.
+| * 6bbaf93 Added initialization.
+| * 0913193 Fixed bug with incorrect loop
+| * 2405a68 Fixing for Compiling
+|/  
+* c2f2175 Update README.md
+*   6f22d5f Merge pull request #1 from fgeter/main
+|\  
+| * bb1a138 Deleted old swat executable
+| * 32d3582 Updated data/Ames_sub1 output data with the lastest swat executable from the sorce code provided by texas.
+|/  
+* 5108ef1 updated links
+* dcff384 enabled doc for now.
+* 577e2f6 added workflow dispatch
+* 86b8ee7 added ford documentation
+* 1498d6d Create CODE_OF_CONDUCT.md
+* 16e54aa BB 61.0.1
+* a8113e7 ford + cmake
+* cfa8445 cleanup doc generation
+* f7a010d added ford.
+* d81f4c4 Fix: first line handling in output
+*   116c2ab Merge https://github.com/odav/swatplus
+|\  
+| *   3c59d7c Merge branch 'main' of https://github.com/odav/swatplus
+| |\  
+| * | 0483fac added test support
+* | | 1f72511 Update swatplus output in data/ames based on updated weather_wgn.cli file.
+| |/  
+|/|   
+* | a27208a Merge https://github.com/odav/swatplus
+|\| 
+| * 542859f GH build/release for Win/Lin/Mac
+* | 6dc052d Correct the ames weather-wgn.cli file.
+|/  
+* b633f79 Remove .vscode and .vs from gitignore
+* 5f00b2a Removed .vscode and .vs from .gitignore and addeded .vscode/launch.json file for debutting
+* 6cc3bbb Changed reference dataset for Ames_sub1 to output yearly soil carbon horizon values.
+* 12deb13 Added changes to Ames input files to print out soil horizon carbon values.
+* a5c24c6 Modified CMakeLists.txt with different compiler flags to compile gfortran on windows.
+* c7c8e22 Added latest source code from bitbucket
+* 94b6dec Added latest source code from bitbucket
+* fde5d7c Added basin_chanbud_output.f90 from latest bitbucket code
+* c95cd7a Added cmakepresets file
+* 0783ef9 Update plant_module.f90
+* e40cb56 Update VS.md to add quotes around setvars.sh command
+* e72b7a1 fixed Git and Python3 executable variable
+* 081bf1e check for Git location
+* be23824 fixed comment.
+* 8204ba4 removed .exe extension (not needed)
+* e6b5dde fixed typo.
+* af38920 updated ignore for main.f90
+* cbaca5a Not needed.
+* de3d0bc Added back the template.
+* 326c634 cleanup, ctest cleanup
+* 3904256 Added link to BitBucket
+* 0b9c2eb Redundant, not needed.
+* 99f4881 correct ifort param for GH build
+* 0cb0941 more documentation.
+* 87f528f added workflow build
+* 96c2bfb Mar 21 status
+* 35b029c Mar 19 status
+* feabfde  added VS support
+* ad3e2d8 win32 ifort additions, documentation
+* f356ed7 win32 ifort additions, documentation
+* 92b4413 fixed 'typo'
+* c5ff4b1 stop here not recommended (gcc)
+* 6e85302 added Version tag
+* df07e3f init all
