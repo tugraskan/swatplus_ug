@@ -869,14 +869,6 @@
             !if (d_tbl%lu_chg_mx(iac) <= Int(d_tbl%act(iac)%const2)) then
             d_tbl%lu_chg_mx(iac) = d_tbl%lu_chg_mx(iac) + 1
             ilu = d_tbl%act_typ(iac)
-            !! check for invalid land use index
-            if (ilu <= 0 .or. ilu > db_mx%landuse) then
-              write (*,*) "ERROR: actions - invalid land use index for lu_change action"
-              write (*,*) "  file_pointer: ", trim(d_tbl%act(iac)%file_pointer)
-              write (*,*) "  hru: ", j, " time: ", time%yrc, "/", time%mo, "/", time%day_mo
-              write (*,*) "  Skipping land use change action"
-              cycle  !! skip this action and continue to next
-            end if
             hru(j)%land_use_mgt = ilu
             hru(j)%dbs%land_use_mgt = ilu
 									 

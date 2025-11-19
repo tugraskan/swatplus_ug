@@ -71,7 +71,7 @@
               if (eof < 0) exit
             end do
             read (107,*,iostat=eof)
-            !! don't exit early - need to process cross walk section even for last dtbl entry
+            if (eof < 0) exit
             
             !cross walk characters to get array numbers
             do iac = 1, dtbl_scen(i)%acts
@@ -83,11 +83,6 @@
                       exit
                     end if
                   end do
-                  !! warn if file pointer not found in lum array
-                  if (dtbl_scen(i)%act_typ(iac) == 0) then
-                    write (*,*) "WARNING: dtbl_scen_read - file_pointer '", trim(dtbl_scen(i)%act(iac)%file_pointer), &
-                                "' not found in landuse.lum for decision table '", trim(dtbl_scen(i)%name), "'"
-                  end if
                 end select
                 
             end do
