@@ -13,7 +13,7 @@
       
       
       
-      external :: search
+      external :: search, jdt
       integer :: iyear = 0   !            |
       integer :: day = 0     !            |
       integer :: mon = 0     !            |
