@@ -50,6 +50,8 @@
       use channel_velocity_module
       
       implicit none
+      
+      real, external :: qman
 
       integer, intent (in) :: k  !none          |dummy argument (HRU number)
       real :: fps = 0.           !none          |change in horizontal distance per unit

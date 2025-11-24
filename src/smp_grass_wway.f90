@@ -36,6 +36,8 @@
       
       implicit none
 
+      real, external :: qman
+
       real :: chflow_m3 = 0.         !m^3/s         |Runoff in CMS
       real :: sf_area = 0.           !m^2           |area of waterway sides in sheetflow
       real :: surq_remove = 0.       !%             |percent of surface runoff capture in VFS

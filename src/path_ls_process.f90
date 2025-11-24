@@ -10,6 +10,8 @@
       
       implicit none
 
+      real, external :: theta
+
       integer :: j = 0      !none          |hru number
       integer :: ipath = 0  !none          |pathogen counter
       integer :: ipl = 0    !none          |plant number
