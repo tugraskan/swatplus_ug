@@ -49,7 +49,6 @@
       
       
       
-      external :: aunif
       real :: xx = 0.      !none          |dummy variable to accept function value
                            !              |which is then discarded
       real :: rn = 0.      !none          |random number between 0.0 and 1.0

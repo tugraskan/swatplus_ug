@@ -15,7 +15,6 @@
       
       
       
-      external :: aunif
       real, intent (in) :: at1           !none          |lower limit for distribution
       real, intent (in) :: at2           !none          |monthly mean for distribution
       real, intent (in) :: at3           !none          |upper limit for distribution

@@ -25,6 +25,8 @@
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
       use utils
 
+      external :: wq_semianalyt
+
       real, intent (in) :: t1
       real, intent (in) :: t2
       real, intent (in) :: tk
