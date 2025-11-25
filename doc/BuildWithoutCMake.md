@@ -44,7 +44,7 @@ The file `src/utils.f90` uses C-style preprocessor directives (`#ifdef __INTEL_C
 
 **Note:** Option A is simpler and avoids preprocessor-related compilation errors. Option B preserves debugging features like stack traces.
 
-## Option 1: Creating a Visual Studio Fortran Project (Using utils_no_preprocessor.f90)
+## Option 1a: Creating a Visual Studio Fortran Project (Using utils_no_preprocessor.f90)
 
 1. **Prepare the source files:**
    - In the `src` folder, delete or rename `utils.f90` to `utils.f90.bak`
@@ -114,7 +114,7 @@ If you want to keep the original `utils.f90` with stack trace functionality:
    - Build → Build Solution (or press F7)
    - The executable will be created in the output directory
 
-## Option 2: Command-Line Compilation with Intel Fortran (Simplified - No Preprocessor)
+## Option 2a: Command-Line Compilation with Intel Fortran (Simplified - No Preprocessor)
 
 If you prefer command-line compilation without the preprocessor:
 
