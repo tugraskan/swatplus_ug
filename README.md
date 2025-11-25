@@ -75,6 +75,8 @@ __The following sections are emphasizing various development aspects.__
 
 - [Developing in Visual Studio](doc/VS-Win.md)
 
+- [Building Without CMake](doc/BuildWithoutCMake.md)
+
 - [FORTRAN Coding Conventions (alpha)](doc/coding_conventions.md)
 
 ## Documentation and References
