@@ -255,7 +255,7 @@ This means the compiler doesn't recognize the Fortran 2003 intrinsic module `iso
 
 **Solution:**
 1. Make sure you've replaced `utils.f90` with `utils_no_preprocessor.f90` (renamed to `utils.f90`)
-2. The latest version of `utils_no_preprocessor.f90` doesn't use `iso_fortran_env` - it uses unit 0 for error output instead
+2. The latest version of `utils_no_preprocessor.f90` doesn't use `iso_fortran_env` - it writes to standard output (*) instead
 3. If still having issues, try adding `/standard-semantics` flag in Intel Fortran compiler settings
 
 ### Error: "Error in opening the compiled module file [UTILS]"

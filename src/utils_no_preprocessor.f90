@@ -21,11 +21,11 @@ real function exp_w(y)
     if (y < -80.) then
         exp_w = 0.
         if (err_output) then
-            ! Write to standard error (unit 0) instead of using error_unit
-            write(0,'(A)') ""
-            write(0,'(A,F6.1,A)') "Warning: exp(", y, ") causes an underflow."
-            write(0,'(A)') "Setting exp_w result to zero"
-            write(0, *)  "Stack trace not available in this build"
+            ! Write to standard output (unit *)
+            write(*,'(A)') ""
+            write(*,'(A,F6.1,A)') "Warning: exp(", y, ") causes an underflow."
+            write(*,'(A)') "Setting exp_w result to zero"
+            write(*, *)  "Stack trace not available in this build"
         endif
     else  
         exp_w = exp(y)
