@@ -337,9 +337,9 @@
         character (len=12) :: wet_evap   =  "    wet_evap"
         character (len=12) :: wet_oflo   =  "    wet_oflo"
         character (len=12) :: wet_stor   =  "    wet_stor"
+        character (len=12) :: irr_loss   =  "    irr_loss"
         character (len=16) :: plt_cov    =  "   plant_cov    "
         character (len=30) :: mgt_ops    =  "   mgt_ops      "
-        character (len=12) :: irr_loss   =  "    irr_loss"
       end type output_waterbal_header      
       type (output_waterbal_header) :: wb_hdr
       
