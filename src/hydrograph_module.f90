@@ -425,6 +425,7 @@
         real :: demand = 0.                     !irrigation demand          |m3
         real :: applied = 0.                    !irrigation applied         |mm
         real :: runoff = 0.                     !irrigation surface runoff  |mm
+        real :: loss = 0.                       !irrigation loss due to inefficiency |mm
         real :: eff = 1.                        !irrigation efficiency as a fraction of irrigation. Jaehak 2022
         real :: frac_surq = 0.                  !fraction of irrigation lost in runoff flow. Jaehak 2022
         real :: no3 = 0.                        !nitrate concentration in irrigation water  |kg   Jaehak 2023
