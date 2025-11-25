@@ -9,8 +9,14 @@ If you see errors like:
 - `error #7002: Error in opening the compiled module file. Check INCLUDE paths. [ISO_FORTRAN_ENV]`
 - `error #7002: Error in opening the compiled module file. Check INCLUDE paths. [IFCORE]`
 - `error #6580: Name in only-list does not exist or is not accessible. [TRACEBACKQQ]`
+- `error #6404: This name does not have a type, and must have an explicit type. [ERROR_UNIT]`
 
-**These errors occur because the preprocessor is not enabled or not working properly.** Follow the instructions in this guide carefully, particularly the section on handling `utils.f90`.
+**These errors occur because:**
+1. The preprocessor is not enabled (causing IFCORE/TRACEBACKQQ errors), OR
+2. Files are being compiled in the wrong order (causing UTILS/module dependency errors), OR  
+3. The compiler doesn't recognize Fortran 2003 intrinsic modules (causing ERROR_UNIT errors)
+
+**Solution:** Use `utils_no_preprocessor.f90` as described in this guide - it avoids all these issues.
 
 ## Prerequisites
 
@@ -69,6 +75,8 @@ The file `src/utils.f90` uses C-style preprocessor directives (`#ifdef __INTEL_C
    - Right-click on the project → Properties
    - Fortran → General:
       - Set "Source File Format" to "Free Form"
+   - Fortran → Language:
+      - Set "Enable Standard Fortran Semantics" to "Yes (/standard-semantics)" (if available)
    - Fortran → Floating Point:
       - Set "Floating Point Exception Handling" to "Except Denormal (/fpe:0)"
    - Fortran → Run-time:
@@ -76,6 +84,7 @@ The file `src/utils.f90` uses C-style preprocessor directives (`#ifdef __INTEL_C
 
 6. **Build the solution:**
    - Build → Build Solution (or press F7)
+   - If you get errors about module dependencies, try Build → Rebuild All
    - The executable will be created in the output directory
 
 ## Option 1b: Creating a Visual Studio Fortran Project (With Preprocessor)
@@ -240,13 +249,32 @@ After compilation:
 
 ## Troubleshooting
 
+### Error: "ERROR_UNIT" or "ISO_FORTRAN_ENV" not recognized
+
+This means the compiler doesn't recognize the Fortran 2003 intrinsic module `iso_fortran_env`.
+
+**Solution:**
+1. Make sure you've replaced `utils.f90` with `utils_no_preprocessor.f90` (renamed to `utils.f90`)
+2. The latest version of `utils_no_preprocessor.f90` doesn't use `iso_fortran_env` - it uses unit 0 for error output instead
+3. If still having issues, try adding `/standard-semantics` flag in Intel Fortran compiler settings
+
+### Error: "Error in opening the compiled module file [UTILS]"
+
+This means files that depend on the `utils` module are being compiled before `utils.f90` itself.
+
+**Solution:**
+1. In Visual Studio: Build → Rebuild All (instead of Build)
+2. The Rebuild will force proper compilation order
+3. Alternatively, compile `utils.f90` first manually, then compile other files
+
 ### Error: "use ifcore, only: tracebackqq" not found
 - Ensure you're using the Intel Fortran compiler
 - Enable the preprocessor with `/fpp`
-- The preprocessor directive `#ifdef __INTEL_COMPILER` will conditionally include Intel-specific code
+- OR use `utils_no_preprocessor.f90` to avoid this issue entirely
 
 ### Error: Unrecognized preprocessor directives
 - Make sure the preprocessor is enabled (`/fpp` for Intel, `-cpp` for gfortran)
+- OR use `utils_no_preprocessor.f90` to avoid needing the preprocessor
 
 ### Error: main.f90.in placeholders not replaced
 - Use the provided `main.f90` file instead of `main.f90.in`
