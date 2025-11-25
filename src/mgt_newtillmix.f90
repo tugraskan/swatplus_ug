@@ -264,5 +264,12 @@
 
         endif
       end if
+      
+      ! Ensure arrays are deallocated before returning
+      if (allocated(sol_mass)) deallocate (sol_mass)
+      if (allocated(sol_msm)) deallocate (sol_msm)
+      if (allocated(sol_msn)) deallocate (sol_msn)
+      if (allocated(frac_dep)) deallocate (frac_dep)
+      
       return
       end subroutine mgt_newtillmix
