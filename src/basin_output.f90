@@ -252,8 +252,8 @@
       
       return
 
-100   format (4i6,2a,2x,a16,42f12.3) 
-103   format (4i6,2x,2a,2x,a16,42f12.3,a,f17.3)
+100   format (4i6,2a,2x,a16,43f12.3) 
+103   format (4i6,2x,2a,2x,a16,43f12.3,a,f17.3)
 104   format (4i6,2a,2x,a16,4f12.3,23f17.3)
        
       end subroutine basin_output
