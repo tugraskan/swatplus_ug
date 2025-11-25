@@ -255,10 +255,10 @@
             !end do
           end do
 
-          deallocate (sol_mass)    
-          deallocate (sol_msm)    
-          deallocate (sol_msn)    
-          deallocate (frac_dep)    
+          if (allocated(sol_mass)) deallocate (sol_mass)
+          if (allocated(sol_msm)) deallocate (sol_msm)
+          if (allocated(sol_msn)) deallocate (sol_msn)
+          if (allocated(frac_dep)) deallocate (frac_dep)
       
           call mgt_tillfactor(jj,bio_mix_event,emix,dtil)
 
