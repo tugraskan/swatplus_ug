@@ -1705,6 +1705,7 @@
         hru3%wet_evap = hru1%wet_evap + hru2%wet_evap
         hru3%wet_out = hru1%wet_out + hru2%wet_out
         hru3%wet_stor = hru1%wet_stor + hru2%wet_stor
+        hru3%irr_loss = hru1%irr_loss + hru2%irr_loss
       end function hruout_waterbal_add
       
       function hruout_nutbal_add (hru1, hru2) result (hru3)
@@ -1970,6 +1971,7 @@
         hru2%wet_evap = hru1%wet_evap / const
         hru2%wet_out = hru1%wet_out / const
         hru2%wet_stor = hru1%wet_stor
+        hru2%irr_loss = hru1%irr_loss / const
       end function hruout_waterbal_div
       
       function hruout_waterbal_ave (hru1,const) result (hru2)
@@ -2018,6 +2020,7 @@
         hru2%wet_evap = hru1%wet_evap
         hru2%wet_out = hru1%wet_out
         hru2%wet_stor = hru1%wet_stor / const
+        hru2%irr_loss = hru1%irr_loss
       end function hruout_waterbal_ave
 
       function hruout_waterbal_mult (hru1,const) result (hru2)
@@ -2062,6 +2065,7 @@
         hru2%wet_evap = hru1%wet_evap * const
         hru2%wet_out = hru1%wet_out * const
         hru2%wet_stor = hru1%wet_stor * const
+        hru2%irr_loss = hru1%irr_loss * const
       end function hruout_waterbal_mult
       
       function hruout_nutbal_div (hru1,const) result (hru2)
