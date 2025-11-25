@@ -92,6 +92,11 @@
       mix_silt = 0.
       mix_sand = 0.
 
+      if (allocated(sol_mass)) deallocate (sol_mass)
+      if (allocated(sol_msm)) deallocate (sol_msm)
+      if (allocated(sol_msn)) deallocate (sol_msn)
+      if (allocated(frac_dep)) deallocate (frac_dep)
+      
       allocate (sol_mass(soil(jj)%nly), source = 0.)    
       allocate (sol_msm(soil(jj)%nly), source = 0.)    
       allocate (sol_msn(soil(jj)%nly), source = 0.)    
