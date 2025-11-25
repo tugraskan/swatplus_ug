@@ -431,6 +431,7 @@
         real :: salt = 0.                       !salt concentration in irrigation water  |ppm       
         !hyd_output units are in mm and mg/L
         type (hyd_output) :: water              !irrigation water
+        real :: loss = 0.                       !irrigation loss due to inefficiency |mm
       end type irrigation_water_transfer
       type (irrigation_water_transfer),dimension(:),allocatable:: irrig         !dimension by hru
       

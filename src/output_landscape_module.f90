@@ -45,6 +45,7 @@
         real :: wet_evap = 0.         !mm H2O	     |evaporation from wetland surface
         real :: wet_out = 0.          !mm H2O	     |outflow (spill) from wetland
         real :: wet_stor = 0.         !mm H2O	     |volume stored in wetland at end of time period
+        real :: irr_loss = 0.         !mm H2O        |irrigation loss due to inefficiency
       end type output_waterbal
        
       type (output_waterbal), pointer :: h
@@ -336,6 +337,7 @@
         character (len=12) :: wet_evap   =  "    wet_evap"
         character (len=12) :: wet_oflo   =  "    wet_oflo"
         character (len=12) :: wet_stor   =  "    wet_stor"
+        character (len=12) :: irr_loss   =  "    irr_loss"
         character (len=16) :: plt_cov    =  "   plant_cov    "
         character (len=30) :: mgt_ops    =  "   mgt_ops      "
       end type output_waterbal_header      
@@ -391,6 +393,7 @@
         character (len=12) :: wet_evap   =  "          mm"
         character (len=12) :: wet_oflo   =  "          mm"
         character (len=12) :: wet_stor   =  "          mm"
+        character (len=12) :: irr_loss   =  "          mm"
       end type output_waterbal_header_units      
       type (output_waterbal_header_units) :: wb_hdr_units
          
