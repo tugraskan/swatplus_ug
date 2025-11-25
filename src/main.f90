@@ -13,15 +13,16 @@
       integer :: iob = 0
       integer, allocatable, dimension(:) :: cmd_next
     
-      prog = " SWAT+ 2025-11-25        MODULAR Rev 2025.unknown"
+      ! Version info - update manually when not using CMake
+      prog = " SWAT+ Manual Build          MODULAR Rev dev"
 
       write (*,1000)
       open (9003,file='simulation.out')
       write (9003,1000)
  1000 format(1x,"                  SWAT+               ",/,             &
-     &          "             Revision unknown  ",/,             &
+     &          "             Revision dev             ",/,             &
      &          "      Soil & Water Assessment Tool    ",/,             &
-     &          "GNU (13.3.0), 2025-11-25 18:14:40, Linux",/,             &
+     &          "    Manual Build (no CMake)           ",/,             &
      &          "    Program reading . . . executing",/)
       
       open (888,file="erosion.txt",recl = 1500)

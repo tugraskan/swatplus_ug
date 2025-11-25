@@ -28,7 +28,7 @@ The file `src/utils.f90` uses C-style preprocessor directives (`#ifdef __INTEL_C
 ## Option 1: Creating a Visual Studio Fortran Project
 
 1. **Start Visual Studio properly:**
-   - Open the Start Menu and search for "Intel oneAPI command prompt for Intel 64 for Visual Studio 2022"
+   - Open the Start Menu and search for "Intel oneAPI command prompt for Intel 64 for Visual Studio" (e.g., "...for Visual Studio 2022" if using VS 2022)
    - In the opened command prompt, type `devenv` and press Enter to launch Visual Studio with Intel compiler support
 
 2. **Create a new project:**
