@@ -9,7 +9,7 @@
 
       do iihru = 1, sp_ob%hru
         !! set initial volumes and convert units
-        if (hru(iihru)%dbs%surf_stor /= "null") then
+        if (hru(iihru)%dbs%surf_stor > 0) then
           call wet_initial (iihru)
           wet_om_init(iihru) = wet(iihru)
         end if
