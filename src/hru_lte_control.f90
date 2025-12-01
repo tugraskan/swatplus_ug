@@ -384,6 +384,7 @@
         hltwb_d(isd)%pet = pet             
         hltwb_d(isd)%qtile = flow_tile
         hltwb_d(isd)%irr = air
+        hltwb_d(isd)%irr_loss = 0.
         
 !    output_nutbal - no nutrients currently in SWAT-DEG
 
