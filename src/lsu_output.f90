@@ -256,7 +256,7 @@
       
       return
       
-100   format (1x,4i6,i7,a,2x,a,42f12.3)
+100   format (1x,4i6,i7,i8,2x,a,43f12.3)
 102   format (1x,4i6,i7,a,2x,a,40f12.3)
 !103   format (4i6,i8,a,2x,a,6f12.3,29f17.3)
 103   format (4i6,i8,a,2x,a,4f12.3,23f17.3)

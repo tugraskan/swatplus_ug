@@ -306,7 +306,7 @@
          end if
       return
       
-100   format (4i6,2i8,2x,a,42f12.3,3x,a16,a30)
+100   format (4i6,2i8,2x,a,43f12.3,3x,a16,a30)
 101   format (4i6,2i8,2x,a,25f12.3,3x,a16,a30)
 102   format (4i6,2i8,2x,a,25f12.3,3x,a16,a30)
 103   format (4i6,i8,4x,a,5x,4f12.3)

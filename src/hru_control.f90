@@ -473,7 +473,7 @@
             soil(j)%sw_300 = soil(j)%sw_300 + soil(j)%phys(ly)%st
           end if
         end do
-        
+
         !! compute actual ET for day in HRU
         etday = ep_day + es_day + canev
         es_day = es_day
@@ -739,8 +739,10 @@
         hwb_d(j)%pet = pet_day
         hwb_d(j)%qtile = qtile
         hwb_d(j)%irr = irrig(j)%applied
+        hwb_d(j)%irr_loss = irrig(j)%loss
         irrig(j)%applied = 0.
         irrig(j)%runoff = 0.
+        irrig(j)%loss = 0.
         hwb_d(j)%surq_runon = ls_overq
         hwb_d(j)%latq_runon = latqrunon 
         hwb_d(j)%overbank = hru(j)%wet_obank_in

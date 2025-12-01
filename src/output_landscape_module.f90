@@ -45,6 +45,7 @@
         real :: wet_evap = 0.         !mm H2O	     |evaporation from wetland surface
         real :: wet_out = 0.          !mm H2O	     |outflow (spill) from wetland
         real :: wet_stor = 0.         !mm H2O	     |volume stored in wetland at end of time period
+        real :: irr_loss = 0.         !mm H2O        |irrigation loss due to inefficiency
       end type output_waterbal
        
       type (output_waterbal), pointer :: h
@@ -336,6 +337,7 @@
         character (len=12) :: wet_evap   =  "    wet_evap"
         character (len=12) :: wet_oflo   =  "    wet_oflo"
         character (len=12) :: wet_stor   =  "    wet_stor"
+        character (len=12) :: irr_loss   =  "    irr_loss"
         character (len=16) :: plt_cov    =  "   plant_cov    "
         character (len=30) :: mgt_ops    =  "   mgt_ops      "
       end type output_waterbal_header      
@@ -391,6 +393,7 @@
         character (len=12) :: wet_evap   =  "          mm"
         character (len=12) :: wet_oflo   =  "          mm"
         character (len=12) :: wet_stor   =  "          mm"
+        character (len=12) :: irr_loss   =  "          mm"
       end type output_waterbal_header_units      
       type (output_waterbal_header_units) :: wb_hdr_units
          
@@ -1589,6 +1592,7 @@
         hru3%wet_evap = hru1%wet_evap + hru2%wet_evap
         hru3%wet_out = hru1%wet_out + hru2%wet_out
         hru3%wet_stor = hru1%wet_stor + hru2%wet_stor
+        hru3%irr_loss = hru1%irr_loss + hru2%irr_loss
       end function hruout_waterbal_add
       
       function hruout_nutbal_add (hru1, hru2) result (hru3)
@@ -1850,6 +1854,7 @@
         hru2%wet_evap = hru1%wet_evap / const
         hru2%wet_out = hru1%wet_out / const
         hru2%wet_stor = hru1%wet_stor
+        hru2%irr_loss = hru1%irr_loss / const
       end function hruout_waterbal_div
       
       function hruout_waterbal_ave (hru1,const) result (hru2)
@@ -1898,6 +1903,7 @@
         hru2%wet_evap = hru1%wet_evap
         hru2%wet_out = hru1%wet_out
         hru2%wet_stor = hru1%wet_stor / const
+        hru2%irr_loss = hru1%irr_loss
       end function hruout_waterbal_ave
 
       function hruout_waterbal_mult (hru1,const) result (hru2)
@@ -1942,6 +1948,7 @@
         hru2%wet_evap = hru1%wet_evap * const
         hru2%wet_out = hru1%wet_out * const
         hru2%wet_stor = hru1%wet_stor * const
+        hru2%irr_loss = hru1%irr_loss * const
       end function hruout_waterbal_mult
       
       function hruout_nutbal_div (hru1,const) result (hru2)
@@ -1984,8 +1991,8 @@
         hru2%act_nit_n = hru1%act_nit_n * const
         hru2%act_sta_n = hru1%act_sta_n * const
         hru2%org_lab_p = hru1%org_lab_p * const
-        hru2%rsd_nitorg_n = hru1%rsd_nitorg_n * const
-        hru2%rsd_laborg_p = hru1%rsd_laborg_p * const
+          hru2%rsd_nitorg_n = hru1%rsd_nitorg_n * const
+          hru2%rsd_laborg_p = hru1%rsd_laborg_p * const
         hru2%no3atmo = hru1%no3atmo * const
         hru2%nh4atmo = hru1%nh4atmo * const
         hru2%nuptake = hru1%nuptake * const
