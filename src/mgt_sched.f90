@@ -308,7 +308,7 @@
             irrop = mgt%op1                        !irrigation operation type from irr.ops data base
             irrig(j)%applied = mgt%op3 * irrop_db(irrop)%eff * (1. - irrop_db(irrop)%surq)
             irrig(j)%runoff = mgt%op3 * irrop_db(irrop)%surq
-            irrig(j)%loss = mgt%op3 - irrig(j)%applied
+            irrig(j)%loss = mgt%op3 - irrig(j)%applied - irrig(j)%runoff
             pcom(j)%days_irr = 1            ! reset days since last irrigation
       
             !print irrigation applied
@@ -493,7 +493,7 @@
             irrop = mgt%op1                        !irrigation operation type from irr.ops data base
             irrig(j)%applied = mgt%op3 * irrop_db(irrop)%eff * (1. - irrop_db(irrop)%surq)
             irrig(j)%runoff = mgt%op3 * irrop_db(irrop)%surq
-            irrig(j)%loss = mgt%op3 - irrig(j)%applied
+            irrig(j)%loss = mgt%op3 - irrig(j)%applied - irrig(j)%runoff
             pcom(j)%days_irr = 1            ! reset days since last irrigation
 
             !print irrigation applied
