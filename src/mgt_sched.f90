@@ -308,7 +308,7 @@
             irrop = mgt%op1                        !irrigation amount (mm) from irr.ops data base
             irrig(j)%applied = irrop_db(irrop)%amt_mm * irrop_db(irrop)%eff * (1. - irrop_db(irrop)%surq)
             irrig(j)%runoff = irrop_db(irrop)%amt_mm * irrop_db(irrop)%surq
-            irrig(j)%loss = irrop_db(irrop)%amt_mm * (1 - irrop_db(irrop)%eff)
+            irrig(j)%loss = irrop_db(irrop)%amt_mm - irrig(j)%applied
             pcom(j)%days_irr = 1            ! reset days since last irrigation
       
             !print irrigation applied
