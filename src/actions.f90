@@ -145,7 +145,7 @@
             if (d_tbl%act(iac)%file_pointer == "unlim") then
               irrig(j)%applied = d_tbl%act(iac)%const * irrop_db(irrop)%eff * (1. - irrop_db(irrop)%surq)
               irrig(j)%runoff = d_tbl%act(iac)%const * irrop_db(irrop)%surq
-              irrig(j)%loss = d_tbl%act(iac)%const - irrig(j)%applied - irrig(j)%runoff
+              irrig(j)%loss = d_tbl%act(iac)%const - irrig(j)%applied
             end if  
               
                 !set organics and constituents from irr.ops ! irrig(j)%water =  cs_irr(j) = 
