@@ -305,7 +305,7 @@
 
           case ("irrm")  !! date scheduled irrigation operation
             ipl = 1
-            irrop = mgt%op1                        !irrigation amount (mm) from irr.ops data base
+            irrop = mgt%op1                        !irrigation operation type from irr.ops data base
             irrig(j)%applied = mgt%op3 * irrop_db(irrop)%eff * (1. - irrop_db(irrop)%surq)
             irrig(j)%runoff = mgt%op3 * irrop_db(irrop)%surq
             irrig(j)%loss = mgt%op3 - irrig(j)%applied
@@ -490,9 +490,10 @@
  
           case ("irpm")  !! date scheduled irrigation operation for rice fields
             ipl = 1
-            irrop = mgt%op1                        !irrigation amount (mm) from irr.ops data base
+            irrop = mgt%op1                        !irrigation operation type from irr.ops data base
             irrig(j)%applied = mgt%op3 * irrop_db(irrop)%eff * (1. - irrop_db(irrop)%surq)
             irrig(j)%runoff = mgt%op3 * irrop_db(irrop)%surq
+            irrig(j)%loss = mgt%op3 - irrig(j)%applied
             pcom(j)%days_irr = 1            ! reset days since last irrigation
 
             !print irrigation applied
