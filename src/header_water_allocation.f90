@@ -3,6 +3,7 @@
       use maximum_data_module
       use water_allocation_module
       use basin_module
+      use output_path_module
       use hydrograph_module
       
       implicit none 
@@ -10,13 +11,13 @@
 !!!  Water Allocation Output
       if (db_mx%wallo_db > 0) then
         if (pco%water_allo%d == "y") then
-          open (3110,file="wallo_allo_output_day.txt",recl = 1500)
+          call open_output_file(3110,file="water_allo_output_day.txt", 1500)
           write (3110,*) bsn%name, prog
           write (3110,*) wallo_hdr_time2
           write (3110,*) wallo_unt_time2
           write (9000,*) "WATER_ALLOCATION          wallo_allo_output_day.txt"
           if (pco%csvout == "y") then
-            open (3114,file="wallo_allo_output_day.csv",recl = 1500)
+            call open_output_file(3114,file="water_allo_output_day.csv", 1500)
             write (3114,*) bsn%name, prog
             write (3114,'(*(G0.3,:,","))') wallo_hdr_time2
             write (3114,'(*(G0.3,:,","))') wallo_hdr_time2
@@ -27,13 +28,13 @@
       
         if (db_mx%wallo_db > 0) then
           if (pco%water_allo%m == "y") then  
-          open (3111,file="wallo_allo_output_mon.txt",recl = 1500)
+          call open_output_file(3111,file="water_allo_mon_output.txt", 1500)
           write (3111,*) bsn%name, prog
           write (3111,*) wallo_hdr_time2
           write (3111,*) wallo_unt_time2
           write (9000,*) "WATER_ALLOCATION          wallo_allo_output_mon.txt"
           if (pco%csvout == "y") then
-            open (3115,file="wallo_allo_output_mon.csv",recl = 1500)
+            call open_output_file(3115,file="water_allo_mon_output.csv", 1500)
             write (3115,*) bsn%name, prog
             write (3115,'(*(G0.3,:,","))') wallo_hdr_time2
             write (3115,'(*(G0.3,:,","))') wallo_unt_time2
@@ -44,13 +45,13 @@
         
       if (db_mx%wallo_db > 0) then
         if (pco%water_allo%y == "y") then
-          open (3112,file="wallo_allo_output_yr.txt",recl = 1500)
+          call open_output_file(3112,file="water_allo_yr_output.txt", 1500)
           write (3112,*) bsn%name, prog
           write (3112,*) wallo_hdr_time2
           write (3112,*) wallo_unt_time2
           write (9000,*) "WATER_ALLOCATION          wallo_allo_output_yr.txt"
           if (pco%csvout == "y") then
-            open (3116,file="wallo_allo_output_yr.csv",recl = 1500)
+            call open_output_file(3116,file="water_allo_yr_output.csv", 1500)
             write (3116,*) bsn%name, prog
             write (3116,'(*(G0.3,:,","))') wallo_hdr_time2
             write (3116,'(*(G0.3,:,","))') wallo_unt_time2
@@ -61,13 +62,13 @@
       
         if (db_mx%wallo_db > 0) then
           if (pco%water_allo%a == "y") then
-          open (3113,file="wallo_allo_output_aa.txt",recl = 1500)
+          call open_output_file(3113,file="water_allo_aa_output.txt", 1500)
           write (3113,*) bsn%name, prog
           write (3113,*) wallo_hdr_time2
           write (3113,*) wallo_unt_time2
           write (9000,*) "WATER_ALLOCATION          wallo_allo_output_aa.txt"
           if (pco%csvout == "y") then
-            open (3117,file="wallo_allo_output_aa.csv",recl = 1500)
+            call open_output_file(3117,file="water_allo_aa_output.csv", 1500)
             write (3117,*) bsn%name, prog
             write (3117,'(*(G0.3,:,","))') wallo_hdr_time2
             write (3117,'(*(G0.3,:,","))') wallo_unt_time2
