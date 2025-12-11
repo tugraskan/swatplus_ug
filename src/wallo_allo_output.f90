@@ -21,15 +21,17 @@
       
 !!!!! daily print
         if (pco%water_allo%d == "y") then
-          write (3110,*) time%day, time%mo, time%day_mo, time%yrc, itrn, wallo(iwallo)%trn(itrn)%trn_typ,          &
-              wallo(iwallo)%trn(itrn)%num, wallo(iwallo)%trn(itrn)%num, wallo(iwallo)%trn(itrn)%num,     &
+          write (3110,*) time%day, time%mo, time%day_mo, time%yrc, itrn, wallo(iwallo)%trn(itrn)%trn_typ,   &
+              !wallo(iwallo)%trn(itrn)%num, wallo(iwallo)%trn(itrn)%num, wallo(iwallo)%trn(itrn)%num,        &
+              wallo(iwallo)%trn(itrn)%num,                                                                  &
               (wallo(iwallo)%trn(itrn)%src(isrc)%typ, wallo(iwallo)%trn(itrn)%src(isrc)%num,                &
               wallod_out(iwallo)%trn(itrn)%src(isrc), isrc = 1, wallo(iwallo)%trn(itrn)%src_num)
 
            if (pco%csvout == "y") then
-          write (3114,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, itrn, wallo(iwallo)%trn(itrn)%trn_typ,   &
-              wallo(iwallo)%trn(itrn)%num, wallo(iwallo)%trn(itrn)%num, wallo(iwallo)%trn(itrn)%num,           &
-              (wallo(iwallo)%trn(itrn)%src(isrc)%typ, wallo(iwallo)%trn(itrn)%src(isrc)%num,                      &
+          write (3114,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, itrn, wallo(iwallo)%trn(itrn)%trn_typ, &
+              !wallo(iwallo)%trn(itrn)%num, wallo(iwallo)%trn(itrn)%num, wallo(iwallo)%trn(itrn)%num,                     &
+              wallo(iwallo)%trn(itrn)%num,                                                                               &
+              (wallo(iwallo)%trn(itrn)%src(isrc)%typ, wallo(iwallo)%trn(itrn)%src(isrc)%num,                             &
               wallod_out(iwallo)%trn(itrn)%src(isrc), isrc = 1, wallo(iwallo)%trn(itrn)%src_num)
            end if
         end if
@@ -47,15 +49,16 @@
           end do
 
           if (pco%water_allo%m == "y") then
-          write (3111,*) time%day, time%mo, time%day_mo, time%yrc, itrn, wallo(iwallo)%trn(itrn)%trn_typ,          &
-              wallo(iwallo)%trn(itrn)%num, wallo(iwallo)%trn(itrn)%num, wallo(iwallo)%trn(itrn)%num,     &
+          write (3111,*) time%day, time%mo, time%day_mo, time%yrc, itrn, wallo(iwallo)%trn(itrn)%trn_typ,   &
+              !wallo(iwallo)%trn(itrn)%num, wallo(iwallo)%trn(itrn)%num, wallo(iwallo)%trn(itrn)%num,        &
+              wallo(iwallo)%trn(itrn)%num,                                                                  &
               (wallo(iwallo)%trn(itrn)%src(isrc)%typ, wallo(iwallo)%trn(itrn)%src(isrc)%num,                &
               wallom_out(iwallo)%trn(itrn)%src(isrc), isrc = 1, wallo(iwallo)%trn(itrn)%src_num)
  
               if (pco%csvout == "y") then
           write (3115,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, itrn, wallo(iwallo)%trn(itrn)%trn_typ, &
-              wallo(iwallo)%trn(itrn)%num, wallo(iwallo)%trn(itrn)%num, wallo(iwallo)%trn(itrn)%num,         &
-              (wallo(iwallo)%trn(itrn)%src(isrc)%typ, wallo(iwallo)%trn(itrn)%src(isrc)%num,                    &
+              !wallo(iwallo)%trn(itrn)%num, wallo(iwallo)%trn(itrn)%num, wallo(iwallo)%trn(itrn)%num,                     &
+              (wallo(iwallo)%trn(itrn)%src(isrc)%typ, wallo(iwallo)%trn(itrn)%src(isrc)%num,                             &
               wallom_out(iwallo)%trn(itrn)%src(isrc), isrc = 1, wallo(iwallo)%trn(itrn)%src_num)
           end if
         end if
@@ -75,15 +78,17 @@
         end do
           
         if (pco%water_allo%y == "y") then
-          write (3112,*) time%day, time%mo, time%day_mo, time%yrc, itrn, wallo(iwallo)%trn(itrn)%trn_typ,          &
-              wallo(iwallo)%trn(itrn)%num, wallo(iwallo)%trn(itrn)%num, wallo(iwallo)%trn(itrn)%num,     &
+          write (3112,*) time%day, time%mo, time%day_mo, time%yrc, itrn, wallo(iwallo)%trn(itrn)%trn_typ,   &
+              !wallo(iwallo)%trn(itrn)%num, wallo(iwallo)%trn(itrn)%num, wallo(iwallo)%trn(itrn)%num,        &
+              wallo(iwallo)%trn(itrn)%num,                                                                  &
               (wallo(iwallo)%trn(itrn)%src(isrc)%typ, wallo(iwallo)%trn(itrn)%src(isrc)%num,                &
               walloy_out(iwallo)%trn(itrn)%src(isrc), isrc = 1, wallo(iwallo)%trn(itrn)%src_num)
   
               if (pco%csvout == "y") then
           write (3116,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, itrn, wallo(iwallo)%trn(itrn)%trn_typ, &
-              wallo(iwallo)%trn(itrn)%num, wallo(iwallo)%trn(itrn)%num, wallo(iwallo)%trn(itrn)%num,         &
-              (wallo(iwallo)%trn(itrn)%src(isrc)%typ, wallo(iwallo)%trn(itrn)%src(isrc)%num,                    &
+              !wallo(iwallo)%trn(itrn)%num, wallo(iwallo)%trn(itrn)%num, wallo(iwallo)%trn(itrn)%num,                     &
+              wallo(iwallo)%trn(itrn)%num,                                                                               &
+              (wallo(iwallo)%trn(itrn)%src(isrc)%typ, wallo(iwallo)%trn(itrn)%src(isrc)%num,                             &
               walloy_out(iwallo)%trn(itrn)%src(isrc), isrc = 1, wallo(iwallo)%trn(itrn)%src_num)
           end if
         end if
@@ -102,15 +107,17 @@
         end do
 
         if (pco%water_allo%a == "y") then
-        write (3113,*) time%day, time%mo, time%day_mo, time%yrc, itrn, wallo(iwallo)%trn(itrn)%trn_typ,            &
-              wallo(iwallo)%trn(itrn)%num, wallo(iwallo)%trn(itrn)%num, wallo(iwallo)%trn(itrn)%num,     &
-              (wallo(iwallo)%trn(itrn)%src(isrc)%typ, wallo(iwallo)%trn(itrn)%src(isrc)%num,                &
+        write (3113,*) time%day, time%mo, time%day_mo, time%yrc, itrn, wallo(iwallo)%trn(itrn)%trn_typ,  &
+              !wallo(iwallo)%trn(itrn)%num, wallo(iwallo)%trn(itrn)%num, wallo(iwallo)%trn(itrn)%num,     &
+              wallo(iwallo)%trn(itrn)%num,                                                               &
+              (wallo(iwallo)%trn(itrn)%src(isrc)%typ, wallo(iwallo)%trn(itrn)%src(isrc)%num,             &
               walloa_out(iwallo)%trn(itrn)%src(isrc), isrc = 1, wallo(iwallo)%trn(itrn)%src_num)
 
         if (pco%csvout == "y") then
         write (3117,'(*(G0.3,:","))') time%day, time%mo, time%day_mo, time%yrc, itrn, wallo(iwallo)%trn(itrn)%trn_typ,   &
-              wallo(iwallo)%trn(itrn)%num, wallo(iwallo)%trn(itrn)%num, wallo(iwallo)%trn(itrn)%num,         &
-              (wallo(iwallo)%trn(itrn)%src(isrc)%typ, wallo(iwallo)%trn(itrn)%src(isrc)%num,                    &
+              !wallo(iwallo)%trn(itrn)%num, wallo(iwallo)%trn(itrn)%num, wallo(iwallo)%trn(itrn)%num,                     &
+              wallo(iwallo)%trn(itrn)%num,                                                                               &
+              (wallo(iwallo)%trn(itrn)%src(isrc)%typ, wallo(iwallo)%trn(itrn)%src(isrc)%num,                             &
               walloa_out(iwallo)%trn(itrn)%src(isrc), isrc = 1, wallo(iwallo)%trn(itrn)%src_num)
         end if
        end if

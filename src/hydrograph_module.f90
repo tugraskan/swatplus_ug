@@ -939,6 +939,81 @@
       end type hyd_header_units
       type (hyd_header_units) :: hyd_hdr_units
       
+      type wallo_header_units4  
+        character (len=11) :: day    =  "           "
+        character (len=12) :: mo     =  "            "
+        character (len=12) :: day_mo =  "            "
+        character (len=13) :: yrc    =  "            "
+        character (len=12) :: name   =  "            "
+        character (len=11) :: otype  =  "           "
+        character (len=16) :: flo    =  "           m^3/s"       !! m^3/s        |volume of water
+        character (len=15) :: sed    =  "           tons"        !! metric tons  |sediment
+        character (len=15) :: orgn   =  "            kgN"        !! kg N         |organic N
+        character (len=15) :: sedp   =  "            kgP"        !! kg P         |organic P
+        character (len=15) :: no3    =  "            kgN"        !! kg N         |NO3-N
+        character (len=15) :: solp   =  "            kgP"        !! kg P         |mineral (soluble P)
+        character (len=15) :: chla   =  "             kg"        !! kg           |chlorophyll-a
+        character (len=15) :: nh3    =  "            kgN"        !! kg N         |NH3
+        character (len=15) :: no2    =  "            kgN"        !! kg N         |NO2
+        character (len=15) :: cbod   =  "             kg"        !! kg           |carbonaceous biological oxygen demand
+        character (len=15) :: dox    =  "             kg"        !! kg           |dissolved oxygen
+        character (len=15) :: san    =  "           tons"        !! tons         |detached sand
+        character (len=15) :: sil    =  "           tons"        !! tons         |detached silt
+        character (len=15) :: cla    =  "           tons"        !! tons         |detached clay
+        character (len=15) :: sag    =  "           tons"        !! tons         |detached small ag
+        character (len=15) :: lag    =  "           tons"        !! tons         |detached large ag
+        character (len=15) :: grv    =  "           tons"        !! tons         |gravel
+        character (len=15) :: temp   =  "           degc"        !! deg c        |temperature
+      end type wallo_header_units4
+      type (wallo_header_units4) :: wallo_hdr_units4
+
+      
+       type wallo_header_units1  
+        character (len=99) :: blank    =  " "
+        character (len=17) :: flo    =  "            m^3/s"      !! m^3/s        |volume of water
+        character (len=15) :: sed    =  "           tons"        !! metric tons  |sediment
+        character (len=15) :: orgn   =  "            kgN"        !! kg N         |organic N
+        character (len=15) :: sedp   =  "            kgP"        !! kg P         |organic P
+        character (len=15) :: no3    =  "            kgN"        !! kg N         |NO3-N
+        character (len=15) :: solp   =  "            kgP"        !! kg P         |mineral (soluble P)
+        character (len=15) :: chla   =  "             kg"        !! kg           |chlorophyll-a
+        character (len=15) :: nh3    =  "            kgN"        !! kg N         |NH3
+        character (len=15) :: no2    =  "            kgN"        !! jg N         |NO2
+        character (len=15) :: cbod   =  "             kg"        !! kg           |carbonaceous biological oxygen demand
+        character (len=15) :: dox    =  "             kg"        !! kg           |dissolved oxygen
+        character (len=15) :: san    =  "           tons"        !! tons         |detached sand
+        character (len=15) :: sil    =  "           tons"        !! tons         |detached silt
+        character (len=15) :: cla    =  "           tons"        !! tons         |detached clay
+        character (len=15) :: sag    =  "           tons"        !! tons         |detached small ag
+        character (len=15) :: lag    =  "           tons"        !! tons         |detached large ag
+        character (len=15) :: grv    =  "           tons"        !! tons         |gravel
+        character (len=15) :: temp   =  "           degc"        !! deg c        |temperature       
+      end type wallo_header_units1
+      type (wallo_header_units1) :: wallo_hdr_units1        
+ 
+      type wallo_header_units2
+        character (len=21) :: blank2 =  ""
+        character (len=17) :: flo2   =  "            m^3/s"      !! m^3/s        |volume of water
+        character (len=15) :: sed2   =  "           tons"        !! metric tons  |sediment
+        character (len=15) :: orgn2  =  "            kgN"        !! kg N         |organic N
+        character (len=15) :: sedp2  =  "            kgP"        !! kg P         |organic P
+        character (len=15) :: no32   =  "            kgN"        !! kg N         |NO3-N
+        character (len=15) :: solp2  =  "            kgP"        !! kg P         |mineral (soluble P)
+        character (len=15) :: chla2  =  "             kg"        !! kg           |chlorophyll-a
+        character (len=15) :: nh32   =  "            kgN"        !! kg N         |NH3
+        character (len=15) :: no2    =  "            kgN"        !! kg N         |NO2
+        character (len=15) :: cbod2  =  "             kg"        !! kg           |carbonaceous biological oxygen demand
+        character (len=15) :: dox2   =  "             kg"        !! kg           |dissolved oxygen
+        character (len=15) :: san2   =  "           tons"        !! tons         |detached sand
+        character (len=15) :: sil2   =  "           tons"        !! tons         |detached silt
+        character (len=15) :: cla2   =  "           tons"        !! tons         |detached clay
+        character (len=15) :: sag2   =  "           tons"        !! tons         |detached small ag
+        character (len=15) :: lag2   =  "           tons"        !! tons         |detached large ag
+        character (len=15) :: grv2   =  "           tons"        !! tons         |gravel
+        character (len=15) :: temp2  =  "           degc"        !! deg c        |temperature
+      end type wallo_header_units2
+      type (wallo_header_units2) :: wallo_hdr_units2
+      
       type hyd_header_units2  !hydin/hydout files uses this units header 
         character (len=11) :: day    =  "           "
         character (len=12) :: mo     =  "            "

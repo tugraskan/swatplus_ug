@@ -136,6 +136,34 @@
         type (source_output), dimension(:), allocatable :: src
       end type transfer_object_output
       
+      type wallo_hyd_header          
+        character (len=9)  :: flo  =    "      flo"             !! ha-m         |volume of water
+        character (len=15) :: sed  =    "            sed"        !! metric tons  |sediment
+        character (len=15) :: orgn =    "           orgn"        !! kg N         |organic N
+        character (len=15) :: sedp =    "           sedp"        !! kg P         |organic P
+        character (len=15) :: no3  =    "            no3"        !! kg N         |NO3-N
+        character (len=15) :: solp =    "           solp"        !! kg P         |mineral (soluble P)
+        character (len=15) :: chla =    "           chla"        !! kg           |chlorophyll-a
+        character (len=15) :: nh3  =    "            nh3"        !! kg N         |NH3
+        character (len=15) :: no2  =    "            no2"        !! kg N         |NO2
+        character (len=15) :: cbod =    "           cbod"        !! kg           |carbonaceous biological oxygen demand
+        character (len=15) :: dox  =    "            dox"        !! kg           |dissolved oxygen
+        character (len=15) :: san  =    "            san"        !! tons         |detached sand
+        character (len=15) :: sil  =    "            sil"        !! tons         |detached silt
+        character (len=15) :: cla  =    "            cla"        !! tons         |detached clay
+        character (len=15) :: sag  =    "            sag"        !! tons         |detached small ag
+        character (len=15) :: lag  =    "            lag"        !! tons         |detached large ag
+        character (len=15) :: grv  =    "            grv"        !! tons         |gravel
+        character (len=19) :: temp =    "             null  "    !! deg c        |temperature
+      end type wallo_hyd_header
+      type (wallo_hyd_header) :: wallo_hyd_hdr
+    
+      type wallo_hyd_header2
+        character (len=12) :: src1_typ = "    src1_typ"        
+        character (len=12) :: src1_num = "    src1_num"
+      end type wallo_hyd_header2
+      type (wallo_hyd_header2) :: wallo_hyd_hdr2
+      
       !water allocation output
       type water_allocation_output
         type (transfer_object_output), dimension(:), allocatable :: trn
@@ -145,6 +173,87 @@
       type (water_allocation_output), dimension(:), allocatable :: walloy_out     !dimension by transfer objects
       type (water_allocation_output), dimension(:), allocatable :: walloa_out     !dimension by transfer objects
       
+       type wallo_header_time               
+        character (len=11) :: day    =  "       jday"
+        character (len=12) :: mo     =  "         mon"
+        character (len=12) :: day_mo =  "         day"
+        character (len=13) :: yrc    =  "          yr"       
+        character (len=12) :: itrt   =  "       itrt "         
+        character (len=10) ::  name   =  "om_name  "
+       end type wallo_header_time
+       type (wallo_header_time) :: wallo_hdr_time
+       
+       type wallo_header_time1       
+        character (len=11) :: day    =  "       jday"
+        character (len=12) :: mo     =  "         mon"
+        character (len=12) :: day_mo =  "         day"
+        character (len=12) :: yrc    =  "          yr"        
+        character (len=12) :: iuse   =  "        iuse"         
+        character (len=12) :: name   =  " om_use_name"
+       end type wallo_header_time1
+       type (wallo_header_time1) :: wallo_hdr_time1
+       
+       type wallo_header_time2       
+        character (len=11) :: day    =  "       jday"
+        character (len=12) :: mo     =  "         mon"
+        character (len=12) :: day_mo =  "         day"
+        character (len=12) :: yrc    =  "          yr"        
+        character (len=13) :: itrn   =  "        itrn "        
+        character (len=8)  :: name   =  "trn_typ"     
+        character (len=15) :: trn_num = "       trn_num"
+        character (len=9) ::  src1_typ = " src1_typ"
+        character (len=12) :: src1_num = "    src1_num"
+        character (len=12) :: src1_dmd = "    src1_dmd"
+        character (len=14) :: src1_wd  = "       src1_wd"
+        character (len=20) :: src1_unmet = "         src1_unmet"
+        character (len=9) ::  src2_typ = " src2_typ"
+        character (len=12) :: src2_num = "    src2_num"
+        character (len=12) :: src2_dmd = "    src2_dmd"
+        character (len=14) :: src2_wd  = "       src2_wd"
+        character (len=20) :: src2_unmet = "         src2_unmet"
+        character (len=9) ::  src3typ = " src3_typ"
+        character (len=12) :: src3_num = "    src3_num"
+        character (len=12) :: src3_dmd = "    src3_dmd"
+        character (len=14) :: src3_wd  = "       src3_wd"
+        character (len=20) :: src3_unmet = "         src3_unmet"
+       end type wallo_header_time2
+       type (wallo_header_time2) :: wallo_hdr_time2
+       
+       type wallo_units_time2 
+        character (len=107) :: blank1  = ""
+        character (len=15)  :: dmd1    = "   ha-m"
+        character (len=15)  :: unmet1  = "   ha-m"
+        character (len=15)  :: wd1     = "   ha-m"
+        character (len=23)  :: blank2  = ""
+        character (len=15)  :: dmd2    = "   ha-m"
+        character (len=15)  :: unmet2  = "   ha-m"
+        character (len=15)  :: wd2     = "   ha-m"
+        character (len=23)  :: blank3  = ""
+        character (len=15)  :: dmd3    = "   ha-m"
+        character (len=15)  :: unmet3  = "   ha-m"
+        character (len=15)  :: wd3     = "   ha-m"
+       end type wallo_units_time2
+       type (wallo_units_time2) :: wallo_unt_time2
+       
+       type wallo_header_time3       
+        character (len=11) :: day    =  "       jday"
+        character (len=12) :: mo     =  "         mon"
+        character (len=12) :: day_mo =  "         day"
+        character (len=12) :: yrc    =  "          yr"        
+        character (len=13) :: itrn   =  "        itrn "        
+        character (len=8)  :: name   =  "trn_typ"     
+        character (len=15) :: trn_num = "       trn_num"
+        character (len=12) :: src1_typ = "    src1_typ"        
+        character (len=12) :: src1_num = "    src1_num"
+       end type wallo_header_time3
+       type (wallo_header_time3) :: wallo_hdr_time3
+       
+       type wallo_header_time3a
+        character (len=12) :: src1_typ = "    src1_typ"        
+        character (len=12) :: src1_num = "    src1_num"
+       end type wallo_header_time3a
+       type (wallo_header_time3a) :: wallo_hdr_time3a
+         
       type wallo_header            
         character(len=6) :: day      =   "  jday"
         character(len=6) :: mo       =   "   mon"
