@@ -12,8 +12,6 @@
       use carbon_module
       
       implicit none
-      
-      external :: pl_rootfr
    
       integer :: j = 0                 !none           |HRU number
       integer :: k = 0                 !none           |counter
@@ -23,7 +21,7 @@
       integer :: ly = 0                !none           |soil layer
 
       j = jj
-      ! ipl = iplant
+      ipl = iplant
 
       !! update root fractions in each layer
       call pl_rootfr
@@ -40,7 +38,6 @@
       !! add dead roots to soil residue pools
       do ly = 1, soil(j)%nly
         soil1(j)%pl(ipl)%rsd(ly) = soil1(j)%pl(ipl)%rsd(ly) + soil(j)%ly(ly)%rtfr * pl_mass(j)%root(ipl)
-        soil(j)%ly(ly)%rtfr = 0.0
       end do
       
       !! sum total community masses

@@ -111,7 +111,20 @@
       end type water_treatment_use_data        
       type (water_treatment_use_data), dimension(:), allocatable :: wtp
       type (water_treatment_use_data), dimension(:), allocatable :: wuse
-      type (water_treatment_use_data), dimension(:), allocatable :: osrc
+      
+      !! outside basin data
+      type outside_basin_data
+        character (len=25) :: name = ""         !name of the water treatment plant
+        real :: stor_mx                   !m3   !maximum storage in plant
+        real :: lag_days                  !days !treatement time - lag outflow
+        real :: loss_fr                         !water loss during treament
+        integer :: iorg_min = 0                 !sediment, carbon, and nutrients - pointer to om_use.wal
+        integer :: ipests = 0                   !pesticides
+        integer :: ipaths = 0                   !pathogens
+        integer :: isalts = 0                   !salt ions
+        integer :: iconstit = 0                 !other constituents
+      end type outside_basin_data        
+      type (outside_basin_data), dimension(:), allocatable :: osrc
       
       !! outside basin data
       type outside_basin_data
