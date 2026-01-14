@@ -1,5 +1,19 @@
 # Header Mapping Optimization Guide
 
+## Module Constants Reference
+
+The code examples in this guide use the following constants from `input_read_module.f90`:
+
+```fortran
+integer, parameter :: MAX_LINE_LEN = 2000    ! Maximum length of a line
+integer, parameter :: STR_LEN = 90           ! Maximum length of a string/token
+integer, parameter :: NAME_LEN = 60          ! Maximum length of a file name
+integer, parameter :: MAX_HDRS = 100         ! Maximum number of header blocks
+integer, parameter :: MAX_COLS = 100         ! Maximum columns (for buffers)
+```
+
+---
+
 ## Current Performance Analysis
 
 The Header Mapping method is approximately **50% slower** than the Table Reader method due to a fundamental architectural difference:
@@ -279,13 +293,13 @@ end subroutine header_read_lazy
 
 | Method | Tokenizations | String Concat | Allocations/Row | Speed vs Current |
 |--------|---------------|---------------|-----------------|------------------|
-| **Current (reordering)** | 2× | Yes | 1-2 | Baseline (100%) |
-| **Current (no reorder)** | 1× | No | 0-1 | ~200% (2× faster) |
-| **Strategy 1: Token Array** | 1× | No | 1 | ~190% (1.9× faster) |
-| **Strategy 2: Pre-allocated** | 1× | No | 0 | ~200% (2× faster) |
-| **Strategy 3: Optimized String** | 2× | Optimized | 1 | ~120% (1.2× faster) |
-| **Strategy 5: Lazy Parse** | 0.1-0.5× | No | 0 | ~500-1000% (sparse) |
-| **Table Reader** | 1× | No | 0 | ~200% (reference) |
+| Current (reordering) | 2× | Yes | 1-2 | Baseline (100%) |
+| Current (no reorder) | 1× | No | 0-1 | ~200% (2× faster) |
+| Strategy 1: Token Array | 1× | No | 1 | ~190% (1.9× faster) |
+| Strategy 2: Pre-allocated | 1× | No | 0 | ~200% (2× faster) |
+| Strategy 3: Optimized String | 2× | Optimized | 1 | ~120% (1.2× faster) |
+| Strategy 5: Lazy Parse | 0.1-0.5× | No | 0 | ~500-1000% (sparse) |
+| Table Reader | 1× | No | 0 | ~200% (reference) |
 
 ---
 
@@ -386,6 +400,9 @@ module input_read_module_v2
 contains
 
   !> High-performance version: returns pre-allocated token array
+  !> NOTE: Returned pointer references internal buffer. Data is valid only until
+  !>       next call to header_read_fast with same header_map. Do not modify.
+  !>       Copy data if needed beyond next read operation.
   subroutine header_read_fast(unit, use_hdr_map, fields, nfields)
     integer, intent(in)              :: unit
     logical, intent(inout)           :: use_hdr_map
