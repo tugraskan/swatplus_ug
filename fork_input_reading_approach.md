@@ -230,7 +230,7 @@ real function exp_w(y)
 
 ### Current Repository Pattern
 
-The current repository uses ad-hoc file reading in each module, for example in `carbon_read.f90`:
+The current repository uses ad hoc file reading in each module, for example in `carbon_read.f90`:
 
 ```fortran
 subroutine carbon_read
