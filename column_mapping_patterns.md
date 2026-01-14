@@ -1,5 +1,21 @@
 # Column Mapping Patterns: Avoiding Case Statement Explosion
 
+## Prerequisites
+
+The code examples in this guide use helper functions from the respective modules:
+
+**For Table Reader**: Functions from `utils.f90` module (fgeter fork):
+- `to_lower()` - Convert string to lowercase for case-insensitive matching
+- Already available in the `utils` module
+
+**For Header Mapping**: Functions from `input_read_module.f90`:
+- `lowercase()` - Same functionality as `to_lower()`
+- Already available in the `input_read_module`
+
+See `fork_input_reading_approach.md` for `to_lower()` implementation details.
+
+---
+
 ## The Problem
 
 When using the Table Reader or optimized Header Mapping methods, you might worry about needing code like this for every file:
