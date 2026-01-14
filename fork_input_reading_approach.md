@@ -216,6 +216,7 @@ pure function to_lower(str) result(lower)
 
 ```fortran
 real function exp_w(y)
+  real, intent(in) :: y
 ```
 
 **Purpose**: Compute exp(y) with underflow protection.
@@ -353,9 +354,10 @@ integer, parameter :: MAX_LINE_LEN = 2500     ! Maximum line length
 - Allows inline documentation in data files
 
 ### File Unit
-- Uses unit 9001 for warning/error log output
+- Uses unit 9001 for warning/error log output (assumed to be opened externally)
 - Standard output (print) for console warnings
-- Caller responsible for opening/closing file unit
+- Caller responsible for opening/closing the data file unit
+- Note: Unit 9001 should be opened by the calling program before using table_reader
 
 ### Row Numbering
 - `start_row_numbr` allows flexible starting positions
@@ -393,9 +395,8 @@ do i = 1, tblr%ncols
   endif
 end do
 
-if (col_idx == 0) then
-  call tblr%output_column_warning(i)
-endif
+! Note: output_column_warning should be called during data processing
+! when an unknown column is encountered, not here
 
 ! 5. Read data rows
 do i = 1, imax
