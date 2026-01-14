@@ -539,9 +539,9 @@ For a simulation with:
 1. Identify file format for each read routine
 2. Replace read loops with:
    ```fortran
-   call tblr%init(unit, file_name)
+   call tblr%init(unit=101, file_name='data.txt')
    imax = tblr%get_num_data_lines()
-   rewind(unit)
+   rewind(101)
    call tblr%get_header_columns(eof)
    do i = 1, imax
      call tblr%get_row_fields(eof)
