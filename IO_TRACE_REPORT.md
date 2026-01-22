@@ -333,26 +333,26 @@ All write operations follow format: `write (2612, *) <management event data>`
 
 **Read Statement**: `read (107,*,iostat=eof) k, aqudb(i)` at src/aqu_read.f90:55
 
-| Position in File | Local (Y/N) | Derived Type Name | Component (or Var Name if Local) | Type | Default | Units | Description | Line in File |
-|------------------|-------------|-------------------|-----------------------------------|------|---------|-------|-------------|--------------|
-| 1 | Y | N/A | k | integer | 0 | none | Aquifer index/ID | src/aqu_read.f90:18 |
-| 2 | N | aqudb | aqunm | character(len=16) | "" | N/A | Aquifer name | src/aquifer_module.f90:6 |
-| 3 | N | aqudb | aqu_ini | character(len=16) | "" | N/A | Initial aquifer data - points to name in initial.aqu | src/aquifer_module.f90:7 |
-| 4 | N | aqudb | flo | real | 0.05 | mm | Flow from aquifer in current time step | src/aquifer_module.f90:8 |
-| 5 | N | aqudb | dep_bot | real | 0. | m | Depth from mid-slope surface to bottom of aquifer | src/aquifer_module.f90:9 |
-| 6 | N | aqudb | dep_wt | real | 0. | m | Depth from mid-slope surface to water table (initial) | src/aquifer_module.f90:10 |
-| 7 | N | aqudb | no3 | real | 0. | ppm NO3-N | Nitrate-N concentration in aquifer (initial) | src/aquifer_module.f90:11 |
-| 8 | N | aqudb | minp | real | 0. | ppm P | Mineral phosphorus concentration in aquifer (initial) | src/aquifer_module.f90:12 |
-| 9 | N | aqudb | cbn | real | 0.5 | percent | Organic carbon in aquifer (initial) | src/aquifer_module.f90:13 |
-| 10 | N | aqudb | flo_dist | real | 50. | m | Average flow distance to stream or object | src/aquifer_module.f90:14 |
-| 11 | N | aqudb | bf_max | real | 0. | mm | Maximum daily baseflow - when all channels are contributing | src/aquifer_module.f90:15 |
-| 12 | N | aqudb | alpha | real | 0. | 1/days | Lag factor for groundwater recession curve | src/aquifer_module.f90:16 |
-| 13 | N | aqudb | revap_co | real | 0. | dimensionless | Revap coefficient - evap=pet*revap_co | src/aquifer_module.f90:17 |
-| 14 | N | aqudb | seep | real | 0. | frac | Fraction of recharge that seeps from aquifer | src/aquifer_module.f90:18 |
-| 15 | N | aqudb | spyld | real | 0. | m³/m³ | Specific yield of aquifer | src/aquifer_module.f90:19 |
-| 16 | N | aqudb | hlife_n | real | 30. | days | Half-life of nitrogen in groundwater | src/aquifer_module.f90:20 |
-| 17 | N | aqudb | flo_min | real | 0. | m | Water table depth for return flow to occur | src/aquifer_module.f90:21 |
-| 18 | N | aqudb | revap_min | real | 0. | m | Water table depth for revap to occur | src/aquifer_module.f90:22 |
+| Line in File | Position in File | Local (Y/N) | Derived Type Name | Component (or Var Name if Local) | Type | Default | Units | Description | Source Line |
+|--------------|------------------|-------------|-------------------|-----------------------------------|------|---------|-------|-------------|-------------|
+| 3+ | 1 | Y | N/A | k | integer | 0 | none | Aquifer index/ID | src/aqu_read.f90:18 |
+| 3+ | 2 | N | aqudb | aqunm | character(len=16) | "" | N/A | Aquifer name | src/aquifer_module.f90:6 |
+| 3+ | 3 | N | aqudb | aqu_ini | character(len=16) | "" | N/A | Initial aquifer data - points to name in initial.aqu | src/aquifer_module.f90:7 |
+| 3+ | 4 | N | aqudb | flo | real | 0.05 | mm | Flow from aquifer in current time step | src/aquifer_module.f90:8 |
+| 3+ | 5 | N | aqudb | dep_bot | real | 0. | m | Depth from mid-slope surface to bottom of aquifer | src/aquifer_module.f90:9 |
+| 3+ | 6 | N | aqudb | dep_wt | real | 0. | m | Depth from mid-slope surface to water table (initial) | src/aquifer_module.f90:10 |
+| 3+ | 7 | N | aqudb | no3 | real | 0. | ppm NO3-N | Nitrate-N concentration in aquifer (initial) | src/aquifer_module.f90:11 |
+| 3+ | 8 | N | aqudb | minp | real | 0. | ppm P | Mineral phosphorus concentration in aquifer (initial) | src/aquifer_module.f90:12 |
+| 3+ | 9 | N | aqudb | cbn | real | 0.5 | percent | Organic carbon in aquifer (initial) | src/aquifer_module.f90:13 |
+| 3+ | 10 | N | aqudb | flo_dist | real | 50. | m | Average flow distance to stream or object | src/aquifer_module.f90:14 |
+| 3+ | 11 | N | aqudb | bf_max | real | 0. | mm | Maximum daily baseflow - when all channels are contributing | src/aquifer_module.f90:15 |
+| 3+ | 12 | N | aqudb | alpha | real | 0. | 1/days | Lag factor for groundwater recession curve | src/aquifer_module.f90:16 |
+| 3+ | 13 | N | aqudb | revap_co | real | 0. | dimensionless | Revap coefficient - evap=pet*revap_co | src/aquifer_module.f90:17 |
+| 3+ | 14 | N | aqudb | seep | real | 0. | frac | Fraction of recharge that seeps from aquifer | src/aquifer_module.f90:18 |
+| 3+ | 15 | N | aqudb | spyld | real | 0. | m³/m³ | Specific yield of aquifer | src/aquifer_module.f90:19 |
+| 3+ | 16 | N | aqudb | hlife_n | real | 30. | days | Half-life of nitrogen in groundwater | src/aquifer_module.f90:20 |
+| 3+ | 17 | N | aqudb | flo_min | real | 0. | m | Water table depth for return flow to occur | src/aquifer_module.f90:21 |
+| 3+ | 18 | N | aqudb | revap_min | real | 0. | m | Water table depth for revap to occur | src/aquifer_module.f90:22 |
 
 
 ---
@@ -446,29 +446,29 @@ All write operations follow format: `write (2612, *) <management event data>`
 
 **Read Statement**: `read (107,*,iostat=eof) bsn, sp_ob` at src/basin_read_objs.f90:38
 
-| Position in File | Local (Y/N) | Derived Type Name | Component (or Var Name if Local) | Type | Default | Units | Description | Line in File |
-|------------------|-------------|-------------------|-----------------------------------|------|---------|-------|-------------|--------------|
-| 1 | N | bsn | name | character(len=25) | "" | N/A | Basin name | src/basin_module.f90:10 |
-| 2 | N | bsn | area_ls_ha | real | 0. | ha | Land surface area | src/basin_module.f90:11 |
-| 3 | N | bsn | area_tot_ha | real | 0. | ha | Total area | src/basin_module.f90:12 |
-| 4 | N | sp_ob | objs | integer | 0 | none | Number of objects or 1st object command | src/hydrograph_module.f90:452 |
-| 5 | N | sp_ob | hru | integer | 0 | none | Number of HRUs or 1st HRU command | src/hydrograph_module.f90:453 |
-| 6 | N | sp_ob | hru_lte | integer | 0 | none | Number of HRU_LTEs or 1st HRU_LTE command | src/hydrograph_module.f90:454 |
-| 7 | N | sp_ob | ru | integer | 0 | none | Number of routing units or 1st RU command | src/hydrograph_module.f90:456 |
-| 8 | N | sp_ob | gwflow | integer | 0 | none | Number of gwflow objects or 1st gwflow command | src/hydrograph_module.f90:457 |
-| 9 | N | sp_ob | aqu | integer | 0 | none | Number of aquifers or 1st aquifer command | src/hydrograph_module.f90:458 |
-| 10 | N | sp_ob | chan | integer | 0 | none | Number of channels or 1st channel command | src/hydrograph_module.f90:459 |
-| 11 | N | sp_ob | res | integer | 0 | none | Number of reservoirs or 1st reservoir command | src/hydrograph_module.f90:460 |
-| 12 | N | sp_ob | recall | integer | 0 | none | Number of recall points or 1st recall command | src/hydrograph_module.f90:461 |
-| 13 | N | sp_ob | exco | integer | 0 | none | Number of export coefficients or 1st exco command | src/hydrograph_module.f90:462 |
-| 14 | N | sp_ob | dr | integer | 0 | none | Number of delivery ratios or 1st DR command | src/hydrograph_module.f90:463 |
-| 15 | N | sp_ob | canal | integer | 0 | none | Number of canals or 1st canal command | src/hydrograph_module.f90:464 |
-| 16 | N | sp_ob | pump | integer | 0 | none | Number of pumps or 1st pump command | src/hydrograph_module.f90:465 |
-| 17 | N | sp_ob | outlet | integer | 0 | none | Number of outlets or 1st outlet command | src/hydrograph_module.f90:466 |
-| 18 | N | sp_ob | chandeg | integer | 0 | none | Number of SWAT-DEG channels or 1st SWAT-DEG channel command | src/hydrograph_module.f90:467 |
-| 19 | N | sp_ob | aqu2d | integer | 0 | none | Not currently used (number of 2D aquifers) | src/hydrograph_module.f90:468 |
-| 20 | N | sp_ob | herd | integer | 0 | none | Not currently used (number of herds) | src/hydrograph_module.f90:469 |
-| 21 | N | sp_ob | wro | integer | 0 | none | Not currently used (number of water rights) | src/hydrograph_module.f90:470 |
+| Line in File | Position in File | Local (Y/N) | Derived Type Name | Component (or Var Name if Local) | Type | Default | Units | Description | Source Line |
+|--------------|------------------|-------------|-------------------|-----------------------------------|------|---------|-------|-------------|-------------|
+| 3 | 1 | N | bsn | name | character(len=25) | "" | N/A | Basin name | src/basin_module.f90:10 |
+| 3 | 2 | N | bsn | area_ls_ha | real | 0. | ha | Land surface area | src/basin_module.f90:11 |
+| 3 | 3 | N | bsn | area_tot_ha | real | 0. | ha | Total area | src/basin_module.f90:12 |
+| 3 | 4 | N | sp_ob | objs | integer | 0 | none | Number of objects or 1st object command | src/hydrograph_module.f90:452 |
+| 3 | 5 | N | sp_ob | hru | integer | 0 | none | Number of HRUs or 1st HRU command | src/hydrograph_module.f90:453 |
+| 3 | 6 | N | sp_ob | hru_lte | integer | 0 | none | Number of HRU_LTEs or 1st HRU_LTE command | src/hydrograph_module.f90:454 |
+| 3 | 7 | N | sp_ob | ru | integer | 0 | none | Number of routing units or 1st RU command | src/hydrograph_module.f90:456 |
+| 3 | 8 | N | sp_ob | gwflow | integer | 0 | none | Number of gwflow objects or 1st gwflow command | src/hydrograph_module.f90:457 |
+| 3 | 9 | N | sp_ob | aqu | integer | 0 | none | Number of aquifers or 1st aquifer command | src/hydrograph_module.f90:458 |
+| 3 | 10 | N | sp_ob | chan | integer | 0 | none | Number of channels or 1st channel command | src/hydrograph_module.f90:459 |
+| 3 | 11 | N | sp_ob | res | integer | 0 | none | Number of reservoirs or 1st reservoir command | src/hydrograph_module.f90:460 |
+| 3 | 12 | N | sp_ob | recall | integer | 0 | none | Number of recall points or 1st recall command | src/hydrograph_module.f90:461 |
+| 3 | 13 | N | sp_ob | exco | integer | 0 | none | Number of export coefficients or 1st exco command | src/hydrograph_module.f90:462 |
+| 3 | 14 | N | sp_ob | dr | integer | 0 | none | Number of delivery ratios or 1st DR command | src/hydrograph_module.f90:463 |
+| 3 | 15 | N | sp_ob | canal | integer | 0 | none | Number of canals or 1st canal command | src/hydrograph_module.f90:464 |
+| 3 | 16 | N | sp_ob | pump | integer | 0 | none | Number of pumps or 1st pump command | src/hydrograph_module.f90:465 |
+| 3 | 17 | N | sp_ob | outlet | integer | 0 | none | Number of outlets or 1st outlet command | src/hydrograph_module.f90:466 |
+| 3 | 18 | N | sp_ob | chandeg | integer | 0 | none | Number of SWAT-DEG channels or 1st SWAT-DEG channel command | src/hydrograph_module.f90:467 |
+| 3 | 19 | N | sp_ob | aqu2d | integer | 0 | none | Not currently used (number of 2D aquifers) | src/hydrograph_module.f90:468 |
+| 3 | 20 | N | sp_ob | herd | integer | 0 | none | Not currently used (number of herds) | src/hydrograph_module.f90:469 |
+| 3 | 21 | N | sp_ob | wro | integer | 0 | none | Not currently used (number of water rights) | src/hydrograph_module.f90:470 |
 
 
 ---
@@ -570,22 +570,22 @@ The following table documents the most common management event write statement p
 
 **Representative Write Statement**: `write (2612, *) j, time%yrc, time%mo, time%day_mo, pldb(idp)%plantnm, "PLANT", phubase(j), pcom(j)%plcur(ipl)%phuacc, soil(j)%sw, pl_mass(j)%tot(ipl)%m, pl_mass(j)%rsd_tot%m, sol_sumno3(j), sol_sumsolp(j), pcom(j)%plg(ipl)%lai, pcom(j)%plcur(ipl)%lai_pot` at src/mgt_sched.f90:116-119
 
-| Position in Output | Variable Name | Type | Units | Description | Line in File |
-|--------------------|---------------|------|-------|-------------|--------------|
-| 1 | j | integer | none | HRU number (object number) | src/mgt_sched.f90:62 |
-| 2 | time%yrc | integer | year | Calendar year | src/time_module.f90 |
-| 3 | time%mo | integer | month | Month (1-12) | src/time_module.f90 |
-| 4 | time%day_mo | integer | day | Day of month (1-31) | src/time_module.f90 |
-| 5 | pldb(idp)%plantnm | character(len=16) | N/A | Plant name or operation identifier | src/plant_data_module.f90 |
-| 6 | operation_literal | character | N/A | Operation type (e.g., "PLANT", "HARVEST", "TILLAGE", "FERT") | Literal string |
-| 7 | phubase(j) | real | heat units | Base plant heat units for HRU | src/hru_module.f90 |
-| 8 | pcom(j)%plcur(ipl)%phuacc | real | heat units | Accumulated plant heat units | src/plant_module.f90 |
-| 9 | soil(j)%sw | real | mm | Soil water content | src/soil_module.f90 |
-| 10 | pl_mass(j)%tot(ipl)%m | real | kg/ha | Total plant biomass | src/organic_mineral_mass_module.f90 |
-| 11 | pl_mass(j)%rsd_tot%m | real | kg/ha | Surface residue mass | src/organic_mineral_mass_module.f90 |
-| 12 | sol_sumno3(j) | real | kg/ha | Total soil NO3-N | src/hru_module.f90 |
-| 13 | sol_sumsolp(j) | real | kg/ha | Total soil soluble P | src/hru_module.f90 |
-| 14+ | operation_specific_vars | real/integer | varies | Operation-specific variables (varies by operation type) | Various files |
+| Line in File | Position in Output | Variable Name | Type | Units | Description | Source Line |
+|--------------|-------------------|---------------|------|-------|-------------|-------------|
+| 4+ | 1 | j | integer | none | HRU number (object number) | src/mgt_sched.f90:62 |
+| 4+ | 2 | time%yrc | integer | year | Calendar year | src/time_module.f90 |
+| 4+ | 3 | time%mo | integer | month | Month (1-12) | src/time_module.f90 |
+| 4+ | 4 | time%day_mo | integer | day | Day of month (1-31) | src/time_module.f90 |
+| 4+ | 5 | pldb(idp)%plantnm | character(len=16) | N/A | Plant name or operation identifier | src/plant_data_module.f90 |
+| 4+ | 6 | operation_literal | character | N/A | Operation type (e.g., "PLANT", "HARVEST", "TILLAGE", "FERT") | Literal string |
+| 4+ | 7 | phubase(j) | real | heat units | Base plant heat units for HRU | src/hru_module.f90 |
+| 4+ | 8 | pcom(j)%plcur(ipl)%phuacc | real | heat units | Accumulated plant heat units | src/plant_module.f90 |
+| 4+ | 9 | soil(j)%sw | real | mm | Soil water content | src/soil_module.f90 |
+| 4+ | 10 | pl_mass(j)%tot(ipl)%m | real | kg/ha | Total plant biomass | src/organic_mineral_mass_module.f90 |
+| 4+ | 11 | pl_mass(j)%rsd_tot%m | real | kg/ha | Surface residue mass | src/organic_mineral_mass_module.f90 |
+| 4+ | 12 | sol_sumno3(j) | real | kg/ha | Total soil NO3-N | src/hru_module.f90 |
+| 4+ | 13 | sol_sumsolp(j) | real | kg/ha | Total soil soluble P | src/hru_module.f90 |
+| 4+ | 14+ | operation_specific_vars | real/integer | varies | Operation-specific variables (varies by operation type) | Various files |
 
 **Operation-Specific Variable Examples**:
 
@@ -638,6 +638,7 @@ The following table documents the most common management event write statement p
 - src/actions.f90: Lines 151, 158, 252, 256, 282, 290, 316, 343, 382, 389, 398, 483, 513, 601, 663, 739, 803, 821, 841, 878, 1127, 1145
 - src/wallo_control.f90: Line 169
 - src/mallo_control.f90: Line 70
+
 
 
 ---
@@ -728,32 +729,32 @@ The following table documents the most common management event write statement p
 
 The same structure applies to all output frequencies (daily at line 22, monthly at line 37, yearly at line 52, average annual at line 64), with different format codes (100 for daily/monthly, 102 for yearly/avg annual) and different units (2520-2523 for text, 2524-2527 for CSV).
 
-| Position in Output | Local (Y/N) | Derived Type Name | Component (or Var Name if Local) | Type | Units | Description | Line in File |
-|--------------------|-------------|-------------------|-----------------------------------|------|-------|-------------|--------------|
-| 1 | Y | N/A | time%day | integer | day of year | Julian day (1-366) | src/time_module.f90 |
-| 2 | Y | N/A | time%mo | integer | month | Month (1-12) | src/time_module.f90 |
-| 3 | Y | N/A | time%day_mo | integer | day | Day of month (1-31) | src/time_module.f90 |
-| 4 | Y | N/A | time%yrc | integer | year | Calendar year | src/time_module.f90 |
-| 5 | Y | N/A | iaq | integer | none | Aquifer number/ID | src/aquifer_output.f90:10 |
-| 6 | Y | N/A | ob(iob)%gis_id | integer*8 | none | GIS identifier for object | src/hydrograph_module.f90:342 |
-| 7 | Y | N/A | ob(iob)%name | character(len=16) | N/A | Object name | src/hydrograph_module.f90:322 |
-| 8 | N | aqu_d | flo | real | mm | Lateral flow from aquifer | src/aquifer_module.f90:37 |
-| 9 | N | aqu_d | dep_wt | real | m | Average depth from average surface elevation to water table | src/aquifer_module.f90:38 |
-| 10 | N | aqu_d | stor | real | mm | Average water storage in aquifer in timestep | src/aquifer_module.f90:39 |
-| 11 | N | aqu_d | rchrg | real | mm | Recharge entering aquifer from other objects | src/aquifer_module.f90:40 |
-| 12 | N | aqu_d | seep | real | mm | Seepage from bottom of aquifer | src/aquifer_module.f90:41 |
-| 13 | N | aqu_d | revap | real | mm | Plant water uptake and evaporation | src/aquifer_module.f90:42 |
-| 14 | N | aqu_d | no3_st | real | kg/ha N | Current total NO3-N mass in aquifer | src/aquifer_module.f90:43 |
-| 15 | N | aqu_d | minp | real | kg/ha P | Mineral phosphorus transported in return (lateral) flow | src/aquifer_module.f90:44 |
-| 16 | N | aqu_d | cbn | real | percent | Organic carbon in aquifer - currently static | src/aquifer_module.f90:45 |
-| 17 | N | aqu_d | orgn | real | kg/ha P | Organic nitrogen in aquifer - currently static | src/aquifer_module.f90:46 |
-| 18 | N | aqu_d | no3_rchg | real | kg/ha N | Nitrate NO3-N flowing into aquifer from another object | src/aquifer_module.f90:47 |
-| 19 | N | aqu_d | no3_loss | real | kg/ha | Nitrate NO3-N loss | src/aquifer_module.f90:48 |
-| 20 | N | aqu_d | no3_lat | real | kg/ha N | Nitrate loading to reach in groundwater | src/aquifer_module.f90:49 |
-| 21 | N | aqu_d | no3_seep | real | kg/ha N | Seepage of NO3 to next object | src/aquifer_module.f90:50 |
-| 22 | N | aqu_d | flo_cha | real | mm H2O | Surface runoff flowing into channels | src/aquifer_module.f90:51 |
-| 23 | N | aqu_d | flo_res | real | mm H2O | Surface runoff flowing into reservoirs | src/aquifer_module.f90:52 |
-| 24 | N | aqu_d | flo_ls | real | mm H2O | Surface runoff flowing into a landscape element (HRU or RU) | src/aquifer_module.f90:53 |
+| Line in File | Position in Output | Local (Y/N) | Derived Type Name | Component (or Var Name if Local) | Type | Units | Description | Source Line |
+|--------------|-------------------|-------------|-------------------|-----------------------------------|------|-------|-------------|-------------|
+| 2+ | 1 | Y | N/A | time%day | integer | day of year | Julian day (1-366) | src/time_module.f90 |
+| 2+ | 2 | Y | N/A | time%mo | integer | month | Month (1-12) | src/time_module.f90 |
+| 2+ | 3 | Y | N/A | time%day_mo | integer | day | Day of month (1-31) | src/time_module.f90 |
+| 2+ | 4 | Y | N/A | time%yrc | integer | year | Calendar year | src/time_module.f90 |
+| 2+ | 5 | Y | N/A | iaq | integer | none | Aquifer number/ID | src/aquifer_output.f90:10 |
+| 2+ | 6 | Y | N/A | ob(iob)%gis_id | integer*8 | none | GIS identifier for object | src/hydrograph_module.f90:342 |
+| 2+ | 7 | Y | N/A | ob(iob)%name | character(len=16) | N/A | Object name | src/hydrograph_module.f90:322 |
+| 2+ | 8 | N | aqu_d | flo | real | mm | Lateral flow from aquifer | src/aquifer_module.f90:37 |
+| 2+ | 9 | N | aqu_d | dep_wt | real | m | Average depth from average surface elevation to water table | src/aquifer_module.f90:38 |
+| 2+ | 10 | N | aqu_d | stor | real | mm | Average water storage in aquifer in timestep | src/aquifer_module.f90:39 |
+| 2+ | 11 | N | aqu_d | rchrg | real | mm | Recharge entering aquifer from other objects | src/aquifer_module.f90:40 |
+| 2+ | 12 | N | aqu_d | seep | real | mm | Seepage from bottom of aquifer | src/aquifer_module.f90:41 |
+| 2+ | 13 | N | aqu_d | revap | real | mm | Plant water uptake and evaporation | src/aquifer_module.f90:42 |
+| 2+ | 14 | N | aqu_d | no3_st | real | kg/ha N | Current total NO3-N mass in aquifer | src/aquifer_module.f90:43 |
+| 2+ | 15 | N | aqu_d | minp | real | kg/ha P | Mineral phosphorus transported in return (lateral) flow | src/aquifer_module.f90:44 |
+| 2+ | 16 | N | aqu_d | cbn | real | percent | Organic carbon in aquifer - currently static | src/aquifer_module.f90:45 |
+| 2+ | 17 | N | aqu_d | orgn | real | kg/ha P | Organic nitrogen in aquifer - currently static | src/aquifer_module.f90:46 |
+| 2+ | 18 | N | aqu_d | no3_rchg | real | kg/ha N | Nitrate NO3-N flowing into aquifer from another object | src/aquifer_module.f90:47 |
+| 2+ | 19 | N | aqu_d | no3_loss | real | kg/ha | Nitrate NO3-N loss | src/aquifer_module.f90:48 |
+| 2+ | 20 | N | aqu_d | no3_lat | real | kg/ha N | Nitrate loading to reach in groundwater | src/aquifer_module.f90:49 |
+| 2+ | 21 | N | aqu_d | no3_seep | real | kg/ha N | Seepage of NO3 to next object | src/aquifer_module.f90:50 |
+| 2+ | 22 | N | aqu_d | flo_cha | real | mm H2O | Surface runoff flowing into channels | src/aquifer_module.f90:51 |
+| 2+ | 23 | N | aqu_d | flo_res | real | mm H2O | Surface runoff flowing into reservoirs | src/aquifer_module.f90:52 |
+| 2+ | 24 | N | aqu_d | flo_ls | real | mm H2O | Surface runoff flowing into a landscape element (HRU or RU) | src/aquifer_module.f90:53 |
 
 **Write Locations by Output Frequency**:
 - **Daily**: src/aquifer_output.f90:22 (text, unit 2520), line 24 (CSV, unit 2524)
@@ -848,78 +849,203 @@ file.cio → Hardcoded string literal in readcio_read
 
 #### PRIMARY DATA READ Table
 
-**Overview**: file.cio contains 31 configuration records, each reading a derived type that holds input filenames for different model components. Each record format: `<label> <filename_structure>`
+**Overview**: file.cio contains 32 lines total. Line 1 is the title, lines 2-31 contain configuration records (label + derived type components), and line 32 contains the output path. The table below shows ALL individual components expanded out, showing which line and position each appears at in file.cio.
 
-The table below shows the sequence of reads. Each derived type contains multiple character(len=25) or character(len=80) components representing individual input filenames.
+**Read Pattern**: Each configuration line (2-31) reads a label string followed by all components of a derived type structure. List-directed I/O reads components sequentially in declaration order.
 
-| Position | Local (Y/N) | Label Variable | Derived Type Name | Type Instance | Components Count | Line in File | Declared At |
-|----------|-------------|----------------|-------------------|---------------|------------------|--------------|-------------|
-| 0 | Y | titldum | N/A | N/A | N/A | src/readcio_read.f90:23 | src/readcio_read.f90:8 |
-| 1 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:25 | src/readcio_read.f90:9 |
-| 1 | N | N/A | input_sim | in_sim | 5 | src/readcio_read.f90:25 | src/input_file_module.f90:8-15 |
-| 2 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:27 | src/readcio_read.f90:9 |
-| 2 | N | N/A | input_basin | in_basin | 2 | src/readcio_read.f90:27 | src/input_file_module.f90:18-22 |
-| 3 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:29 | src/readcio_read.f90:9 |
-| 3 | N | N/A | input_cli | in_cli | 10 | src/readcio_read.f90:29 | src/input_file_module.f90:25-37 |
-| 4 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:31 | src/readcio_read.f90:9 |
-| 4 | N | N/A | input_con | in_con | 13 | src/readcio_read.f90:31 | src/input_file_module.f90:40-55 |
-| 5 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:33 | src/readcio_read.f90:9 |
-| 5 | N | N/A | input_cha | in_cha | 8 | src/readcio_read.f90:33 | src/input_file_module.f90:58-68 |
-| 6 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:35 | src/readcio_read.f90:9 |
-| 6 | N | N/A | input_res | in_res | 8 | src/readcio_read.f90:35 | src/input_file_module.f90:71-81 |
-| 7 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:37 | src/readcio_read.f90:9 |
-| 7 | N | N/A | input_ru | in_ru | 4 | src/readcio_read.f90:37 | src/input_file_module.f90:84-90 |
-| 8 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:39 | src/readcio_read.f90:9 |
-| 8 | N | N/A | input_hru | in_hru | 2 | src/readcio_read.f90:39 | src/input_file_module.f90:93-97 |
-| 9 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:41 | src/readcio_read.f90:9 |
-| 9 | N | N/A | input_exco | in_exco | 6 | src/readcio_read.f90:41 | src/input_file_module.f90:100-108 |
-| 10 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:43 | src/readcio_read.f90:9 |
-| 10 | N | N/A | input_rec | in_rec | 1 | src/readcio_read.f90:43 | src/input_file_module.f90:111-114 |
-| 11 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:45 | src/readcio_read.f90:9 |
-| 11 | N | N/A | input_delr | in_delr | 6 | src/readcio_read.f90:45 | src/input_file_module.f90:117-125 |
-| 12 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:47 | src/readcio_read.f90:9 |
-| 12 | N | N/A | input_aqu | in_aqu | 2 | src/readcio_read.f90:47 | src/input_file_module.f90:128-132 |
-| 13 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:49 | src/readcio_read.f90:9 |
-| 13 | N | N/A | input_herd | in_herd | 3 | src/readcio_read.f90:49 | src/input_file_module.f90:135-140 |
-| 14 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:51 | src/readcio_read.f90:9 |
-| 14 | N | N/A | input_water_rights | in_watrts | 3 | src/readcio_read.f90:51 | src/input_file_module.f90:143-148 |
-| 15 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:53 | src/readcio_read.f90:9 |
-| 15 | N | N/A | input_link | in_link | 2 | src/readcio_read.f90:53 | src/input_file_module.f90:151-155 |
-| 16 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:55 | src/readcio_read.f90:9 |
-| 16 | N | N/A | input_hydrology | in_hyd | 3 | src/readcio_read.f90:55 | src/input_file_module.f90:158-163 |
-| 17 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:57 | src/readcio_read.f90:9 |
-| 17 | N | N/A | input_structural | in_str | 5 | src/readcio_read.f90:57 | src/input_file_module.f90:166-173 |
-| 18 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:59 | src/readcio_read.f90:9 |
-| 18 | N | N/A | input_parameter_databases | in_parmdb | 10 | src/readcio_read.f90:59 | src/input_file_module.f90:176-188 |
-| 19 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:61 | src/readcio_read.f90:9 |
-| 19 | N | N/A | input_ops | in_ops | 6 | src/readcio_read.f90:61 | src/input_file_module.f90:191-199 |
-| 20 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:63 | src/readcio_read.f90:9 |
-| 20 | N | N/A | input_lum | in_lum | 5 | src/readcio_read.f90:63 | src/input_file_module.f90:202-209 |
-| 21 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:65 | src/readcio_read.f90:9 |
-| 21 | N | N/A | input_chg | in_chg | 9 | src/readcio_read.f90:65 | src/input_file_module.f90:212-223 |
-| 22 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:67 | src/readcio_read.f90:9 |
-| 22 | N | N/A | input_init | in_init | 11 | src/readcio_read.f90:67 | src/input_file_module.f90:226-239 |
-| 23 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:69 | src/readcio_read.f90:9 |
-| 23 | N | N/A | input_soils | in_sol | 3 | src/readcio_read.f90:69 | src/input_file_module.f90:242-247 |
-| 24 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:71 | src/readcio_read.f90:9 |
-| 24 | N | N/A | input_condition | in_cond | 4 | src/readcio_read.f90:71 | src/input_file_module.f90:250-256 |
-| 25 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:73 | src/readcio_read.f90:9 |
-| 25 | N | N/A | input_regions | in_regs | 17 | src/readcio_read.f90:73 | src/input_file_module.f90:259-278 |
-| 26 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:76 | src/readcio_read.f90:9 |
-| 26 | N | N/A | input_path_pcp | in_path_pcp | 1 | src/readcio_read.f90:76 | src/input_file_module.f90:280-283 |
-| 27 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:78 | src/readcio_read.f90:9 |
-| 27 | N | N/A | input_path_tmp | in_path_tmp | 1 | src/readcio_read.f90:78 | src/input_file_module.f90:285-288 |
-| 28 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:80 | src/readcio_read.f90:9 |
-| 28 | N | N/A | input_path_slr | in_path_slr | 1 | src/readcio_read.f90:80 | src/input_file_module.f90:290-293 |
-| 29 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:82 | src/readcio_read.f90:9 |
-| 29 | N | N/A | input_path_hmd | in_path_hmd | 1 | src/readcio_read.f90:82 | src/input_file_module.f90:295-298 |
-| 30 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:84 | src/readcio_read.f90:9 |
-| 30 | N | N/A | input_path_wnd | in_path_wnd | 1 | src/readcio_read.f90:84 | src/input_file_module.f90:300-303 |
-| 31 | Y | line_buffer | N/A | N/A | N/A | src/readcio_read.f90:89 | src/readcio_read.f90:11 |
+| Line in File | Position in File | Local (Y/N) | Derived Type Name | Component | Type | Default | Units | Description | Source Line |
+|--------------|------------------|-------------|-------------------|-----------|------|---------|-------|-------------|-------------|
+| 1 | 1 | Y | N/A | titldum | character(len=80) | "" | N/A | Title or description line from file | src/readcio_read.f90:8 |
+| 2 | 1 | Y | N/A | name (label) | character(len=25) | "" | N/A | Label for in_sim section | src/readcio_read.f90:9 |
+| 2 | 2 | N | in_sim | time | character(len=25) | "time.sim" | N/A | Simulation time configuration | src/input_file_module.f90:9 |
+| 2 | 3 | N | in_sim | prt | character(len=25) | "print.prt" | N/A | Print configuration | src/input_file_module.f90:10 |
+| 2 | 4 | N | in_sim | object_prt | character(len=25) | "object.prt" | N/A | Object print configuration | src/input_file_module.f90:11 |
+| 2 | 5 | N | in_sim | object_cnt | character(len=25) | "object.cnt" | N/A | Object count file | src/input_file_module.f90:12 |
+| 2 | 6 | N | in_sim | cs_db | character(len=25) | "constituents.cs" | N/A | Constituents database | src/input_file_module.f90:13 |
+| 3 | 1 | Y | N/A | name (label) | character(len=25) | "" | N/A | Label for in_basin section | src/readcio_read.f90:9 |
+| 3 | 2 | N | in_basin | codes_bas | character(len=25) | "codes.bsn" | N/A | Basin codes configuration | src/input_file_module.f90:19 |
+| 3 | 3 | N | in_basin | parms_bas | character(len=25) | "parameters.bsn" | N/A | Basin parameters | src/input_file_module.f90:20 |
+| 4 | 1 | Y | N/A | name (label) | character(len=25) | "" | N/A | Label for in_cli section | src/readcio_read.f90:9 |
+| 4 | 2 | N | in_cli | weat_sta | character(len=25) | "weather-sta.cli" | N/A | Weather station data | src/input_file_module.f90:26 |
+| 4 | 3 | N | in_cli | weat_wgn | character(len=25) | "weather-wgn.cli" | N/A | Weather generator data | src/input_file_module.f90:27 |
+| 4 | 4 | N | in_cli | pet_cli | character(len=25) | "pet.cli" | N/A | Potential evapotranspiration data | src/input_file_module.f90:28 |
+| 4 | 5 | N | in_cli | pcp_cli | character(len=25) | "pcp.cli" | N/A | Precipitation data | src/input_file_module.f90:30 |
+| 4 | 6 | N | in_cli | tmp_cli | character(len=25) | "tmp.cli" | N/A | Temperature data | src/input_file_module.f90:31 |
+| 4 | 7 | N | in_cli | slr_cli | character(len=25) | "slr.cli" | N/A | Solar radiation data | src/input_file_module.f90:32 |
+| 4 | 8 | N | in_cli | hmd_cli | character(len=25) | "hmd.cli" | N/A | Humidity data | src/input_file_module.f90:33 |
+| 4 | 9 | N | in_cli | wnd_cli | character(len=25) | "wnd.cli" | N/A | Wind data | src/input_file_module.f90:34 |
+| 4 | 10 | N | in_cli | atmo_cli | character(len=25) | "atmodep.cli" | N/A | Atmospheric deposition data | src/input_file_module.f90:35 |
+| 5 | 1 | Y | N/A | name (label) | character(len=25) | "" | N/A | Label for in_con section | src/readcio_read.f90:9 |
+| 5 | 2 | N | in_con | hru_con | character(len=25) | "hru.con" | N/A | HRU connections | src/input_file_module.f90:41 |
+| 5 | 3 | N | in_con | hruez_con | character(len=25) | "hru-lte.con" | N/A | HRU landscape element connections | src/input_file_module.f90:42 |
+| 5 | 4 | N | in_con | ru_con | character(len=25) | "rout_unit.con" | N/A | Routing unit connections | src/input_file_module.f90:43 |
+| 5 | 5 | N | in_con | gwflow_con | character(len=25) | "gwflow.con" | N/A | Groundwater flow connections | src/input_file_module.f90:44 |
+| 5 | 6 | N | in_con | aqu_con | character(len=25) | "aquifer.con" | N/A | Aquifer connections | src/input_file_module.f90:45 |
+| 5 | 7 | N | in_con | aqu2d_con | character(len=25) | "aquifer2d.con" | N/A | 2D aquifer connections | src/input_file_module.f90:46 |
+| 5 | 8 | N | in_con | chan_con | character(len=25) | "channel.con" | N/A | Channel connections | src/input_file_module.f90:47 |
+| 5 | 9 | N | in_con | res_con | character(len=25) | "reservoir.con" | N/A | Reservoir connections | src/input_file_module.f90:48 |
+| 5 | 10 | N | in_con | rec_con | character(len=25) | "recall.con" | N/A | Recall connections | src/input_file_module.f90:49 |
+| 5 | 11 | N | in_con | exco_con | character(len=25) | "exco.con" | N/A | Export coefficient connections | src/input_file_module.f90:50 |
+| 5 | 12 | N | in_con | delr_con | character(len=25) | "delratio.con" | N/A | Delivery ratio connections | src/input_file_module.f90:51 |
+| 5 | 13 | N | in_con | out_con | character(len=25) | "outlet.con" | N/A | Outlet connections | src/input_file_module.f90:52 |
+| 5 | 14 | N | in_con | chandeg_con | character(len=25) | "chandeg.con" | N/A | SWAT-DEG channel connections | src/input_file_module.f90:53 |
+| 6 | 1 | Y | N/A | name (label) | character(len=25) | "" | N/A | Label for in_cha section | src/readcio_read.f90:9 |
+| 6 | 2 | N | in_cha | init | character(len=25) | "initial.cha" | N/A | Initial channel conditions | src/input_file_module.f90:59 |
+| 6 | 3 | N | in_cha | dat | character(len=25) | "channel.cha" | N/A | Channel data | src/input_file_module.f90:60 |
+| 6 | 4 | N | in_cha | hyd | character(len=25) | "hydrology.cha" | N/A | Channel hydrology parameters | src/input_file_module.f90:61 |
+| 6 | 5 | N | in_cha | sed | character(len=25) | "sediment.cha" | N/A | Channel sediment parameters | src/input_file_module.f90:62 |
+| 6 | 6 | N | in_cha | nut | character(len=25) | "nutrients.cha" | N/A | Channel nutrient parameters | src/input_file_module.f90:63 |
+| 6 | 7 | N | in_cha | chan_ez | character(len=25) | "channel-lte.cha" | N/A | Channel landscape element parameters | src/input_file_module.f90:64 |
+| 6 | 8 | N | in_cha | hyd_sed | character(len=25) | "hyd-sed-lte.cha" | N/A | Hydrology-sediment landscape element parameters | src/input_file_module.f90:65 |
+| 6 | 9 | N | in_cha | temp | character(len=25) | "temperature.cha" | N/A | Channel temperature parameters | src/input_file_module.f90:66 |
+| 7 | 1 | Y | N/A | name (label) | character(len=25) | "" | N/A | Label for in_res section | src/readcio_read.f90:9 |
+| 7 | 2 | N | in_res | init_res | character(len=25) | "initial.res" | N/A | Initial reservoir conditions | src/input_file_module.f90:72 |
+| 7 | 3 | N | in_res | res | character(len=25) | "reservoir.res" | N/A | Reservoir data | src/input_file_module.f90:73 |
+| 7 | 4 | N | in_res | hyd_res | character(len=25) | "hydrology.res" | N/A | Reservoir hydrology parameters | src/input_file_module.f90:74 |
+| 7 | 5 | N | in_res | sed_res | character(len=25) | "sediment.res" | N/A | Reservoir sediment parameters | src/input_file_module.f90:75 |
+| 7 | 6 | N | in_res | nut_res | character(len=25) | "nutrients.res" | N/A | Reservoir nutrient parameters | src/input_file_module.f90:76 |
+| 7 | 7 | N | in_res | weir_res | character(len=25) | "weir.res" | N/A | Reservoir weir data | src/input_file_module.f90:77 |
+| 7 | 8 | N | in_res | wet | character(len=25) | "wetland.wet" | N/A | Wetland data | src/input_file_module.f90:78 |
+| 7 | 9 | N | in_res | hyd_wet | character(len=25) | "hydrology.wet" | N/A | Wetland hydrology parameters | src/input_file_module.f90:79 |
+| 8 | 1 | Y | N/A | name (label) | character(len=25) | "" | N/A | Label for in_ru section | src/readcio_read.f90:9 |
+| 8 | 2 | N | in_ru | ru_def | character(len=25) | "rout_unit.def" | N/A | Routing unit definitions | src/input_file_module.f90:85 |
+| 8 | 3 | N | in_ru | ru_ele | character(len=25) | "rout_unit.ele" | N/A | Routing unit elements | src/input_file_module.f90:86 |
+| 8 | 4 | N | in_ru | ru | character(len=25) | "rout_unit.rtu" | N/A | Routing unit data | src/input_file_module.f90:87 |
+| 8 | 5 | N | in_ru | ru_dr | character(len=25) | "rout_unit.dr" | N/A | Routing unit delivery ratio | src/input_file_module.f90:88 |
+| 9 | 1 | Y | N/A | name (label) | character(len=25) | "" | N/A | Label for in_hru section | src/readcio_read.f90:9 |
+| 9 | 2 | N | in_hru | hru_data | character(len=25) | "hru-data.hru" | N/A | HRU data | src/input_file_module.f90:94 |
+| 9 | 3 | N | in_hru | hru_ez | character(len=25) | "hru-lte.hru" | N/A | HRU landscape element data | src/input_file_module.f90:95 |
+| 10 | 1 | Y | N/A | name (label) | character(len=25) | "" | N/A | Label for in_exco section | src/readcio_read.f90:9 |
+| 10 | 2 | N | in_exco | exco | character(len=25) | "exco.exc" | N/A | Export coefficients | src/input_file_module.f90:101 |
+| 10 | 3 | N | in_exco | om | character(len=25) | "exco_om.exc" | N/A | Export coefficients for organic matter | src/input_file_module.f90:102 |
+| 10 | 4 | N | in_exco | pest | character(len=25) | "exco_pest.exc" | N/A | Export coefficients for pesticides | src/input_file_module.f90:103 |
+| 10 | 5 | N | in_exco | path | character(len=25) | "exco_path.exc" | N/A | Export coefficients for pathogens | src/input_file_module.f90:104 |
+| 10 | 6 | N | in_exco | hmet | character(len=25) | "exco_hmet.exc" | N/A | Export coefficients for heavy metals | src/input_file_module.f90:105 |
+| 10 | 7 | N | in_exco | salt | character(len=25) | "exco_salt.exc" | N/A | Export coefficients for salt | src/input_file_module.f90:106 |
+| 11 | 1 | Y | N/A | name (label) | character(len=25) | "" | N/A | Label for in_rec section | src/readcio_read.f90:9 |
+| 11 | 2 | N | in_rec | recall_rec | character(len=25) | "recall.rec" | N/A | Recall data (daily, monthly, annual) | src/input_file_module.f90:112 |
+| 12 | 1 | Y | N/A | name (label) | character(len=25) | "" | N/A | Label for in_delr section | src/readcio_read.f90:9 |
+| 12 | 2 | N | in_delr | del_ratio | character(len=25) | "delratio.del" | N/A | Delivery ratios | src/input_file_module.f90:118 |
+| 12 | 3 | N | in_delr | om | character(len=25) | "dr_om.del" | N/A | Delivery ratios for organic matter | src/input_file_module.f90:119 |
+| 12 | 4 | N | in_delr | pest | character(len=25) | "dr_pest.del" | N/A | Delivery ratios for pesticides | src/input_file_module.f90:120 |
+| 12 | 5 | N | in_delr | path | character(len=25) | "dr_path.del" | N/A | Delivery ratios for pathogens | src/input_file_module.f90:121 |
+| 12 | 6 | N | in_delr | hmet | character(len=25) | "dr_hmet.del" | N/A | Delivery ratios for heavy metals | src/input_file_module.f90:122 |
+| 12 | 7 | N | in_delr | salt | character(len=25) | "dr_salt.del" | N/A | Delivery ratios for salt | src/input_file_module.f90:123 |
+| 13 | 1 | Y | N/A | name (label) | character(len=25) | "" | N/A | Label for in_aqu section | src/readcio_read.f90:9 |
+| 13 | 2 | N | in_aqu | init | character(len=25) | "initial.aqu" | N/A | Initial aquifer conditions | src/input_file_module.f90:129 |
+| 13 | 3 | N | in_aqu | aqu | character(len=25) | "aquifer.aqu" | N/A | Aquifer parameters | src/input_file_module.f90:130 |
+| 14 | 1 | Y | N/A | name (label) | character(len=25) | "" | N/A | Label for in_herd section | src/readcio_read.f90:9 |
+| 14 | 2 | N | in_herd | animal | character(len=25) | "animal.hrd" | N/A | Animal parameters | src/input_file_module.f90:136 |
+| 14 | 3 | N | in_herd | herd | character(len=25) | "herd.hrd" | N/A | Herd data | src/input_file_module.f90:137 |
+| 14 | 4 | N | in_herd | ranch | character(len=25) | "ranch.hrd" | N/A | Ranch data | src/input_file_module.f90:138 |
+| 15 | 1 | Y | N/A | name (label) | character(len=25) | "" | N/A | Label for in_watrts section | src/readcio_read.f90:9 |
+| 15 | 2 | N | in_watrts | transfer_wro | character(len=25) | "water_allocation.wro" | N/A | Transferring water using water rights objects | src/input_file_module.f90:144 |
+| 15 | 3 | N | in_watrts | element | character(len=25) | "element.wro" | N/A | Water rights elements | src/input_file_module.f90:145 |
+| 15 | 4 | N | in_watrts | water_rights | character(len=25) | "water_rights.wro" | N/A | Water rights data | src/input_file_module.f90:146 |
+| 16 | 1 | Y | N/A | name (label) | character(len=25) | "" | N/A | Label for in_link section | src/readcio_read.f90:9 |
+| 16 | 2 | N | in_link | chan_surf | character(len=25) | "chan-surf.lin" | N/A | Channel-surface linkage | src/input_file_module.f90:152 |
+| 16 | 3 | N | in_link | aqu_cha | character(len=25) | "aqu_cha.lin" | N/A | Aquifer-channel linkage | src/input_file_module.f90:153 |
+| 17 | 1 | Y | N/A | name (label) | character(len=25) | "" | N/A | Label for in_hyd section | src/readcio_read.f90:9 |
+| 17 | 2 | N | in_hyd | hydrol_hyd | character(len=25) | "hydrology.hyd" | N/A | Hydrology parameters | src/input_file_module.f90:159 |
+| 17 | 3 | N | in_hyd | topogr_hyd | character(len=25) | "topography.hyd" | N/A | Topography parameters | src/input_file_module.f90:160 |
+| 17 | 4 | N | in_hyd | field_fld | character(len=25) | "field.fld" | N/A | Field parameters | src/input_file_module.f90:161 |
+| 18 | 1 | Y | N/A | name (label) | character(len=25) | "" | N/A | Label for in_str section | src/readcio_read.f90:9 |
+| 18 | 2 | N | in_str | tiledrain_str | character(len=25) | "tiledrain.str" | N/A | Tile drainage data | src/input_file_module.f90:167 |
+| 18 | 3 | N | in_str | septic_str | character(len=25) | "septic.str" | N/A | Septic system data | src/input_file_module.f90:168 |
+| 18 | 4 | N | in_str | fstrip_str | character(len=25) | "filterstrip.str" | N/A | Filter strip data | src/input_file_module.f90:169 |
+| 18 | 5 | N | in_str | grassww_str | character(len=25) | "grassedww.str" | N/A | Grassed waterway data | src/input_file_module.f90:170 |
+| 18 | 6 | N | in_str | bmpuser_str | character(len=25) | "bmpuser.str" | N/A | User-defined BMP data | src/input_file_module.f90:171 |
+| 19 | 1 | Y | N/A | name (label) | character(len=25) | "" | N/A | Label for in_parmdb section | src/readcio_read.f90:9 |
+| 19 | 2 | N | in_parmdb | plants_plt | character(len=25) | "plants.plt" | N/A | Plant database | src/input_file_module.f90:177 |
+| 19 | 3 | N | in_parmdb | fert_frt | character(len=25) | "fertilizer.frt" | N/A | Fertilizer database | src/input_file_module.f90:178 |
+| 19 | 4 | N | in_parmdb | till_til | character(len=25) | "tillage.til" | N/A | Tillage database | src/input_file_module.f90:179 |
+| 19 | 5 | N | in_parmdb | pest | character(len=25) | "pesticide.pes" | N/A | Pesticide database | src/input_file_module.f90:180 |
+| 19 | 6 | N | in_parmdb | pathcom_db | character(len=25) | "pathogens.pth" | N/A | Pathogen database | src/input_file_module.f90:181 |
+| 19 | 7 | N | in_parmdb | hmetcom_db | character(len=25) | "metals.mtl" | N/A | Heavy metal database | src/input_file_module.f90:182 |
+| 19 | 8 | N | in_parmdb | saltcom_db | character(len=25) | "salt.slt" | N/A | Salt database | src/input_file_module.f90:183 |
+| 19 | 9 | N | in_parmdb | urban_urb | character(len=25) | "urban.urb" | N/A | Urban database | src/input_file_module.f90:184 |
+| 19 | 10 | N | in_parmdb | septic_sep | character(len=25) | "septic.sep" | N/A | Septic database | src/input_file_module.f90:185 |
+| 19 | 11 | N | in_parmdb | snow | character(len=25) | "snow.sno" | N/A | Snow database | src/input_file_module.f90:186 |
+| 20 | 1 | Y | N/A | name (label) | character(len=25) | "" | N/A | Label for in_ops section | src/readcio_read.f90:9 |
+| 20 | 2 | N | in_ops | harv_ops | character(len=25) | "harv.ops" | N/A | Harvest operations | src/input_file_module.f90:192 |
+| 20 | 3 | N | in_ops | graze_ops | character(len=25) | "graze.ops" | N/A | Grazing operations | src/input_file_module.f90:193 |
+| 20 | 4 | N | in_ops | irr_ops | character(len=25) | "irr.ops" | N/A | Irrigation operations | src/input_file_module.f90:194 |
+| 20 | 5 | N | in_ops | chem_ops | character(len=25) | "chem_app.ops" | N/A | Chemical application operations | src/input_file_module.f90:195 |
+| 20 | 6 | N | in_ops | fire_ops | character(len=25) | "fire.ops" | N/A | Fire operations | src/input_file_module.f90:196 |
+| 20 | 7 | N | in_ops | sweep_ops | character(len=25) | "sweep.ops" | N/A | Sweep operations | src/input_file_module.f90:197 |
+| 21 | 1 | Y | N/A | name (label) | character(len=25) | "" | N/A | Label for in_lum section | src/readcio_read.f90:9 |
+| 21 | 2 | N | in_lum | landuse_lum | character(len=25) | "landuse.lum" | N/A | Land use management | src/input_file_module.f90:203 |
+| 21 | 3 | N | in_lum | management_sch | character(len=25) | "management.sch" | N/A | Management schedule | src/input_file_module.f90:204 |
+| 21 | 4 | N | in_lum | cntable_lum | character(len=25) | "cntable.lum" | N/A | CN table | src/input_file_module.f90:205 |
+| 21 | 5 | N | in_lum | cons_prac_lum | character(len=25) | "cons_practice.lum" | N/A | Conservation practice | src/input_file_module.f90:206 |
+| 21 | 6 | N | in_lum | ovn_lum | character(len=25) | "ovn_table.lum" | N/A | Overland flow N table | src/input_file_module.f90:207 |
+| 22 | 1 | Y | N/A | name (label) | character(len=25) | "" | N/A | Label for in_chg section | src/readcio_read.f90:9 |
+| 22 | 2 | N | in_chg | cal_parms | character(len=25) | "cal_parms.cal" | N/A | Calibration parameters | src/input_file_module.f90:213 |
+| 22 | 3 | N | in_chg | cal_upd | character(len=25) | "calibration.cal" | N/A | Calibration update | src/input_file_module.f90:214 |
+| 22 | 4 | N | in_chg | codes_sft | character(len=25) | "codes.sft" | N/A | Soft calibration codes | src/input_file_module.f90:215 |
+| 22 | 5 | N | in_chg | wb_parms_sft | character(len=25) | "wb_parms.sft" | N/A | Water balance parameters | src/input_file_module.f90:216 |
+| 22 | 6 | N | in_chg | water_balance_sft | character(len=25) | "water_balance.sft" | N/A | Water balance soft calibration | src/input_file_module.f90:217 |
+| 22 | 7 | N | in_chg | ch_sed_budget_sft | character(len=25) | "ch_sed_budget.sft" | N/A | Channel sediment budget | src/input_file_module.f90:218 |
+| 22 | 8 | N | in_chg | ch_sed_parms_sft | character(len=25) | "ch_sed_parms.sft" | N/A | Channel sediment parameters | src/input_file_module.f90:219 |
+| 22 | 9 | N | in_chg | plant_parms_sft | character(len=25) | "plant_parms.sft" | N/A | Plant parameters | src/input_file_module.f90:220 |
+| 22 | 10 | N | in_chg | plant_gro_sft | character(len=25) | "plant_gro.sft" | N/A | Plant growth parameters | src/input_file_module.f90:221 |
+| 23 | 1 | Y | N/A | name (label) | character(len=25) | "" | N/A | Label for in_init section | src/readcio_read.f90:9 |
+| 23 | 2 | N | in_init | plant | character(len=25) | "plant.ini" | N/A | Plant initial conditions | src/input_file_module.f90:227 |
+| 23 | 3 | N | in_init | soil_plant_ini | character(len=25) | "soil_plant.ini" | N/A | Soil-plant initial conditions | src/input_file_module.f90:228 |
+| 23 | 4 | N | in_init | om_water | character(len=25) | "om_water.ini" | N/A | Organic matter-water initial conditions | src/input_file_module.f90:229 |
+| 23 | 5 | N | in_init | pest_soil | character(len=25) | "pest_hru.ini" | N/A | Pesticide soil initial conditions | src/input_file_module.f90:230 |
+| 23 | 6 | N | in_init | pest_water | character(len=25) | "pest_water.ini" | N/A | Pesticide water initial conditions | src/input_file_module.f90:231 |
+| 23 | 7 | N | in_init | path_soil | character(len=25) | "path_hru.ini" | N/A | Pathogen soil initial conditions | src/input_file_module.f90:232 |
+| 23 | 8 | N | in_init | path_water | character(len=25) | "path_water.ini" | N/A | Pathogen water initial conditions | src/input_file_module.f90:233 |
+| 23 | 9 | N | in_init | hmet_soil | character(len=25) | "hmet_hru.ini" | N/A | Heavy metal soil initial conditions | src/input_file_module.f90:234 |
+| 23 | 10 | N | in_init | hmet_water | character(len=25) | "hmet_water.ini" | N/A | Heavy metal water initial conditions | src/input_file_module.f90:235 |
+| 23 | 11 | N | in_init | salt_soil | character(len=25) | "salt_hru.ini" | N/A | Salt soil initial conditions | src/input_file_module.f90:236 |
+| 23 | 12 | N | in_init | salt_water | character(len=25) | "salt_water.ini" | N/A | Salt water initial conditions | src/input_file_module.f90:237 |
+| 24 | 1 | Y | N/A | name (label) | character(len=25) | "" | N/A | Label for in_sol section | src/readcio_read.f90:9 |
+| 24 | 2 | N | in_sol | soils_sol | character(len=25) | "soils.sol" | N/A | Soil properties | src/input_file_module.f90:243 |
+| 24 | 3 | N | in_sol | nut_sol | character(len=25) | "nutrients.sol" | N/A | Nutrient data | src/input_file_module.f90:244 |
+| 24 | 4 | N | in_sol | lte_sol | character(len=25) | "soils_lte.sol" | N/A | Soil landscape element data | src/input_file_module.f90:245 |
+| 25 | 1 | Y | N/A | name (label) | character(len=25) | "" | N/A | Label for in_cond section | src/readcio_read.f90:9 |
+| 25 | 2 | N | in_cond | dtbl_lum | character(len=25) | "lum.dtl" | N/A | Land use management decision table | src/input_file_module.f90:251 |
+| 25 | 3 | N | in_cond | dtbl_res | character(len=25) | "res_rel.dtl" | N/A | Reservoir release decision table | src/input_file_module.f90:252 |
+| 25 | 4 | N | in_cond | dtbl_scen | character(len=25) | "scen_lu.dtl" | N/A | Scenario land use decision table | src/input_file_module.f90:253 |
+| 25 | 5 | N | in_cond | dtbl_flo | character(len=25) | "flo_con.dtl" | N/A | Flow control decision table | src/input_file_module.f90:254 |
+| 26 | 1 | Y | N/A | name (label) | character(len=25) | "" | N/A | Label for in_regs section | src/readcio_read.f90:9 |
+| 26 | 2 | N | in_regs | ele_lsu | character(len=25) | "ls_unit.ele" | N/A | Landscape unit elements | src/input_file_module.f90:260 |
+| 26 | 3 | N | in_regs | def_lsu | character(len=25) | "ls_unit.def" | N/A | Landscape unit definitions | src/input_file_module.f90:261 |
+| 26 | 4 | N | in_regs | ele_reg | character(len=25) | "ls_reg.ele" | N/A | Landscape region elements | src/input_file_module.f90:262 |
+| 26 | 5 | N | in_regs | def_reg | character(len=25) | "ls_reg.def" | N/A | Landscape region definitions | src/input_file_module.f90:263 |
+| 26 | 6 | N | in_regs | cal_lcu | character(len=25) | "ls_cal.reg" | N/A | Landscape calibration regions | src/input_file_module.f90:264 |
+| 26 | 7 | N | in_regs | ele_cha | character(len=25) | "ch_catunit.ele" | N/A | Channel catchment unit elements | src/input_file_module.f90:265 |
+| 26 | 8 | N | in_regs | def_cha | character(len=25) | "ch_catunit.def" | N/A | Channel catchment unit definitions | src/input_file_module.f90:266 |
+| 26 | 9 | N | in_regs | def_cha_reg | character(len=25) | "ch_reg.def" | N/A | Channel region definitions | src/input_file_module.f90:267 |
+| 26 | 10 | N | in_regs | ele_aqu | character(len=25) | "aqu_catunit.ele" | N/A | Aquifer catchment unit elements | src/input_file_module.f90:268 |
+| 26 | 11 | N | in_regs | def_aqu | character(len=25) | "aqu_catunit.def" | N/A | Aquifer catchment unit definitions | src/input_file_module.f90:269 |
+| 26 | 12 | N | in_regs | def_aqu_reg | character(len=25) | "aqu_reg.def" | N/A | Aquifer region definitions | src/input_file_module.f90:270 |
+| 26 | 13 | N | in_regs | ele_res | character(len=25) | "res_catunit.ele" | N/A | Reservoir catchment unit elements | src/input_file_module.f90:271 |
+| 26 | 14 | N | in_regs | def_res | character(len=25) | "res_catunit.def" | N/A | Reservoir catchment unit definitions | src/input_file_module.f90:272 |
+| 26 | 15 | N | in_regs | def_res_reg | character(len=25) | "res_reg.def" | N/A | Reservoir region definitions | src/input_file_module.f90:273 |
+| 26 | 16 | N | in_regs | ele_psc | character(len=25) | "rec_catunit.ele" | N/A | Recall catchment unit elements | src/input_file_module.f90:274 |
+| 26 | 17 | N | in_regs | def_psc | character(len=25) | "rec_catunit.def" | N/A | Recall catchment unit definitions | src/input_file_module.f90:275 |
+| 26 | 18 | N | in_regs | def_psc_reg | character(len=25) | "rec_reg.def" | N/A | Recall region definitions | src/input_file_module.f90:276 |
+| 27 | 1 | Y | N/A | name (label) | character(len=25) | "" | N/A | Label for in_path_pcp section | src/readcio_read.f90:9 |
+| 27 | 2 | N | in_path_pcp | pcp | character(len=80) | " " | N/A | Precipitation file path | src/input_file_module.f90:281 |
+| 28 | 1 | Y | N/A | name (label) | character(len=25) | "" | N/A | Label for in_path_tmp section | src/readcio_read.f90:9 |
+| 28 | 2 | N | in_path_tmp | tmp | character(len=80) | " " | N/A | Temperature file path | src/input_file_module.f90:286 |
+| 29 | 1 | Y | N/A | name (label) | character(len=25) | "" | N/A | Label for in_path_slr section | src/readcio_read.f90:9 |
+| 29 | 2 | N | in_path_slr | slr | character(len=80) | " " | N/A | Solar radiation file path | src/input_file_module.f90:291 |
+| 30 | 1 | Y | N/A | name (label) | character(len=25) | "" | N/A | Label for in_path_hmd section | src/readcio_read.f90:9 |
+| 30 | 2 | N | in_path_hmd | hmd | character(len=80) | " " | N/A | Humidity file path | src/input_file_module.f90:296 |
+| 31 | 1 | Y | N/A | name (label) | character(len=25) | "" | N/A | Label for in_path_wnd section | src/readcio_read.f90:9 |
+| 31 | 2 | N | in_path_wnd | wnd | character(len=80) | " " | N/A | Wind file path | src/input_file_module.f90:301 |
+| 32 | 1 | Y | N/A | line_buffer (output path) | character(len=80) | "" | N/A | Output file path | src/readcio_read.f90:11 |
 
-**Note**: Position 0 is the title line. Positions 1-30 each read a label (name) followed by a derived type structure. Position 31 reads the output path using formatted I/O to handle spaces in paths.
-
-**Total Components**: The 30 derived types contain 145+ individual filename components in total.
+**Note**: 
+- Line 1 contains the title
+- Lines 2-31 each have a label (position 1) followed by derived type components (positions 2+)
+- Line 32 contains the output path
+- Lines 27-31 use character(len=80) for path strings; all others use character(len=25)
+- **Total Expanded Components**: 176 individual values across all 32 lines (including labels and title)
 
 ### 4.4 Complete Derived Types Detail (All 30 Types)
 
