@@ -1,5 +1,5 @@
 # SWAT+ Focused I/O Trace Report
-## Phase 1: aquifer.aqu, object.cnt, mgt.out, aquifer.out
+## Phase 1: aquifer.aqu, object.cnt, mgt.out, aquifer.out + file.cio (Master Config)
 
 **Date**: 2026-01-22
 **Repository**: tugraskan/swatplus_ug
@@ -650,7 +650,225 @@ All write operations follow format: `write (2612, *) <management event data>`
 
 ---
 
-## 4. Worked Example: aqu_read Subroutine (aquifer.aqu)
+## 4. file.cio (Master Configuration File - INPUT)
+
+### 4.1 Filename Resolution
+
+**Resolution Chain**:
+- Target filename: `file.cio`
+- Expression: String literal "file.cio"
+- Opening location: src/readcio_read.f90:22
+- No default value override mechanism - hardcoded filename
+- Runtime overrides: None
+
+**Detailed Mapping**:
+```
+file.cio → Hardcoded string literal in readcio_read
+         → open (107,file="file.cio") (src/readcio_read.f90:22)
+```
+
+### 4.2 I/O Sites and Unit Mappings
+
+**Routine**: `readcio_read`  
+**File**: src/readcio_read.f90  
+**Expression**: "file.cio" (string literal)  
+**Unit mapping**: 107 → "file.cio"
+
+**I/O Sites**:
+
+| Line | Statement | Type | Description |
+|------|-----------|------|-------------|
+| 20 | `inquire (file="file.cio", exist=i_exist)` | INQUIRE | Check file existence |
+| 22 | `open (107,file="file.cio")` | OPEN | Open master configuration file |
+| 23 | `read (107,*) titldum` | READ | Read title line |
+| 25 | `read (107,*,iostat=eof) name, in_sim` | READ | Read simulation file names |
+| 27 | `read (107,*,iostat=eof) name, in_basin` | READ | Read basin file names |
+| 29 | `read (107,*,iostat=eof) name, in_cli` | READ | Read climate file names |
+| 31 | `read (107,*,iostat=eof) name, in_con` | READ | Read connection file names |
+| 33 | `read (107,*,iostat=eof) name, in_cha` | READ | Read channel file names |
+| 35 | `read (107,*,iostat=eof) name, in_res` | READ | Read reservoir file names |
+| 37 | `read (107,*,iostat=eof) name, in_ru` | READ | Read routing unit file names |
+| 39 | `read (107,*,iostat=eof) name, in_hru` | READ | Read HRU file names |
+| 41 | `read (107,*,iostat=eof) name, in_exco` | READ | Read export coefficient file names |
+| 43 | `read (107,*,iostat=eof) name, in_rec` | READ | Read recall file names |
+| 45 | `read (107,*,iostat=eof) name, in_delr` | READ | Read delivery ratio file names |
+| 47 | `read (107,*,iostat=eof) name, in_aqu` | READ | Read aquifer file names |
+| 49 | `read (107,*,iostat=eof) name, in_herd` | READ | Read herd file names |
+| 51 | `read (107,*,iostat=eof) name, in_watrts` | READ | Read water rights file names |
+| 53 | `read (107,*,iostat=eof) name, in_link` | READ | Read link file names |
+| 55 | `read (107,*,iostat=eof) name, in_hyd` | READ | Read hydrology file names |
+| 57 | `read (107,*,iostat=eof) name, in_str` | READ | Read structural file names |
+| 59 | `read (107,*,iostat=eof) name, in_parmdb` | READ | Read parameter database file names |
+| 61 | `read (107,*,iostat=eof) name, in_ops` | READ | Read operation scheduling file names |
+| 63 | `read (107,*,iostat=eof) name, in_lum` | READ | Read land use management file names |
+| 65 | `read (107,*,iostat=eof) name, in_chg` | READ | Read calibration change file names |
+| 67 | `read (107,*,iostat=eof) name, in_init` | READ | Read initial conditions file names |
+| 69 | `read (107,*,iostat=eof) name, in_sol` | READ | Read soils file names |
+| 71 | `read (107,*,iostat=eof) name, in_cond` | READ | Read conditional file names |
+| 73 | `read (107,*,iostat=eof) name, in_regs` | READ | Read regions file names |
+| 76 | `read (107,*,iostat=eof) name, in_path_pcp` | READ | Read precipitation path |
+| 78 | `read (107,*,iostat=eof) name, in_path_tmp` | READ | Read temperature path |
+| 80 | `read (107,*,iostat=eof) name, in_path_slr` | READ | Read solar radiation path |
+| 82 | `read (107,*,iostat=eof) name, in_path_hmd` | READ | Read humidity path |
+| 84 | `read (107,*,iostat=eof) name, in_path_wnd` | READ | Read wind path |
+| 89 | `read (107,'(A)',iostat=eof) line_buffer` | READ | Read output path (formatted) |
+| 109 | `close (107)` | CLOSE | Close file |
+
+**Note**: The routine reads 31 configuration structures in sequence, each prefixed by a label name.
+
+### 4.3 Read/Write Payload Map
+
+#### Read Statement 1: Title Line
+**Location**: src/readcio_read.f90:23  
+**Statement**: `read (107,*) titldum`  
+**Format**: List-directed (free format)
+
+**Variable**: `titldum`
+- **Name**: titldum
+- **Scope**: Local variable
+- **Type**: character(len=80)
+- **Default**: "" (empty string)
+- **Units**: N/A (text)
+- **Description**: Title or description line from file
+- **Declared at**: src/readcio_read.f90:8
+
+#### PRIMARY DATA READ Table
+
+**Overview**: file.cio contains 31 configuration records, each reading a derived type that holds input filenames for different model components. Each record format: `<label> <filename_structure>`
+
+The table below shows the sequence of reads. Each derived type contains multiple character(len=25) or character(len=80) components representing individual input filenames.
+
+| Position | Local (Y/N) | Label Variable | Derived Type Name | Type Instance | Components Count | Declared At |
+|----------|-------------|----------------|-------------------|---------------|------------------|-------------|
+| 0 | Y | titldum | N/A | N/A | N/A | src/readcio_read.f90:8 |
+| 1 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:9 |
+| 1 | N | N/A | input_sim | in_sim | 5 | src/input_file_module.f90:8-15 |
+| 2 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:9 |
+| 2 | N | N/A | input_basin | in_basin | 2 | src/input_file_module.f90:18-22 |
+| 3 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:9 |
+| 3 | N | N/A | input_cli | in_cli | 10 | src/input_file_module.f90:25-37 |
+| 4 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:9 |
+| 4 | N | N/A | input_con | in_con | 13 | src/input_file_module.f90:40-55 |
+| 5 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:9 |
+| 5 | N | N/A | input_cha | in_cha | 8 | src/input_file_module.f90:58-68 |
+| 6 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:9 |
+| 6 | N | N/A | input_res | in_res | 8 | src/input_file_module.f90:71-81 |
+| 7 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:9 |
+| 7 | N | N/A | input_ru | in_ru | 4 | src/input_file_module.f90:84-90 |
+| 8 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:9 |
+| 8 | N | N/A | input_hru | in_hru | 2 | src/input_file_module.f90:93-97 |
+| 9 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:9 |
+| 9 | N | N/A | input_exco | in_exco | 6 | src/input_file_module.f90:100-108 |
+| 10 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:9 |
+| 10 | N | N/A | input_rec | in_rec | 1 | src/input_file_module.f90:111-114 |
+| 11 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:9 |
+| 11 | N | N/A | input_delr | in_delr | 6 | src/input_file_module.f90:117-125 |
+| 12 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:9 |
+| 12 | N | N/A | input_aqu | in_aqu | 2 | src/input_file_module.f90:128-132 |
+| 13 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:9 |
+| 13 | N | N/A | input_herd | in_herd | 3 | src/input_file_module.f90:135-140 |
+| 14 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:9 |
+| 14 | N | N/A | input_water_rights | in_watrts | 3 | src/input_file_module.f90:143-148 |
+| 15 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:9 |
+| 15 | N | N/A | input_link | in_link | 2 | src/input_file_module.f90:151-155 |
+| 16 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:9 |
+| 16 | N | N/A | input_hydrology | in_hyd | 3 | src/input_file_module.f90:158-163 |
+| 17 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:9 |
+| 17 | N | N/A | input_structural | in_str | 5 | src/input_file_module.f90:166-173 |
+| 18 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:9 |
+| 18 | N | N/A | input_parameter_databases | in_parmdb | 10 | src/input_file_module.f90:176-188 |
+| 19 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:9 |
+| 19 | N | N/A | input_ops | in_ops | 6 | src/input_file_module.f90:191-199 |
+| 20 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:9 |
+| 20 | N | N/A | input_lum | in_lum | 5 | src/input_file_module.f90:202-209 |
+| 21 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:9 |
+| 21 | N | N/A | input_chg | in_chg | 9 | src/input_file_module.f90:212-223 |
+| 22 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:9 |
+| 22 | N | N/A | input_init | in_init | 11 | src/input_file_module.f90:226-239 |
+| 23 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:9 |
+| 23 | N | N/A | input_soils | in_sol | 3 | src/input_file_module.f90:242-247 |
+| 24 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:9 |
+| 24 | N | N/A | input_condition | in_cond | 4 | src/input_file_module.f90:250-256 |
+| 25 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:9 |
+| 25 | N | N/A | input_regions | in_regs | 17 | src/input_file_module.f90:259-278 |
+| 26 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:9 |
+| 26 | N | N/A | input_path_pcp | in_path_pcp | 1 | src/input_file_module.f90:280-283 |
+| 27 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:9 |
+| 27 | N | N/A | input_path_tmp | in_path_tmp | 1 | src/input_file_module.f90:285-288 |
+| 28 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:9 |
+| 28 | N | N/A | input_path_slr | in_path_slr | 1 | src/input_file_module.f90:290-293 |
+| 29 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:9 |
+| 29 | N | N/A | input_path_hmd | in_path_hmd | 1 | src/input_file_module.f90:295-298 |
+| 30 | Y | name | N/A | N/A | N/A | src/readcio_read.f90:9 |
+| 30 | N | N/A | input_path_wnd | in_path_wnd | 1 | src/input_file_module.f90:300-303 |
+| 31 | Y | line_buffer | N/A | N/A | N/A | src/readcio_read.f90:11 |
+
+**Note**: Position 0 is the title line. Positions 1-30 each read a label (name) followed by a derived type structure. Position 31 reads the output path using formatted I/O to handle spaces in paths.
+
+**Total Components**: The 30 derived types contain 145+ individual filename components in total.
+
+### 4.4 Key Components Detail (Selected Examples)
+
+#### Example 1: in_sim (Position 1)
+**Type**: input_sim (src/input_file_module.f90:8-15)  
+**Components**:
+
+| Component | Type | Default | Description | Line |
+|-----------|------|---------|-------------|------|
+| time | character(len=25) | "time.sim" | Simulation time configuration | 9 |
+| prt | character(len=25) | "print.prt" | Print configuration | 10 |
+| object_prt | character(len=25) | "object.prt" | Object print configuration | 11 |
+| object_cnt | character(len=25) | "object.cnt" | Object count file (documented in Phase 1) | 12 |
+| cs_db | character(len=25) | "constituents.cs" | Constituents database | 13 |
+
+#### Example 2: in_aqu (Position 12)
+**Type**: input_aqu (src/input_file_module.f90:128-132)  
+**Components**:
+
+| Component | Type | Default | Description | Line |
+|-----------|------|---------|-------------|------|
+| init | character(len=25) | "initial.aqu" | Initial aquifer conditions | 129 |
+| aqu | character(len=25) | "aquifer.aqu" | Aquifer parameters (documented in Phase 1) | 130 |
+
+#### Example 3: in_parmdb (Position 18)
+**Type**: input_parameter_databases (src/input_file_module.f90:176-188)  
+**Components**:
+
+| Component | Type | Default | Description | Line |
+|-----------|------|---------|-------------|------|
+| plants_plt | character(len=25) | "plants.plt" | Plant parameters | 177 |
+| fert_frt | character(len=25) | "fertilizer.frt" | Fertilizer parameters | 178 |
+| till_til | character(len=25) | "tillage.til" | Tillage parameters | 179 |
+| pest | character(len=25) | "pesticide.pes" | Pesticide parameters | 180 |
+| pathcom_db | character(len=25) | "pathogens.pth" | Pathogen parameters | 181 |
+| hmetcom_db | character(len=25) | "metals.mtl" | Heavy metals parameters | 182 |
+| saltcom_db | character(len=25) | "salt.slt" | Salt parameters | 183 |
+| urban_urb | character(len=25) | "urban.urb" | Urban parameters | 184 |
+| septic_sep | character(len=25) | "septic.sep" | Septic parameters | 185 |
+| snow | character(len=25) | "snow.sno" | Snow parameters | 186 |
+
+### 4.5 File Format
+
+**file.cio** is a master configuration file that specifies all input filenames for the SWAT+ model. The format is:
+
+```
+<Title Line>
+<label1> <simulation filenames...>
+<label2> <basin filenames...>
+<label3> <climate filenames...>
+...
+<label30> <wind path>
+<label31> <output path>
+```
+
+Each label line contains a section identifier followed by the filename(s) for that configuration group. The derived types use list-directed I/O, so components are read sequentially in declaration order.
+
+**Note on I/O**: All derived types use default list-directed I/O (no user-defined read procedures). Each type's components are read in the order they appear in the type definition.
+
+
+---
+
+## 5. Worked Example: aqu_read Subroutine (aquifer.aqu)
 
 ### Overview
 The `aqu_read` subroutine reads aquifer parameter data from the `aquifer.aqu` input file. It uses a **two-pass reading strategy** to first determine array sizes, then read the actual data.
@@ -833,7 +1051,7 @@ close (107)
 
 ---
 
-## 5. Summary
+## 6. Summary
 
 ### Phase 1 Coverage
 
@@ -843,13 +1061,18 @@ This report documents all I/O operations for the four target files:
 3. **mgt.out** - Output file (mgt_out.txt) written by header_mgt and various management routines
 4. **aquifer.out** - Output files (aquifer_day/mon/yr/aa.txt/csv) written by header_aquifer and aquifer_output
 
+### Extended Coverage
+
+5. **file.cio** - Master configuration file read by readcio_read (31 input file structures)
+
 ### Key Findings
 
 - All filenames are resolved through module-level derived types with default values
-- Unit 107 is reused for different input files (aquifer.aqu, object.cnt)
+- Unit 107 is reused for different input files (aquifer.aqu, object.cnt, file.cio)
 - Output units are unique and persistent (2520-2527 for aquifer, 2612 for management)
 - No user-defined I/O is used; all derived types use default list-directed or formatted I/O
 - Two-pass reading strategy is used for aquifer.aqu to handle sparse array indexing
+- file.cio reads 30+ configuration structures containing 145+ individual filename specifications
 
 ### Location Format
 
