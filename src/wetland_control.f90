@@ -201,7 +201,11 @@
         
       !endif
         !! subtract outflow from storage
-        !wet(j)%flo =  wet(j)%flo - ht2%flo
+        wet(j)%flo =  wet(j)%flo - ht2%flo
+        if (wet(j)%flo < 0.) then
+          ht2%flo = ht2%flo + wet(j)%flo
+          wet(j)%flo = 0.
+        end if
         surfq(j) = ht2%flo / wsa1 !mm
         
         if (time%step > 1) then
