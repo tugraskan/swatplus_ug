@@ -329,6 +329,31 @@ All write operations follow format: `write (2612, *) <management event data>`
 16. flo_min (real)
 17. revap_min (real)
 
+#### PRIMARY DATA READ Table
+
+**Read Statement**: `read (107,*,iostat=eof) k, aqudb(i)` at src/aqu_read.f90:55
+
+| Position in File | Local (Y/N) | Derived Type Name | Component (or Var Name if Local) | Type | Default | Units | Description |
+|------------------|-------------|-------------------|-----------------------------------|------|---------|-------|-------------|
+| 1 | Y | N/A | k | integer | 0 | none | Aquifer index/ID |
+| 2 | N | aqudb | aqunm | character(len=16) | "" | N/A | Aquifer name |
+| 3 | N | aqudb | aqu_ini | character(len=16) | "" | N/A | Initial aquifer data - points to name in initial.aqu |
+| 4 | N | aqudb | flo | real | 0.05 | mm | Flow from aquifer in current time step |
+| 5 | N | aqudb | dep_bot | real | 0. | m | Depth from mid-slope surface to bottom of aquifer |
+| 6 | N | aqudb | dep_wt | real | 0. | m | Depth from mid-slope surface to water table (initial) |
+| 7 | N | aqudb | no3 | real | 0. | ppm NO3-N | Nitrate-N concentration in aquifer (initial) |
+| 8 | N | aqudb | minp | real | 0. | ppm P | Mineral phosphorus concentration in aquifer (initial) |
+| 9 | N | aqudb | cbn | real | 0.5 | percent | Organic carbon in aquifer (initial) |
+| 10 | N | aqudb | flo_dist | real | 50. | m | Average flow distance to stream or object |
+| 11 | N | aqudb | bf_max | real | 0. | mm | Maximum daily baseflow - when all channels are contributing |
+| 12 | N | aqudb | alpha | real | 0. | 1/days | Lag factor for groundwater recession curve |
+| 13 | N | aqudb | revap_co | real | 0. | dimensionless | Revap coefficient - evap=pet*revap_co |
+| 14 | N | aqudb | seep | real | 0. | frac | Fraction of recharge that seeps from aquifer |
+| 15 | N | aqudb | spyld | real | 0. | m³/m³ | Specific yield of aquifer |
+| 16 | N | aqudb | hlife_n | real | 30. | days | Half-life of nitrogen in groundwater |
+| 17 | N | aqudb | flo_min | real | 0. | m | Water table depth for return flow to occur |
+| 18 | N | aqudb | revap_min | real | 0. | m | Water table depth for revap to occur |
+
 
 ---
 
@@ -416,6 +441,34 @@ All write operations follow format: `write (2612, *) <management event data>`
 - 3 values for bsn (name, area_ls_ha, area_tot_ha)
 - 17 values for sp_ob (objs through wro)
 - **Total: 20 values** in one record
+
+#### PRIMARY DATA READ Table
+
+**Read Statement**: `read (107,*,iostat=eof) bsn, sp_ob` at src/basin_read_objs.f90:38
+
+| Position in File | Local (Y/N) | Derived Type Name | Component (or Var Name if Local) | Type | Default | Units | Description |
+|------------------|-------------|-------------------|-----------------------------------|------|---------|-------|-------------|
+| 1 | N | bsn | name | character(len=25) | "" | N/A | Basin name |
+| 2 | N | bsn | area_ls_ha | real | 0. | ha | Land surface area |
+| 3 | N | bsn | area_tot_ha | real | 0. | ha | Total area |
+| 4 | N | sp_ob | objs | integer | 0 | none | Number of objects or 1st object command |
+| 5 | N | sp_ob | hru | integer | 0 | none | Number of HRUs or 1st HRU command |
+| 6 | N | sp_ob | hru_lte | integer | 0 | none | Number of HRU_LTEs or 1st HRU_LTE command |
+| 7 | N | sp_ob | ru | integer | 0 | none | Number of routing units or 1st RU command |
+| 8 | N | sp_ob | gwflow | integer | 0 | none | Number of gwflow objects or 1st gwflow command |
+| 9 | N | sp_ob | aqu | integer | 0 | none | Number of aquifers or 1st aquifer command |
+| 10 | N | sp_ob | chan | integer | 0 | none | Number of channels or 1st channel command |
+| 11 | N | sp_ob | res | integer | 0 | none | Number of reservoirs or 1st reservoir command |
+| 12 | N | sp_ob | recall | integer | 0 | none | Number of recall points or 1st recall command |
+| 13 | N | sp_ob | exco | integer | 0 | none | Number of export coefficients or 1st exco command |
+| 14 | N | sp_ob | dr | integer | 0 | none | Number of delivery ratios or 1st DR command |
+| 15 | N | sp_ob | canal | integer | 0 | none | Number of canals or 1st canal command |
+| 16 | N | sp_ob | pump | integer | 0 | none | Number of pumps or 1st pump command |
+| 17 | N | sp_ob | outlet | integer | 0 | none | Number of outlets or 1st outlet command |
+| 18 | N | sp_ob | chandeg | integer | 0 | none | Number of SWAT-DEG channels or 1st SWAT-DEG channel command |
+| 19 | N | sp_ob | aqu2d | integer | 0 | none | Not currently used (number of 2D aquifers) |
+| 20 | N | sp_ob | herd | integer | 0 | none | Not currently used (number of herds) |
+| 21 | N | sp_ob | wro | integer | 0 | none | Not currently used (number of water rights) |
 
 
 ---
