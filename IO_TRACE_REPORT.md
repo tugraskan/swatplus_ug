@@ -332,27 +332,28 @@ All write operations follow format: `write (2612, *) <management event data>`
 #### PRIMARY DATA READ Table
 
 **Read Statement**: `read (107,*,iostat=eof) k, aqudb(i)` at src/aqu_read.f90:55
+**File.cio Reference**: This file (aquifer.aqu) is referenced in file.cio as component `aqu` of derived type `in_aqu`
 
-| Line in File | Position in File | Local (Y/N) | Derived Type Name | Component (or Var Name if Local) | Type | Default | Units | Description | Source Line |
-|--------------|------------------|-------------|-------------------|-----------------------------------|------|---------|-------|-------------|-------------|
-| 3+ | 1 | Y | N/A | k | integer | 0 | none | Aquifer index/ID | src/aqu_read.f90:18 |
-| 3+ | 2 | N | aqudb | aqunm | character(len=16) | "" | N/A | Aquifer name | src/aquifer_module.f90:6 |
-| 3+ | 3 | N | aqudb | aqu_ini | character(len=16) | "" | N/A | Initial aquifer data - points to name in initial.aqu | src/aquifer_module.f90:7 |
-| 3+ | 4 | N | aqudb | flo | real | 0.05 | mm | Flow from aquifer in current time step | src/aquifer_module.f90:8 |
-| 3+ | 5 | N | aqudb | dep_bot | real | 0. | m | Depth from mid-slope surface to bottom of aquifer | src/aquifer_module.f90:9 |
-| 3+ | 6 | N | aqudb | dep_wt | real | 0. | m | Depth from mid-slope surface to water table (initial) | src/aquifer_module.f90:10 |
-| 3+ | 7 | N | aqudb | no3 | real | 0. | ppm NO3-N | Nitrate-N concentration in aquifer (initial) | src/aquifer_module.f90:11 |
-| 3+ | 8 | N | aqudb | minp | real | 0. | ppm P | Mineral phosphorus concentration in aquifer (initial) | src/aquifer_module.f90:12 |
-| 3+ | 9 | N | aqudb | cbn | real | 0.5 | percent | Organic carbon in aquifer (initial) | src/aquifer_module.f90:13 |
-| 3+ | 10 | N | aqudb | flo_dist | real | 50. | m | Average flow distance to stream or object | src/aquifer_module.f90:14 |
-| 3+ | 11 | N | aqudb | bf_max | real | 0. | mm | Maximum daily baseflow - when all channels are contributing | src/aquifer_module.f90:15 |
-| 3+ | 12 | N | aqudb | alpha | real | 0. | 1/days | Lag factor for groundwater recession curve | src/aquifer_module.f90:16 |
-| 3+ | 13 | N | aqudb | revap_co | real | 0. | dimensionless | Revap coefficient - evap=pet*revap_co | src/aquifer_module.f90:17 |
-| 3+ | 14 | N | aqudb | seep | real | 0. | frac | Fraction of recharge that seeps from aquifer | src/aquifer_module.f90:18 |
-| 3+ | 15 | N | aqudb | spyld | real | 0. | m³/m³ | Specific yield of aquifer | src/aquifer_module.f90:19 |
-| 3+ | 16 | N | aqudb | hlife_n | real | 30. | days | Half-life of nitrogen in groundwater | src/aquifer_module.f90:20 |
-| 3+ | 17 | N | aqudb | flo_min | real | 0. | m | Water table depth for return flow to occur | src/aquifer_module.f90:21 |
-| 3+ | 18 | N | aqudb | revap_min | real | 0. | m | Water table depth for revap to occur | src/aquifer_module.f90:22 |
+| Line in File | Position in File | Local (Y/N) | Derived Type Name | Component (or Var Name if Local) | Type | Default | Units | Description | Source Line | Swat_codetype |
+|--------------|------------------|-------------|-------------------|-----------------------------------|------|---------|-------|-------------|-------------|---------------|
+| 3+ | 1 | Y | N/A | k | integer | 0 | none | Aquifer index/ID | src/aqu_read.f90:18 | in_aqu |
+| 3+ | 2 | N | aqudb | aqunm | character(len=16) | "" | N/A | Aquifer name | src/aquifer_module.f90:6 | in_aqu |
+| 3+ | 3 | N | aqudb | aqu_ini | character(len=16) | "" | N/A | Initial aquifer data - points to name in initial.aqu | src/aquifer_module.f90:7 | in_aqu |
+| 3+ | 4 | N | aqudb | flo | real | 0.05 | mm | Flow from aquifer in current time step | src/aquifer_module.f90:8 | in_aqu |
+| 3+ | 5 | N | aqudb | dep_bot | real | 0. | m | Depth from mid-slope surface to bottom of aquifer | src/aquifer_module.f90:9 | in_aqu |
+| 3+ | 6 | N | aqudb | dep_wt | real | 0. | m | Depth from mid-slope surface to water table (initial) | src/aquifer_module.f90:10 | in_aqu |
+| 3+ | 7 | N | aqudb | no3 | real | 0. | ppm NO3-N | Nitrate-N concentration in aquifer (initial) | src/aquifer_module.f90:11 | in_aqu |
+| 3+ | 8 | N | aqudb | minp | real | 0. | ppm P | Mineral phosphorus concentration in aquifer (initial) | src/aquifer_module.f90:12 | in_aqu |
+| 3+ | 9 | N | aqudb | cbn | real | 0.5 | percent | Organic carbon in aquifer (initial) | src/aquifer_module.f90:13 | in_aqu |
+| 3+ | 10 | N | aqudb | flo_dist | real | 50. | m | Average flow distance to stream or object | src/aquifer_module.f90:14 | in_aqu |
+| 3+ | 11 | N | aqudb | bf_max | real | 0. | mm | Maximum daily baseflow - when all channels are contributing | src/aquifer_module.f90:15 | in_aqu |
+| 3+ | 12 | N | aqudb | alpha | real | 0. | 1/days | Lag factor for groundwater recession curve | src/aquifer_module.f90:16 | in_aqu |
+| 3+ | 13 | N | aqudb | revap_co | real | 0. | dimensionless | Revap coefficient - evap=pet*revap_co | src/aquifer_module.f90:17 | in_aqu |
+| 3+ | 14 | N | aqudb | seep | real | 0. | frac | Fraction of recharge that seeps from aquifer | src/aquifer_module.f90:18 | in_aqu |
+| 3+ | 15 | N | aqudb | spyld | real | 0. | m³/m³ | Specific yield of aquifer | src/aquifer_module.f90:19 | in_aqu |
+| 3+ | 16 | N | aqudb | hlife_n | real | 30. | days | Half-life of nitrogen in groundwater | src/aquifer_module.f90:20 | in_aqu |
+| 3+ | 17 | N | aqudb | flo_min | real | 0. | m | Water table depth for return flow to occur | src/aquifer_module.f90:21 | in_aqu |
+| 3+ | 18 | N | aqudb | revap_min | real | 0. | m | Water table depth for revap to occur | src/aquifer_module.f90:22 | in_aqu |
 
 
 ---
@@ -445,30 +446,31 @@ All write operations follow format: `write (2612, *) <management event data>`
 #### PRIMARY DATA READ Table
 
 **Read Statement**: `read (107,*,iostat=eof) bsn, sp_ob` at src/basin_read_objs.f90:38
+**File.cio Reference**: This file (object.cnt) is referenced in file.cio as component `object_cnt` of derived type `in_sim`
 
-| Line in File | Position in File | Local (Y/N) | Derived Type Name | Component (or Var Name if Local) | Type | Default | Units | Description | Source Line |
-|--------------|------------------|-------------|-------------------|-----------------------------------|------|---------|-------|-------------|-------------|
-| 3 | 1 | N | bsn | name | character(len=25) | "" | N/A | Basin name | src/basin_module.f90:10 |
-| 3 | 2 | N | bsn | area_ls_ha | real | 0. | ha | Land surface area | src/basin_module.f90:11 |
-| 3 | 3 | N | bsn | area_tot_ha | real | 0. | ha | Total area | src/basin_module.f90:12 |
-| 3 | 4 | N | sp_ob | objs | integer | 0 | none | Number of objects or 1st object command | src/hydrograph_module.f90:452 |
-| 3 | 5 | N | sp_ob | hru | integer | 0 | none | Number of HRUs or 1st HRU command | src/hydrograph_module.f90:453 |
-| 3 | 6 | N | sp_ob | hru_lte | integer | 0 | none | Number of HRU_LTEs or 1st HRU_LTE command | src/hydrograph_module.f90:454 |
-| 3 | 7 | N | sp_ob | ru | integer | 0 | none | Number of routing units or 1st RU command | src/hydrograph_module.f90:456 |
-| 3 | 8 | N | sp_ob | gwflow | integer | 0 | none | Number of gwflow objects or 1st gwflow command | src/hydrograph_module.f90:457 |
-| 3 | 9 | N | sp_ob | aqu | integer | 0 | none | Number of aquifers or 1st aquifer command | src/hydrograph_module.f90:458 |
-| 3 | 10 | N | sp_ob | chan | integer | 0 | none | Number of channels or 1st channel command | src/hydrograph_module.f90:459 |
-| 3 | 11 | N | sp_ob | res | integer | 0 | none | Number of reservoirs or 1st reservoir command | src/hydrograph_module.f90:460 |
-| 3 | 12 | N | sp_ob | recall | integer | 0 | none | Number of recall points or 1st recall command | src/hydrograph_module.f90:461 |
-| 3 | 13 | N | sp_ob | exco | integer | 0 | none | Number of export coefficients or 1st exco command | src/hydrograph_module.f90:462 |
-| 3 | 14 | N | sp_ob | dr | integer | 0 | none | Number of delivery ratios or 1st DR command | src/hydrograph_module.f90:463 |
-| 3 | 15 | N | sp_ob | canal | integer | 0 | none | Number of canals or 1st canal command | src/hydrograph_module.f90:464 |
-| 3 | 16 | N | sp_ob | pump | integer | 0 | none | Number of pumps or 1st pump command | src/hydrograph_module.f90:465 |
-| 3 | 17 | N | sp_ob | outlet | integer | 0 | none | Number of outlets or 1st outlet command | src/hydrograph_module.f90:466 |
-| 3 | 18 | N | sp_ob | chandeg | integer | 0 | none | Number of SWAT-DEG channels or 1st SWAT-DEG channel command | src/hydrograph_module.f90:467 |
-| 3 | 19 | N | sp_ob | aqu2d | integer | 0 | none | Not currently used (number of 2D aquifers) | src/hydrograph_module.f90:468 |
-| 3 | 20 | N | sp_ob | herd | integer | 0 | none | Not currently used (number of herds) | src/hydrograph_module.f90:469 |
-| 3 | 21 | N | sp_ob | wro | integer | 0 | none | Not currently used (number of water rights) | src/hydrograph_module.f90:470 |
+| Line in File | Position in File | Local (Y/N) | Derived Type Name | Component (or Var Name if Local) | Type | Default | Units | Description | Source Line | Swat_codetype |
+|--------------|------------------|-------------|-------------------|-----------------------------------|------|---------|-------|-------------|-------------|---------------|
+| 3 | 1 | N | bsn | name | character(len=25) | "" | N/A | Basin name | src/basin_module.f90:10 | in_sim |
+| 3 | 2 | N | bsn | area_ls_ha | real | 0. | ha | Land surface area | src/basin_module.f90:11 | in_sim |
+| 3 | 3 | N | bsn | area_tot_ha | real | 0. | ha | Total area | src/basin_module.f90:12 | in_sim |
+| 3 | 4 | N | sp_ob | objs | integer | 0 | none | Number of objects or 1st object command | src/hydrograph_module.f90:452 | in_sim |
+| 3 | 5 | N | sp_ob | hru | integer | 0 | none | Number of HRUs or 1st HRU command | src/hydrograph_module.f90:453 | in_sim |
+| 3 | 6 | N | sp_ob | hru_lte | integer | 0 | none | Number of HRU_LTEs or 1st HRU_LTE command | src/hydrograph_module.f90:454 | in_sim |
+| 3 | 7 | N | sp_ob | ru | integer | 0 | none | Number of routing units or 1st RU command | src/hydrograph_module.f90:456 | in_sim |
+| 3 | 8 | N | sp_ob | gwflow | integer | 0 | none | Number of gwflow objects or 1st gwflow command | src/hydrograph_module.f90:457 | in_sim |
+| 3 | 9 | N | sp_ob | aqu | integer | 0 | none | Number of aquifers or 1st aquifer command | src/hydrograph_module.f90:458 | in_sim |
+| 3 | 10 | N | sp_ob | chan | integer | 0 | none | Number of channels or 1st channel command | src/hydrograph_module.f90:459 | in_sim |
+| 3 | 11 | N | sp_ob | res | integer | 0 | none | Number of reservoirs or 1st reservoir command | src/hydrograph_module.f90:460 | in_sim |
+| 3 | 12 | N | sp_ob | recall | integer | 0 | none | Number of recall points or 1st recall command | src/hydrograph_module.f90:461 | in_sim |
+| 3 | 13 | N | sp_ob | exco | integer | 0 | none | Number of export coefficients or 1st exco command | src/hydrograph_module.f90:462 | in_sim |
+| 3 | 14 | N | sp_ob | dr | integer | 0 | none | Number of delivery ratios or 1st DR command | src/hydrograph_module.f90:463 | in_sim |
+| 3 | 15 | N | sp_ob | canal | integer | 0 | none | Number of canals or 1st canal command | src/hydrograph_module.f90:464 | in_sim |
+| 3 | 16 | N | sp_ob | pump | integer | 0 | none | Number of pumps or 1st pump command | src/hydrograph_module.f90:465 | in_sim |
+| 3 | 17 | N | sp_ob | outlet | integer | 0 | none | Number of outlets or 1st outlet command | src/hydrograph_module.f90:466 | in_sim |
+| 3 | 18 | N | sp_ob | chandeg | integer | 0 | none | Number of SWAT-DEG channels or 1st SWAT-DEG channel command | src/hydrograph_module.f90:467 | in_sim |
+| 3 | 19 | N | sp_ob | aqu2d | integer | 0 | none | Not currently used (number of 2D aquifers) | src/hydrograph_module.f90:468 | in_sim |
+| 3 | 20 | N | sp_ob | herd | integer | 0 | none | Not currently used (number of herds) | src/hydrograph_module.f90:469 | in_sim |
+| 3 | 21 | N | sp_ob | wro | integer | 0 | none | Not currently used (number of water rights) | src/hydrograph_module.f90:470 | in_sim |
 
 
 ---
