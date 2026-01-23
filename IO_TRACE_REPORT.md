@@ -7009,3 +7009,841 @@ aquifer.aqu → in_aqu%aqu
 - Array allocated to max index, not count - allows sparse indexing
 - Sets `bsn_cc%gwflow = 0` after reading (line 62)
 
+
+---
+
+## 3.80 lum.dtl (Land Use Management Decision Table) (INPUT)
+
+### Filename Resolution
+
+**Resolution Chain**:
+- Target filename: `lum.dtl`
+- Expression: `in_cond%dtbl_lum`
+- Type definition: `input_cond` at src/input_file_module.f90:249-256
+- Variable instance: `in_cond` at src/input_file_module.f90:257
+- Default value: `"lum.dtl"` set at src/input_file_module.f90:251
+- Runtime overrides: None detected
+
+**Detailed Mapping**:
+```
+lum.dtl → in_cond%dtbl_lum 
+        → type input_cond (src/input_file_module.f90:249-256)
+        → character(len=25) :: dtbl_lum = "lum.dtl" (src/input_file_module.f90:251)
+```
+
+### I/O Sites Table
+
+**Routine**: `dtbl_lum_read`  
+**File**: src/dtbl_lum_read.f90  
+**Expression**: `in_cond%dtbl_lum`  
+**Unit mapping**: 107 → in_cond%dtbl_lum → "lum.dtl"
+
+| Line | Statement | Type | Description |
+|------|-----------|------|-------------|
+| 36 | `inquire (file=in_cond%dtbl_lum, exist=i_exist)` | INQUIRE | Check file existence |
+| 41 | `open (107,file=in_cond%dtbl_lum)` | OPEN | Open decision table file |
+| 42 | `read (107,*,iostat=eof) titldum` | READ | Read title line |
+| 44 | `read (107,*,iostat=eof) mdtbl` | READ | Read number of decision tables |
+| 46 | `read (107,*,iostat=eof)` | READ | Skip line |
+| 51 | `read (107,*,iostat=eof) header` | READ | Read table header |
+| 53 | `read (107,*,iostat=eof) dtbl_lum(i)%name, dtbl_lum(i)%conds, dtbl_lum(i)%alts, dtbl_lum(i)%acts` | READ | Read decision table metadata |
+| 65 | `read (107,*,iostat=eof) header` | READ | Read conditions header |
+| 68 | `read (107,*,iostat=eof) dtbl_lum(i)%cond(ic), (dtbl_lum(i)%alt(ic,ial), ial = 1, dtbl_lum(i)%alts)` | READ | Read condition and alternatives |
+| 72 | `read (107,*,iostat=eof) dtbl_lum(i)%cond(ic)%var, dtbl_lum(i)%frac_app` | READ | Read probabilistic condition |
+| 91 | `read (107,*,iostat=eof) header` | READ | Read actions header |
+| 94 | `read (107,*,iostat=eof) dtbl_lum(i)%act(iac), (dtbl_lum(i)%act_outcomes(iac,ial), ial = 1, dtbl_lum(i)%alts)` | READ | Read action and outcomes |
+| 251 | `close (107)` | CLOSE | Close file |
+
+### PRIMARY DATA READ Table
+
+**Read Statement 1**: `read (107,*,iostat=eof) dtbl_lum(i)%name, dtbl_lum(i)%conds, dtbl_lum(i)%alts, dtbl_lum(i)%acts` at src/dtbl_lum_read.f90:53
+**File.cio Reference**: This file (lum.dtl) is referenced in file.cio as component `dtbl_lum` of derived type `in_cond`
+
+**Decision Table Metadata**:
+
+| Line in File | Position | Local | Derived Type | Component | Type | Default | Units | Description | Source Line | Swat_codetype |
+|--------------|----------|-------|--------------|-----------|------|---------|-------|-------------|-------------|---------------|
+| Variable (each table) | 1 | N | decision_table | name | character(len=40) | "" | N/A | Name of the decision table | src/conditional_module.f90:29 | in_cond |
+| Variable (each table) | 2 | N | decision_table | conds | integer | 0 | none | Number of conditions | src/conditional_module.f90:30 | in_cond |
+| Variable (each table) | 3 | N | decision_table | alts | integer | 0 | none | Number of alternatives (rules) | src/conditional_module.f90:31 | in_cond |
+| Variable (each table) | 4 | N | decision_table | acts | integer | 0 | none | Number of actions | src/conditional_module.f90:32 | in_cond |
+
+**Read Statement 2**: `read (107,*,iostat=eof) dtbl_lum(i)%cond(ic), (dtbl_lum(i)%alt(ic,ial), ial = 1, dtbl_lum(i)%alts)` at src/dtbl_lum_read.f90:68
+
+**Conditions and Alternatives** (repeated for each condition `ic = 1, conds`):
+
+**Derived Type: conditions_var** (src/conditional_module.f90:7-14)
+
+| Line in File | Position | Local | Derived Type | Component | Type | Default | Units | Description | Source Line | Swat_codetype |
+|--------------|----------|-------|--------------|-----------|------|---------|-------|-------------|-------------|---------------|
+| Variable | 1 | N | conditions_var | var | character(len=25) | "" | N/A | Condition variable (e.g., w_stress, n_stress, phu_plant, soil_water, jday, month, year_rot, prob_unif, land_use) | src/conditional_module.f90:8 | in_cond |
+| Variable | 2 | N | conditions_var | ob | character(len=25) | "" | N/A | Object type (e.g., hru, res, canal) | src/conditional_module.f90:9 | in_cond |
+| Variable | 3 | N | conditions_var | ob_num | integer | 0 | none | Object number (0 = current object) | src/conditional_module.f90:10 | in_cond |
+| Variable | 4 | N | conditions_var | lim_var | character(len=25) | "" | N/A | Limit variable (e.g., wp, fc, ul, evol, pvol, land use name) | src/conditional_module.f90:11 | in_cond |
+| Variable | 5 | N | conditions_var | lim_op | character(len=25) | "" | N/A | Limit operator (*, +, -) | src/conditional_module.f90:12 | in_cond |
+| Variable | 6 | N | conditions_var | lim_const | real | 0. | varies | Limit constant | src/conditional_module.f90:13 | in_cond |
+| Variable | 7+ | N | decision_table | alt(ic,ial) | character(len=25) | "" | N/A | Alternative values for condition (number = alts) | src/conditional_module.f90:34 | in_cond |
+
+**Special Case - prob_unif**: When `cond(ic)%var == "prob_unif"`, the read is different:
+`read (107,*,iostat=eof) dtbl_lum(i)%cond(ic)%var, dtbl_lum(i)%frac_app` at line 72
+
+| Line in File | Position | Local | Derived Type | Component | Type | Default | Units | Description | Source Line | Swat_codetype |
+|--------------|----------|-------|--------------|-----------|------|---------|-------|-------------|-------------|---------------|
+| Variable | 1 | N | conditions_var | var | character(len=25) | "" | N/A | "prob_unif" | src/conditional_module.f90:8 | in_cond |
+| Variable | 2 | N | decision_table | frac_app | real | 0. | fraction | Fraction of time application occurs during window | src/conditional_module.f90:49 | in_cond |
+
+**Read Statement 3**: `read (107,*,iostat=eof) dtbl_lum(i)%act(iac), (dtbl_lum(i)%act_outcomes(iac,ial), ial = 1, dtbl_lum(i)%alts)` at src/dtbl_lum_read.f90:94
+
+**Actions and Outcomes** (repeated for each action `iac = 1, acts`):
+
+**Derived Type: actions_var** (src/conditional_module.f90:16-26)
+
+| Line in File | Position | Local | Derived Type | Component | Type | Default | Units | Description | Source Line | Swat_codetype |
+|--------------|----------|-------|--------------|-----------|------|---------|-------|-------------|-------------|---------------|
+| Variable | 1 | N | actions_var | typ | character(len=25) | "" | N/A | Type of action (plant, harvest, harvest_kill, till, irr_demand, irrigate, fertilize, fert_future, manure_demand, pest_apply, graze, puddle, burn) | src/conditional_module.f90:17 | in_cond |
+| Variable | 2 | N | actions_var | ob | character(len=25) | "" | N/A | Object type (hru, res, canal, etc.) | src/conditional_module.f90:18 | in_cond |
+| Variable | 3 | N | actions_var | ob_num | integer | 0 | none | Object number (0 = current object) | src/conditional_module.f90:19 | in_cond |
+| Variable | 4 | N | actions_var | name | character(len=25) | "" | N/A | Name of action (for days-since-action tracking) | src/conditional_module.f90:20 | in_cond |
+| Variable | 5 | N | actions_var | option | character(len=40) | "" | N/A | Action option (specific to action type: plant name, fert name, till implement, irrigation method, etc.) | src/conditional_module.f90:21-22 | in_cond |
+| Variable | 6 | N | actions_var | const | real | 0. | varies | Constant (rate, days, amount, etc.) | src/conditional_module.f90:23 | in_cond |
+| Variable | 7 | N | actions_var | const2 | real | 1. | varies | Additional constant (automatically set to max(1, const2) at line 95) | src/conditional_module.f90:24 | in_cond |
+| Variable | 8 | N | actions_var | file_pointer | character(len=25) | "" | N/A | File pointer (points to database: transplant, harvest.ops, chem_app.ops, etc.) | src/conditional_module.f90:25 | in_cond |
+| Variable | 9+ | N | decision_table | act_outcomes(iac,ial) | character(len=1) | "" | N/A | Action outcomes ("y" to perform, "n" to not) - number = alts | src/conditional_module.f90:37 | in_cond |
+
+**File.cio Cross-Reference**:
+```
+file.cio → in_cond%dtbl_lum → "lum.dtl"
+```
+
+**Notes**:
+1. The file contains multiple decision tables (mdtbl tables total)
+2. Each decision table has three sections:
+   - Metadata line (name, conds, alts, acts)
+   - Conditions section (conds lines, each with condition + alts alternatives)
+   - Actions section (acts lines, each with action + alts outcomes)
+3. Cross-walking (lines 100-242): The code matches text names to database indices for:
+   - plant: transplant database
+   - harvest/harvest_kill: harvest operations database
+   - till: tillage database
+   - irr_demand/irrigate: irrigation operations database
+   - fertilize/fert_future: fertilizer database + chemical application database
+   - manure_demand: chemical application database
+   - pest_apply: pesticides + chemical application database
+   - graze: grazing operations database
+   - puddle: puddling database
+   - burn: fire operations database
+
+---
+
+## 3.81 res_rel.dtl (Reservoir Release Decision Table) (INPUT)
+
+### Filename Resolution
+
+**Resolution Chain**:
+- Target filename: `res_rel.dtl`
+- Expression: `in_cond%dtbl_res`
+- Type definition: `input_cond` at src/input_file_module.f90:249-256
+- Variable instance: `in_cond` at src/input_file_module.f90:257
+- Default value: `"res_rel.dtl"` set at src/input_file_module.f90:252
+- Runtime overrides: None detected
+
+**Detailed Mapping**:
+```
+res_rel.dtl → in_cond%dtbl_res 
+            → type input_cond (src/input_file_module.f90:249-256)
+            → character(len=25) :: dtbl_res = "res_rel.dtl" (src/input_file_module.f90:252)
+```
+
+### I/O Sites Table
+
+**Routine**: `dtbl_res_read`  
+**File**: src/dtbl_res_read.f90  
+**Expression**: `in_cond%dtbl_res`  
+**Unit mapping**: 107 → in_cond%dtbl_res → "res_rel.dtl"
+
+| Line | Statement | Type | Description |
+|------|-----------|------|-------------|
+| 30 | `inquire (file=in_cond%dtbl_res, exist=i_exist)` | INQUIRE | Check file existence |
+| 35 | `open (107,file=in_cond%dtbl_res)` | OPEN | Open decision table file |
+| 36 | `read (107,*,iostat=eof) titldum` | READ | Read title line |
+| 38 | `read (107,*,iostat=eof) mdtbl` | READ | Read number of decision tables |
+| 40 | `read (107,*,iostat=eof)` | READ | Skip line |
+| 45 | `read (107,*,iostat=eof) header` | READ | Read table header |
+| 47 | `read (107,*,iostat=eof) dtbl_res(i)%name, dtbl_res(i)%conds, dtbl_res(i)%alts, dtbl_res(i)%acts` | READ | Read decision table metadata |
+| 58 | `read (107,*,iostat=eof) header` | READ | Read conditions header |
+| 61 | `read (107,*,iostat=eof) dtbl_res(i)%cond(ic), (dtbl_res(i)%alt(ic,ial), ial = 1, dtbl_res(i)%alts)` | READ | Read condition and alternatives |
+| 66 | `read (107,*,iostat=eof) header` | READ | Read actions header |
+| 69 | `read (107,*,iostat=eof) dtbl_res(i)%act(iac), (dtbl_res(i)%act_outcomes(iac,ial), ial = 1, dtbl_res(i)%alts)` | READ | Read action and outcomes |
+| 72 | `read (107,*,iostat=eof)` | READ | Skip line after each table |
+| 107 | `close (107)` | CLOSE | Close file |
+
+### PRIMARY DATA READ Table
+
+**Same structure as lum.dtl**, but specific to reservoir release operations.
+
+**Decision Table Metadata** - same as lum.dtl (see section 3.80)
+
+**Conditions and Alternatives** - same structure as lum.dtl (see section 3.80)
+- Typical reservoir conditions: vol (volume), jday (Julian day), month, year_rot, year_cal, prob
+
+**Actions and Outcomes** - same base structure as lum.dtl, but reservoir-specific actions:
+
+**Reservoir-Specific Actions**:
+| Action Type | Option Values | File Pointer | Description |
+|-------------|---------------|--------------|-------------|
+| release | weir | res_weir name | Release using weir equation from res_weir database |
+| release | meas | recall name | Release using measured data from recall file |
+
+**Cross-walking** (lines 76-100):
+- For "release" with "weir" option: Links to res_weir database (db_mx%res_weir)
+- For "release" with "meas" option: Links to recall database (db_mx%recall_max)
+
+**File.cio Cross-Reference**:
+```
+file.cio → in_cond%dtbl_res → "res_rel.dtl"
+```
+
+---
+
+## 3.82 scen_lu.dtl (Scenario Land Use Decision Table) (INPUT)
+
+### Filename Resolution
+
+**Resolution Chain**:
+- Target filename: `scen_lu.dtl`
+- Expression: `in_cond%dtbl_scen`
+- Type definition: `input_cond` at src/input_file_module.f90:249-256
+- Variable instance: `in_cond` at src/input_file_module.f90:257
+- Default value: `"scen_lu.dtl"` set at src/input_file_module.f90:253
+- Runtime overrides: None detected
+
+**Detailed Mapping**:
+```
+scen_lu.dtl → in_cond%dtbl_scen 
+            → type input_cond (src/input_file_module.f90:249-256)
+            → character(len=25) :: dtbl_scen = "scen_lu.dtl" (src/input_file_module.f90:253)
+```
+
+### I/O Sites Table
+
+**Routine**: `dtbl_scen_read`  
+**File**: src/dtbl_scen_read.f90  
+**Expression**: `in_cond%dtbl_scen`  
+**Unit mapping**: 107 → in_cond%dtbl_scen → "scen_lu.dtl"
+
+| Line | Statement | Type | Description |
+|------|-----------|------|-------------|
+| 29 | `inquire (file=in_cond%dtbl_scen, exist=i_exist)` | INQUIRE | Check file existence |
+| 34 | `open (107,file=in_cond%dtbl_scen)` | OPEN | Open decision table file |
+| 35 | `read (107,*,iostat=eof) titldum` | READ | Read title line |
+| 37 | `read (107,*,iostat=eof) mdtbl` | READ | Read number of decision tables |
+| 39 | `read (107,*,iostat=eof)` | READ | Skip line |
+| 44 | `read (107,*,iostat=eof) header` | READ | Read table header |
+| 46 | `read (107,*,iostat=eof) dtbl_scen(i)%name, dtbl_scen(i)%conds, dtbl_scen(i)%alts, dtbl_scen(i)%acts` | READ | Read decision table metadata |
+| 59 | `read (107,*,iostat=eof) header` | READ | Read conditions header |
+| 62 | `read (107,*,iostat=eof) dtbl_scen(i)%cond(ic), (dtbl_scen(i)%alt(ic,ial), ial = 1, dtbl_scen(i)%alts)` | READ | Read condition and alternatives |
+| 67 | `read (107,*,iostat=eof) header` | READ | Read actions header |
+| 70 | `read (107,*,iostat=eof) dtbl_scen(i)%act(iac), (dtbl_scen(i)%act_outcomes(iac,ial), ial = 1, dtbl_scen(i)%alts)` | READ | Read action and outcomes |
+| 73 | `read (107,*,iostat=eof)` | READ | Skip line after each table |
+| 95 | `close (107)` | CLOSE | Close file |
+
+### PRIMARY DATA READ Table
+
+**Same structure as lum.dtl**, but specific to land use change scenarios.
+
+**Decision Table Metadata** - same as lum.dtl (see section 3.80)
+
+**Conditions and Alternatives** - same structure as lum.dtl (see section 3.80)
+- Typical scenario conditions: year_cal, year_seq, prob, land_use
+
+**Actions and Outcomes** - same base structure as lum.dtl, but scenario-specific actions:
+
+**Scenario-Specific Actions**:
+| Action Type | Option Values | File Pointer | Description |
+|-------------|---------------|--------------|-------------|
+| lu_change | N/A | landuse name | Change land use to specified land use from landuse.lum database |
+
+**Cross-walking** (lines 77-88):
+- For "lu_change" action: Links to landuse database (lum array, db_mx%landuse)
+
+**File.cio Cross-Reference**:
+```
+file.cio → in_cond%dtbl_scen → "scen_lu.dtl"
+```
+
+---
+
+## 3.83 flo_con.dtl (Flow Control Decision Table) (INPUT)
+
+### Filename Resolution
+
+**Resolution Chain**:
+- Target filename: `flo_con.dtl`
+- Expression: `in_cond%dtbl_flo`
+- Type definition: `input_cond` at src/input_file_module.f90:249-256
+- Variable instance: `in_cond` at src/input_file_module.f90:257
+- Default value: `"flo_con.dtl"` set at src/input_file_module.f90:254
+- Runtime overrides: None detected
+
+**Detailed Mapping**:
+```
+flo_con.dtl → in_cond%dtbl_flo 
+            → type input_cond (src/input_file_module.f90:249-256)
+            → character(len=25) :: dtbl_flo = "flo_con.dtl" (src/input_file_module.f90:254)
+```
+
+### I/O Sites Table
+
+**Routine**: `dtbl_flocon_read`  
+**File**: src/dtbl_flocon_read.f90  
+**Expression**: `in_cond%dtbl_flo`  
+**Unit mapping**: 107 → in_cond%dtbl_flo → "flo_con.dtl"
+
+| Line | Statement | Type | Description |
+|------|-----------|------|-------------|
+| 26 | `inquire (file=in_cond%dtbl_flo, exist=i_exist)` | INQUIRE | Check file existence |
+| 31 | `open (107,file=in_cond%dtbl_flo)` | OPEN | Open decision table file |
+| 32 | `read (107,*,iostat=eof) titldum` | READ | Read title line |
+| 34 | `read (107,*,iostat=eof) mdtbl` | READ | Read number of decision tables |
+| 36 | `read (107,*,iostat=eof)` | READ | Skip line |
+| 42 | `read (107,*,iostat=eof) header` | READ | Read table header |
+| 43 | `read (107,*,iostat=eof) dtbl_flo(i)%name, dtbl_flo(i)%conds, dtbl_flo(i)%alts, dtbl_flo(i)%acts` | READ | Read decision table metadata |
+| 54 | `read (107,*,iostat=eof) header` | READ | Read conditions header |
+| 57 | `read (107,*,iostat=eof) dtbl_flo(i)%cond(ic), (dtbl_flo(i)%alt(ic,ial), ial = 1, dtbl_flo(i)%alts)` | READ | Read condition and alternatives |
+| 62 | `read (107,*,iostat=eof) header` | READ | Read actions header |
+| 65 | `read (107,*,iostat=eof) dtbl_flo(i)%act(iac), (dtbl_flo(i)%act_outcomes(iac,ial), ial = 1, dtbl_flo(i)%alts)` | READ | Read action and outcomes |
+| 79 | `read (107,*,iostat=eof)` | READ | Skip line after each table |
+| 100 | `close (107)` | CLOSE | Close file |
+
+### PRIMARY DATA READ Table
+
+**Same structure as lum.dtl**, but specific to flow control operations.
+
+**Decision Table Metadata** - same as lum.dtl (see section 3.80)
+
+**Conditions and Alternatives** - same structure as lum.dtl (see section 3.80)
+- Typical flow control conditions: flo (flow), vol (volume), jday, month
+
+**Actions and Outcomes** - same base structure as lum.dtl, but flow-specific actions:
+
+**Flow Control-Specific Actions**:
+| Action Type | Option Values | File Pointer | Description |
+|-------------|---------------|--------------|-------------|
+| divert | recall | recall filename | Divert flow using measured data from recall file |
+
+**Cross-walking** (lines 69-76):
+- For "divert" with "recall" option: Links to recall database (db_mx%recall_max) using recall filename
+
+**Post-processing** (lines 89-98):
+- Cross-walks decision table names with object rulesets in connect file
+- Sets ob(iob)%flo_dtbl to point to the appropriate decision table index
+
+**File.cio Cross-Reference**:
+```
+file.cio → in_cond%dtbl_flo → "flo_con.dtl"
+```
+
+
+---
+
+## 3.84 ls_unit.def (Landscape Unit Definitions) (INPUT)
+
+### Filename Resolution
+
+**Resolution Chain**:
+- Target filename: `ls_unit.def`
+- Expression: `in_regs%def_lsu`
+- Type definition: `input_regs` at src/input_file_module.f90:258-276
+- Variable instance: `in_regs` at src/input_file_module.f90:277
+- Default value: `"ls_unit.def"` set at src/input_file_module.f90:261
+- Runtime overrides: None detected
+
+**Detailed Mapping**:
+```
+ls_unit.def → in_regs%def_lsu 
+            → type input_regs (src/input_file_module.f90:258-276)
+            → character(len=25) :: def_lsu = "ls_unit.def" (src/input_file_module.f90:261)
+```
+
+### I/O Sites Table
+
+**Routine**: `lsu_read_elements`  
+**File**: src/lsu_read_elements.f90  
+**Expression**: `in_regs%def_lsu`  
+**Unit mapping**: 107 → in_regs%def_lsu → "ls_unit.def"
+
+| Line | Statement | Type | Description |
+|------|-----------|------|-------------|
+| 31 | `inquire (file=in_regs%def_lsu, exist=i_exist)` | INQUIRE | Check file existence |
+| 34 | `open (107,file=in_regs%def_lsu)` | OPEN | Open landscape unit definitions file |
+| 35 | `read (107,*,iostat=eof) titldum` | READ | Read title line |
+| 37 | `read (107,*,iostat=eof) mlsu` | READ | Read number of landscape units |
+| 39 | `read (107,*,iostat=eof) header` | READ | Read column headers |
+| 65 | `read (107,*,iostat=eof) k, lsu_out(i)%name, lsu_out(i)%area_ha, nspu` | READ | Read LSU metadata |
+| 70 | `read (107,*,iostat=eof) k, lsu_out(i)%name, lsu_out(i)%area_ha, nspu, (elem_cnt(isp), isp = 1, nspu)` | READ | Read LSU metadata with element counts |
+| 95 | `close (107)` | CLOSE | Close file (after processing .def) |
+
+### PRIMARY DATA READ Table
+
+**Read Statement**: `read (107,*,iostat=eof) k, lsu_out(i)%name, lsu_out(i)%area_ha, nspu, (elem_cnt(isp), isp = 1, nspu)` at src/lsu_read_elements.f90:70
+**File.cio Reference**: This file (ls_unit.def) is referenced in file.cio as component `def_lsu` of derived type `in_regs`
+
+**Derived Type: landscape_units** (src/calibration_data_module.f90:193-198)
+
+| Line in File | Position | Local | Derived Type | Component | Type | Default | Units | Description | Source Line | Swat_codetype |
+|--------------|----------|-------|--------------|-----------|------|---------|-------|-------------|-------------|---------------|
+| 3+ | 1 | Y | N/A | k | integer | 0 | none | Landscape unit number (loop counter) | src/lsu_read_elements.f90:22 | in_regs |
+| 3+ | 2 | N | landscape_units | name | character(len=16) | "basin" | N/A | Name of landscape unit region | src/calibration_data_module.f90:194 | in_regs |
+| 3+ | 3 | N | landscape_units | area_ha | real | 0. | ha | Area of landscape cataloging unit | src/calibration_data_module.f90:195 | in_regs |
+| 3+ | 4 | Y | N/A | nspu | integer | 0 | none | Number of spatial units in this LSU | src/lsu_read_elements.f90:23 | in_regs |
+| 3+ | 5+ | Y | N/A | elem_cnt(isp) | integer | 0 | none | Element counts for each spatial unit (nspu values) | src/lsu_read_elements.f90:68 | in_regs |
+
+**Note**: If nspu > 0, element counts are read. If nspu = 0, all HRUs are included in the region.
+
+**File.cio Cross-Reference**:
+```
+file.cio → in_regs%def_lsu → "ls_unit.def"
+```
+
+---
+
+## 3.85 ls_unit.ele (Landscape Unit Elements) (INPUT)
+
+### Filename Resolution
+
+**Resolution Chain**:
+- Target filename: `ls_unit.ele`
+- Expression: `in_regs%ele_lsu`
+- Type definition: `input_regs` at src/input_file_module.f90:258-276
+- Variable instance: `in_regs` at src/input_file_module.f90:277
+- Default value: `"ls_unit.ele"` set at src/input_file_module.f90:260
+- Runtime overrides: None detected
+
+**Detailed Mapping**:
+```
+ls_unit.ele → in_regs%ele_lsu 
+            → type input_regs (src/input_file_module.f90:258-276)
+            → character(len=25) :: ele_lsu = "ls_unit.ele" (src/input_file_module.f90:260)
+```
+
+### I/O Sites Table
+
+**Routine**: `lsu_read_elements`  
+**File**: src/lsu_read_elements.f90  
+**Expression**: `in_regs%ele_lsu`  
+**Unit mapping**: 107 → in_regs%ele_lsu → "ls_unit.ele"
+
+| Line | Statement | Type | Description |
+|------|-----------|------|-------------|
+| 98 | `inquire (file=in_regs%ele_lsu, exist=i_exist)` | INQUIRE | Check file existence |
+| 101 | `open (107,file=in_regs%ele_lsu)` | OPEN | Open landscape unit elements file |
+| 102 | `read (107,*,iostat=eof) titldum` | READ | Read title line |
+| 104 | `read (107,*,iostat=eof) header` | READ | Read column headers |
+| 108 | `read (107,*,iostat=eof) i` | READ | Read element ID (first pass - counting) |
+| 116 | `rewind (107)` | REWIND | Reset file pointer |
+| 117 | `read (107,*,iostat=eof) titldum` | READ | Re-read title line |
+| 119 | `read (107,*,iostat=eof) header` | READ | Re-read column headers |
+| 124 | `read (107,*,iostat=eof) i` | READ | Read element ID (second pass) |
+| 127 | `read (107,*,iostat=eof) k, lsu_elem(i)%name, lsu_elem(i)%obtyp, lsu_elem(i)%obtypno, lsu_elem(i)%bsn_frac, lsu_elem(i)%ru_frac` | READ | Read complete element record |
+| 135 | `close (107)` | CLOSE | Close file |
+
+### PRIMARY DATA READ Table
+
+**Read Statement**: `read (107,*,iostat=eof) k, lsu_elem(i)%name, lsu_elem(i)%obtyp, lsu_elem(i)%obtypno, lsu_elem(i)%bsn_frac, lsu_elem(i)%ru_frac` at src/lsu_read_elements.f90:127
+**File.cio Reference**: This file (ls_unit.ele) is referenced in file.cio as component `ele_lsu` of derived type `in_regs`
+
+**Derived Type: landscape_elements** (src/calibration_data_module.f90:219-227)
+
+| Line in File | Position | Local | Derived Type | Component | Type | Default | Units | Description | Source Line | Swat_codetype |
+|--------------|----------|-------|--------------|-----------|------|---------|-------|-------------|-------------|---------------|
+| 3+ | 1 | Y | N/A | k | integer | 0 | none | Element number | src/lsu_read_elements.f90:22 | in_regs |
+| 3+ | 2 | N | landscape_elements | name | character(len=16) | "" | N/A | Element name | src/calibration_data_module.f90:220 | in_regs |
+| 3+ | 3 | N | landscape_elements | obtyp | character(len=3) | "" | N/A | Object type (hru, hlt=hru_lte, exc=export coef, etc.) | src/calibration_data_module.f90:222 | in_regs |
+| 3+ | 4 | N | landscape_elements | obtypno | integer | 0 | none | Object type number (HRU number, HRU_LTE number, etc.) | src/calibration_data_module.f90:223 | in_regs |
+| 3+ | 5 | N | landscape_elements | bsn_frac | real | 0. | fraction | Fraction of element in basin (expansion factor) | src/calibration_data_module.f90:224 | in_regs |
+| 3+ | 6 | N | landscape_elements | ru_frac | real | 0. | fraction | Fraction of element in routing unit (expansion factor) | src/calibration_data_module.f90:225 | in_regs |
+
+**Note**: Two-pass reading: First pass counts records to allocate array, second pass reads data.
+
+**File.cio Cross-Reference**:
+```
+file.cio → in_regs%ele_lsu → "ls_unit.ele"
+```
+
+---
+
+## 3.86 aqu_catunit.def (Aquifer Catchment Unit Definitions) (INPUT)
+
+### Filename Resolution
+
+**Resolution Chain**:
+- Target filename: `aqu_catunit.def`
+- Expression: `in_regs%def_aqu`
+- Type definition: `input_regs` at src/input_file_module.f90:258-276
+- Variable instance: `in_regs` at src/input_file_module.f90:277
+- Default value: `"aqu_catunit.def"` set at src/input_file_module.f90:269
+- Runtime overrides: None detected
+
+**Detailed Mapping**:
+```
+aqu_catunit.def → in_regs%def_aqu 
+                → type input_regs (src/input_file_module.f90:258-276)
+                → character(len=25) :: def_aqu = "aqu_catunit.def" (src/input_file_module.f90:269)
+```
+
+### I/O Sites Table
+
+**Routine**: `aqu_read_elements`  
+**File**: src/aqu_read_elements.f90  
+**Expression**: `in_regs%def_aqu`  
+**Unit mapping**: 107 → in_regs%def_aqu → "aqu_catunit.def"
+
+| Line | Statement | Type | Description |
+|------|-----------|------|-------------|
+| 33 | `inquire (file=in_regs%def_aqu, exist=i_exist)` | INQUIRE | Check file existence |
+| 36 | `open (107,file=in_regs%def_aqu)` | OPEN | Open aquifer catchment unit definitions file |
+| 37 | `read (107,*,iostat=eof) titldum` | READ | Read title line |
+| 39 | `read (107,*,iostat=eof) mreg` | READ | Read number of aquifer regions |
+| 41 | `read (107,*,iostat=eof) header` | READ | Read column headers |
+| 55 | `read (107,*,iostat=eof) k, acu_out(i)%name, acu_out(i)%area_ha, nspu` | READ | Read ACU metadata |
+| 60 | `read (107,*,iostat=eof) k, acu_out(i)%name, acu_out(i)%area_ha, nspu, (elem_cnt(isp), isp = 1, nspu)` | READ | Read ACU metadata with element counts |
+| 192 | `close (107)` | CLOSE | Close file |
+
+### PRIMARY DATA READ Table
+
+**Read Statement**: `read (107,*,iostat=eof) k, acu_out(i)%name, acu_out(i)%area_ha, nspu, (elem_cnt(isp), isp = 1, nspu)` at src/aqu_read_elements.f90:60
+**File.cio Reference**: This file (aqu_catunit.def) is referenced in file.cio as component `def_aqu` of derived type `in_regs`
+
+**Same structure as landscape_units** (src/calibration_data_module.f90:193-198)
+
+| Line in File | Position | Local | Derived Type | Component | Type | Default | Units | Description | Source Line | Swat_codetype |
+|--------------|----------|-------|--------------|-----------|------|---------|-------|-------------|-------------|---------------|
+| 3+ | 1 | Y | N/A | k | integer | 0 | none | Aquifer region number | src/aqu_read_elements.f90:22 | in_regs |
+| 3+ | 2 | N | landscape_units | name | character(len=16) | "basin" | N/A | Name of aquifer catchment unit | src/calibration_data_module.f90:194 | in_regs |
+| 3+ | 3 | N | landscape_units | area_ha | real | 0. | ha | Area of aquifer catchment unit | src/calibration_data_module.f90:195 | in_regs |
+| 3+ | 4 | Y | N/A | nspu | integer | 0 | none | Number of spatial units in this ACU | src/aqu_read_elements.f90:23 | in_regs |
+| 3+ | 5+ | Y | N/A | elem_cnt(isp) | integer | 0 | none | Element counts for each spatial unit (nspu values) | src/aqu_read_elements.f90:58 | in_regs |
+
+**Note**: If nspu > 0, element counts are read. If nspu = 0, all aquifers are included in the region.
+
+**File.cio Cross-Reference**:
+```
+file.cio → in_regs%def_aqu → "aqu_catunit.def"
+```
+
+---
+
+## 3.87 aqu_catunit.ele (Aquifer Catchment Unit Elements) (INPUT)
+
+### Filename Resolution
+
+**Resolution Chain**:
+- Target filename: `aqu_catunit.ele`
+- Expression: `in_regs%ele_aqu`
+- Type definition: `input_regs` at src/input_file_module.f90:258-276
+- Variable instance: `in_regs` at src/input_file_module.f90:277
+- Default value: `"aqu_catunit.ele"` set at src/input_file_module.f90:268
+- Runtime overrides: None detected
+
+**Detailed Mapping**:
+```
+aqu_catunit.ele → in_regs%ele_aqu 
+                → type input_regs (src/input_file_module.f90:258-276)
+                → character(len=25) :: ele_aqu = "aqu_catunit.ele" (src/input_file_module.f90:268)
+```
+
+### I/O Sites Table
+
+**Routine**: `aqu_read_elements`  
+**File**: src/aqu_read_elements.f90  
+**Expression**: `in_regs%ele_aqu`  
+**Unit mapping**: 107 → in_regs%ele_aqu → "aqu_catunit.ele"
+
+| Line | Statement | Type | Description |
+|------|-----------|------|-------------|
+| 146 | `inquire (file=in_regs%ele_aqu, exist=i_exist)` | INQUIRE | Check file existence |
+| 149 | `open (107,file=in_regs%ele_aqu)` | OPEN | Open aquifer catchment unit elements file |
+| 150 | `read (107,*,iostat=eof) titldum` | READ | Read title line |
+| 152 | `read (107,*,iostat=eof) header` | READ | Read column headers |
+| 156 | `read (107,*,iostat=eof) i` | READ | Read element ID (first pass - counting) |
+| 163 | `rewind (107)` | REWIND | Reset file pointer |
+| 164 | `read (107,*,iostat=eof) titldum` | READ | Re-read title line |
+| 166 | `read (107,*,iostat=eof) header` | READ | Re-read column headers |
+| 171 | `read (107,*,iostat=eof) i` | READ | Read element ID (second pass) |
+| 174 | `read (107,*,iostat=eof) k, acu_elem(i)%name, acu_elem(i)%obtyp, acu_elem(i)%obtypno, acu_elem(i)%bsn_frac, acu_elem(i)%ru_frac, acu_elem(i)%reg_frac` | READ | Read complete element record |
+| 192 | `close (107)` | CLOSE | Close file |
+
+### PRIMARY DATA READ Table
+
+**Read Statement**: `read (107,*,iostat=eof) k, acu_elem(i)%name, acu_elem(i)%obtyp, acu_elem(i)%obtypno, acu_elem(i)%bsn_frac, acu_elem(i)%ru_frac, acu_elem(i)%reg_frac` at src/aqu_read_elements.f90:174
+**File.cio Reference**: This file (aqu_catunit.ele) is referenced in file.cio as component `ele_aqu` of derived type `in_regs`
+
+**Derived Type: landscape_elements** (src/calibration_data_module.f90:219-227)
+
+| Line in File | Position | Local | Derived Type | Component | Type | Default | Units | Description | Source Line | Swat_codetype |
+|--------------|----------|-------|--------------|-----------|------|---------|-------|-------------|---------------|---------------|
+| 3+ | 1 | Y | N/A | k | integer | 0 | none | Element number | src/aqu_read_elements.f90:22 | in_regs |
+| 3+ | 2 | N | landscape_elements | name | character(len=16) | "" | N/A | Element name | src/calibration_data_module.f90:220 | in_regs |
+| 3+ | 3 | N | landscape_elements | obtyp | character(len=3) | "" | N/A | Object type (aqu=aquifer, etc.) | src/calibration_data_module.f90:222 | in_regs |
+| 3+ | 4 | N | landscape_elements | obtypno | integer | 0 | none | Aquifer number | src/calibration_data_module.f90:223 | in_regs |
+| 3+ | 5 | N | landscape_elements | bsn_frac | real | 0. | fraction | Fraction of element in basin (expansion factor) | src/calibration_data_module.f90:224 | in_regs |
+| 3+ | 6 | N | landscape_elements | ru_frac | real | 0. | fraction | Fraction of element in routing unit (expansion factor) | src/calibration_data_module.f90:225 | in_regs |
+| 3+ | 7 | N | landscape_elements | reg_frac | real | 0. | fraction | Fraction of element in calibration region (expansion factor) | src/calibration_data_module.f90:226 | in_regs |
+
+**Note**: Two-pass reading: First pass counts records to allocate array, second pass reads data. Note the extra field `reg_frac` compared to ls_unit.ele.
+
+**File.cio Cross-Reference**:
+```
+file.cio → in_regs%ele_aqu → "aqu_catunit.ele"
+```
+
+
+---
+
+## 3.88 septic.str (Septic System Structure) (INPUT)
+
+### Filename Resolution
+
+**Resolution Chain**:
+- Target filename: `septic.str`
+- Expression: `in_str%septic_str`
+- Type definition: `input_structural` at src/input_file_module.f90:166-172
+- Variable instance: `in_str` at src/input_file_module.f90:173
+- Default value: `"septic.str"` set at src/input_file_module.f90:168
+- Runtime overrides: None detected
+
+**Detailed Mapping**:
+```
+septic.str → in_str%septic_str 
+           → type input_structural (src/input_file_module.f90:166-172)
+           → character(len=25) :: septic_str = "septic.str" (src/input_file_module.f90:168)
+```
+
+### I/O Sites Table
+
+**Routine**: `sep_read`  
+**File**: src/sep_read.f90  
+**Expression**: `in_str%septic_str`  
+**Unit mapping**: 172 → in_str%septic_str → "septic.str"
+
+| Line | Statement | Type | Description |
+|------|-----------|------|-------------|
+| 19 | `inquire (file=in_str%septic_str,exist=i_exist)` | INQUIRE | Check file existence |
+| 24 | `open (172,file=in_str%septic_str)` | OPEN | Open septic structure file |
+| 25 | `read (172,*,iostat=eof) titldum` | READ | Read title line |
+| 27 | `read (172,*,iostat=eof) header` | READ | Read column headers |
+| 30 | `read (172,*,iostat=eof) titldum` | READ | Read line (first pass - counting) |
+| 36 | `rewind (172)` | REWIND | Reset file pointer |
+| 37 | `read (172,*,iostat=eof) titldum` | READ | Re-read title line |
+| 39 | `read (172,*,iostat=eof) header` | READ | Re-read column headers |
+| 43 | `read(172,*,iostat=eof) sep(isep)` | READ | Read complete septic system record |
+| 50 | `close(172)` | CLOSE | Close file |
+
+### PRIMARY DATA READ Table
+
+**Read Statement**: `read(172,*,iostat=eof) sep(isep)` at src/sep_read.f90:43
+**File.cio Reference**: This file (septic.str) is referenced in file.cio as component `septic_str` of derived type `in_str`
+
+**Derived Type: septic_system** (src/septic_data_module.f90:20-50)
+
+| Line in File | Position | Local | Derived Type | Component | Type | Default | Units | Description | Source Line | Swat_codetype |
+|--------------|----------|-------|--------------|-----------|------|---------|-------|-------------|-------------|---------------|
+| 3+ | 1 | N | septic_system | name | character(len=13) | "default" | N/A | Septic system name | src/septic_data_module.f90:21 | in_str |
+| 3+ | 2 | N | septic_system | typ | integer | 0 | none | Septic system type | src/septic_data_module.f90:22 | in_str |
+| 3+ | 3 | N | septic_system | yr | integer | 0 | year | Year the septic system became operational | src/septic_data_module.f90:23 | in_str |
+| 3+ | 4 | N | septic_system | opt | integer | 0 | none | Septic system operation flag (1=active, 2=failing, 0=not operated) | src/septic_data_module.f90:24 | in_str |
+| 3+ | 5 | N | septic_system | cap | real | 0. | none | Number of permanent residents in the house | src/septic_data_module.f90:25 | in_str |
+| 3+ | 6 | N | septic_system | area | real | 0. | m² | Average area of drainfield of individual septic systems | src/septic_data_module.f90:26 | in_str |
+| 3+ | 7 | N | septic_system | tfail | integer | 0 | days | Time until falling systems gets fixed | src/septic_data_module.f90:27 | in_str |
+| 3+ | 8 | N | septic_system | z | real | 0. | mm | Depth to the top of the biozone layer from the ground surface | src/septic_data_module.f90:28 | in_str |
+| 3+ | 9 | N | septic_system | thk | real | 0. | mm | Thickness of biozone layer | src/septic_data_module.f90:29 | in_str |
+| 3+ | 10 | N | septic_system | strm_dist | real | 0. | km | Distance to the stream from the septic | src/septic_data_module.f90:30 | in_str |
+| 3+ | 11 | N | septic_system | density | real | 0. | none | Number of septic systems per square kilometer | src/septic_data_module.f90:31 | in_str |
+| 3+ | 12 | N | septic_system | bd | real | 0. | kg/m³ | Density of biomass | src/septic_data_module.f90:32 | in_str |
+| 3+ | 13 | N | septic_system | bod_dc | real | 0. | m³/day | BOD decay rate coefficient | src/septic_data_module.f90:33 | in_str |
+| 3+ | 14 | N | septic_system | bod_conv | real | 0. | none | Conversion factor: proportion of mass bacterial growth and mass BOD degraded in STE | src/septic_data_module.f90:34-35 | in_str |
+| 3+ | 15 | N | septic_system | fc1 | real | 0. | none | Linear coefficient for calculation of field capacity in the biozone | src/septic_data_module.f90:36 | in_str |
+| 3+ | 16 | N | septic_system | fc2 | real | 0. | none | Exponential coefficient for calculation of field capacity in the biozone | src/septic_data_module.f90:37 | in_str |
+| 3+ | 17 | N | septic_system | fecal | real | 0. | m³/day | Fecal coliform bacteria decay rate coefficient | src/septic_data_module.f90:38 | in_str |
+| 3+ | 18 | N | septic_system | plq | real | 0. | none | Conversion factor for plaque from TDS | src/septic_data_module.f90:39 | in_str |
+| 3+ | 19 | N | septic_system | mrt | real | 0. | none | Mortality rate coefficient | src/septic_data_module.f90:40 | in_str |
+| 3+ | 20 | N | septic_system | rsp | real | 0. | none | Respiration rate coefficient | src/septic_data_module.f90:41 | in_str |
+| 3+ | 21 | N | septic_system | slg1 | real | 0. | none | Slough-off calibration parameter | src/septic_data_module.f90:42 | in_str |
+| 3+ | 22 | N | septic_system | slg2 | real | 0. | none | Slough-off calibration parameter | src/septic_data_module.f90:43 | in_str |
+| 3+ | 23 | N | septic_system | nitr | real | 0. | none | Nitrification rate coefficient | src/septic_data_module.f90:44 | in_str |
+| 3+ | 24 | N | septic_system | denitr | real | 0. | none | Denitrification rate coefficient | src/septic_data_module.f90:45 | in_str |
+| 3+ | 25 | N | septic_system | pdistrb | real | 0. | L/kg | Linear P sorption distribution coefficient | src/septic_data_module.f90:46 | in_str |
+| 3+ | 26 | N | septic_system | psorpmax | real | 0. | mg P/kg Soil | Maximum P sorption capacity | src/septic_data_module.f90:47 | in_str |
+| 3+ | 27 | N | septic_system | solpslp | real | 0. | none | Slope of the linear effluent soluble P equation | src/septic_data_module.f90:48 | in_str |
+| 3+ | 28 | N | septic_system | solpintc | real | 0. | none | Intercept of the linear effluent soluble P equation | src/septic_data_module.f90:49 | in_str |
+
+**Note**: Two-pass reading strategy - first pass counts records, second pass reads data into allocated array.
+
+**File.cio Cross-Reference**:
+```
+file.cio → in_str%septic_str → "septic.str"
+```
+
+
+---
+
+## 3.89 ch_catunit.def (Channel Catchment Unit Definitions) (INPUT)
+
+### Filename Resolution
+
+**Resolution Chain**:
+- Target filename: `ch_catunit.def`
+- Expression: `in_regs%def_cha`
+- Type definition: `input_regs` at src/input_file_module.f90:258-276
+- Variable instance: `in_regs` at src/input_file_module.f90:277
+- Default value: `"ch_catunit.def"` set at src/input_file_module.f90:266
+- Runtime overrides: None detected
+
+**Detailed Mapping**:
+```
+ch_catunit.def → in_regs%def_cha 
+               → type input_regs (src/input_file_module.f90:258-276)
+               → character(len=25) :: def_cha = "ch_catunit.def" (src/input_file_module.f90:266)
+```
+
+**File.cio Cross-Reference**: `file.cio → in_regs%def_cha → "ch_catunit.def"`
+
+**Structure**: Same as aqu_catunit.def (section 3.86) but for channels. Uses `landscape_units` type (src/calibration_data_module.f90:193-198).
+
+**Reading Routine**: `ch_read_elements` (src/ch_read_elements.f90)
+
+---
+
+## 3.90 ch_catunit.ele (Channel Catchment Unit Elements) (INPUT)
+
+### Filename Resolution
+
+**Resolution Chain**:
+- Target filename: `ch_catunit.ele`
+- Expression: `in_regs%ele_cha`
+- Type definition: `input_regs` at src/input_file_module.f90:258-276
+- Variable instance: `in_regs` at src/input_file_module.f90:277
+- Default value: `"ch_catunit.ele"` set at src/input_file_module.f90:265
+- Runtime overrides: None detected
+
+**Detailed Mapping**:
+```
+ch_catunit.ele → in_regs%ele_cha 
+               → type input_regs (src/input_file_module.f90:258-276)
+               → character(len=25) :: ele_cha = "ch_catunit.ele" (src/input_file_module.f90:265)
+```
+
+**File.cio Cross-Reference**: `file.cio → in_regs%ele_cha → "ch_catunit.ele"`
+
+**Structure**: Same as aqu_catunit.ele (section 3.87) but for channels. Uses `landscape_elements` type (src/calibration_data_module.f90:219-227) with `reg_frac` field.
+
+**Reading Routine**: `ch_read_elements` (src/ch_read_elements.f90)
+
+---
+
+## 3.91 res_catunit.def (Reservoir Catchment Unit Definitions) (INPUT)
+
+### Filename Resolution
+
+**Resolution Chain**:
+- Target filename: `res_catunit.def`
+- Expression: `in_regs%def_res`
+- Type definition: `input_regs` at src/input_file_module.f90:258-276
+- Variable instance: `in_regs` at src/input_file_module.f90:277
+- Default value: `"res_catunit.def"` set at src/input_file_module.f90:272
+- Runtime overrides: None detected
+
+**Detailed Mapping**:
+```
+res_catunit.def → in_regs%def_res 
+                → type input_regs (src/input_file_module.f90:258-276)
+                → character(len=25) :: def_res = "res_catunit.def" (src/input_file_module.f90:272)
+```
+
+**File.cio Cross-Reference**: `file.cio → in_regs%def_res → "res_catunit.def"`
+
+**Structure**: Same as aqu_catunit.def (section 3.86) but for reservoirs. Uses `landscape_units` type (src/calibration_data_module.f90:193-198).
+
+**Reading Routine**: `res_read_elements` (src/res_read_elements.f90)
+
+---
+
+## 3.92 res_catunit.ele (Reservoir Catchment Unit Elements) (INPUT)
+
+### Filename Resolution
+
+**Resolution Chain**:
+- Target filename: `res_catunit.ele`
+- Expression: `in_regs%ele_res`
+- Type definition: `input_regs` at src/input_file_module.f90:258-276
+- Variable instance: `in_regs` at src/input_file_module.f90:277
+- Default value: `"res_catunit.ele"` set at src/input_file_module.f90:271
+- Runtime overrides: None detected
+
+**Detailed Mapping**:
+```
+res_catunit.ele → in_regs%ele_res 
+                → type input_regs (src/input_file_module.f90:258-276)
+                → character(len=25) :: ele_res = "res_catunit.ele" (src/input_file_module.f90:271)
+```
+
+**File.cio Cross-Reference**: `file.cio → in_regs%ele_res → "res_catunit.ele"`
+
+**Structure**: Same as aqu_catunit.ele (section 3.87) but for reservoirs. Uses `landscape_elements` type (src/calibration_data_module.f90:219-227) with `reg_frac` field.
+
+**Reading Routine**: `res_read_elements` (src/res_read_elements.f90)
+
+---
+
+## 3.93 rec_catunit.def (Recall/Point Source Catchment Unit Definitions) (INPUT)
+
+### Filename Resolution
+
+**Resolution Chain**:
+- Target filename: `rec_catunit.def`
+- Expression: `in_regs%def_psc`
+- Type definition: `input_regs` at src/input_file_module.f90:258-276
+- Variable instance: `in_regs` at src/input_file_module.f90:277
+- Default value: `"rec_catunit.def"` set at src/input_file_module.f90:275
+- Runtime overrides: None detected
+
+**Detailed Mapping**:
+```
+rec_catunit.def → in_regs%def_psc 
+                → type input_regs (src/input_file_module.f90:258-276)
+                → character(len=25) :: def_psc = "rec_catunit.def" (src/input_file_module.f90:275)
+```
+
+**File.cio Cross-Reference**: `file.cio → in_regs%def_psc → "rec_catunit.def"`
+
+**Structure**: Same as aqu_catunit.def (section 3.86) but for recall/point sources. Uses `landscape_units` type (src/calibration_data_module.f90:193-198).
+
+**Reading Routine**: `rec_read_elements` (src/rec_read_elements.f90)
+
+---
+
+## 3.94 rec_catunit.ele (Recall/Point Source Catchment Unit Elements) (INPUT)
+
+### Filename Resolution
+
+**Resolution Chain**:
+- Target filename: `rec_catunit.ele`
+- Expression: `in_regs%ele_psc`
+- Type definition: `input_regs` at src/input_file_module.f90:258-276
+- Variable instance: `in_regs` at src/input_file_module.f90:277
+- Default value: `"rec_catunit.ele"` set at src/input_file_module.f90:274
+- Runtime overrides: None detected
+
+**Detailed Mapping**:
+```
+rec_catunit.ele → in_regs%ele_psc 
+                → type input_regs (src/input_file_module.f90:258-276)
+                → character(len=25) :: ele_psc = "rec_catunit.ele" (src/input_file_module.f90:274)
+```
+
+**File.cio Cross-Reference**: `file.cio → in_regs%ele_psc → "rec_catunit.ele"`
+
+**Structure**: Same as aqu_catunit.ele (section 3.87) but for recall/point sources. Uses `landscape_elements` type (src/calibration_data_module.f90:219-227) with `reg_frac` field.
+
+**Reading Routine**: `rec_read_elements` (src/rec_read_elements.f90)
+
