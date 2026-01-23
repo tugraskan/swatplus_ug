@@ -2421,23 +2421,23 @@ This report provides comprehensive I/O trace documentation for critical SWAT+ in
 Based on file.cio structure (31 file categories, 145+ individual files), the following files still require comprehensive documentation:
 
 **Climate Files** (in_cli):
-- weather-wgn.cli - Weather generator parameters (12 months × multiple parameters per station)
-- pcp.cli - Precipitation gage data
-- tmp.cli - Temperature gage data
+- ~~weather-wgn.cli~~ - DOCUMENTED (Section 3.9)
+- ~~pcp.cli~~ - DOCUMENTED (Section 3.10)
+- ~~tmp.cli~~ - DOCUMENTED (Section 3.11)
 - slr.cli - Solar radiation data
-- hmd.cli - Humidity/dewpoint data
-- wnd.cli - Wind speed data
+- ~~hmd.cli~~ - DOCUMENTED (Section 3.12)
+- ~~wnd.cli~~ - DOCUMENTED (Section 3.13)
 - atmodep.cli - Atmospheric deposition
 - pet.cli - Measured potential ET (conditional on codes.bsn)
 
 **Connection Files** (in_con):
-- hru.con - HRU connections
+- ~~hru.con~~ - DOCUMENTED (Section 3.19)
 - hru-lte.con - HRU long-term environmental connections
-- rout_unit.con - Routing unit connections
+- ~~rout_unit.con~~ - DOCUMENTED (Section 3.20)
 - gwflow.con - Groundwater flow connections
-- aquifer.con - Aquifer connections
+- ~~aquifer.con~~ - DOCUMENTED (Section 3.21)
 - aquifer2d.con - 2D aquifer connections
-- channel.con - Channel connections
+- ~~channel.con~~ - DOCUMENTED (Section 3.22)
 - reservoir.con - Reservoir connections
 - recall.con - Recall point connections
 - exco.con - Export coefficient connections
@@ -2446,11 +2446,11 @@ Based on file.cio structure (31 file categories, 145+ individual files), the fol
 - chandeg.con - SWAT-DEG channel connections
 
 **Channel Files** (in_cha):
-- initial.cha - Initial channel conditions
+- ~~initial.cha~~ - DOCUMENTED (Section 3.23)
 - channel.cha - Channel data
 - hydrology.cha - Channel hydrology
 - sediment.cha - Channel sediment
-- nutrients.cha - Channel nutrients
+- ~~nutrients.cha~~ - DOCUMENTED (Section 3.24)
 - channel-lte.cha - Channel LTE
 - hyd-sed-lte.cha - Hydrology-sediment LTE
 - temperature.cha - Channel temperature
@@ -2515,19 +2515,24 @@ Based on file.cio structure (31 file categories, 145+ individual files), the fol
 - snow.sno - Snow parameters
 
 **Operation Files** (in_ops):
-- harv.ops - Harvest operations
+- ~~harv.ops~~ - DOCUMENTED (Section 3.25)
 - graze.ops - Grazing operations
-- irr.ops - Irrigation operations
+- ~~irr.ops~~ - DOCUMENTED (Section 3.26)
 - chem_app.ops - Chemical application
 - fire.ops - Fire operations
 - sweep.ops - Street sweeping
 
 **Land Use Management Files** (in_lum):
-- landuse.lum - Land use definitions
-- management.sch - Management schedules
-- cntable.lum - Curve number table
+- ~~landuse.lum~~ - DOCUMENTED (Section 3.16)
+- ~~management.sch~~ - DOCUMENTED (Section 3.17)
+- ~~cntable.lum~~ - DOCUMENTED (Section 3.18)
 - cons_practice.lum - Conservation practices
 - ovn_table.lum - Overland flow Manning's n
+
+**Soils Files** (in_sol):
+- ~~soils.sol~~ - DOCUMENTED (Section 3.14)
+- ~~nutrients.sol~~ - DOCUMENTED (Section 3.15)
+- soils_lte.sol - Soil LTE data
 
 **Calibration Files** (in_chg):
 - cal_parms.cal - Calibration parameters
