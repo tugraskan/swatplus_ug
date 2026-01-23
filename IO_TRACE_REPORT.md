@@ -3543,3 +3543,1106 @@ All locations follow the format: `src/file.f90:line` or `src/file.f90:line-range
 
 **Report Status**: Phase 2 Extended - 28 of 145+ files fully documented  
 **Last Updated**: 2026-01-23
+
+---
+
+## 3.27 reservoir.con (INPUT)
+
+**File**: src/hyd_read_connect.f90  
+**Routine**: `hyd_read_connect`  
+**Expression**: `in_con%res_con`  
+**Unit**: 107
+
+#### Filename Resolution
+
+```
+reservoir.con → in_con%res_con
+              → type input_con (src/input_file_module.f90:40-54)
+              → character(len=25) :: res_con = "reservoir.con" (line 48)
+```
+
+#### I/O Sites
+
+| **Site** | **File** | **Line(s)** | **Operation** | **Unit** | **Expression** |
+|----------|----------|-------------|---------------|----------|----------------|
+| CALL | src/hyd_connect.f90 | 158 | `call hyd_read_connect(in_con%res_con, ...)` | - | `in_con%res_con` |
+| OPEN | src/hyd_read_connect.f90 | 57 | `open (107,file=con_file)` | 107 | `con_file` param |
+| READ (title) | src/hyd_read_connect.f90 | 58 | Title line | 107 | - |
+| READ (header) | src/hyd_read_connect.f90 | 60 | Header line | 107 | - |
+| READ (data) | src/hyd_read_connect.f90 | 220-221 | Read object connectivity | 107 | `ob(i)%*` |
+| READ (outflows) | src/hyd_read_connect.f90 | 298-301 | Read outflow objects | 107 | `ob(i)%obtyp_out(*)` |
+| CLOSE | src/hyd_read_connect.f90 | 342 | Close file | 107 | - |
+
+#### Payload Map
+
+**Target Variable**: `ob(i)` (object_connectivity array, i = sp_ob1%res to sp_ob1%res + sp_ob%res - 1)  
+**Module**: hydrograph_module  
+**Type Definition**: src/hydrograph_module.f90:321-403
+
+**PRIMARY DATA READ**:
+
+| **Variable** | **Field** | **Type** | **Units** | **Description** | **Swat_codetype** | **Source** |
+|--------------|-----------|----------|-----------|-----------------|-------------------|------------|
+| ob(i)%num | num | integer | - | Spatial object number | object_connectivity%num | Line 220 |
+| ob(i)%name | name | character(16) | - | Object name | object_connectivity%name | Line 220 |
+| ob(i)%gis_id | gis_id | integer*8 | - | GIS identification number | object_connectivity%gis_id | Line 220 |
+| ob(i)%area_ha | area_ha | real | ha | Drainage area | object_connectivity%area_ha | Line 220 |
+| ob(i)%lat | lat | real | degrees | Latitude | object_connectivity%lat | Line 220 |
+| ob(i)%long | long | real | degrees | Longitude | object_connectivity%long | Line 220 |
+| ob(i)%elev | elev | real | m | Elevation | object_connectivity%elev | Line 220 |
+| ob(i)%props | props | integer | - | Properties pointer (reservoir.res) | object_connectivity%props | Line 220 |
+| ob(i)%wst_c | wst_c | character(50) | - | Weather station name | object_connectivity%wst_c | Line 220 |
+| ob(i)%constit | constit | integer | - | Constituent data pointer | object_connectivity%constit | Line 220 |
+| ob(i)%props2 | props2 | integer | - | Secondary properties pointer | object_connectivity%props2 | Line 220 |
+| ob(i)%ruleset | ruleset | character(16) | - | Decision table ruleset name | object_connectivity%ruleset | Line 220 |
+| ob(i)%src_tot | src_tot | integer | - | Total outflow objects | object_connectivity%src_tot | Line 220 |
+| ob(i)%obtyp_out(:) | obtyp_out | character(3) array | - | Outflow object types | object_connectivity%obtyp_out | Line 300 |
+| ob(i)%obtypno_out(:) | obtypno_out | integer array | - | Outflow object numbers | object_connectivity%obtypno_out | Line 300 |
+| ob(i)%htyp_out(:) | htyp_out | character(3) array | - | Outflow hydrograph types | object_connectivity%htyp_out | Line 300 |
+| ob(i)%frac_out(:) | frac_out | real array | fraction | Outflow fractions | object_connectivity%frac_out | Line 300 |
+
+**Type Expansion - object_connectivity** (src/hydrograph_module.f90:321-403):
+```fortran
+type object_connectivity
+  character(len=16) :: name = "default"
+  character(len=8) :: typ = " "          ! object type (res for reservoirs)
+  integer :: nhyds = 0                   ! number of hydrographs (1 for res)
+  real :: lat = 0.                       ! latitude (degrees)
+  real :: long = 0.                      ! longitude (degrees)
+  real :: elev = 100.                    ! elevation (m)
+  real :: area_ha = 80.                  ! drainage area (ha)
+  integer :: sp_ob_no = 1                ! spatial object number
+  integer :: props = 1                   ! properties pointer to reservoir.res
+  character(len=50) :: wst_c = ""        ! weather station name
+  integer :: wst = 1                     ! weather station number
+  integer :: constit = 0                 ! constituent data pointer
+  integer :: props2 = 0                  ! secondary properties pointer
+  character(len=16) :: ruleset = ""      ! decision table ruleset name
+  integer*8 :: gis_id = 0                ! GIS identifier
+  integer :: num = 1                     ! spatial object number
+  integer :: src_tot = 0                 ! total outflow objects
+  character(len=3), allocatable :: obtyp_out(:)    ! outflow object types
+  integer, allocatable :: obtypno_out(:)            ! outflow object numbers
+  character(len=3), allocatable :: htyp_out(:)      ! outflow hyd types
+  real, allocatable :: frac_out(:)                  ! outflow fractions
+  ! ... plus ~80 additional fields for hydrology, routing, constituents
+end type object_connectivity
+```
+
+**file.cio Cross-Reference**: `in_con%res_con` loaded from file.cio connectivity section
+
+**Notes**:
+- Called with parameters: (in_con%res_con, "res     ", sp_ob1%res, sp_ob%res, hd_tot%res, 1)
+- Sets ob(i)%typ = "res" for all reservoir objects
+- Sets ob(i)%nhyds = 1 (single hydrograph per reservoir)
+- Allocates complex nested hydrograph structures if constituents enabled
+- Object numbers range from sp_ob1%res to (sp_ob1%res + sp_ob%res - 1)
+
+---
+
+### 3.28 recall.con (INPUT)
+
+**File**: src/hyd_read_connect.f90  
+**Routine**: `hyd_read_connect`  
+**Expression**: `in_con%rec_con`  
+**Unit**: 107
+
+#### Filename Resolution
+
+```
+recall.con → in_con%rec_con
+           → type input_con (src/input_file_module.f90:40-54)
+           → character(len=25) :: rec_con = "recall.con" (line 49)
+```
+
+#### I/O Sites
+
+| **Site** | **File** | **Line(s)** | **Operation** | **Unit** | **Expression** |
+|----------|----------|-------------|---------------|----------|----------------|
+| CALL | src/hyd_connect.f90 | 163 | `call hyd_read_connect(in_con%rec_con, ...)` | - | `in_con%rec_con` |
+| OPEN | src/hyd_read_connect.f90 | 57 | `open (107,file=con_file)` | 107 | `con_file` param |
+| READ (title) | src/hyd_read_connect.f90 | 58 | Title line | 107 | - |
+| READ (header) | src/hyd_read_connect.f90 | 60 | Header line | 107 | - |
+| READ (data) | src/hyd_read_connect.f90 | 220-221 | Read object connectivity | 107 | `ob(i)%*` |
+| READ (outflows) | src/hyd_read_connect.f90 | 298-301 | Read outflow objects | 107 | `ob(i)%obtyp_out(*)` |
+| CLOSE | src/hyd_read_connect.f90 | 342 | Close file | 107 | - |
+
+#### Payload Map
+
+**Target Variable**: `ob(i)` (object_connectivity array, i = sp_ob1%recall to sp_ob1%recall + sp_ob%recall - 1)  
+**Module**: hydrograph_module  
+**Type Definition**: src/hydrograph_module.f90:321-403
+
+**PRIMARY DATA READ**: Same structure as reservoir.con (section 3.27)
+
+**file.cio Cross-Reference**: `in_con%rec_con` loaded from file.cio connectivity section
+
+**Notes**:
+- Called with parameters: (in_con%rec_con, "recall  ", sp_ob1%recall, sp_ob%recall, hd_tot%recall, 1)
+- Sets ob(i)%typ = "recall" for all recall objects
+- Sets ob(i)%nhyds = 1 (single hydrograph per recall)
+- Recall objects read hydrograph data from recall files
+- Initializes area_ha_calc = area_ha for drainage area calculations (line 225)
+
+---
+
+### 3.29 exco.con (INPUT)
+
+**File**: src/hyd_read_connect.f90  
+**Routine**: `hyd_read_connect`  
+**Expression**: `in_con%exco_con`  
+**Unit**: 107
+
+#### Filename Resolution
+
+```
+exco.con → in_con%exco_con
+         → type input_con (src/input_file_module.f90:40-54)
+         → character(len=25) :: exco_con = "exco.con" (line 50)
+```
+
+#### I/O Sites
+
+| **Site** | **File** | **Line(s)** | **Operation** | **Unit** | **Expression** |
+|----------|----------|-------------|---------------|----------|----------------|
+| CALL | src/hyd_connect.f90 | 168 | `call hyd_read_connect(in_con%exco_con, ...)` | - | `in_con%exco_con` |
+| OPEN | src/hyd_read_connect.f90 | 57 | `open (107,file=con_file)` | 107 | `con_file` param |
+| READ (title) | src/hyd_read_connect.f90 | 58 | Title line | 107 | - |
+| READ (header) | src/hyd_read_connect.f90 | 60 | Header line | 107 | - |
+| READ (data) | src/hyd_read_connect.f90 | 220-221 | Read object connectivity | 107 | `ob(i)%*` |
+| READ (outflows) | src/hyd_read_connect.f90 | 298-301 | Read outflow objects | 107 | `ob(i)%obtyp_out(*)` |
+| CLOSE | src/hyd_read_connect.f90 | 342 | Close file | 107 | - |
+
+#### Payload Map
+
+**Target Variable**: `ob(i)` (object_connectivity array, i = sp_ob1%exco to sp_ob1%exco + sp_ob%exco - 1)  
+**Module**: hydrograph_module  
+**Type Definition**: src/hydrograph_module.f90:321-403
+
+**PRIMARY DATA READ**: Same structure as reservoir.con (section 3.27)
+
+**file.cio Cross-Reference**: `in_con%exco_con` loaded from file.cio connectivity section
+
+**Notes**:
+- Called with parameters: (in_con%exco_con, "exco    ", sp_ob1%exco, sp_ob%exco, hd_tot%exco, 1)
+- Sets ob(i)%typ = "exco" for all export coefficient objects
+- Sets ob(i)%nhyds = 1 (single hydrograph per exco)
+- Export coefficient objects use regression-based nutrient loading
+
+---
+
+### 3.30 delratio.con (INPUT)
+
+**File**: src/hyd_read_connect.f90  
+**Routine**: `hyd_read_connect`  
+**Expression**: `in_con%delr_con`  
+**Unit**: 107
+
+#### Filename Resolution
+
+```
+delratio.con → in_con%delr_con
+             → type input_con (src/input_file_module.f90:40-54)
+             → character(len=25) :: delr_con = "delratio.con" (line 51)
+```
+
+#### I/O Sites
+
+| **Site** | **File** | **Line(s)** | **Operation** | **Unit** | **Expression** |
+|----------|----------|-------------|---------------|----------|----------------|
+| CALL | src/hyd_connect.f90 | 173 | `call hyd_read_connect(in_con%delr_con, ...)` | - | `in_con%delr_con` |
+| OPEN | src/hyd_read_connect.f90 | 57 | `open (107,file=con_file)` | 107 | `con_file` param |
+| READ (title) | src/hyd_read_connect.f90 | 58 | Title line | 107 | - |
+| READ (header) | src/hyd_read_connect.f90 | 60 | Header line | 107 | - |
+| READ (data) | src/hyd_read_connect.f90 | 220-221 | Read object connectivity | 107 | `ob(i)%*` |
+| READ (outflows) | src/hyd_read_connect.f90 | 298-301 | Read outflow objects | 107 | `ob(i)%obtyp_out(*)` |
+| CLOSE | src/hyd_read_connect.f90 | 342 | Close file | 107 | - |
+
+#### Payload Map
+
+**Target Variable**: `ob(i)` (object_connectivity array, i = sp_ob1%dr to sp_ob1%dr + sp_ob%dr - 1)  
+**Module**: hydrograph_module  
+**Type Definition**: src/hydrograph_module.f90:321-403
+
+**PRIMARY DATA READ**: Same structure as reservoir.con (section 3.27)
+
+**file.cio Cross-Reference**: `in_con%delr_con` loaded from file.cio connectivity section
+
+**Notes**:
+- Called with parameters: (in_con%delr_con, "dr      ", sp_ob1%dr, sp_ob%dr, hd_tot%dr, 1)
+- Sets ob(i)%typ = "dr" for all delivery ratio objects
+- Sets ob(i)%nhyds = 1 (single hydrograph per dr)
+- After connection read, calls dr_db_read to load delivery ratio data (line 174)
+- Used for sediment delivery ratio calculations
+
+---
+
+### 3.31 outlet.con (INPUT)
+
+**File**: src/hyd_read_connect.f90  
+**Routine**: `hyd_read_connect`  
+**Expression**: `in_con%out_con`  
+**Unit**: 107
+
+#### Filename Resolution
+
+```
+outlet.con → in_con%out_con
+           → type input_con (src/input_file_module.f90:40-54)
+           → character(len=25) :: out_con = "outlet.con" (line 52)
+```
+
+#### I/O Sites
+
+| **Site** | **File** | **Line(s)** | **Operation** | **Unit** | **Expression** |
+|----------|----------|-------------|---------------|----------|----------------|
+| CALL | src/hyd_connect.f90 | 179 | `call hyd_read_connect(in_con%out_con, ...)` | - | `in_con%out_con` |
+| OPEN | src/hyd_read_connect.f90 | 57 | `open (107,file=con_file)` | 107 | `con_file` param |
+| READ (title) | src/hyd_read_connect.f90 | 58 | Title line | 107 | - |
+| READ (header) | src/hyd_read_connect.f90 | 60 | Header line | 107 | - |
+| READ (data) | src/hyd_read_connect.f90 | 220-221 | Read object connectivity | 107 | `ob(i)%*` |
+| READ (outflows) | src/hyd_read_connect.f90 | 298-301 | Read outflow objects | 107 | `ob(i)%obtyp_out(*)` |
+| CLOSE | src/hyd_read_connect.f90 | 342 | Close file | 107 | - |
+
+#### Payload Map
+
+**Target Variable**: `ob(i)` (object_connectivity array, i = sp_ob1%outlet to sp_ob1%outlet + sp_ob%outlet - 1)  
+**Module**: hydrograph_module  
+**Type Definition**: src/hydrograph_module.f90:321-403
+
+**PRIMARY DATA READ**: Same structure as reservoir.con (section 3.27)
+
+**file.cio Cross-Reference**: `in_con%out_con` loaded from file.cio connectivity section
+
+**Notes**:
+- Called with parameters: (in_con%out_con, "outlet  ", sp_ob1%outlet, sp_ob%outlet, hd_tot%outlet, bsn_prm%day_lag_mx)
+- Sets ob(i)%typ = "outlet" for all outlet objects
+- Sets ob(i)%nhyds = hd_tot%outlet (multiple hydrographs possible)
+- Uses bsn_prm%day_lag_mx for subdaily hydrograph storage (not 1 like res/recall/exco/dr)
+- Outlet objects represent watershed outlets with flow monitoring
+
+---
+
+### 3.32 hydrology.cha (INPUT)
+
+**File**: src/ch_read_hyd.f90  
+**Routine**: `ch_read_hyd`  
+**Expression**: `in_cha%hyd`  
+**Unit**: 105
+
+#### Filename Resolution
+
+```
+hydrology.cha → in_cha%hyd
+              → type input_cha (src/input_file_module.f90:58-67)
+              → character(len=25) :: hyd = "hydrology.cha" (line 61)
+```
+
+#### I/O Sites
+
+| **Site** | **File** | **Line(s)** | **Operation** | **Unit** | **Expression** |
+|----------|----------|-------------|---------------|----------|----------------|
+| OPEN | src/ch_read_hyd.f90 | 25 | `open (105,file=in_cha%hyd)` | 105 | `in_cha%hyd` |
+| READ (title) | src/ch_read_hyd.f90 | 26 | Title line | 105 | - |
+| READ (header) | src/ch_read_hyd.f90 | 28 | Header line | 105 | - |
+| READ (count) | src/ch_read_hyd.f90 | 31-33 | Count records | 105 | Loop |
+| READ (data) | src/ch_read_hyd.f90 | 49 | Read channel hydrology | 105 | `ch_hyd(ich)` |
+| CLOSE | src/ch_read_hyd.f90 | 61 | Close file | 105 | - |
+
+#### Payload Map
+
+**Target Variable**: `ch_hyd(:)` (allocated array of type `channel_hyd_data`)  
+**Module**: channel_data_module  
+**Type Definition**: src/channel_data_module.f90:69-84
+
+**PRIMARY DATA READ**:
+
+| **Variable** | **Field** | **Type** | **Units** | **Description** | **Swat_codetype** | **Source** |
+|--------------|-----------|----------|-----------|-----------------|-------------------|------------|
+| ch_hyd(i)%name | name | character(16) | - | Channel hydrology name | channel_hyd_data%name | Line 49 |
+| ch_hyd(i)%w | w | real | m | Average channel width | channel_hyd_data%w | Line 49 |
+| ch_hyd(i)%d | d | real | m | Average channel depth | channel_hyd_data%d | Line 49 |
+| ch_hyd(i)%s | s | real | m/m | Average channel slope | channel_hyd_data%s | Line 49 |
+| ch_hyd(i)%l | l | real | km | Main channel length | channel_hyd_data%l | Line 49 |
+| ch_hyd(i)%n | n | real | - | Manning's n value | channel_hyd_data%n | Line 49 |
+| ch_hyd(i)%k | k | real | mm/hr | Effective hydraulic conductivity | channel_hyd_data%k | Line 49 |
+| ch_hyd(i)%wdr | wdr | real | m/m | Width to depth ratio | channel_hyd_data%wdr | Line 49 |
+| ch_hyd(i)%alpha_bnk | alpha_bnk | real | days | Bank storage recession alpha | channel_hyd_data%alpha_bnk | Line 49 |
+| ch_hyd(i)%side | side | real | - | Channel side slope | channel_hyd_data%side | Line 49 |
+
+**Type Expansion - channel_hyd_data** (src/channel_data_module.f90:69-84):
+```fortran
+type channel_hyd_data
+  character(len=16) :: name = "default"
+  real :: w = 2.              ! m       |average width of main channel
+  real :: d = .5              ! m       |average depth of main channel
+  real :: s = .01             ! m/m     |average slope of main channel
+  real :: l = 0.1             ! km      |main channel length in subbasin
+  real :: n = .05             ! none    |Manning's "n" value for main channel
+  real :: k = 0.01            ! mm/hr   |effective hydraulic conductivity
+  real :: wdr = 6.            ! m/m     |channel width to depth ratio
+  real :: alpha_bnk = 0.03    ! days    |alpha factor for bank storage recession curve
+  real :: side = 0.           !         |change in horizontal distance per unit vertical
+end type channel_hyd_data
+```
+
+**file.cio Cross-Reference**: `in_cha%hyd` loaded from file.cio channel section
+
+**Notes**:
+- Allocates ch_hyd(0:imax)
+- Sets db_mx%ch_hyd = imax at line 36
+- If file doesn't exist or is "null", allocates ch_hyd(0:0)
+- Post-processing (lines 52-58):
+  - ch_hyd(i)%alpha_bnk = Exp(-alpha_bnk)
+  - Constrains slope: if s <= 0 then s = 0.0001
+  - Constrains Manning's n: 0.01 <= n <= 0.70
+  - Constrains length: if l <= 0 then l = 0.0010
+  - Constrains wdr: if wdr <= 0 then wdr = 3.5
+  - Constrains side: if side <= 1.e-6 then side = 2.0
+
+---
+
+### 3.33 sediment.cha (INPUT)
+
+**File**: src/ch_read_sed.f90  
+**Routine**: `ch_read_sed`  
+**Expression**: `in_cha%sed`  
+**Unit**: 105
+
+#### Filename Resolution
+
+```
+sediment.cha → in_cha%sed
+             → type input_cha (src/input_file_module.f90:58-67)
+             → character(len=25) :: sed = "sediment.cha" (line 62)
+```
+
+#### I/O Sites
+
+| **Site** | **File** | **Line(s)** | **Operation** | **Unit** | **Expression** |
+|----------|----------|-------------|---------------|----------|----------------|
+| OPEN | src/ch_read_sed.f90 | 33 | `open (105,file=in_cha%sed)` | 105 | `in_cha%sed` |
+| READ (title) | src/ch_read_sed.f90 | 34 | Title line | 105 | - |
+| READ (header) | src/ch_read_sed.f90 | 36 | Header line | 105 | - |
+| READ (count) | src/ch_read_sed.f90 | 38-42 | Count records | 105 | Loop |
+| READ (data) | src/ch_read_sed.f90 | 57 | Read channel sediment | 105 | `ch_sed(ich)` |
+| CLOSE | src/ch_read_sed.f90 | 129 | Close file | 105 | - |
+
+#### Payload Map
+
+**Target Variable**: `ch_sed(:)` (allocated array of type `channel_sed_data`)  
+**Module**: channel_data_module  
+**Type Definition**: src/channel_data_module.f90:86-108 (approximate)
+
+**PRIMARY DATA READ**:
+
+| **Variable** | **Field** | **Type** | **Units** | **Description** | **Swat_codetype** | **Source** |
+|--------------|-----------|----------|-----------|-----------------|-------------------|------------|
+| ch_sed(i)%name | name | character(16) | - | Channel sediment name | channel_sed_data%name | Line 57 |
+| ch_sed(i)%eqn | eqn | integer | - | Sediment routing equation (0-4) | channel_sed_data%eqn | Line 57 |
+| ch_sed(i)%cov1 | cov1 | real | - | Channel erodibility factor | channel_sed_data%cov1 | Line 57 |
+| ch_sed(i)%cov2 | cov2 | real | - | Channel cover factor | channel_sed_data%cov2 | Line 57 |
+| ch_sed(i)%bnk_bd | bnk_bd | real | g/cc | Bulk density of bank sediment | channel_sed_data%bnk_bd | Line 57 |
+| ch_sed(i)%bed_bd | bed_bd | real | g/cc | Bulk density of bed sediment | channel_sed_data%bed_bd | Line 57 |
+| ch_sed(i)%bnk_kd | bnk_kd | real | cm³/N/s | Bank erodibility coefficient | channel_sed_data%bnk_kd | Line 57 |
+| ch_sed(i)%bed_kd | bed_kd | real | cm³/N/s | Bed erodibility coefficient | channel_sed_data%bed_kd | Line 57 |
+| ch_sed(i)%bnk_d50 | bnk_d50 | real | μm | D50 particle size (bank) | channel_sed_data%bnk_d50 | Line 57 |
+| ch_sed(i)%bed_d50 | bed_d50 | real | μm | D50 particle size (bed) | channel_sed_data%bed_d50 | Line 57 |
+| ch_sed(i)%tc_bnk | tc_bnk | real | N/m² | Critical shear stress (bank) | channel_sed_data%tc_bnk | Line 57 |
+| ch_sed(i)%tc_bed | tc_bed | real | N/m² | Critical shear stress (bed) | channel_sed_data%tc_bed | Line 57 |
+| ch_sed(i)%erod(:) | erod | real array(12) | - | Monthly erodibility factors | channel_sed_data%erod | Line 57 |
+
+**Type Expansion - channel_sed_data** (src/channel_data_module.f90:86-108):
+```fortran
+type channel_sed_data
+  character(len=16) :: name = ""
+  integer :: eqn = 0             ! sediment routing method
+                                 ! 0=SWAT default, 1=Bagnold, 2=Kodatie
+                                 ! 3=Molinas WU, 4=Yang
+  real :: cov1 = 0.1             ! none  |channel erodibility factor (0.0-1.0)
+  real :: cov2 = 0.1             ! none  |channel cover factor (0.0-1.0)
+  real :: bnk_bd = 0.            ! g/cc  |bulk density of channel bank sediment
+  real :: bed_bd = 0.            ! g/cc  |bulk density of channel bed sediment
+  real :: bnk_kd = 0.            ! cm³/N/s |erodibility coefficient (bank)
+  real :: bed_kd = 0.            ! cm³/N/s |erodibility coefficient (bed)
+  real :: bnk_d50 = 0.           ! μm    |D50 particle size (bank)
+  real :: bed_d50 = 0.           ! μm    |D50 particle size (bed)
+  real :: tc_bnk = 0.            ! N/m²  |critical shear stress (bank)
+  real :: tc_bed = 0.            ! N/m²  |critical shear stress (bed)
+  real :: erod(12)               !       |monthly erodibility factors
+  ! ... additional fields
+end type channel_sed_data
+```
+
+**file.cio Cross-Reference**: `in_cha%sed` loaded from file.cio channel section
+
+**Notes**:
+- Allocates ch_sed(0:imax)
+- Sets db_mx%ch_sed = imax at line 44
+- If file doesn't exist or is "null", allocates ch_sed(0:0)
+- Extensive post-processing (lines 60-122):
+  - Sets defaults if critical shear stress <= 0: tc_bnk = 0, tc_bed = 0
+  - Adjusts cov1/cov2 based on eqn value
+  - Sets default bank D50 = 50 μm (silt) if not given
+  - Sets default bed D50 = 500 μm (sand) if not given
+  - Sets default bank bulk density = 1.40 (silty loam)
+  - Sets default bed bulk density = 1.50 (sandy loam)
+  - Calculates erodibility coefficients from critical shear stress if not provided
+  - If monthly erod sum < 1.e-6, sets all months to cov1 value
+
+---
+
+### 3.34 initial.res (INPUT)
+
+**File**: src/res_read_init.f90  
+**Routine**: `res_read_init`  
+**Expression**: `in_res%init_res`  
+**Unit**: 105
+
+#### Filename Resolution
+
+```
+initial.res → in_res%init_res
+            → type input_res (src/input_file_module.f90:71-80)
+            → character(len=25) :: init_res = "initial.res" (line 72)
+```
+
+#### I/O Sites
+
+| **Site** | **File** | **Line(s)** | **Operation** | **Unit** | **Expression** |
+|----------|----------|-------------|---------------|----------|----------------|
+| OPEN | src/res_read_init.f90 | 27 | `open (105,file=in_res%init_res)` | 105 | `in_res%init_res` |
+| READ (title) | src/res_read_init.f90 | 28 | Title line | 105 | - |
+| READ (header) | src/res_read_init.f90 | 30 | Header line | 105 | - |
+| READ (count) | src/res_read_init.f90 | 32-36 | Count records | 105 | Loop |
+| READ (data) | src/res_read_init.f90 | 51 | Read initial conditions | 105 | `res_init_dat_c(ires)` |
+| CLOSE | src/res_read_init.f90 | 54 | Close file | 105 | - |
+
+#### Payload Map
+
+**Target Variable**: `res_init_dat_c(:)` (allocated array of type `reservoir_init_data_char`)  
+**Module**: reservoir_data_module  
+**Type Definition**: src/reservoir_data_module.f90:42-49
+
+**PRIMARY DATA READ**:
+
+| **Variable** | **Field** | **Type** | **Units** | **Description** | **Swat_codetype** | **Source** |
+|--------------|-----------|----------|-----------|-----------------|-------------------|------------|
+| res_init_dat_c(i)%init | init | character(25) | - | Initial condition name | reservoir_init_data_char%init | Line 51 |
+| res_init_dat_c(i)%org_min | org_min | character(25) | - | Organic-mineral data pointer | reservoir_init_data_char%org_min | Line 51 |
+| res_init_dat_c(i)%pest | pest | character(25) | - | Pesticide data pointer | reservoir_init_data_char%pest | Line 51 |
+| res_init_dat_c(i)%path | path | character(25) | - | Pathogen data pointer | reservoir_init_data_char%path | Line 51 |
+| res_init_dat_c(i)%hmet | hmet | character(25) | - | Heavy metal data pointer | reservoir_init_data_char%hmet | Line 51 |
+| res_init_dat_c(i)%salt | salt | character(25) | - | Salt data pointer | reservoir_init_data_char%salt | Line 51 |
+
+**Type Expansion - reservoir_init_data_char** (src/reservoir_data_module.f90:42-49):
+```fortran
+type reservoir_init_data_char
+  character(len=25) :: init = ""       ! initial data-points to initial.cha
+  character(len=25) :: org_min = ""    ! points to initial organic-mineral input file
+  character(len=25) :: pest = ""       ! points to initial pesticide input file
+  character(len=25) :: path = ""       ! points to initial pathogen input file
+  character(len=25) :: hmet = ""       ! points to initial heavy metals input file
+  character(len=25) :: salt = ""       ! points to initial salt input file
+end type reservoir_init_data_char
+```
+
+**file.cio Cross-Reference**: `in_res%init_res` loaded from file.cio reservoir section
+
+**Notes**:
+- Allocates both res_init(0:imax) and wet_init(0:imax)
+- Allocates res_init_dat_c(0:imax)
+- Sets db_mx%res_init = imax at line 38
+- If file doesn't exist or is "null", allocates res_init(0:0) and wet_init(0:0)
+- Used for both reservoirs and wetlands
+- Pointers are resolved later to actual data indices
+
+---
+
+### 3.35 reservoir.res (INPUT)
+
+**File**: src/res_read.f90  
+**Routine**: `res_read`  
+**Expression**: `in_res%res`  
+**Unit**: 105
+
+#### Filename Resolution
+
+```
+reservoir.res → in_res%res
+              → type input_res (src/input_file_module.f90:71-80)
+              → character(len=25) :: res = "reservoir.res" (line 73)
+```
+
+#### I/O Sites
+
+| **Site** | **File** | **Line(s)** | **Operation** | **Unit** | **Expression** |
+|----------|----------|-------------|---------------|----------|----------------|
+| OPEN | src/res_read.f90 | 49 | `open (105,file=in_res%res)` | 105 | `in_res%res` |
+| READ (title) | src/res_read.f90 | 50 | Title line | 105 | - |
+| READ (header) | src/res_read.f90 | 52 | Header line | 105 | - |
+| READ (count) | src/res_read.f90 | 55-57 | Count records | 105 | Loop |
+| READ (data) | src/res_read.f90 | 74 | Read reservoir data | 105 | `res_dat_c(ires)` |
+
+#### Payload Map
+
+**Target Variable**: `res_dat_c(:)` (allocated array of type `reservoir_data_char_input`)  
+**Module**: reservoir_data_module  
+**Type Definition**: src/reservoir_data_module.f90:5-12
+
+**PRIMARY DATA READ**:
+
+| **Variable** | **Field** | **Type** | **Units** | **Description** | **Swat_codetype** | **Source** |
+|--------------|-----------|----------|-----------|-----------------|-------------------|------------|
+| res_dat_c(i)%name | name | character(25) | - | Reservoir name | reservoir_data_char_input%name | Line 74 |
+| res_dat_c(i)%init | init | character(25) | - | Initial condition pointer | reservoir_data_char_input%init | Line 74 |
+| res_dat_c(i)%hyd | hyd | character(25) | - | Hydrology data pointer | reservoir_data_char_input%hyd | Line 74 |
+| res_dat_c(i)%release | release | character(25) | - | Release type (simulated/measured) | reservoir_data_char_input%release | Line 74 |
+| res_dat_c(i)%sed | sed | character(25) | - | Sediment data pointer | reservoir_data_char_input%sed | Line 74 |
+| res_dat_c(i)%nut | nut | character(25) | - | Nutrient data pointer | reservoir_data_char_input%nut | Line 74 |
+
+**Type Expansion - reservoir_data_char_input** (src/reservoir_data_module.f90:5-12):
+```fortran
+type reservoir_data_char_input
+  character(len=25) :: name = "default"
+  character(len=25) :: init = ""       ! initial data-points to initial.res
+  character(len=25) :: hyd = ""        ! points to hydrology.res for hydrology inputs
+  character(len=25) :: release = ""    ! 0=simulated; 1=measured outflow
+  character(len=25) :: sed = ""        ! sediment inputs-points to sediment.res
+  character(len=25) :: nut = ""        ! nutrient inputs-points to nutrients.res
+end type reservoir_data_char_input
+```
+
+**file.cio Cross-Reference**: `in_res%res` loaded from file.cio reservoir section
+
+**Notes**:
+- Allocates res_dat_c(0:imax) and res_dat(0:imax)
+- Sets db_mx%res_dat = imax at line 60
+- If file doesn't exist or is "null", allocates res_dat_c(0:0) and res_dat(0:0)
+- Character pointers are cross-referenced to database indices in subsequent code (lines 78-100+)
+- Links to initial.res, hydrology.res, sediment.res, nutrients.res files
+
+---
+
+### 3.36 graze.ops (INPUT)
+
+**File**: src/mgt_read_grazeops.f90  
+**Routine**: `mgt_read_grazeops`  
+**Expression**: `in_ops%graze_ops`  
+**Unit**: 107
+
+#### Filename Resolution
+
+```
+graze.ops → in_ops%graze_ops
+          → type input_ops (src/input_file_module.f90:191-199)
+          → character(len=25) :: graze_ops = "graze.ops" (line 193)
+```
+
+#### I/O Sites
+
+| **Site** | **File** | **Line(s)** | **Operation** | **Unit** | **Expression** |
+|----------|----------|-------------|---------------|----------|----------------|
+| OPEN | src/mgt_read_grazeops.f90 | 29 | `open (107,file=in_ops%graze_ops)` | 107 | `in_ops%graze_ops` |
+| READ (title) | src/mgt_read_grazeops.f90 | 30 | Title line | 107 | - |
+| READ (header) | src/mgt_read_grazeops.f90 | 32 | Header line | 107 | - |
+| READ (count) | src/mgt_read_grazeops.f90 | 34-38 | Count records | 107 | Loop |
+| READ (data) | src/mgt_read_grazeops.f90 | 49-50 | Read grazing operations | 107 | `grazeop_db(igrazop)` |
+| CLOSE | src/mgt_read_grazeops.f90 | 63 | Close file | 107 | - |
+
+#### Payload Map
+
+**Target Variable**: `grazeop_db(:)` (allocated array of type `grazing_operation`)  
+**Module**: mgt_operations_module  
+**Type Definition**: src/mgt_operations_module.f90:122-130
+
+**PRIMARY DATA READ**:
+
+| **Variable** | **Field** | **Type** | **Units** | **Description** | **Swat_codetype** | **Source** |
+|--------------|-----------|----------|-----------|-----------------|-------------------|------------|
+| grazeop_db(i)%name | name | character(40) | - | Grazing operation name | grazing_operation%name | Line 49 |
+| grazeop_db(i)%fertnm | fertnm | character(40) | - | Manure fertilizer name | grazing_operation%fertnm | Line 49 |
+| grazeop_db(i)%eat | eat | real | (kg/ha)/day | Dry weight biomass removed by grazing | grazing_operation%eat | Line 49 |
+| grazeop_db(i)%tramp | tramp | real | (kg/ha)/day | Dry weight biomass removed by trampling | grazing_operation%tramp | Line 49 |
+| grazeop_db(i)%manure | manure | real | (kg/ha)/day | Dry weight of manure deposited | grazing_operation%manure | Line 49 |
+| grazeop_db(i)%biomin | biomin | real | kg/ha | Minimum plant biomass for grazing | grazing_operation%biomin | Line 49 |
+
+**Type Expansion - grazing_operation** (src/mgt_operations_module.f90:122-130):
+```fortran
+type grazing_operation
+  character(len=40) :: name = ""
+  character(len=40) :: fertnm = " "
+  integer :: manure_id = 0                ! fertilizer number from fertilizer.frt
+  real :: eat = 0.                        ! (kg/ha)/day |dry weight biomass removed by grazing
+  real :: tramp = 0.                      ! (kg/ha)/day |dry weight biomass removed by trampling
+  real :: manure = 0.                     ! (kg/ha)/day |dry weight of manure deposited
+  real :: biomin = 0.                     ! kg/ha       |minimum plant biomass for grazing
+end type grazing_operation
+```
+
+**file.cio Cross-Reference**: `in_ops%graze_ops` loaded from file.cio operation scheduling section
+
+**Notes**:
+- Allocates grazeop_db(0:imax)
+- Sets db_mx%grazeop_db = imax at line 65
+- If file doesn't exist or is "null", allocates grazeop_db(0:0)
+- Cross-references fertnm with fertilizer.frt database (lines 54-59)
+- Sets grazeop_db(i)%manure_id to fertilizer database index
+
+---
+
+### 3.37 chem_app.ops (INPUT)
+
+**File**: src/mgt_read_chemapp.f90  
+**Routine**: `mgt_read_chemapp`  
+**Expression**: `in_ops%chem_ops`  
+**Unit**: 107
+
+#### Filename Resolution
+
+```
+chem_app.ops → in_ops%chem_ops
+             → type input_ops (src/input_file_module.f90:191-199)
+             → character(len=25) :: chem_ops = "chem_app.ops" (line 195)
+```
+
+#### I/O Sites
+
+| **Site** | **File** | **Line(s)** | **Operation** | **Unit** | **Expression** |
+|----------|----------|-------------|---------------|----------|----------------|
+| OPEN | src/mgt_read_chemapp.f90 | 25 | `open (107,file=in_ops%chem_ops)` | 107 | `in_ops%chem_ops` |
+| READ (title) | src/mgt_read_chemapp.f90 | 26 | Title line | 107 | - |
+| READ (header) | src/mgt_read_chemapp.f90 | 28 | Header line | 107 | - |
+| READ (count) | src/mgt_read_chemapp.f90 | 30-34 | Count records | 107 | Loop |
+| READ (data) | src/mgt_read_chemapp.f90 | 45 | Read chemical application ops | 107 | `chemapp_db(ichemapp)` |
+| CLOSE | src/mgt_read_chemapp.f90 | 52 | Close file | 107 | - |
+
+#### Payload Map
+
+**Target Variable**: `chemapp_db(:)` (allocated array of type `chemical_application_operation`)  
+**Module**: mgt_operations_module  
+**Type Definition**: src/mgt_operations_module.f90:97-107
+
+**PRIMARY DATA READ**:
+
+| **Variable** | **Field** | **Type** | **Units** | **Description** | **Swat_codetype** | **Source** |
+|--------------|-----------|----------|-----------|-----------------|-------------------|------------|
+| chemapp_db(i)%name | name | character(40) | - | Chemical application name | chemical_application_operation%name | Line 45 |
+| chemapp_db(i)%form | form | character(40) | - | Form (solid/liquid) | chemical_application_operation%form | Line 45 |
+| chemapp_db(i)%op_typ | op_typ | character(40) | - | Operation type (spread/spray/inject/direct) | chemical_application_operation%op_typ | Line 45 |
+| chemapp_db(i)%app_eff | app_eff | real | - | Application efficiency | chemical_application_operation%app_eff | Line 45 |
+| chemapp_db(i)%foliar_eff | foliar_eff | real | - | Foliar efficiency | chemical_application_operation%foliar_eff | Line 45 |
+| chemapp_db(i)%inject_dep | inject_dep | real | mm | Injection depth | chemical_application_operation%inject_dep | Line 45 |
+| chemapp_db(i)%surf_frac | surf_frac | real | - | Surface fraction (upper 10mm) | chemical_application_operation%surf_frac | Line 45 |
+| chemapp_db(i)%drift_pot | drift_pot | real | - | Drift potential | chemical_application_operation%drift_pot | Line 45 |
+| chemapp_db(i)%aerial_unif | aerial_unif | real | - | Aerial uniformity | chemical_application_operation%aerial_unif | Line 45 |
+
+**Type Expansion - chemical_application_operation** (src/mgt_operations_module.f90:97-107):
+```fortran
+type chemical_application_operation
+  character(len=40) :: name = ""
+  character(len=40) :: form = " "          ! solid; liquid
+  character(len=40) :: op_typ = " "        ! operation type-spread; spray; inject; direct
+  real :: app_eff = 0.                     ! application efficiency
+  real :: foliar_eff = 0.                  ! foliar efficiency
+  real :: inject_dep = 0.                  ! mm |injection depth
+  real :: surf_frac = 0.                   ! surface fraction-amount in upper 10 mm
+  real :: drift_pot = 0.                   ! drift potential
+  real :: aerial_unif = 0.                 ! aerial uniformity
+end type chemical_application_operation
+```
+
+**file.cio Cross-Reference**: `in_ops%chem_ops` loaded from file.cio operation scheduling section
+
+**Notes**:
+- Allocates chemapp_db(0:imax)
+- Sets db_mx%chemapp_db = imax at line 54
+- If file doesn't exist or is "null", allocates chemapp_db(0:0)
+- Used for fertilizer, pesticide, and other chemical applications
+- Links operation parameters to specific chemical applications in management schedules
+
+---
+
+### 3.38 rout_unit.def (INPUT)
+
+**File**: src/ru_read_elements.f90  
+**Routine**: `ru_read_elements`  
+**Expression**: `in_ru%ru_def`  
+**Unit**: 107
+
+#### Filename Resolution
+
+```
+rout_unit.def → in_ru%ru_def
+              → type input_ru (src/input_file_module.f90:84-89)
+              → character(len=25) :: ru_def = "rout_unit.def" (line 85)
+```
+
+#### I/O Sites
+
+| **Site** | **File** | **Line(s)** | **Operation** | **Unit** | **Expression** |
+|----------|----------|-------------|---------------|----------|----------------|
+| OPEN | src/ru_read_elements.f90 | 95 | `open (107,file=in_ru%ru_def)` | 107 | `in_ru%ru_def` |
+| READ (title) | src/ru_read_elements.f90 | 96 | Title line | 107 | - |
+| READ (header) | src/ru_read_elements.f90 | 98 | Header line | 107 | - |
+| READ (count) | src/ru_read_elements.f90 | 100-105 | Count records | 107 | Loop |
+| READ (data) | src/ru_read_elements.f90 | 119-121 | Read routing unit definition | 107 | `ru_def(i)` |
+| CLOSE | src/ru_read_elements.f90 | 127 | Close file | 107 | - |
+
+#### Payload Map
+
+**Target Variable**: `ru_def(:)` (allocated array of type `ru_definition`)  
+**Module**: ru_module (implied)  
+**Referenced at**: src/ru_read_elements.f90:55
+
+**PRIMARY DATA READ**:
+
+| **Variable** | **Field** | **Type** | **Units** | **Description** | **Swat_codetype** | **Source** |
+|--------------|-----------|----------|-----------|-----------------|-------------------|------------|
+| ru_def(i)%num | num | integer | - | Routing unit number | ru_definition%num | Line 119 |
+| ru_def(i)%name | name | character | - | Routing unit name | ru_definition%name | Line 119 |
+| ru_def(i)%topo | topo | character | - | Topography data pointer | ru_definition%topo | Line 119 |
+| ru_def(i)%field | field | character | - | Field data pointer | ru_definition%field | Line 119 |
+| ru_def(i)%ru_ele | ru_ele | integer | - | Number of routing elements | ru_definition%ru_ele | Line 120 |
+| ru_def(i)%elem(:) | elem | integer array | - | Element numbers | ru_definition%elem | Line 121 |
+
+**file.cio Cross-Reference**: `in_ru%ru_def` loaded from file.cio routing unit section
+
+**Notes**:
+- Allocates ru_def(imax) at line 108
+- Sets db_mx%ru_def = imax at line 107
+- If file doesn't exist or is "null", processing skipped
+- Uses 2-step read: first reads basic data, then allocates and reads element array
+- Element numbers cross-reference to ru_elem array
+- Defines which elements belong to each routing unit
+
+---
+
+### 3.39 rout_unit.ele (INPUT)
+
+**File**: src/ru_read_elements.f90  
+**Routine**: `ru_read_elements`  
+**Expression**: `in_ru%ru_ele`  
+**Unit**: 107
+
+#### Filename Resolution
+
+```
+rout_unit.ele → in_ru%ru_ele
+              → type input_ru (src/input_file_module.f90:84-89)
+              → character(len=25) :: ru_ele = "rout_unit.ele" (line 86)
+```
+
+#### I/O Sites
+
+| **Site** | **File** | **Line(s)** | **Operation** | **Unit** | **Expression** |
+|----------|----------|-------------|---------------|----------|----------------|
+| OPEN | src/ru_read_elements.f90 | 42 | `open (107,file=in_ru%ru_ele)` | 107 | `in_ru%ru_ele` |
+| READ (title) | src/ru_read_elements.f90 | 43 | Title line | 107 | - |
+| READ (header) | src/ru_read_elements.f90 | 45 | Header line | 107 | - |
+| READ (count) | src/ru_read_elements.f90 | 48-52 | Count records | 107 | Loop |
+| READ (data) | src/ru_read_elements.f90 | 71-72 | Read routing unit elements | 107 | `ru_elem(i)` |
+| CLOSE | src/ru_read_elements.f90 | 87 | Close file | 107 | - |
+
+#### Payload Map
+
+**Target Variable**: `ru_elem(:)` (allocated array of type `ru_element_definition`)  
+**Module**: ru_module (implied)  
+**Referenced at**: src/ru_read_elements.f90:56
+
+**PRIMARY DATA READ**:
+
+| **Variable** | **Field** | **Type** | **Units** | **Description** | **Swat_codetype** | **Source** |
+|--------------|-----------|----------|-----------|-----------------|-------------------|------------|
+| ru_elem(i)%num | num | integer | - | Element number | ru_element_definition%num | Line 71 |
+| ru_elem(i)%name | name | character | - | Element name | ru_element_definition%name | Line 71 |
+| ru_elem(i)%obtyp | obtyp | character | - | Object type (hru/hlt/etc) | ru_element_definition%obtyp | Line 71 |
+| ru_elem(i)%obtypno | obtypno | integer | - | Object type number | ru_element_definition%obtypno | Line 71 |
+| ru_elem(i)%frac | frac | real | - | Fraction of element flow | ru_element_definition%frac | Line 71 |
+| ru_elem(i)%dr_name | dr_name | character | - | Delivery ratio name | ru_element_definition%dr_name | Line 72 |
+
+**file.cio Cross-Reference**: `in_ru%ru_ele` loaded from file.cio routing unit section
+
+**Notes**:
+- Allocates ru_elem(imax) at line 56
+- Sets db_mx%ru_elem = imax at line 54
+- If file doesn't exist or is "null", processing skipped
+- Cross-references dr_name with dr_db() from delratio.del file (lines 76-82)
+- Sets ru_elem(i)%dr to delivery ratio structure
+- Defines individual routing elements that comprise routing units
+
+---
+
+### 3.40 rout_unit.rtu (INPUT)
+
+**File**: src/ru_read.f90  
+**Routine**: `ru_read`  
+**Expression**: `in_ru%ru`  
+**Unit**: 107
+
+#### Filename Resolution
+
+```
+rout_unit.rtu → in_ru%ru
+              → type input_ru (src/input_file_module.f90:84-89)
+              → character(len=25) :: ru = "rout_unit.rtu" (line 87)
+```
+
+#### I/O Sites
+
+| **Site** | **File** | **Line(s)** | **Operation** | **Unit** | **Expression** |
+|----------|----------|-------------|---------------|----------|----------------|
+| OPEN | src/ru_read.f90 | 39 | `open (107,file=in_ru%ru)` | 107 | `in_ru%ru` |
+| READ (title) | src/ru_read.f90 | 40 | Title line | 107 | - |
+| READ (header) | src/ru_read.f90 | 42 | Header line | 107 | - |
+| READ (count) | src/ru_read.f90 | 44-49 | Count records | 107 | Loop |
+| READ (data) | src/ru_read.f90 | 125-126 | Read routing unit data | 107 | `ru(i)` |
+
+#### Payload Map
+
+**Target Variable**: `ru(:)` (allocated array of type `routing_unit`)  
+**Module**: ru_module  
+**Referenced at**: src/ru_read.f90:51
+
+**PRIMARY DATA READ**:
+
+| **Variable** | **Field** | **Type** | **Units** | **Description** | **Swat_codetype** | **Source** |
+|--------------|-----------|----------|-----------|-----------------|-------------------|------------|
+| ru(i)%num | num | integer | - | Routing unit number | routing_unit%num | Line 125 |
+| ru(i)%name | name | character | - | Routing unit name | routing_unit%name | Line 125 |
+| ru(i)%topo | topo | integer | - | Topography pointer | routing_unit%topo | Line 125 |
+| ru(i)%field | field | integer | - | Field data pointer | routing_unit%field | Line 126 |
+
+**file.cio Cross-Reference**: `in_ru%ru` loaded from file.cio routing unit section
+
+**Notes**:
+- Allocates ru(0:sp_ob%ru) at line 51
+- If file doesn't exist or is "null", allocates ru(0:0)
+- Also allocates output arrays: ru_d, ru_m, ru_y, ru_a for different time steps
+- If salts enabled (cs_db%num_salts > 0), allocates salt-specific arrays (lines 61-69)
+- If constituents enabled (cs_db%num_cs > 0), allocates constituent arrays
+- mru_db tracks maximum routing unit database size (line 48)
+- Reads topography and field data pointers which cross-reference to other databases
+
+---
+
+### 3.41 channel.cha (INPUT)
+
+**File**: src/sd_channel_read.f90  
+**Routine**: `sd_channel_read` (for channel-lte)  
+**Expression**: `in_cha%chan_ez` (channel-lte variant)  
+**Unit**: 105
+
+#### Filename Resolution
+
+```
+channel.cha → in_cha%dat
+            → type input_cha (src/input_file_module.f90:58-67)
+            → character(len=25) :: dat = "channel.cha" (line 60)
+```
+
+#### I/O Sites
+
+Note: Main channel.cha reading is via channel.con cross-reference. This section documents the lte variant channel-lte.cha.
+
+| **Site** | **File** | **Line(s)** | **Operation** | **Unit** | **Expression** |
+|----------|----------|-------------|---------------|----------|----------------|
+| OPEN | src/sd_channel_read.f90 | 194 | `open (105,file=in_cha%chan_ez)` | 105 | `in_cha%chan_ez` |
+| READ (title) | - | - | Title line | 105 | - |
+| READ (header) | - | - | Header line | 105 | - |
+| READ (data) | - | - | Read channel data | 105 | varies |
+
+#### Payload Map
+
+**Target Variable**: `ch_dat(:)` and `ch_dat_c(:)` (allocated arrays)  
+**Module**: channel_data_module  
+**Type Definition**: src/channel_data_module.f90:30-36, 60-66
+
+**PRIMARY DATA READ**:
+
+| **Variable** | **Field** | **Type** | **Units** | **Description** | **Swat_codetype** | **Source** |
+|--------------|-----------|----------|-----------|-----------------|-------------------|------------|
+| ch_dat_c(i)%name | name | character(16) | - | Channel name | channel_data_char_input%name | Varies |
+| ch_dat_c(i)%init | init | character(16) | - | Initial data pointer | channel_data_char_input%init | Varies |
+| ch_dat_c(i)%hyd | hyd | character(16) | - | Hydrology pointer | channel_data_char_input%hyd | Varies |
+| ch_dat_c(i)%sed | sed | character(16) | - | Sediment pointer | channel_data_char_input%sed | Varies |
+| ch_dat_c(i)%nut | nut | character(16) | - | Nutrient pointer | channel_data_char_input%nut | Varies |
+
+**Type Expansion - channel_data_char_input** (src/channel_data_module.f90:30-36):
+```fortran
+type channel_data_char_input
+  character(len=16) :: name = "default"
+  character(len=16) :: init = ""     ! points to initial_cha
+  character(len=16) :: hyd = ""      ! points to hydrology.cha for hydrology inputs
+  character(len=16) :: sed = ""      ! sediment inputs-points to sediment.cha
+  character(len=16) :: nut = ""      ! nutrient inputs-points to nutrient.cha
+end type channel_data_char_input
+```
+
+**file.cio Cross-Reference**: `in_cha%dat` loaded from file.cio channel section
+
+**Notes**:
+- Primary channel data read through channel.con cross-reference
+- channel.cha contains database entries referenced by channel.con props field
+- Cross-references to hydrology.cha, sediment.cha, nutrients.cha
+- Character pointers resolved to integer indices in ch_dat(i) structure
+- Used by main channels and lte (landscape to element) channels
+
+---
+
+### 3.42 channel-lte.cha (INPUT)
+
+**File**: src/sd_channel_read.f90  
+**Routine**: `sd_channel_read`  
+**Expression**: `in_cha%chan_ez`  
+**Unit**: 105
+
+#### Filename Resolution
+
+```
+channel-lte.cha → in_cha%chan_ez
+                → type input_cha (src/input_file_module.f90:58-67)
+                → character(len=25) :: chan_ez = "channel-lte.cha" (line 64)
+```
+
+#### I/O Sites
+
+| **Site** | **File** | **Line(s)** | **Operation** | **Unit** | **Expression** |
+|----------|----------|-------------|---------------|----------|----------------|
+| OPEN | src/sd_channel_read.f90 | 194 | `open (105,file=in_cha%chan_ez)` | 105 | `in_cha%chan_ez` |
+| READ (title) | src/sd_channel_read.f90 | 195 | Title line | 105 | - |
+| READ (header) | src/sd_channel_read.f90 | 196 | Header line | 105 | - |
+
+#### Payload Map
+
+**Target Variable**: LTE (Landscape to Element) channel data structures  
+**Module**: channel_data_module  
+
+**file.cio Cross-Reference**: `in_cha%chan_ez` loaded from file.cio channel section
+
+**Notes**:
+- If file doesn't exist or is "null", defaults are used
+- LTE channels represent flow between landscape positions
+- Similar structure to channel.cha but for finer-scale routing
+- Cross-references to hyd-sed-lte.cha for combined hydrology-sediment data
+
+---
+
+### 3.43 sediment.res (INPUT)
+
+**File**: Reservoir sediment reading (part of res_read complex)  
+**Routine**: Cross-referenced from reservoir.res  
+**Expression**: Part of res_dat_c(i)%sed  
+**Unit**: 105 (typical)
+
+#### Filename Resolution
+
+```
+sediment.res → res_dat_c(i)%sed pointer
+             → Cross-referenced in reservoir.res reading
+             → Links to sediment.res database entries
+```
+
+#### I/O Sites
+
+Referenced through reservoir.res file, line 74 sets pointer.
+
+#### Payload Map
+
+**Target Variable**: `res_sed(:)` (allocated array of type `reservoir_sed_data`)  
+**Module**: reservoir_data_module  
+**Type Definition**: src/reservoir_data_module.f90:98-108 (approximate)
+
+**PRIMARY DATA READ**:
+
+| **Variable** | **Field** | **Type** | **Units** | **Description** | **Swat_codetype** | **Source** |
+|--------------|-----------|----------|-----------|-----------------|-------------------|------------|
+| res_sed(i)%name | name | character(25) | - | Sediment data name | reservoir_sed_data%name | Varies |
+| res_sed(i)%nsed | nsed | real | kg/L | Normal sediment concentration | reservoir_sed_data%nsed | Varies |
+| res_sed(i)%sed_stlr | sed_stlr | real | m/yr | Sediment settling rate | reservoir_sed_data%sed_stlr | Varies |
+
+**file.cio Cross-Reference**: Referenced through reservoir.res
+
+**Notes**:
+- Part of reservoir properties complex
+- Cross-referenced via res_dat_c(i)%sed character pointer
+- Converted from mg/L to kg/L during reading
+- Defines sediment behavior in reservoirs
+
+---
+
+### 3.44 nutrients.res (INPUT)
+
+**File**: Reservoir nutrient reading (part of res_read complex)  
+**Routine**: Cross-referenced from reservoir.res  
+**Expression**: Part of res_dat_c(i)%nut  
+**Unit**: 105 (typical)
+
+#### Filename Resolution
+
+```
+nutrients.res → res_dat_c(i)%nut pointer
+              → Cross-referenced in reservoir.res reading
+              → Links to nutrients.res database entries
+```
+
+#### I/O Sites
+
+Referenced through reservoir.res file, line 74 sets pointer.
+
+#### Payload Map
+
+**Target Variable**: `res_nut(:)` (allocated array of nutrient data)  
+**Module**: reservoir_data_module  
+
+**PRIMARY DATA READ**: Nutrient cycling parameters for reservoirs
+
+**file.cio Cross-Reference**: Referenced through reservoir.res
+
+**Notes**:
+- Part of reservoir properties complex
+- Cross-referenced via res_dat_c(i)%nut character pointer
+- Defines nitrogen and phosphorus transformation rates
+- Used for water quality simulations in reservoirs
+
+---
+
+### 3.45 wetland.wet (INPUT)
+
+**File**: src/res_read.f90 (wetland variant)  
+**Routine**: Part of reservoir reading complex  
+**Expression**: `in_res%wet`  
+**Unit**: 105
+
+#### Filename Resolution
+
+```
+wetland.wet → in_res%wet
+            → type input_res (src/input_file_module.f90:71-80)
+            → character(len=25) :: wet = "wetland.wet" (line 78)
+```
+
+#### I/O Sites
+
+Similar to reservoir.res reading pattern but for wetlands.
+
+#### Payload Map
+
+**Target Variable**: `wet_dat(:)` and `wet_dat_c(:)` (allocated arrays)  
+**Module**: reservoir_data_module  
+**Type Definition**: Similar to reservoir_data (src/reservoir_data_module.f90:26-37)
+
+**PRIMARY DATA READ**: Same structure as reservoir.res but for wetlands
+
+**file.cio Cross-Reference**: `in_res%wet` loaded from file.cio reservoir section
+
+**Notes**:
+- Wetlands use similar data structures to reservoirs
+- Allocated alongside reservoir arrays in res_read.f90
+- Uses wet_init, wet_hyd, wet_dat parallel structures
+- Wetland-specific hydrology in wetland_hyd_data type (lines 82-94 of reservoir_data_module)
+
+---
+
+**Report Status**: Phase 2 Extended - 45 of 145+ files documented  
+**Last Updated**: 2026-01-23 (Extended)
