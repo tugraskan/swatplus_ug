@@ -6492,3 +6492,324 @@ om_water.ini → in_init%om_water
 - Uses backspace (line 53) to re-read each record after dummy read
 - Type `hyd_output` is used for many water-quality related initial conditions
 
+
+---
+
+### 3.72 cons_practice.lum (INPUT)
+
+**Subroutine**: `cons_prac_read` (src/cons_prac_read.f90:1)
+
+#### Filename Resolution
+
+```
+cons_practice.lum → in_lum%cons_prac_lum
+                  → type input_lum (src/input_file_module.f90:202-208)
+                  → character(len=25) :: cons_prac_lum = "cons_practice.lum" (line 206)
+                  → Swat_codetype: "in_lum"
+```
+
+**file.cio Cross-Reference**: Part of land use management section in file.cio
+
+#### I/O Sites
+
+| **Site** | **Line** | **Action** | **Unit/Var** | **Expression** | **Description** |
+|----------|----------|------------|--------------|----------------|-----------------|
+| 1 | 20 | inquire | - | in_lum%cons_prac_lum | Check file existence |
+| 2 | 25 | open | 107 | in_lum%cons_prac_lum | Open conservation practice file |
+| 3 | 26 | read | 107 | titldum | Read title (first pass) |
+| 4 | 28 | read | 107 | header | Read header (first pass) |
+| 5 | 31 | read | 107 | titldum | Read record line to count (first pass) |
+| 6 | 38 | rewind | 107 | - | Rewind file for second pass |
+| 7 | 39 | read | 107 | titldum | Read title (second pass) |
+| 8 | 41 | read | 107 | header | Read header (second pass) |
+| 9 | 45 | read | 107 | cons_prac(icp) | Read conservation practice data record |
+| 10 | 54 | close | 107 | - | Close conservation practice file |
+
+#### Payload Map
+
+**Target Variable**: `cons_prac(:)` (allocated array of type `conservation_practice_table`)  
+**Module**: landuse_data_module  
+**Type Definition**: src/landuse_data_module.f90:50-54
+
+**PRIMARY DATA READ** (line 45):
+
+| **Column** | **Field Name** | **Type** | **Units** | **Range/Valid Values** | **Description** |
+|------------|----------------|----------|-----------|------------------------|-----------------|
+| 1 | name | character(40) | - | - | Name of conservation practice |
+| 2 | pfac | real | - | - | USLE P factor (default=1.0) |
+| 3 | sl_len_mx | real | m | - | Maximum slope length (default=1.0) |
+
+**Array Sizing**:
+- First pass (lines 26-34): Count records → `imax`
+- Allocation (line 36): `allocate (cons_prac(0:imax))`
+- Second pass (lines 45-47): Read `imax` conservation practice records
+- `db_mx%cons_prac = imax` (line 52)
+
+**Special Handling**:
+- If file doesn't exist or is "null", allocates zero-sized array (line 22)
+- Used in actions to set P factor as function of slope (see actions.f90:957, 972, 989)
+
+---
+
+### 3.73 ovn_table.lum (INPUT)
+
+**Subroutine**: `overland_n_read` (src/overland_n_read.f90:1)
+
+#### Filename Resolution
+
+```
+ovn_table.lum → in_lum%ovn_lum
+              → type input_lum (src/input_file_module.f90:202-208)
+              → character(len=25) :: ovn_lum = "ovn_table.lum" (line 207)
+              → Swat_codetype: "in_lum"
+```
+
+**file.cio Cross-Reference**: Part of land use management section in file.cio
+
+#### I/O Sites
+
+| **Site** | **Line** | **Action** | **Unit/Var** | **Expression** | **Description** |
+|----------|----------|------------|--------------|----------------|-----------------|
+| 1 | 19 | inquire | - | in_lum%ovn_lum | Check file existence |
+| 2 | 24 | open | 108 | in_lum%ovn_lum | Open overland flow Manning's n table file |
+| 3 | 25 | read | 108 | titldum | Read title (first pass) |
+| 4 | 27 | read | 108 | header | Read header (first pass) |
+| 5 | 30 | read | 108 | titldum | Read record line to count (first pass) |
+| 6 | 37 | rewind | 108 | - | Rewind file for second pass |
+| 7 | 38 | read | 108 | titldum | Read title (second pass) |
+| 8 | 40 | read | 108 | header | Read header (second pass) |
+| 9 | 44 | read | 108 | overland_n(il) | Read overland flow n data record |
+| 10 | 53 | close | 108 | - | Close overland flow n table file |
+
+#### Payload Map
+
+**Target Variable**: `overland_n(:)` (allocated array of type `overlandflow_n_table`)  
+**Module**: landuse_data_module  
+**Type Definition**: src/landuse_data_module.f90:57-62
+
+**PRIMARY DATA READ** (line 44):
+
+| **Column** | **Field Name** | **Type** | **Units** | **Range/Valid Values** | **Description** |
+|------------|----------------|----------|-----------|------------------------|-----------------|
+| 1 | name | character(40) | - | - | Name of overland flow condition |
+| 2 | ovn | real | - | - | Overland flow Manning's n - mean (default=0.5) |
+| 3 | ovn_min | real | - | - | Overland flow Manning's n - minimum (default=0.5) |
+| 4 | ovn_max | real | - | - | Overland flow Manning's n - maximum (default=0.5) |
+
+**Array Sizing**:
+- First pass (lines 25-33): Count records → `imax`
+- Allocation (line 35): `allocate (overland_n(0:imax))`
+- Second pass (lines 44-46): Read `imax` overland flow n records
+- `db_mx%ovn = imax` (line 51)
+
+**Special Handling**:
+- If file doesn't exist or is "null", allocates zero-sized array (line 21)
+
+---
+
+### 3.74 water_balance.sft (INPUT)
+
+**Subroutine**: `lcu_read_softcal` (src/lcu_read_softcal.f90:1)
+
+#### Filename Resolution
+
+```
+water_balance.sft → in_chg%water_balance_sft
+                  → type input_chg (src/input_file_module.f90:212-222)
+                  → character(len=25) :: water_balance_sft = "water_balance.sft" (line 217)
+                  → Swat_codetype: "in_chg"
+```
+
+**Note**: Renamed from ls_regions.cal
+
+**file.cio Cross-Reference**: Part of calibration/change section in file.cio
+
+#### I/O Sites
+
+| **Site** | **Line** | **Action** | **Unit/Var** | **Expression** | **Description** |
+|----------|----------|------------|--------------|----------------|-----------------|
+| 1 | 29 | inquire | - | in_chg%water_balance_sft | Check file existence |
+| 2 | 35 | open | 107 | in_chg%water_balance_sft | Open water balance soft calibration file |
+| 3 | 36 | read | 107 | titldum | Read title |
+| 4 | 38 | read | 107 | mreg | Read number of regions |
+| 5 | 40 | read | 107 | header | Read header |
+| 6 | 67 | read | 107 | region header | Read region name and number of land uses |
+| 7 | 85 | read | 107 | header | Read land use header |
+| 8 | 89 | read | 107 | lscal(ireg)%lum(ilum)%meas | Read measured soft calibration data for land use |
+
+#### Payload Map
+
+**Target Variable**: `lscal(:)` (allocated array with nested structure)  
+**Module**: calibration_data_module  
+
+**Companion Variable**: `region(:)` (allocated array with region metadata)
+
+**PRIMARY DATA READ - Region Header** (line 67):
+
+| **Column** | **Field Name** | **Type** | **Units** | **Range/Valid Values** | **Description** |
+|------------|----------------|----------|-----------|------------------------|-----------------|
+| 1 | region(ireg)%name | character | - | - | Region name |
+| 2 | region(ireg)%nlum | integer | - | - | Number of land uses in region |
+
+**PRIMARY DATA READ - Land Use Soft Calibration** (line 89):
+
+This reads into `lscal(ireg)%lum(ilum)%meas` which is type `soft_calib_ls_processes` (defined in calibration_data_module.f90). The structure contains multiple components for water balance calibration targets.
+
+**Array Sizing**:
+- Read region count (line 38): `mreg`
+- Allocation (lines 43-44): `allocate (lscal(0:mreg))`, `allocate (region(0:mreg))`
+- For each region: allocate `lscal(ireg)%lum(mlug)` where `mlug = region(ireg)%nlum`
+- Also allocates regional output arrays (rwb_d, rwb_m, rwb_y, rwb_a, rnb_*, rls_*, rpw_*) for daily, monthly, yearly, and average outputs
+- `db_mx%lsu_reg = mreg` (line 63)
+
+**Special Handling**:
+- If file doesn't exist or is "null", allocates zero-sized arrays (lines 31-32)
+- Complex nested structure: regions contain multiple land uses
+- Number of regions read directly (line 38), not counted
+- Allocates many regional output arrays for tracking calibration results
+
+---
+
+### 3.75 plant_parms.sft (INPUT)
+
+**Subroutine**: `pl_read_parms_cal` (src/pl_read_parms_cal.f90:1)
+
+#### Filename Resolution
+
+```
+plant_parms.sft → in_chg%plant_parms_sft
+                → type input_chg (src/input_file_module.f90:212-222)
+                → character(len=25) :: plant_parms_sft = "plant_parms.sft" (line 220)
+                → Swat_codetype: "in_chg"
+```
+
+**Note**: Renamed from pl_parms.cal
+
+**file.cio Cross-Reference**: Part of calibration/change section in file.cio
+
+#### I/O Sites
+
+| **Site** | **Line** | **Action** | **Unit/Var** | **Expression** | **Description** |
+|----------|----------|------------|--------------|----------------|-----------------|
+| 1 | 32 | inquire | - | in_chg%plant_parms_sft | Check file existence |
+| 2 | 37 | open | 107 | in_chg%plant_parms_sft | Open plant parameters soft calibration file |
+| 3 | 38 | read | 107 | titldum | Read title |
+| 4 | 40 | read | 107 | mreg | Read number of regions |
+| 5 | 42 | read | 107 | header | Read header |
+| 6 | 48 | read | 107 | pl_prms region header | Read region name, lum_num, parms, nspu |
+| 7 | 53 | read | 107 | pl_prms region header w/ elements | Read region with spatial unit elements (backspaced) |
+
+#### Payload Map
+
+**Target Variable**: `pl_prms(:)` (allocated array of type `pl_parm_region`)  
+**Module**: calibration_data_module  
+**Type Definition**: src/calibration_data_module.f90:164-171
+
+**PRIMARY DATA READ - Region Header (without spatial units)** (line 48):
+
+| **Column** | **Field Name** | **Type** | **Units** | **Range/Valid Values** | **Description** |
+|------------|----------------|----------|-----------|------------------------|-----------------|
+| 1 | pl_prms(i)%name | character | - | - | Region name |
+| 2 | pl_prms(i)%lum_num | integer | - | - | Number of land uses |
+| 3 | pl_prms(i)%parms | integer | - | - | Number of plant parameters |
+| 4 | nspu | integer | - | - | Number of spatial units (if 0, all HRUs in region) |
+
+**PRIMARY DATA READ - Region Header (with spatial units)** (line 53):
+
+| **Column** | **Field Name** | **Type** | **Units** | **Range/Valid Values** | **Description** |
+|------------|----------------|----------|-----------|------------------------|-----------------|
+| 1-3 | (same as above) | - | - | - | Same as without spatial units |
+| 4 | nspu | integer | - | - | Number of spatial units |
+| 5+ | elem_cnt(isp) | integer | - | - | Element counts for each spatial unit (nspu values) |
+
+**Array Sizing**:
+- Read region count (line 40): `mreg`
+- Allocation (line 44): `allocate (pl_prms(mreg))`
+- For each region: complex allocation of `pl_prms(i)%num()` based on spatial units
+- If nspu > 0: allocates based on defined unit elements
+- If nspu == 0: allocates for all HRUs (`sp_ob%hru`)
+
+**Special Handling**:
+- If file doesn't exist or is "null", allocates zero-sized array (line 34)
+- Number of regions read directly (line 40), not counted
+- Conditional read based on `nspu` value (lines 50-75)
+- Uses backspace (line 52) to re-read with spatial unit elements
+- Calls external function `define_unit_elements` to process spatial units (line 56)
+- Cross-references HRUs with crop regions (line 63)
+
+
+---
+
+### 3.76 plant_gro.sft (INPUT)
+
+**Subroutine**: `pl_read_regions_cal` (src/pl_read_regions_cal.f90:1)
+
+#### Filename Resolution
+
+```
+plant_gro.sft → in_chg%plant_gro_sft
+              → type input_chg (src/input_file_module.f90:212-222)
+              → character(len=25) :: plant_gro_sft = "plant_gro.sft" (line 221)
+              → Swat_codetype: "in_chg"
+```
+
+**Note**: Renamed from pl_regions.cal
+
+**file.cio Cross-Reference**: Part of calibration/change section in file.cio
+
+#### I/O Sites
+
+| **Site** | **Line** | **Action** | **Unit/Var** | **Expression** | **Description** |
+|----------|----------|------------|--------------|----------------|-----------------|
+| 1 | 33 | inquire | - | in_chg%plant_gro_sft | Check file existence |
+| 2 | 38 | open | 107 | in_chg%plant_gro_sft | Open plant growth soft calibration file |
+| 3 | 39 | read | 107 | titldum | Read title |
+| 4 | 41 | read | 107 | mreg | Read number of regions |
+| 5 | 43 | read | 107 | header | Read header |
+| 6 | 49 | read | 107 | plcal region header | Read region name, lum_num, nspu |
+| 7 | 54 | read | 107 | plcal region header w/ elements | Read region with spatial unit elements (backspaced) |
+| 8 | 82 | read | 107 | header | Read land use header |
+| 9 | 86 | read | 107 | plcal(i)%lum(ilum)%meas | Read measured plant growth soft calibration data |
+
+#### Payload Map
+
+**Target Variable**: `plcal(:)` (allocated array with nested structure for plant calibration regions)  
+**Module**: calibration_data_module  
+
+**PRIMARY DATA READ - Region Header (without spatial units)** (line 49):
+
+| **Column** | **Field Name** | **Type** | **Units** | **Range/Valid Values** | **Description** |
+|------------|----------------|----------|-----------|------------------------|-----------------|
+| 1 | plcal(i)%name | character | - | - | Region name |
+| 2 | plcal(i)%lum_num | integer | - | - | Number of land uses in region |
+| 3 | nspu | integer | - | - | Number of spatial units (if 0, all HRUs in region) |
+
+**PRIMARY DATA READ - Region Header (with spatial units)** (line 54):
+
+| **Column** | **Field Name** | **Type** | **Units** | **Range/Valid Values** | **Description** |
+|------------|----------------|----------|-----------|------------------------|-----------------|
+| 1-2 | (same as above) | - | - | - | Same as without spatial units |
+| 3 | nspu | integer | - | - | Number of spatial units |
+| 4+ | elem_cnt(isp) | integer | - | - | Element counts for each spatial unit (nspu values) |
+
+**PRIMARY DATA READ - Plant Growth Calibration** (line 86):
+
+This reads into `plcal(i)%lum(ilum)%meas` which contains measured soft calibration data for plant growth by land use. The structure is similar to water balance soft calibration but focuses on plant-specific processes.
+
+**Array Sizing**:
+- Read region count (line 41): `mreg`
+- Allocation (line 45): `allocate (plcal(mreg))`
+- For each region:
+  - If nspu > 0: allocates `plcal(i)%num()` based on defined unit elements
+  - If nspu == 0: allocates for all HRUs (`sp_ob%hru`)
+  - If `lum_num > 0`: allocates `plcal(i)%lum(ilum_mx)` where `ilum_mx = plcal(i)%lum_num`
+
+**Special Handling**:
+- If file doesn't exist or is "null", allocates zero-sized array (line 35)
+- Number of regions read directly (line 41), not counted
+- Conditional read based on `nspu` value (lines 51-75)
+- Uses backspace (line 53) to re-read with spatial unit elements
+- Calls external function `define_unit_elements` to process spatial units (line 57)
+- Cross-references HRUs with crop regions (lines 64, 73)
+- Only reads land use data if `lum_num > 0` (lines 80-89)
+
