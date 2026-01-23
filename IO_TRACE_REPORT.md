@@ -5565,3 +5565,930 @@ For **timestep = "yr"** (annual, lines 105-121):
 
 **Report Status**: Phase 3 - Critical Input Files - 56 of 145+ files documented  
 **Last Updated**: 2026-01-23 (Added recall and atmospheric deposition)
+
+---
+
+### 3.57 fire.ops (INPUT)
+
+**Subroutine**: `mgt_read_fireops` (src/mgt_read_fireops.f90:1)
+
+#### Filename Resolution
+
+```
+fire.ops → in_ops%fire_ops
+         → type input_ops (src/input_file_module.f90:189-198)
+         → character(len=25) :: fire_ops = "fire.ops" (line 196)
+         → Swat_codetype: "in_ops"
+```
+
+**file.cio Cross-Reference**: Part of operations section in file.cio
+
+#### I/O Sites
+
+| **Site** | **Line** | **Action** | **Unit/Var** | **Expression** | **Description** |
+|----------|----------|------------|--------------|----------------|-----------------|
+| 1 | 20 | inquire | - | in_ops%fire_ops | Check file existence |
+| 2 | 25 | open | 107 | in_ops%fire_ops | Open fire operations file |
+| 3 | 26 | read | 107 | titldum | Read title (first pass) |
+| 4 | 28 | read | 107 | header | Read header (first pass) |
+| 5 | 31 | read | 107 | titldum | Read record line to count (first pass) |
+| 6 | 38 | rewind | 107 | - | Rewind file for second pass |
+| 7 | 39 | read | 107 | titldum | Read title (second pass) |
+| 8 | 41 | read | 107 | header | Read header (second pass) |
+| 9 | 45 | read | 107 | fire_db(ifireop) | Read fire operation data record |
+| 10 | 54 | close | 107 | - | Close fire operations file |
+
+#### Payload Map
+
+**Target Variable**: `fire_db(:)` (allocated array of type `fire_operation`)  
+**Module**: mgt_operations_module  
+**Type Definition**: src/mgt_operations_module.f90:40-44
+
+**PRIMARY DATA READ** (line 45):
+
+| **Column** | **Field Name** | **Type** | **Units** | **Range/Valid Values** | **Description** |
+|------------|----------------|----------|-----------|------------------------|-----------------|
+| 1 | name | character(40) | - | - | Fire operation name |
+| 2 | cn2_upd | real | - | - | Change in SCS curve number II value |
+| 3 | fr_burn | real | - | - | Fraction burned |
+
+**Array Sizing**:
+- First pass (lines 26-34): Count records → `imax`
+- Allocation (line 36): `allocate (fire_db(0:imax))`
+- Second pass (lines 45-47): Read `imax` fire operation records
+- `db_mx%fireop_db = imax` (line 53)
+
+**Special Handling**:
+- If file doesn't exist or is "null", allocates zero-sized array (line 22)
+
+---
+
+### 3.58 sweep.ops (INPUT)
+
+**Subroutine**: `mgt_read_sweepops` (src/mgt_read_sweepops.f90:1)
+
+#### Filename Resolution
+
+```
+sweep.ops → in_ops%sweep_ops
+          → type input_ops (src/input_file_module.f90:189-198)
+          → character(len=25) :: sweep_ops = "sweep.ops" (line 197)
+          → Swat_codetype: "in_ops"
+```
+
+**file.cio Cross-Reference**: Part of operations section in file.cio
+
+#### I/O Sites
+
+| **Site** | **Line** | **Action** | **Unit/Var** | **Expression** | **Description** |
+|----------|----------|------------|--------------|----------------|-----------------|
+| 1 | 22 | inquire | - | in_ops%sweep_ops | Check file existence |
+| 2 | 27 | open | 107 | in_ops%sweep_ops | Open street sweep operations file |
+| 3 | 28 | read | 107 | titldum | Read title (first pass) |
+| 4 | 30 | read | 107 | header | Read header (first pass) |
+| 5 | 33 | read | 107 | titldum | Read record line to count (first pass) |
+| 6 | 40 | rewind | 107 | - | Rewind file for second pass |
+| 7 | 41 | read | 107 | titldum | Read title (second pass) |
+| 8 | 43 | read | 107 | header | Read header (second pass) |
+| 9 | 47 | read | 107 | sweepop_db(isweepop) | Read street sweep operation data record |
+| 10 | 54 | close | 107 | - | Close street sweep operations file |
+
+#### Payload Map
+
+**Target Variable**: `sweepop_db(:)` (allocated array of type `streetsweep_operation`)  
+**Module**: mgt_operations_module  
+**Type Definition**: src/mgt_operations_module.f90:134-139
+
+**PRIMARY DATA READ** (line 47):
+
+| **Column** | **Field Name** | **Type** | **Units** | **Range/Valid Values** | **Description** |
+|------------|----------------|----------|-----------|------------------------|-----------------|
+| 1 | name | character(40) | - | - | Street sweep operation name |
+| 2 | eff | real | none | - | Removal efficiency of sweeping operation |
+| 3 | fr_curb | real | none | - | Availability factor; fraction of curb length that is sweepable |
+
+**Array Sizing**:
+- First pass (lines 28-36): Count records → `imax`
+- Allocation (line 38): `allocate (sweepop_db(0:imax))`
+- Second pass (lines 47-49): Read `imax` street sweep operation records
+- `db_mx%sweepop_db = imax` (line 56)
+
+**Special Handling**:
+- If file doesn't exist or is "null", allocates zero-sized array (line 24)
+
+---
+
+### 3.59 hydrology.hyd (INPUT)
+
+**Subroutine**: `hydrol_read` (src/hydrol_read.f90:1)
+
+#### Filename Resolution
+
+```
+hydrology.hyd → in_hyd%hydrol_hyd
+              → type input_hydrology (src/input_file_module.f90:158-162)
+              → character(len=25) :: hydrol_hyd = "hydrology.hyd" (line 159)
+              → Swat_codetype: "in_hyd"
+```
+
+**file.cio Cross-Reference**: Part of hydrology section in file.cio
+
+#### I/O Sites
+
+| **Site** | **Line** | **Action** | **Unit/Var** | **Expression** | **Description** |
+|----------|----------|------------|--------------|----------------|-----------------|
+| 1 | 22 | inquire | - | in_hyd%hydrol_hyd | Check file existence |
+| 2 | 27 | open | 107 | in_hyd%hydrol_hyd | Open hydrology file |
+| 3 | 28 | read | 107 | titldum | Read title (first pass) |
+| 4 | 30 | read | 107 | header | Read header (first pass) |
+| 5 | 33 | read | 107 | titldum | Read record line to count (first pass) |
+| 6 | 40 | rewind | 107 | - | Rewind file for second pass |
+| 7 | 41 | read | 107 | titldum | Read title (second pass) |
+| 8 | 43 | read | 107 | header | Read header (second pass) |
+| 9 | 47 | read | 107 | hyd_db(ithyd) | Read hydrology data record |
+| 10 | 53 | close | 107 | - | Close hydrology file |
+
+#### Payload Map
+
+**Target Variable**: `hyd_db(:)` (allocated array of type `hydrology_db`)  
+**Module**: hydrology_data_module  
+**Type Definition**: src/hydrology_data_module.f90:6-26
+
+**PRIMARY DATA READ** (line 47):
+
+| **Column** | **Field Name** | **Type** | **Units** | **Range/Valid Values** | **Description** |
+|------------|----------------|----------|-----------|------------------------|-----------------|
+| 1 | name | character(16) | - | - | Hydrology parameter set name |
+| 2 | lat_ttime | real | days | 0-120 | Exponential of the lateral flow travel time |
+| 3 | lat_sed | real | g/L | - | Sediment concentration in lateral flow |
+| 4 | canmx | real | mm H2O | - | Maximum canopy storage |
+| 5 | esco | real | none | 0-1 | Soil evaporation compensation factor |
+| 6 | epco | real | none | 0-1 | Plant water uptake compensation factor |
+| 7 | erorgn | real | none | - | Organic N enrichment ratio (model calculates if blank) |
+| 8 | erorgp | real | none | - | Organic P enrichment ratio (model calculates if blank) |
+| 9 | cn3_swf | real | none | 0-0.99 | Soil water at CN3 (0=fc; 0.99=near saturation) |
+| 10 | biomix | real | none | - | Biological mixing efficiency; mixing at end of calendar year |
+| 11 | perco | real | none | 0-1 | Percolation coefficient - linear adjustment to daily perc |
+| 12 | lat_orgn | real | ppm | - | Organic N concentration in lateral flow |
+| 13 | lat_orgp | real | ppm | - | Organic P concentration in lateral flow |
+| 14 | pet_co | real | none | - | Coefficient related to radiation in Hargreaves equation (default=1.0) |
+| 15 | latq_co | real | none | 0-1 | Lateral soil flow coefficient - linear adjustment to daily lat flow (default=0.3) |
+
+**Array Sizing**:
+- First pass (lines 28-36): Count records → `imax`
+- Allocation (line 38): `allocate (hyd_db(0:imax))`
+- Second pass (lines 47-49): Read `imax` hydrology records
+- `db_mx%hyd = imax` (line 55)
+
+**Special Handling**:
+- If file doesn't exist or is "null", allocates zero-sized array (line 24)
+
+
+---
+
+### 3.60 topography.hyd (INPUT)
+
+**Subroutine**: `topo_read` (src/topo_read.f90:1)
+
+#### Filename Resolution
+
+```
+topography.hyd → in_hyd%topogr_hyd
+               → type input_hydrology (src/input_file_module.f90:158-162)
+               → character(len=25) :: topogr_hyd = "topography.hyd" (line 160)
+               → Swat_codetype: "in_hyd"
+```
+
+**file.cio Cross-Reference**: Part of hydrology section in file.cio
+
+#### I/O Sites
+
+| **Site** | **Line** | **Action** | **Unit/Var** | **Expression** | **Description** |
+|----------|----------|------------|--------------|----------------|-----------------|
+| 1 | 26 | inquire | - | in_hyd%topogr_hyd | Check file existence |
+| 2 | 31 | open | 107 | in_hyd%topogr_hyd | Open topography file |
+| 3 | 32 | read | 107 | titldum | Read title (first pass) |
+| 4 | 34 | read | 107 | header | Read header (first pass) |
+| 5 | 37 | read | 107 | titldum | Read record line to count (first pass) |
+| 6 | 44 | rewind | 107 | - | Rewind file for second pass |
+| 7 | 45 | read | 107 | titldum | Read title (second pass) |
+| 8 | 47 | read | 107 | header | Read header (second pass) |
+| 9 | 51 | read | 107 | topo_db(ith) | Read topography data record |
+| 10 | 57 | close | 107 | - | Close topography file |
+
+#### Payload Map
+
+**Target Variable**: `topo_db(:)` (allocated array of type `topography_db`)  
+**Module**: topography_data_module  
+**Type Definition**: src/topography_data_module.f90:5-12
+
+**PRIMARY DATA READ** (line 51):
+
+| **Column** | **Field Name** | **Type** | **Units** | **Range/Valid Values** | **Description** | **SWAT Variable** |
+|------------|----------------|----------|-----------|------------------------|-----------------|-------------------|
+| 1 | name | character(16) | - | - | Topography parameter set name | - |
+| 2 | slope | real | m/m | - | Average slope steepness in HRU (default=0.02) | hru_slp(:) |
+| 3 | slope_len | real | m | - | Average slope length for erosion (default=50) | slsubbsn(:) |
+| 4 | lat_len | real | m | - | Slope length for lateral subsurface flow (default=50) | slsoil(:) |
+| 5 | dis_stream | real | m | - | Average distance to stream (default=100) | dis_stream(:) |
+| 6 | dep_co | real | - | - | Deposition coefficient (default=1) | - |
+
+**Array Sizing**:
+- First pass (lines 32-40): Count records → `imax`
+- Allocation (line 42): `allocate (topo_db(0:imax))`
+- Second pass (lines 51-53): Read `imax` topography records
+- `db_mx%topo = imax` (line 59)
+
+**Special Handling**:
+- If file doesn't exist or is "null", allocates zero-sized array (line 28)
+
+---
+
+### 3.61 field.fld (INPUT)
+
+**Subroutine**: `field_read` (src/field_read.f90:1)
+
+#### Filename Resolution
+
+```
+field.fld → in_hyd%field_fld
+          → type input_hydrology (src/input_file_module.f90:158-162)
+          → character(len=25) :: field_fld = "field.fld" (line 161)
+          → Swat_codetype: "in_hyd"
+```
+
+**file.cio Cross-Reference**: Part of hydrology section in file.cio
+
+#### I/O Sites
+
+| **Site** | **Line** | **Action** | **Unit/Var** | **Expression** | **Description** |
+|----------|----------|------------|--------------|----------------|-----------------|
+| 1 | 20 | inquire | - | in_hyd%field_fld | Check file existence |
+| 2 | 25 | open | 107 | in_hyd%field_fld | Open field properties file |
+| 3 | 26 | read | 107 | titldum | Read title (first pass) |
+| 4 | 28 | read | 107 | header | Read header (first pass) |
+| 5 | 31 | read | 107 | titldum | Read record line to count (first pass) |
+| 6 | 39 | rewind | 107 | - | Rewind file for second pass |
+| 7 | 40 | read | 107 | titldum | Read title (second pass) |
+| 8 | 42 | read | 107 | header | Read header (second pass) |
+| 9 | 46 | read | 107 | titldum | Read record as dummy (second pass) |
+| 10 | 48 | backspace | 107 | - | Backspace to re-read record |
+| 11 | 49 | read | 107 | field_db(ith) | Read field properties data record |
+| 12 | 56 | close | 107 | - | Close field properties file |
+
+#### Payload Map
+
+**Target Variable**: `field_db(:)` (allocated array of type `fields_db`)  
+**Module**: topography_data_module  
+**Type Definition**: src/topography_data_module.f90:15-20
+
+**PRIMARY DATA READ** (line 49):
+
+| **Column** | **Field Name** | **Type** | **Units** | **Range/Valid Values** | **Description** |
+|------------|----------------|----------|-----------|------------------------|-----------------|
+| 1 | name | character(16) | - | - | Field parameter set name |
+| 2 | length | real | m | - | Field length for wind erosion (default=500) |
+| 3 | wid | real | m | - | Field width for wind erosion (default=100) |
+| 4 | ang | real | deg | - | Field angle for wind erosion (default=30) |
+
+**Array Sizing**:
+- First pass (lines 26-34): Count records → `imax`
+- `db_mx%field = imax` (line 36)
+- Allocation (line 38): `allocate (field_db(0:imax))`
+- Second pass (lines 46-51): Read `db_mx%field` field records
+
+**Special Handling**:
+- If file doesn't exist or is "null", allocates zero-sized array (line 22)
+- Uses backspace (line 48) to re-read each record after dummy read
+
+---
+
+### 3.62 tiledrain.str (INPUT)
+
+**Subroutine**: `sdr_read` (src/sdr_read.f90:1)
+
+#### Filename Resolution
+
+```
+tiledrain.str → in_str%tiledrain_str
+              → type input_structure (src/input_file_module.f90:164-171)
+              → character(len=25) :: tiledrain_str = "tiledrain.str" (line 167)
+              → Swat_codetype: "in_str"
+```
+
+**file.cio Cross-Reference**: Part of structural practices section in file.cio
+
+#### I/O Sites
+
+| **Site** | **Line** | **Action** | **Unit/Var** | **Expression** | **Description** |
+|----------|----------|------------|--------------|----------------|-----------------|
+| 1 | 20 | inquire | - | in_str%tiledrain_str | Check file existence |
+| 2 | 25 | open | 107 | in_str%tiledrain_str | Open subsurface drainage file |
+| 3 | 26 | read | 107 | titldum | Read title (first pass) |
+| 4 | 28 | read | 107 | header | Read header (first pass) |
+| 5 | 31 | read | 107 | titldum | Read record line to count (first pass) |
+| 6 | 38 | rewind | 107 | - | Rewind file for second pass |
+| 7 | 39 | read | 107 | titldum | Read title (second pass) |
+| 8 | 41 | read | 107 | header | Read header (second pass) |
+| 9 | 45 | read | 107 | sdr(isdr) | Read subsurface drainage data record |
+| 10 | 55 | close | 107 | - | Close subsurface drainage file |
+
+#### Payload Map
+
+**Target Variable**: `sdr(:)` (allocated array of type `subsurface_drainage_parameters`)  
+**Module**: hru_module  
+**Type Definition**: src/hru_module.f90:85-95
+
+**PRIMARY DATA READ** (line 45):
+
+| **Column** | **Field Name** | **Type** | **Units** | **Range/Valid Values** | **Description** |
+|------------|----------------|----------|-----------|------------------------|-----------------|
+| 1 | name | character(40) | - | - | Subsurface drainage parameter set name |
+| 2 | depth | real | mm | - | Depth of drain tube from the soil surface |
+| 3 | time | real | hrs | - | Time to drain soil to field capacity |
+| 4 | lag | real | hours | - | Drain tile lag time |
+| 5 | radius | real | mm | - | Effective radius of drains |
+| 6 | dist | real | mm | - | Distance between two drain tubes or tiles |
+| 7 | drain_co | real | mm/day | - | Drainage coefficient |
+| 8 | pumpcap | real | mm/hr | - | Pump capacity |
+| 9 | latksat | real | - | - | Multiplication factor to determine lateral saturated hydraulic conductivity for profile |
+
+**Array Sizing**:
+- First pass (lines 26-34): Count records → `imax`
+- Allocation (line 36): `allocate (sdr(0:imax))`
+- Second pass (lines 45-47): Read `imax` drainage records
+- `db_mx%sdr = imax` (line 53)
+
+**Special Handling**:
+- If file doesn't exist or is "null", allocates zero-sized array (line 22)
+
+
+---
+
+### 3.63 filterstrip.str (INPUT)
+
+**Subroutine**: `scen_read_filtstrip` (src/scen_read_filtstrip.f90:1)
+
+#### Filename Resolution
+
+```
+filterstrip.str → in_str%fstrip_str
+                → type input_structure (src/input_file_module.f90:164-171)
+                → character(len=25) :: fstrip_str = "filterstrip.str" (line 169)
+                → Swat_codetype: "in_str"
+```
+
+**file.cio Cross-Reference**: Part of structural practices section in file.cio
+
+#### I/O Sites
+
+| **Site** | **Line** | **Action** | **Unit/Var** | **Expression** | **Description** |
+|----------|----------|------------|--------------|----------------|-----------------|
+| 1 | 20 | inquire | - | in_str%fstrip_str | Check file existence |
+| 2 | 25 | open | 107 | in_str%fstrip_str | Open filter strip operations file |
+| 3 | 26 | read | 107 | titldum | Read title (first pass) |
+| 4 | 28 | read | 107 | header | Read header (first pass) |
+| 5 | 31 | read | 107 | titldum | Read record line to count (first pass) |
+| 6 | 38 | rewind | 107 | - | Rewind file for second pass |
+| 7 | 39 | read | 107 | titldum | Read title (second pass) |
+| 8 | 41 | read | 107 | header | Read header (second pass) |
+| 9 | 45 | read | 107 | filtstrip_db(ifiltop) | Read filter strip operation data record |
+| 10 | 53 | close | 107 | - | Close filter strip operations file |
+
+#### Payload Map
+
+**Target Variable**: `filtstrip_db(:)` (allocated array of type `filtstrip_operation`)  
+**Module**: mgt_operations_module  
+**Type Definition**: src/mgt_operations_module.f90:30-37
+
+**PRIMARY DATA READ** (line 45):
+
+| **Column** | **Field Name** | **Type** | **Units** | **Range/Valid Values** | **Description** |
+|------------|----------------|----------|-----------|------------------------|-----------------|
+| 1 | name | character(40) | - | - | Filter strip operation name |
+| 2 | vfsi | integer | - | - | On/off flag for vegetative filter strip |
+| 3 | vfsratio | real | - | - | Contouring USLE P factor |
+| 4 | vfscon | real | - | - | Fraction of the total runoff from the entire field |
+| 5 | vfsch | real | - | - | Fraction of flow entering the most concentrated 10% of the VFS which is fully channelized |
+
+**Array Sizing**:
+- First pass (lines 26-34): Count records → `imax`
+- Allocation (line 36): `allocate (filtstrip_db(0:imax))`
+- Second pass (lines 45-47): Read `imax` filter strip operation records
+- `db_mx%filtop_db = imax` (line 52)
+
+**Special Handling**:
+- If file doesn't exist or is "null", allocates zero-sized array (line 22)
+
+---
+
+### 3.64 grassedww.str (INPUT)
+
+**Subroutine**: `scen_read_grwway` (src/scen_read_grwway.f90:1)
+
+#### Filename Resolution
+
+```
+grassedww.str → in_str%grassww_str
+              → type input_structure (src/input_file_module.f90:164-171)
+              → character(len=25) :: grassww_str = "grassedww.str" (line 170)
+              → Swat_codetype: "in_str"
+```
+
+**file.cio Cross-Reference**: Part of structural practices section in file.cio
+
+#### I/O Sites
+
+| **Site** | **Line** | **Action** | **Unit/Var** | **Expression** | **Description** |
+|----------|----------|------------|--------------|----------------|-----------------|
+| 1 | 20 | inquire | - | in_str%grassww_str | Check file existence |
+| 2 | 25 | open | 107 | in_str%grassww_str | Open grassed waterway operations file |
+| 3 | 26 | read | 107 | titldum | Read title (first pass) |
+| 4 | 28 | read | 107 | header | Read header (first pass) |
+| 5 | 31 | read | 107 | titldum | Read record line to count (first pass) |
+| 6 | 38 | rewind | 107 | - | Rewind file for second pass |
+| 7 | 39 | read | 107 | titldum | Read title (second pass) |
+| 8 | 41 | read | 107 | header | Read header (second pass) |
+| 9 | 45 | read | 107 | grwaterway_db(igrwwop) | Read grassed waterway operation data record |
+| 10 | 54 | close | 107 | - | Close grassed waterway operations file |
+
+#### Payload Map
+
+**Target Variable**: `grwaterway_db(:)` (allocated array of type `grwaterway_operation`)  
+**Module**: mgt_operations_module  
+**Type Definition**: src/mgt_operations_module.f90:47-56
+
+**PRIMARY DATA READ** (line 45):
+
+| **Column** | **Field Name** | **Type** | **Units** | **Range/Valid Values** | **Description** |
+|------------|----------------|----------|-----------|------------------------|-----------------|
+| 1 | name | character(40) | - | - | Grassed waterway operation name |
+| 2 | grwat_i | integer | none | - | On/off flag for waterway simulation |
+| 3 | grwat_n | real | none | - | Manning's n for grassed waterway |
+| 4 | grwat_spcon | real | none | - | Sediment transport coefficient defined by user |
+| 5 | grwat_d | real | m | - | Depth of grassed waterway |
+| 6 | grwat_w | real | none | - | Width of grass waterway |
+| 7 | grwat_l | real | km | - | Length of grass waterway |
+| 8 | grwat_s | real | m/m | - | Slope of grass waterway |
+
+**Array Sizing**:
+- First pass (lines 26-34): Count records → `imax`
+- Allocation (line 36): `allocate (grwaterway_db(0:imax))`
+- Second pass (lines 45-47): Read `imax` grassed waterway operation records
+- `db_mx%grassop_db = imax` (line 53)
+
+**Special Handling**:
+- If file doesn't exist or is "null", allocates zero-sized array (line 22)
+
+---
+
+### 3.65 bmpuser.str (INPUT)
+
+**Subroutine**: `scen_read_bmpuser` (src/scen_read_bmpuser.f90:1)
+
+#### Filename Resolution
+
+```
+bmpuser.str → in_str%bmpuser_str
+            → type input_structure (src/input_file_module.f90:164-171)
+            → character(len=25) :: bmpuser_str = "bmpuser.str" (line 171)
+            → Swat_codetype: "in_str"
+```
+
+**file.cio Cross-Reference**: Part of structural practices section in file.cio
+
+#### I/O Sites
+
+| **Site** | **Line** | **Action** | **Unit/Var** | **Expression** | **Description** |
+|----------|----------|------------|--------------|----------------|-----------------|
+| 1 | 19 | inquire | - | in_str%bmpuser_str | Check file existence |
+| 2 | 24 | open | 107 | in_str%bmpuser_str | Open user-defined BMP operations file |
+| 3 | 25 | read | 107 | titldum | Read title (first pass) |
+| 4 | 27 | read | 107 | header | Read header (first pass) |
+| 5 | 30 | read | 107 | titldum | Read record line to count (first pass) |
+| 6 | 36 | rewind | 107 | - | Rewind file for second pass |
+| 7 | 37 | read | 107 | titldum | Read title (second pass) |
+| 8 | 39 | read | 107 | header | Read header (second pass) |
+| 9 | 43 | read | 107 | bmpuser_db(ibmpop) | Read user BMP operation data record |
+| 10 | 50 | close | 107 | - | Close user BMP operations file |
+
+#### Payload Map
+
+**Target Variable**: `bmpuser_db(:)` (allocated array of type `bmpuser_operation`)  
+**Module**: mgt_operations_module  
+**Type Definition**: src/mgt_operations_module.f90:59-68
+
+**PRIMARY DATA READ** (line 43):
+
+| **Column** | **Field Name** | **Type** | **Units** | **Range/Valid Values** | **Description** |
+|------------|----------------|----------|-----------|------------------------|-----------------|
+| 1 | name | character(40) | - | - | User BMP operation name |
+| 2 | bmp_flag | integer | - | - | BMP flag |
+| 3 | bmp_sed | real | % | - | Sediment removal by BMP |
+| 4 | bmp_pp | real | % | - | Particulate P removal by BMP |
+| 5 | bmp_sp | real | % | - | Soluble P removal by BMP |
+| 6 | bmp_pn | real | % | - | Particulate N removal by BMP |
+| 7 | bmp_sn | real | % | - | Soluble N removal by BMP |
+| 8 | bmp_bac | real | % | - | Bacteria removal by BMP |
+
+**Array Sizing**:
+- First pass (lines 25-33): Count records → `imax`
+- Allocation (line 35): `allocate (bmpuser_db(0:imax))`
+- Second pass (lines 43-45): Read `imax` user BMP operation records
+- `db_mx%bmpuserop_db = imax` (line 49)
+
+**Special Handling**:
+- If file doesn't exist or is "null", allocates zero-sized array (line 21)
+- Note: There's also a `bmpuser_operation1` type (lines 70-94) with more detailed surface/subsurface parameters, but this file uses the simpler `bmpuser_operation` type
+
+
+---
+
+### 3.66 cal_parms.cal (INPUT)
+
+**Subroutine**: `cal_parm_read` (src/cal_parm_read.f90:1)
+
+#### Filename Resolution
+
+```
+cal_parms.cal → in_chg%cal_parms
+              → type input_chg (src/input_file_module.f90:212-222)
+              → character(len=25) :: cal_parms = "cal_parms.cal" (line 213)
+              → Swat_codetype: "in_chg"
+```
+
+**file.cio Cross-Reference**: Part of calibration/change section in file.cio
+
+#### I/O Sites
+
+| **Site** | **Line** | **Action** | **Unit/Var** | **Expression** | **Description** |
+|----------|----------|------------|--------------|----------------|-----------------|
+| 1 | 25 | inquire | - | in_chg%cal_parms | Check file existence |
+| 2 | 30 | open | 107 | in_chg%cal_parms | Open calibration parameters file |
+| 3 | 31 | read | 107 | titldum | Read title |
+| 4 | 33 | read | 107 | mchg_par | Read number of parameters |
+| 5 | 38 | read | 107 | header | Read header |
+| 6 | 42 | read | 107 | cal_parms(i) | Read calibration parameter record |
+
+#### Payload Map
+
+**Target Variable**: `cal_parms(:)` (allocated array of type `calibration_parameters`)  
+**Module**: calibration_data_module  
+**Type Definition**: src/calibration_data_module.f90:5-11
+
+**PRIMARY DATA READ** (line 42):
+
+| **Column** | **Field Name** | **Type** | **Units** | **Range/Valid Values** | **Description** |
+|------------|----------------|----------|-----------|------------------------|-----------------|
+| 1 | name | character(25) | - | cn2, esco, awc, etc. | Parameter name |
+| 2 | ob_typ | character(25) | - | plt, hru, chan, res, basin, etc. | Object type the parameter is associated with (default="plt") |
+| 3 | absmin | real | - | - | Minimum range for variable |
+| 4 | absmax | real | - | - | Maximum change for variable (default=1.e6) |
+| 5 | units | character(25) | - | - | Units used for each parameter (default="null") |
+
+**Array Sizing**:
+- Read count (line 33): `mchg_par`
+- Allocation (line 36): `allocate (cal_parms(0:mchg_par))`
+- Read loop (lines 41-44): Read `mchg_par` parameter records
+- `db_mx%cal_parms = mchg_par` (line 49)
+
+**Special Handling**:
+- If file doesn't exist or is "null", allocates zero-sized array (line 27)
+- Number of parameters is read directly (line 33), not counted
+
+---
+
+### 3.67 codes.sft (INPUT)
+
+**Subroutine**: `calsoft_read_codes` (src/calsoft_read_codes.f90:1)
+
+#### Filename Resolution
+
+```
+codes.sft → in_chg%codes_sft
+          → type input_chg (src/input_file_module.f90:212-222)
+          → character(len=25) :: codes_sft = "codes.sft" (line 215)
+          → Swat_codetype: "in_chg"
+```
+
+**Note**: Renamed from codes.cal
+
+**file.cio Cross-Reference**: Part of calibration/change section in file.cio
+
+#### I/O Sites
+
+| **Site** | **Line** | **Action** | **Unit/Var** | **Expression** | **Description** |
+|----------|----------|------------|--------------|----------------|-----------------|
+| 1 | 24 | inquire | - | in_chg%codes_sft | Check file existence |
+| 2 | 29 | open | 107 | in_chg%codes_sft | Open soft calibration codes file |
+| 3 | 30 | read | 107 | titldum | Read title |
+| 4 | 32 | read | 107 | header | Read header |
+| 5 | 34 | read | 107 | cal_codes | Read soft calibration codes structure |
+| 6 | 45 | close | 107 | - | Close soft calibration codes file |
+
+#### Payload Map
+
+**Target Variable**: `cal_codes` (scalar of type `soft_calibration_codes`)  
+**Module**: calibration_data_module  
+**Type Definition**: src/calibration_data_module.f90:54-65
+
+**PRIMARY DATA READ** (line 34):
+
+| **Column** | **Field Name** | **Type** | **Units** | **Range/Valid Values** | **Description** |
+|------------|----------------|----------|-----------|------------------------|-----------------|
+| 1 | hyd_hru | character(1) | - | a, b, y, n | If a: calibrate all hydrologic balance processes for hru by land use; if b: calibrate baseflow and total runoff; if y: defaults to b for existing NAM simulations; if n: no calibration (default="n") |
+| 2 | hyd_hrul | character(1) | - | y, n | If y, calibrate hydrologic balance for hru_lte by land use in each region (default="n") |
+| 3 | plt | character(1) | - | y, n | If y, calibrate plant growth by land use (by plant) in each region (default="n") |
+| 4 | sed | character(1) | - | y, n | If y, calibrate sediment yield by land use in each region (default="n") |
+| 5 | nut | character(1) | - | y, n | If y, calibrate nutrient balance by land use in each region (default="n") |
+| 6 | chsed | character(1) | - | y, n | If y, calibrate channel widening and bank accretion by stream order (default="n") |
+| 7 | chnut | character(1) | - | y, n | If y, calibrate channel nutrient balance by stream order (default="n") |
+| 8 | res | character(1) | - | y, n | If y, calibrate reservoir budgets by reservoir (default="n") |
+
+**Special Handling**:
+- Read single structure, not an array
+- After reading, sets `cal_soft = "y"` if any calibration code is enabled (lines 39-42)
+- If file doesn't exist or is "null", skip reading but don't allocate array (line 25-26, commented)
+
+---
+
+### 3.68 wb_parms.sft (INPUT)
+
+**Subroutine**: `ls_read_lsparms_cal` (src/ls_read_parms_cal.f90:1)
+
+#### Filename Resolution
+
+```
+wb_parms.sft → in_chg%wb_parms_sft
+             → type input_chg (src/input_file_module.f90:212-222)
+             → character(len=25) :: wb_parms_sft = "wb_parms.sft" (line 216)
+             → Swat_codetype: "in_chg"
+```
+
+**Note**: Renamed from ls_parms.cal
+
+**file.cio Cross-Reference**: Part of calibration/change section in file.cio
+
+#### I/O Sites
+
+| **Site** | **Line** | **Action** | **Unit/Var** | **Expression** | **Description** |
+|----------|----------|------------|--------------|----------------|-----------------|
+| 1 | 18 | inquire | - | in_chg%wb_parms_sft | Check file existence |
+| 2 | 23 | open | 107 | in_chg%wb_parms_sft | Open water balance soft calibration parameters file |
+| 3 | 24 | read | 107 | titldum | Read title |
+| 4 | 26 | read | 107 | mlsp | Read number of land surface parameters |
+| 5 | 28 | read | 107 | header | Read header |
+| 6 | 37 | read | 107 | ls_prms(i) components | Read land surface parameter record |
+| 7 | 43 | close | 107 | - | Close water balance parameters file |
+
+#### Payload Map
+
+**Target Variable**: `ls_prms(:)` (allocated array of type `soft_calib_parms`)  
+**Module**: calibration_data_module  
+**Type Definition**: src/calibration_data_module.f90:70-78
+
+**PRIMARY DATA READ** (line 37):
+
+| **Column** | **Field Name** | **Type** | **Units** | **Range/Valid Values** | **Description** |
+|------------|----------------|----------|-----------|------------------------|-----------------|
+| 1 | name | character(16) | - | cn2, terrace, land use, mgt, etc. | Parameter name |
+| 2 | chg_typ | character(16) | - | absval, abschg, pctchg | Type of change |
+| 3 | neg | real | - | - | Negative limit of change |
+| 4 | pos | real | - | - | Positive limit of change |
+| 5 | lo | real | - | - | Lower limit of parameter |
+| 6 | up | real | - | - | Upper limit of parameter |
+
+**Array Sizing**:
+- Read count (line 26): `mlsp`
+- Allocation (line 29): `allocate (ls_prms(mlsp))`
+- Read loop (lines 36-39): Read `mlsp` parameter records
+- `db_mx%lscal_prms = mlsp` (line 34)
+
+**Special Handling**:
+- If file doesn't exist or is "null", allocates zero-sized array (line 20)
+- Number of parameters is read directly (line 26), not counted
+
+
+---
+
+### 3.69 plant.ini (INPUT)
+
+**Subroutine**: `readpcom` (src/readpcom.f90:1)
+
+#### Filename Resolution
+
+```
+plant.ini → in_init%plant
+          → type input_init (src/input_file_module.f90:226-238)
+          → character(len=25) :: plant = "plant.ini" (line 227)
+          → Swat_codetype: "in_init"
+```
+
+**file.cio Cross-Reference**: Part of initial conditions section in file.cio
+
+#### I/O Sites
+
+| **Site** | **Line** | **Action** | **Unit/Var** | **Expression** | **Description** |
+|----------|----------|------------|--------------|----------------|-----------------|
+| 1 | 29 | inquire | - | in_init%plant | Check file existence |
+| 2 | 36 | open | 113 | in_init%plant | Open plant community initialization file |
+| 3 | 37 | read | 113 | titldum | Read title (first pass) |
+| 4 | 39 | read | 113 | header | Read header (first pass) |
+| 5 | 42 | read | 113 | name, numb | Read community name and number of plants (first pass) |
+| 6 | 45 | read | 113 | name | Read plant names to count (first pass) |
+| 7 | 54 | rewind | 113 | - | Rewind file for second pass |
+| 8 | 55 | read | 113 | titldum | Read title (second pass) |
+| 9 | 57 | read | 113 | header | Read header (second pass) |
+| 10 | 62 | read | 113 | pcomdb community | Read community header: name, plants_com, rot_yr_ini |
+| 11 | 68-70 | read | 113 | pcomdb plant components | Read plant components: cpnm, igro, lai, bioms, phuacc, pop, fr_yrmat, rsdin |
+| 12 | 91 | close | 113 | - | Close plant community file |
+
+#### Payload Map
+
+**Target Variable**: `pcomdb(:)` (allocated array of type `plant_community_db`)  
+**Module**: plant_data_module  
+**Type Definition**: src/plant_data_module.f90:129-134
+
+**Component Type**: `pcomdb(:)%pl(:)` (allocated array of type `plant_init_db`)  
+**Type Definition**: src/plant_data_module.f90:115-127
+
+**PRIMARY DATA READ - Community Header** (line 62):
+
+| **Column** | **Field Name** | **Type** | **Units** | **Range/Valid Values** | **Description** |
+|------------|----------------|----------|-----------|------------------------|-----------------|
+| 1 | name | character(40) | - | - | Plant community name (default="frsd_frsd") |
+| 2 | plants_com | integer | - | - | Number of plants in community (default=1) |
+| 3 | rot_yr_ini | integer | - | - | Initial rotation year (default=1) |
+
+**PRIMARY DATA READ - Plant Components** (lines 68-70):
+
+| **Column** | **Field Name** | **Type** | **Units** | **Range/Valid Values** | **Description** |
+|------------|----------------|----------|-----------|------------------------|-----------------|
+| 1 | cpnm | character(40) | - | - | Crop/plant name (default="frsd") |
+| 2 | igro | character(1) | - | y, n | Land cover status: y=growing, n=no cover (default="y") |
+| 3 | lai | real | m²/m² | - | Leaf area index |
+| 4 | bioms | real | kg/ha | - | Land cover/crop biomass |
+| 5 | phuacc | real | - | 0-1 | Fraction of plant heat unit accumulated |
+| 6 | pop | real | plants/m² | - | Plant population |
+| 7 | fr_yrmat | real | years | - | Fraction of current year of growth to years to maturity (default=1) |
+| 8 | rsdin | real | kg/ha | - | Initial residue cover (default=10000) |
+
+**Array Sizing**:
+- First pass (lines 37-50): Count communities → `imax`
+- Allocation (line 52): `allocate (pcomdb(0:imax))`
+- For each community: allocate `pcomdb(icom)%pl(mpcom)` where `mpcom = pcomdb(icom)%plants_com`
+- Second pass (lines 62-70): Read community headers and plant components
+- `db_mx%plantcom = mcom + 1` (line 33 or similar)
+
+**Special Handling**:
+- If file doesn't exist or is "null", allocates zero-sized arrays (lines 31-33)
+- Two-level nesting: communities contain multiple plants
+- Cross-references plant names with `pldb` database to set `db_num` (lines 73-78)
+
+---
+
+### 3.70 soil_plant.ini (INPUT)
+
+**Subroutine**: `soil_plant_init` (src/soil_plant_init.f90:1)
+
+#### Filename Resolution
+
+```
+soil_plant.ini → in_init%soil_plant_ini
+               → type input_init (src/input_file_module.f90:226-238)
+               → character(len=25) :: soil_plant_ini = "soil_plant.ini" (line 228)
+               → Swat_codetype: "in_init"
+```
+
+**file.cio Cross-Reference**: Part of initial conditions section in file.cio
+
+#### I/O Sites
+
+| **Site** | **Line** | **Action** | **Unit/Var** | **Expression** | **Description** |
+|----------|----------|------------|--------------|----------------|-----------------|
+| 1 | 21 | inquire | - | in_init%soil_plant_ini | Check file existence |
+| 2 | 24 | open | 107 | in_init%soil_plant_ini | Open soil-plant initialization file |
+| 3 | 25 | read | 107 | titldum | Read title (first pass) |
+| 4 | 27 | read | 107 | header | Read header (first pass) |
+| 5 | 31 | read | 107 | titldum | Read record line to count (first pass) |
+| 6 | 39 | rewind | 107 | - | Rewind file for second pass |
+| 7 | 40 | read | 107 | titldum | Read title (second pass) |
+| 8 | 42 | read | 107 | header | Read header (second pass) |
+| 9 | 47-48 | read | 107 | sol_plt_ini(ii) components | Read soil-plant initialization data (no cs constituents) |
+| 10 | 50-52 | read | 107 | sol_plt_ini(ii) components | Read soil-plant initialization data (with cs constituents) |
+| 11 | 56 | close | 107 | - | Close soil-plant initialization file |
+
+#### Payload Map
+
+**Target Variable**: `sol_plt_ini(:)` (allocated array of type `soil_plant_initialize`)  
+**Module**: hru_module  
+**Type Definition**: src/hru_module.f90:128-143
+
+**PRIMARY DATA READ** (lines 47-52):
+
+**Without cs constituents** (bsn_cc%nam1 == 0, lines 47-48):
+
+| **Column** | **Field Name** | **Type** | **Units** | **Range/Valid Values** | **Description** |
+|------------|----------------|----------|-----------|------------------------|-----------------|
+| 1 | name | character(40) | - | - | Soil-plant initialization name |
+| 2 | sw_frac | real | - | 0-1 | Soil water fraction |
+| 3 | nutc | character(40) | - | - | Nutrient conditions pointer |
+| 4 | pestc | character(40) | - | - | Pesticide conditions pointer |
+| 5 | pathc | character(40) | - | - | Pathogen conditions pointer |
+| 6 | saltc | character(40) | - | - | Salt conditions pointer |
+| 7 | hmetc | character(40) | - | - | Heavy metal conditions pointer |
+
+**With cs constituents** (bsn_cc%nam1 /= 0, lines 50-52):
+
+| **Column** | **Field Name** | **Type** | **Units** | **Range/Valid Values** | **Description** |
+|------------|----------------|----------|-----------|------------------------|-----------------|
+| 1-7 | (same as above) | - | - | - | Same as without cs constituents |
+| 8 | csc | character(40) | - | - | Constituent conditions pointer |
+
+**Array Sizing**:
+- First pass (lines 25-34): Count records → `imax`
+- `db_mx%sol_plt_ini = imax` (line 36)
+- Allocation (line 38): `allocate (sol_plt_ini(imax))`
+- Second pass (lines 45-55): Read `imax` soil-plant initialization records
+
+**Special Handling**:
+- Conditional read based on `bsn_cc%nam1` flag (lines 46-53)
+- If file doesn't exist or is "null", no allocation (implicit handling)
+
+---
+
+### 3.71 om_water.ini (INPUT)
+
+**Subroutine**: `om_water_init` (src/om_water_init.f90:1)
+
+#### Filename Resolution
+
+```
+om_water.ini → in_init%om_water
+             → type input_init (src/input_file_module.f90:226-238)
+             → character(len=25) :: om_water = "om_water.ini" (line 229)
+             → Swat_codetype: "in_init"
+```
+
+**file.cio Cross-Reference**: Part of initial conditions section in file.cio
+
+#### I/O Sites
+
+| **Site** | **Line** | **Action** | **Unit/Var** | **Expression** | **Description** |
+|----------|----------|------------|--------------|----------------|-----------------|
+| 1 | 23 | inquire | - | in_init%om_water | Check file existence |
+| 2 | 29 | open | 105 | in_init%om_water | Open organic matter and water initialization file |
+| 3 | 30 | read | 105 | titldum | Read title (first pass) |
+| 4 | 32 | read | 105 | header | Read header (first pass) |
+| 5 | 35 | read | 105 | titldum | Read record line to count (first pass) |
+| 6 | 44 | rewind | 105 | - | Rewind file for second pass |
+| 7 | 45 | read | 105 | titldum | Read title (second pass) |
+| 8 | 47 | read | 105 | header | Read header (second pass) |
+| 9 | 51 | read | 105 | titldum | Read record as dummy (second pass) |
+| 10 | 53 | backspace | 105 | - | Backspace to re-read record |
+| 11 | 54 | read | 105 | om_init_name, om_init_water | Read OM/water initialization data |
+| 12 | 57 | close | 105 | - | Close OM/water initialization file |
+
+#### Payload Map
+
+**Target Variable**: `om_init_water(:)` (allocated array of type `hyd_output`)  
+**Module**: hydrograph_module  
+**Type Definition**: src/hydrograph_module.f90:31-50
+
+**Companion Variable**: `om_init_name(:)` (allocated character array)
+
+**PRIMARY DATA READ** (line 54):
+
+| **Column** | **Field Name** | **Type** | **Units** | **Range/Valid Values** | **Description** |
+|------------|----------------|----------|-----------|------------------------|-----------------|
+| 1 | om_init_name(ichi) | character | - | - | OM/water initialization name |
+| 2 | om_init_water(ichi)%flo | real | m³ | - | Volume of water |
+| 3 | om_init_water(ichi)%sed | real | metric tons | - | Sediment |
+| 4 | om_init_water(ichi)%orgn | real | kg N | - | Organic N |
+| 5 | om_init_water(ichi)%sedp | real | kg P | - | Organic P |
+| 6 | om_init_water(ichi)%no3 | real | kg N | - | NO3-N |
+| 7 | om_init_water(ichi)%solp | real | kg P | - | Mineral (soluble P) |
+| 8 | om_init_water(ichi)%chla | real | kg | - | Chlorophyll-a |
+| 9 | om_init_water(ichi)%nh3 | real | kg N | - | NH3 |
+| 10 | om_init_water(ichi)%no2 | real | kg N | - | NO2 |
+| 11 | om_init_water(ichi)%cbod | real | kg | - | Carbonaceous biological oxygen demand |
+| 12 | om_init_water(ichi)%dox | real | kg | - | Dissolved oxygen |
+| 13 | om_init_water(ichi)%san | real | tons | - | Detached sand |
+| 14 | om_init_water(ichi)%sil | real | tons | - | Detached silt |
+| 15 | om_init_water(ichi)%cla | real | tons | - | Detached clay |
+| 16 | om_init_water(ichi)%sag | real | tons | - | Detached small ag |
+| 17 | om_init_water(ichi)%lag | real | tons | - | Detached large ag |
+| 18 | om_init_water(ichi)%grv | real | tons | - | Gravel |
+| 19 | om_init_water(ichi)%temp | real | deg C | - | Temperature |
+
+**Array Sizing**:
+- First pass (lines 30-38): Count records → `imax`
+- `db_mx%om_water_init = imax` (line 40)
+- Allocation (lines 42-43): `allocate (om_init_water(0:imax))`, `allocate (om_init_name(0:imax))`
+- Second pass (lines 51-56): Read `db_mx%om_water_init` OM/water records
+
+**Special Handling**:
+- If file doesn't exist or is "null", allocates zero-sized arrays (lines 25-26)
+- Uses backspace (line 53) to re-read each record after dummy read
+- Type `hyd_output` is used for many water-quality related initial conditions
+
