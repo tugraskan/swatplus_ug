@@ -2637,6 +2637,889 @@ To complete documentation for remaining 135+ files:
 4. **Priority 4 (Advanced Features)**: Calibration files, constituent files, region files
 5. **Priority 5 (Optional Components)**: LTE files, 2D aquifer, special modules
 
+---
+
+### 3.9 weather-wgn.cli (INPUT)
+
+**File**: src/cli_wgnread.f90  
+**Routine**: `cli_wgnread`  
+**Expression**: `in_cli%weat_wgn`  
+**Unit**: 114
+
+#### Filename Resolution
+
+```
+weather-wgn.cli → in_cli%weat_wgn
+                → type input_cli (src/input_file_module.f90:25-37)
+                → character(len=25) :: weat_wgn = "weather-wgn.cli" (line 27)
+```
+
+#### I/O Sites
+
+| **Site** | **File** | **Line(s)** | **Operation** | **Unit** | **Expression** |
+|----------|----------|-------------|---------------|----------|----------------|
+| OPEN     | src/cli_wgnread.f90 | 44 | `open (114,file=in_cli%weat_wgn)` | 114 | `in_cli%weat_wgn` |
+| READ (header) | src/cli_wgnread.f90 | 45 | Title line | 114 | - |
+| READ (count) | src/cli_wgnread.f90 | 48-50 | Count records | 114 | Loop to count |
+| READ (names) | src/cli_wgnread.f90 | 69-73 | Read station names | 114 | `wgn_n(i)` |
+| READ (data) | src/cli_wgnread.f90 | 81-106 | Read wgn parameters | 114 | `wgn(iwgn)` |
+
+#### Payload Map
+
+**Target Variable**: `wgn(:)` (allocated array of type `weather_generator_db`)  
+**Module**: climate_module  
+**Type Definition**: src/climate_module.f90:24-43
+
+**PRIMARY DATA READ**:
+
+| **Variable** | **Field** | **Type** | **Units** | **Description** | **Swat_codetype** | **Source** |
+|--------------|-----------|----------|-----------|-----------------|-------------------|------------|
+| wgn_n(i) | station_name | character(len=50) | - | Weather station name | - | Line 69-73 |
+| wgn(i)%lat | lat | real | degrees | Latitude of station | weather_generator_db%lat | Line 81 |
+| wgn(i)%long | long | real | degrees | Longitude of station | weather_generator_db%long | Line 82 |
+| wgn(i)%elev | elev | real | m | Elevation of station | weather_generator_db%elev | Line 83 |
+| wgn(i)%rain_yrs | rain_yrs | real | years | Years of rainfall data | weather_generator_db%rain_yrs | Line 84 |
+| wgn(i)%tmpmx(1:12) | tmpmx | real(12) | deg C | Monthly avg max temperature | weather_generator_db%tmpmx | Line 85-86 |
+| wgn(i)%tmpmn(1:12) | tmpmn | real(12) | deg C | Monthly avg min temperature | weather_generator_db%tmpmn | Line 87-88 |
+| wgn(i)%tmpstdmx(1:12) | tmpstdmx | real(12) | deg C | Std dev monthly max temp | weather_generator_db%tmpstdmx | Line 89-90 |
+| wgn(i)%tmpstdmn(1:12) | tmpstdmn | real(12) | deg C | Std dev monthly min temp | weather_generator_db%tmpstdmn | Line 91-92 |
+| wgn(i)%pcpmm(1:12) | pcpmm | real(12) | mm | Monthly precipitation | weather_generator_db%pcpmm | Line 93-94 |
+| wgn(i)%pcpstd(1:12) | pcpstd | real(12) | mm/day | Std dev daily precip | weather_generator_db%pcpstd | Line 95-96 |
+| wgn(i)%pcpskw(1:12) | pcpskw | real(12) | - | Skew coefficient precip | weather_generator_db%pcpskw | Line 97-98 |
+| wgn(i)%pr_wd(1:12) | pr_wd | real(12) | - | Prob wet after dry | weather_generator_db%pr_wd | Line 99-100 |
+| wgn(i)%pr_ww(1:12) | pr_ww | real(12) | - | Prob wet after wet | weather_generator_db%pr_ww | Line 101-102 |
+| wgn(i)%pcpd(1:12) | pcpd | real(12) | days | Precip days per month | weather_generator_db%pcpd | Line 103 |
+| wgn(i)%rainhmx(1:12) | rainhmx | real(12) | mm | Max 0.5hr rainfall | weather_generator_db%rainhmx | Line 104 |
+| wgn(i)%solarav(1:12) | solarav | real(12) | MJ/m²/day | Avg solar radiation | weather_generator_db%solarav | Line 105 |
+| wgn(i)%dewpt(1:12) | dewpt | real(12) | deg C | Avg dewpoint temp | weather_generator_db%dewpt | Line 106 |
+| wgn(i)%windav(1:12) | windav | real(12) | m/s | Avg wind speed | weather_generator_db%windav | Line 106 |
+
+**Type Expansion - weather_generator_db** (src/climate_module.f90:24-43):
+```fortran
+type weather_generator_db
+  real :: lat = 0.0                          ! latitude (degrees)
+  real :: long = 0.0                         ! longitude (degrees)
+  real :: elev = 0.0                         ! elevation (m)
+  real :: rain_yrs = 10.0                    ! years of rainfall data
+  real, dimension (12) :: tmpmx = 0.         ! monthly avg max temp (deg C)
+  real, dimension (12) :: tmpmn = 0.         ! monthly avg min temp (deg C)
+  real, dimension (12) :: tmpstdmx = 0.      ! std dev max temp (deg C)
+  real, dimension (12) :: tmpstdmn = 0.      ! std dev min temp (deg C)
+  real, dimension (12) :: pcpmm = 0.         ! monthly precip (mm)
+  real, dimension (12) :: pcpstd = 0.        ! std dev daily precip (mm/day)
+  real, dimension (12) :: pcpskw = 0.        ! skew coefficient
+  real, dimension (12) :: pr_wd = 0.         ! prob wet after dry
+  real, dimension (12) :: pr_ww = 0.         ! prob wet after wet
+  real, dimension (12) :: pcpd = 0.          ! precip days (days)
+  real, dimension (12) :: rainhmx = 0.       ! max 0.5hr rainfall (mm)
+  real, dimension (12) :: solarav = 0.       ! avg solar radiation (MJ/m²/day)
+  real, dimension (12) :: dewpt = 0.         ! avg dewpoint (deg C)
+  real, dimension (12) :: windav = 0.        ! avg wind speed (m/s)
+end type weather_generator_db
+```
+
+**file.cio Cross-Reference**: `in_cli%weat_wgn` is loaded from file.cio climate section
+
+**Notes**:
+- Allocates wgn(0:imax), wgn_n(imax), wgn_orig(0:imax)
+- Also allocates supporting arrays: wgncur, wgnold, wgn_pms, frad, rnd arrays
+- Calls external subroutines cli_initwgn and gcycl
+- If file doesn't exist or is "null", creates empty arrays with size 0:1
+
+---
+
+### 3.10 pcp.cli (INPUT)
+
+**File**: src/cli_pmeas.f90  
+**Routine**: `cli_pmeas`  
+**Expression**: `in_cli%pcp_cli`  
+**Unit**: 107 (file list), 108 (individual station files)
+
+#### Filename Resolution
+
+```
+pcp.cli → in_cli%pcp_cli
+        → type input_cli (src/input_file_module.f90:25-37)
+        → character(len=25) :: pcp_cli = "pcp.cli" (line 30)
+```
+
+#### I/O Sites
+
+| **Site** | **File** | **Line(s)** | **Operation** | **Unit** | **Expression** |
+|----------|----------|-------------|---------------|----------|----------------|
+| OPEN (list) | src/cli_pmeas.f90 | 38 | `open (107,file=in_cli%pcp_cli)` | 107 | `in_cli%pcp_cli` |
+| READ (title) | src/cli_pmeas.f90 | 39 | Title line | 107 | - |
+| READ (header) | src/cli_pmeas.f90 | 41 | Header line | 107 | - |
+| READ (count) | src/cli_pmeas.f90 | 44-46 | Count stations | 107 | Loop |
+| READ (names) | src/cli_pmeas.f90 | 58-59 | Station names | 107 | `pcp_n(i)` |
+| READ (filenames) | src/cli_pmeas.f90 | 69 | Precipitation filenames | 107 | `pcp(i)%filename` |
+| OPEN (station) | src/cli_pmeas.f90 | 74-76 | Open individual pcp file | 108 | `pcp(i)%filename` |
+| READ (station data) | src/cli_pmeas.f90 | 79-145 | Read station precip data | 108 | `pcp(i)` fields |
+
+#### Payload Map
+
+**Target Variable**: `pcp(:)` (allocated array of type `climate_measured_data`)  
+**Module**: climate_module  
+**Type Definition**: src/climate_module.f90:161-183
+
+**PRIMARY DATA READ** (from pcp.cli):
+
+| **Variable** | **Field** | **Type** | **Units** | **Description** | **Swat_codetype** | **Source** |
+|--------------|-----------|----------|-----------|-----------------|-------------------|------------|
+| pcp_n(i) | station_name | character(len=50) | - | Precipitation station name | - | Line 58-59 |
+| pcp(i)%filename | filename | character(len=50) | - | Station data filename | climate_measured_data%filename | Line 69 |
+
+**SECONDARY DATA READ** (from individual station files):
+
+| **Variable** | **Field** | **Type** | **Units** | **Description** | **Swat_codetype** | **Source** |
+|--------------|-----------|----------|-----------|-----------------|-------------------|------------|
+| pcp(i)%lat | lat | real | degrees | Station latitude | climate_measured_data%lat | Line 81 |
+| pcp(i)%long | long | real | degrees | Station longitude | climate_measured_data%long | Line 82 |
+| pcp(i)%elev | elev | real | m | Station elevation | climate_measured_data%elev | Line 83 |
+| pcp(i)%nbyr | nbyr | integer | years | Number of years of data | climate_measured_data%nbyr | Line 84 |
+| pcp(i)%tstep | tstep | integer | 1/day | Timesteps per day | climate_measured_data%tstep | Line 85 |
+| pcp(i)%start_day | start_day | integer | julian | Start day of record | climate_measured_data%start_day | Line 86 |
+| pcp(i)%start_yr | start_yr | integer | year | Start year of record | climate_measured_data%start_yr | Line 87 |
+| pcp(i)%ts(iyr,istep) | ts | real(:,:) | mm | Daily/subdaily precip data | climate_measured_data%ts | Line 102-145 |
+
+**Type Expansion - climate_measured_data** (src/climate_module.f90:161-183):
+```fortran
+type climate_measured_data
+  character (len=50) :: filename = ""          ! data filename
+  real :: lat = 0.                             ! latitude (degrees)
+  real :: long = 0.                            ! longitude (degrees)
+  real :: elev = 0.                            ! elevation (m)
+  integer :: nbyr = 0                          ! number of years
+  integer :: tstep = 0                         ! timestep (1/day)
+  integer :: days_gen = 0                      ! generated days
+  integer :: yrs_start = 1                     ! years before record
+  integer :: start_day = 0                     ! start julian day
+  integer :: start_yr = 0                      ! start year
+  integer :: end_day = 0                       ! end julian day
+  integer :: end_yr = 0                        ! end year
+  real, dimension (12) :: mean_mon = 0.        ! monthly means
+  real, dimension (12) :: max_mon = 0.         ! monthly maxima
+  real, dimension (12) :: min_mon = 0.         ! monthly minima
+  real, dimension (:,:), allocatable :: ts     ! time series data
+  real, dimension (:,:), allocatable :: ts2    ! secondary time series
+  real, dimension (:,:,:), allocatable :: tss  ! subdaily time series
+end type climate_measured_data
+```
+
+**file.cio Cross-Reference**: `in_cli%pcp_cli` is loaded from file.cio climate section
+
+**Notes**:
+- Two-level file structure: pcp.cli lists station files, each station file contains data
+- Path prefix `in_path_pcp%pcp` can be prepended to filenames
+- Handles both daily and subdaily precipitation data via tstep parameter
+- Allocates pcp(0:imax) and pcp_n(imax)
+- If file doesn't exist or is "null", creates pcp(0:0) and pcp_n(0)
+
+---
+
+### 3.11 tmp.cli (INPUT)
+
+**File**: src/cli_tmeas.f90 (similar structure to cli_pmeas.f90)  
+**Routine**: `cli_tmeas`  
+**Expression**: `in_cli%tmp_cli`  
+**Unit**: 107 (file list), 108 (individual station files)
+
+#### Filename Resolution
+
+```
+tmp.cli → in_cli%tmp_cli
+        → type input_cli (src/input_file_module.f90:25-37)
+        → character(len=25) :: tmp_cli = "tmp.cli" (line 31)
+```
+
+#### I/O Sites
+
+Similar structure to pcp.cli - lists temperature station files
+
+**Target Variable**: `tmp(:)` (allocated array of type `climate_measured_data`)  
+**Module**: climate_module  
+**Type Definition**: src/climate_module.f90:161-183 (same as pcp)
+
+**PRIMARY DATA READ**: Temperature station names and filenames  
+**SECONDARY DATA READ**: Max/min temperature time series from individual station files
+
+**file.cio Cross-Reference**: `in_cli%tmp_cli` is loaded from file.cio climate section
+
+---
+
+### 3.12 hmd.cli (INPUT)
+
+**File**: src/cli_hmeas.f90  
+**Routine**: `cli_hmeas`  
+**Expression**: `in_cli%hmd_cli`  
+**Unit**: 107 (file list), 108 (individual station files)
+
+#### Filename Resolution
+
+```
+hmd.cli → in_cli%hmd_cli
+        → type input_cli (src/input_file_module.f90:25-37)
+        → character(len=25) :: hmd_cli = "hmd.cli" (line 33)
+```
+
+#### I/O Sites
+
+Similar structure to pcp.cli - lists humidity station files
+
+**Target Variable**: `hmd(:)` (allocated array of type `climate_measured_data`)  
+**Module**: climate_module  
+**Type Definition**: src/climate_module.f90:161-183 (same as pcp)
+
+**file.cio Cross-Reference**: `in_cli%hmd_cli` is loaded from file.cio climate section
+
+---
+
+### 3.13 wnd.cli (INPUT)
+
+**File**: src/cli_wmeas.f90  
+**Routine**: `cli_wmeas`  
+**Expression**: `in_cli%wnd_cli`  
+**Unit**: 107 (file list), 108 (individual station files)
+
+#### Filename Resolution
+
+```
+wnd.cli → in_cli%wnd_cli
+        → type input_cli (src/input_file_module.f90:25-37)
+        → character(len=25) :: wnd_cli = "wnd.cli" (line 34)
+```
+
+#### I/O Sites
+
+Similar structure to pcp.cli - lists wind speed station files
+
+**Target Variable**: `wnd(:)` (allocated array of type `climate_measured_data`)  
+**Module**: climate_module  
+**Type Definition**: src/climate_module.f90:161-183 (same as pcp)
+
+**file.cio Cross-Reference**: `in_cli%wnd_cli` is loaded from file.cio climate section
+
+---
+
+### 3.14 soils.sol (INPUT)
+
+**File**: src/soils_lte_read.f90  
+**Routine**: `soils_lte_read`  
+**Expression**: `in_sol%soils_sol`  
+**Unit**: 107
+
+#### Filename Resolution
+
+```
+soils.sol → in_sol%soils_sol
+          → type input_soils (src/input_file_module.f90:242-247)
+          → character(len=25) :: soils_sol = "soils.sol" (line 243)
+```
+
+#### I/O Sites
+
+| **Site** | **File** | **Line(s)** | **Operation** | **Unit** | **Expression** |
+|----------|----------|-------------|---------------|----------|----------------|
+| OPEN | src/soils_lte_read.f90 | ~25 | `open (107,file=in_sol%soils_sol)` | 107 | `in_sol%soils_sol` |
+| READ | src/soils_lte_read.f90 | Various | Read soil properties | 107 | `soildb(i)` |
+
+#### Payload Map
+
+**Target Variable**: `soildb(:)` (allocated array of type `soil_database`)  
+**Module**: soil_data_module  
+**Type Definition**: src/soil_data_module.f90
+
+**Type Expansion - soil_database**:
+```fortran
+type soil_database
+  type (soil_profile_db) :: s          ! soil profile properties
+  type (soilayer_db), dimension(:), allocatable :: ly  ! layer properties
+end type soil_database
+```
+
+Contains soil profile properties and layer-by-layer characteristics including texture, bulk density, hydraulic conductivity, etc.
+
+**file.cio Cross-Reference**: `in_sol%soils_sol` is loaded from file.cio soils section
+
+---
+
+### 3.15 nutrients.sol (INPUT)
+
+**File**: src/nut_sol_read.f90  
+**Routine**: `nut_sol_read`  
+**Expression**: `in_sol%nut_sol`  
+**Unit**: 107
+
+#### Filename Resolution
+
+```
+nutrients.sol → in_sol%nut_sol
+              → type input_soils (src/input_file_module.f90:242-247)
+              → character(len=25) :: nut_sol = "nutrients.sol" (line 244)
+```
+
+**Target Variable**: Soil nutrient properties linked to soildb  
+**file.cio Cross-Reference**: `in_sol%nut_sol` is loaded from file.cio soils section
+
+---
+
+### 3.16 landuse.lum (INPUT)
+
+**File**: src/landuse_read.f90  
+**Routine**: `landuse_read`  
+**Expression**: `in_lum%landuse_lum`  
+**Unit**: 107
+
+#### Filename Resolution
+
+```
+landuse.lum → in_lum%landuse_lum
+            → type input_lum (src/input_file_module.f90:202-209)
+            → character(len=25) :: landuse_lum = "landuse.lum" (line 203)
+```
+
+#### I/O Sites
+
+| **Site** | **File** | **Line(s)** | **Operation** | **Unit** | **Expression** |
+|----------|----------|-------------|---------------|----------|----------------|
+| OPEN | src/landuse_read.f90 | 35 | `open (107,file=in_lum%landuse_lum)` | 107 | `in_lum%landuse_lum` |
+| READ (title) | src/landuse_read.f90 | 36 | Title line | 107 | - |
+| READ (header) | src/landuse_read.f90 | 38 | Header line | 107 | - |
+| READ (count) | src/landuse_read.f90 | 40-44 | Count records | 107 | Loop |
+| READ (data) | src/landuse_read.f90 | 55-58 | Read land use data | 107 | `lum(ilu)` |
+
+#### Payload Map
+
+**Target Variable**: `lum(:)` (allocated array of type `land_use_management`)  
+**Module**: landuse_data_module  
+**Type Definition**: src/landuse_data_module.f90:5-22
+
+**PRIMARY DATA READ**:
+
+| **Variable** | **Field** | **Type** | **Units** | **Description** | **Swat_codetype** | **Source** |
+|--------------|-----------|----------|-----------|-----------------|-------------------|------------|
+| lum(i)%name | name | character(40) | - | Land use name | land_use_management%name | Line 56 |
+| lum(i)%cal_group | cal_group | character(40) | - | Calibration group | land_use_management%cal_group | Line 56 |
+| lum(i)%plant_cov | plant_cov | character(40) | - | Plant community init (→plants.ini) | land_use_management%plant_cov | Line 56 |
+| lum(i)%mgt_ops | mgt_ops | character(40) | - | Management operations (→management.sch) | land_use_management%mgt_ops | Line 56 |
+| lum(i)%cn_lu | cn_lu | character(40) | - | Curve number table (→cntable.lum) | land_use_management%cn_lu | Line 56 |
+| lum(i)%cons_prac | cons_prac | character(40) | - | Conservation practice (→cons_practice.lum) | land_use_management%cons_prac | Line 56 |
+| lum(i)%urb_lu | urb_lu | character(40) | - | Urban land use type (→urban.urb) | land_use_management%urb_lu | Line 56 |
+| lum(i)%urb_ro | urb_ro | character(40) | - | Urban runoff model | land_use_management%urb_ro | Line 56 |
+| lum(i)%ovn | ovn | character(40) | - | Manning's n (→ovn_table.lum) | land_use_management%ovn | Line 56 |
+| lum(i)%tiledrain | tiledrain | character(40) | - | Tile drainage (→tiledrain.str) | land_use_management%tiledrain | Line 56 |
+| lum(i)%septic | septic | character(40) | - | Septic tanks (→septic.str) | land_use_management%septic | Line 56 |
+| lum(i)%fstrip | fstrip | character(40) | - | Filter strips (→filterstrip.str) | land_use_management%fstrip | Line 56 |
+| lum(i)%grassww | grassww | character(40) | - | Grass waterways (→grassedww.str) | land_use_management%grassww | Line 56 |
+| lum(i)%bmpuser | bmpuser | character(40) | - | User BMP (→bmpuser.str) | land_use_management%bmpuser | Line 56 |
+
+**Type Expansion - land_use_management** (src/landuse_data_module.f90:5-22):
+```fortran
+type land_use_management
+  character (len=40) :: name = ""         ! land use name
+  character (len=40) :: cal_group = ""    ! calibration group
+  character (len=40) :: plant_cov = ""    ! plant community → plants.ini
+  character (len=40) :: mgt_ops = ""      ! management → management.sch
+  character (len=40) :: cn_lu = ""        ! curve number → cntable.lum
+  character (len=40) :: cons_prac = ""    ! conservation → cons_practice.lum
+  character (len=40) :: urb_lu = ""       ! urban type → urban.urb
+  character (len=40) :: urb_ro = ""       ! urban runoff model
+  character (len=40) :: ovn = ""          ! Manning's n → ovn_table.lum
+  character (len=40) :: tiledrain = ""    ! tile → tiledrain.str
+  character (len=40) :: septic = ""       ! septic → septic.str
+  character (len=40) :: fstrip = ""       ! filter strips → filterstrip.str
+  character (len=40) :: grassww = ""      ! grass waterways → grassedww.str
+  character (len=40) :: bmpuser = ""      ! user BMP → bmpuser.str
+end type land_use_management
+```
+
+**file.cio Cross-Reference**: `in_lum%landuse_lum` is loaded from file.cio land use management section
+
+**Notes**:
+- Acts as master index file pointing to 10+ other database files
+- Each field is a pointer/name that gets resolved to database indices
+- Code at lines 61-177 resolves character names to integer indices
+- Allocates lum(0:imax) and lum_str(0:imax)
+
+---
+
+### 3.17 management.sch (INPUT)
+
+**File**: src/mgt_read_mgtops.f90  
+**Routine**: `mgt_read_mgtops`  
+**Expression**: `in_lum%management_sch`  
+**Unit**: 107
+
+#### Filename Resolution
+
+```
+management.sch → in_lum%management_sch
+               → type input_lum (src/input_file_module.f90:202-209)
+               → character(len=25) :: management_sch = "management.sch" (line 204)
+```
+
+#### I/O Sites
+
+| **Site** | **File** | **Line(s)** | **Operation** | **Unit** | **Expression** |
+|----------|----------|-------------|---------------|----------|----------------|
+| OPEN | src/mgt_read_mgtops.f90 | 33 | `open (107,file=in_lum%management_sch)` | 107 | `in_lum%management_sch` |
+| READ (title) | src/mgt_read_mgtops.f90 | 34 | Title line | 107 | - |
+| READ (header) | src/mgt_read_mgtops.f90 | 36 | Header line | 107 | - |
+| READ (count) | src/mgt_read_mgtops.f90 | 38-50 | Count schedules | 107 | Loop |
+| READ (schedule) | src/mgt_read_mgtops.f90 | 61-62 | Schedule name, nops, nautos | 107 | `sched(isched)` |
+| READ (autos) | src/mgt_read_mgtops.f90 | 69-78 | Auto operation names | 107 | `sched%auto_name` |
+| READ (ops) | src/mgt_read_mgtops.f90 | Various | Individual operations | 107 | `sched%mgt_ops` |
+
+#### Payload Map
+
+**Target Variable**: `sched(:)` (allocated array of type `management_schedule`)  
+**Module**: mgt_operations_module  
+**Type Definition**: src/mgt_operations_module.f90:178-188
+
+**PRIMARY DATA READ**:
+
+| **Variable** | **Field** | **Type** | **Units** | **Description** | **Swat_codetype** | **Source** |
+|--------------|-----------|----------|-----------|-----------------|-------------------|------------|
+| sched(i)%name | name | character(40) | - | Schedule name | management_schedule%name | Line 61 |
+| sched(i)%num_ops | num_ops | integer | - | Number of operations | management_schedule%num_ops | Line 61 |
+| sched(i)%num_autos | num_autos | integer | - | Number of auto operations | management_schedule%num_autos | Line 61 |
+| sched(i)%auto_name(j) | auto_name | character(40) | - | Auto operation name | management_schedule%auto_name | Line 69 |
+| sched(i)%mgt_ops(k) | mgt_ops | management_ops | - | Management operation | management_schedule%mgt_ops | Various |
+
+**Type Expansion - management_schedule** (src/mgt_operations_module.f90:178-188):
+```fortran
+type management_schedule
+  character(len=40) :: name = ""
+  integer :: num_ops = 0
+  integer :: num_autos = 0
+  integer :: first_op = 0
+  type (management_ops), dimension (:), allocatable :: mgt_ops
+  character(len=40), dimension (:), allocatable :: auto_name
+  character(len=40), dimension (:), allocatable :: auto_crop
+  integer :: auto_crop_num = 0
+  integer, dimension (:), allocatable :: num_db
+  integer :: irr = 0
+end type management_schedule
+```
+
+**file.cio Cross-Reference**: `in_lum%management_sch` is loaded from file.cio land use management section
+
+**Notes**:
+- Complex nested structure with auto operations and scheduled operations
+- Allocates sched(0:imax) where imax = number of schedules
+- Each schedule contains variable number of operations (num_ops) and auto operations (num_autos)
+- File has hierarchical structure: schedule header, then auto ops, then scheduled ops
+
+---
+
+### 3.18 cntable.lum (INPUT)
+
+**File**: src/cntbl_read.f90  
+**Routine**: `cntbl_read`  
+**Expression**: `in_lum%cntable_lum`  
+**Unit**: 107
+
+#### Filename Resolution
+
+```
+cntable.lum → in_lum%cntable_lum
+            → type input_lum (src/input_file_module.f90:202-209)
+            → character(len=25) :: cntable_lum = "cntable.lum" (line 205)
+```
+
+#### I/O Sites
+
+| **Site** | **File** | **Line(s)** | **Operation** | **Unit** | **Expression** |
+|----------|----------|-------------|---------------|----------|----------------|
+| OPEN | src/cntbl_read.f90 | 25 | `open (107,file=in_lum%cntable_lum)` | 107 | `in_lum%cntable_lum` |
+| READ (title) | src/cntbl_read.f90 | 26 | Title line | 107 | - |
+| READ (header) | src/cntbl_read.f90 | 28 | Header line | 107 | - |
+| READ (count) | src/cntbl_read.f90 | 30-34 | Count records | 107 | Loop |
+| READ (data) | src/cntbl_read.f90 | 44-46 | Read CN table | 107 | `cn(icno)` |
+
+#### Payload Map
+
+**Target Variable**: `cn(:)` (allocated array of type `curvenumber_table`)  
+**Module**: landuse_data_module  
+**Type Definition**: src/landuse_data_module.f90:38-42
+
+**PRIMARY DATA READ**:
+
+| **Variable** | **Field** | **Type** | **Units** | **Description** | **Swat_codetype** | **Source** |
+|--------------|-----------|----------|-----------|-----------------|-------------------|------------|
+| cn(i)%name | name | character(40) | - | CN table name (land use/treatment/condition) | curvenumber_table%name | Line 45 |
+| cn(i)%cn(1) | cn(1) | real | - | Curve number for hydrologic group A | curvenumber_table%cn(1) | Line 45 |
+| cn(i)%cn(2) | cn(2) | real | - | Curve number for hydrologic group B | curvenumber_table%cn(2) | Line 45 |
+| cn(i)%cn(3) | cn(3) | real | - | Curve number for hydrologic group C | curvenumber_table%cn(3) | Line 45 |
+| cn(i)%cn(4) | cn(4) | real | - | Curve number for hydrologic group D | curvenumber_table%cn(4) | Line 45 |
+
+**Type Expansion - curvenumber_table** (src/landuse_data_module.f90:38-42):
+```fortran
+type curvenumber_table
+  character(len=40) :: name = ""                  ! name includes lu/treatment/condition
+  real, dimension(4) :: cn = (/30.,55.,70.,77./)  ! curve numbers for A,B,C,D soil groups
+end type curvenumber_table
+```
+
+**file.cio Cross-Reference**: `in_lum%cntable_lum` is loaded from file.cio land use management section
+
+**Notes**:
+- Simple table structure with curve numbers for 4 hydrologic soil groups
+- Allocates cn(0:imax)
+- Default CN values are provided: 30,55,70,77 for groups A,B,C,D
+
+---
+
+### 3.19 hru.con (INPUT)
+
+**File**: src/hyd_read_connect.f90  
+**Routine**: `hyd_read_connect`  
+**Expression**: `in_con%hru_con`  
+**Unit**: 107
+
+#### Filename Resolution
+
+```
+hru.con → in_con%hru_con
+        → type input_con (src/input_file_module.f90:40-54)
+        → character(len=25) :: hru_con = "hru.con" (line 41)
+```
+
+#### I/O Sites
+
+| **Site** | **File** | **Line(s)** | **Operation** | **Unit** | **Expression** |
+|----------|----------|-------------|---------------|----------|----------------|
+| OPEN | src/hyd_read_connect.f90 | 57 | `open (107,file=con_file)` | 107 | `con_file` (=hru.con) |
+| READ (title) | src/hyd_read_connect.f90 | 58 | Title line | 107 | - |
+| READ (header) | src/hyd_read_connect.f90 | 60 | Header line | 107 | - |
+| READ (data) | src/hyd_read_connect.f90 | Various | Read connections | 107 | `ob(i)` structures |
+
+#### Payload Map
+
+**Target Variable**: `ob(:)` (object connection array)  
+**Module**: hydrograph_module
+
+**Notes**:
+- Generic connection reader called with different con_file parameters
+- For HRUs: called with `in_con%hru_con`, obtyp="hru", nspu=sp_ob%hru
+- Sets up connectivity between HRUs and downstream objects
+- Allocates hydrograph structures for each HRU
+- If constituents enabled, allocates constituent hydrograph structures
+
+**file.cio Cross-Reference**: `in_con%hru_con` is loaded from file.cio connection section
+
+---
+
+### 3.20 rout_unit.con (INPUT)
+
+**File**: src/hyd_read_connect.f90  
+**Routine**: `hyd_read_connect`  
+**Expression**: `in_con%ru_con`  
+**Unit**: 107
+
+#### Filename Resolution
+
+```
+rout_unit.con → in_con%ru_con
+              → type input_con (src/input_file_module.f90:40-54)
+              → character(len=25) :: ru_con = "rout_unit.con" (line 43)
+```
+
+**Notes**:
+- Uses same `hyd_read_connect` routine as hru.con
+- Called with obtyp="ru", nspu=sp_ob%ru
+- Defines connectivity for routing units
+
+**file.cio Cross-Reference**: `in_con%ru_con` is loaded from file.cio connection section
+
+---
+
+### 3.21 aquifer.con (INPUT)
+
+**File**: src/hyd_read_connect.f90  
+**Routine**: `hyd_read_connect`  
+**Expression**: `in_con%aqu_con`  
+**Unit**: 107
+
+#### Filename Resolution
+
+```
+aquifer.con → in_con%aqu_con
+            → type input_con (src/input_file_module.f90:40-54)
+            → character(len=25) :: aqu_con = "aquifer.con" (line 45)
+```
+
+**Notes**:
+- Uses same `hyd_read_connect` routine
+- Called with obtyp="aqu", nspu=sp_ob%aqu
+- Defines connectivity for aquifers
+
+**file.cio Cross-Reference**: `in_con%aqu_con` is loaded from file.cio connection section
+
+---
+
+### 3.22 channel.con (INPUT)
+
+**File**: src/hyd_read_connect.f90  
+**Routine**: `hyd_read_connect`  
+**Expression**: `in_con%chan_con`  
+**Unit**: 107
+
+#### Filename Resolution
+
+```
+channel.con → in_con%chan_con
+            → type input_con (src/input_file_module.f90:40-54)
+            → character(len=25) :: chan_con = "channel.con" (line 47)
+```
+
+**Notes**:
+- Uses same `hyd_read_connect` routine
+- Called with obtyp="cha", nspu=sp_ob%chan
+- Defines connectivity for channels
+
+**file.cio Cross-Reference**: `in_con%chan_con` is loaded from file.cio connection section
+
+---
+
+### 3.23 initial.cha (INPUT)
+
+**File**: src/ch_read_init.f90  
+**Routine**: `ch_read_init`  
+**Expression**: `in_cha%init`  
+**Unit**: 105
+
+#### Filename Resolution
+
+```
+initial.cha → in_cha%init
+            → type input_cha (src/input_file_module.f90:58-68)
+            → character(len=25) :: init = "initial.cha" (line 59)
+```
+
+#### I/O Sites
+
+| **Site** | **File** | **Line(s)** | **Operation** | **Unit** | **Expression** |
+|----------|----------|-------------|---------------|----------|----------------|
+| OPEN | src/ch_read_init.f90 | 27 | `open (105,file=in_cha%init)` | 105 | `in_cha%init` |
+| READ (title) | src/ch_read_init.f90 | 28 | Title line | 105 | - |
+| READ (header) | src/ch_read_init.f90 | 30 | Header line | 105 | - |
+| READ (count) | src/ch_read_init.f90 | 32-36 | Count records | 105 | Loop |
+| READ (data) | src/ch_read_init.f90 | 48-50 | Read initial conditions | 105 | `ch_init(ich)` |
+
+#### Payload Map
+
+**Target Variable**: `ch_init(:)` and `sd_init(:)` (arrays of type `channel_init_datafiles`)  
+**Module**: channel_data_module  
+**Type Definition**: src/channel_data_module.f90
+
+**Type Expansion - channel_init_datafiles**:
+```fortran
+type channel_init_datafiles
+  character(len=16) :: name = "default"
+  character(len=16) :: org_min = ""    ! → initial organic-mineral file
+  character(len=16) :: pest = ""       ! → initial pesticide file
+  character(len=16) :: path = ""       ! → initial pathogen file
+  character(len=16) :: hmet = ""       ! → initial heavy metals file
+  character(len=16) :: salt = ""       ! → initial salt file
+end type channel_init_datafiles
+```
+
+**file.cio Cross-Reference**: `in_cha%init` is loaded from file.cio channel section
+
+**Notes**:
+- Allocates both ch_init(0:imax) and sd_init(0:imax)
+- sd_init used for stream/drainage initial conditions
+- Each entry points to constituent-specific initial condition files
+
+---
+
+### 3.24 nutrients.cha (INPUT)
+
+**File**: src/ch_read_nut.f90  
+**Routine**: `ch_read_nut`  
+**Expression**: `in_cha%nut`  
+**Unit**: 105
+
+#### Filename Resolution
+
+```
+nutrients.cha → in_cha%nut
+              → type input_cha (src/input_file_module.f90:58-68)
+              → character(len=25) :: nut = "nutrients.cha" (line 63)
+```
+
+#### I/O Sites
+
+| **Site** | **File** | **Line(s)** | **Operation** | **Unit** | **Expression** |
+|----------|----------|-------------|---------------|----------|----------------|
+| OPEN | src/ch_read_nut.f90 | 33 | `open (105,file=in_cha%nut)` | 105 | `in_cha%nut` |
+| READ (title) | src/ch_read_nut.f90 | 34 | Title line | 105 | - |
+| READ (header) | src/ch_read_nut.f90 | 36 | Header line | 105 | - |
+| READ (count) | src/ch_read_nut.f90 | 38-42 | Count records | 105 | Loop |
+| READ (data) | src/ch_read_nut.f90 | 54-57 | Read nutrient parameters | 105 | `ch_nut(ich)` |
+
+#### Payload Map
+
+**Target Variable**: `ch_nut(:)` (allocated array of type `channel_nut_data`)  
+**Module**: channel_data_module
+
+**Type Expansion - channel_nut_data** (partial - has 20+ parameters):
+```fortran
+type channel_nut_data
+  integer :: lao = 2               ! light averaging option
+  integer :: igropt = 2            ! algae growth option
+  real :: ai0 = 50.                ! non-algal light extinction (1/m)
+  real :: ai1 = 0.08               ! linear algal self-shading (1/(m*ug/L))
+  real :: mumax = 2.0              ! max algae growth rate (1/day)
+  real :: rhoq = 2.5               ! algae respiration rate (1/day)
+  real :: k_l = 0.75               ! light half-saturation (MJ/m²/day)
+  real :: k_n = 0.02               ! N half-saturation (mg N/L)
+  real :: k_p = 0.025              ! P half-saturation (mg P/L)
+  real :: lambda0 = 1.0            ! non-algal light extinction (1/m)
+  ! ... 10+ more parameters for algae, nutrients, etc.
+end type channel_nut_data
+```
+
+**file.cio Cross-Reference**: `in_cha%nut` is loaded from file.cio channel section
+
+**Notes**:
+- Contains parameters for in-stream water quality processes
+- Allocates ch_nut(0:imax)
+- Lines 62-106 set default values for undefined parameters
+- Default values ensure model can run even with incomplete data
+
+---
+
+### 3.25 harv.ops (INPUT)
+
+**File**: src/mgt_read_harvops.f90  
+**Routine**: `mgt_read_harvops`  
+**Expression**: `in_ops%harv_ops`  
+**Unit**: 107
+
+#### Filename Resolution
+
+```
+harv.ops → in_ops%harv_ops
+         → type input_ops (src/input_file_module.f90:191-199)
+         → character(len=25) :: harv_ops = "harv.ops" (line 192)
+```
+
+#### I/O Sites
+
+| **Site** | **File** | **Line(s)** | **Operation** | **Unit** | **Expression** |
+|----------|----------|-------------|---------------|----------|----------------|
+| OPEN | src/mgt_read_harvops.f90 | 25 | `open (107,file=in_ops%harv_ops)` | 107 | `in_ops%harv_ops` |
+| READ (title) | src/mgt_read_harvops.f90 | 26 | Title line | 107 | - |
+| READ (header) | src/mgt_read_harvops.f90 | 28 | Header line | 107 | - |
+| READ (count) | src/mgt_read_harvops.f90 | 30-34 | Count records | 107 | Loop |
+| READ (data) | src/mgt_read_harvops.f90 | 43-45 | Read harvest operations | 107 | `harvop_db(iharvop)` |
+
+#### Payload Map
+
+**Target Variable**: `harvop_db(:)` (allocated array of type `harvest_operation`)  
+**Module**: mgt_operations_module  
+**Type Definition**: src/mgt_operations_module.f90:110-118
+
+**PRIMARY DATA READ**:
+
+| **Variable** | **Field** | **Type** | **Units** | **Description** | **Swat_codetype** | **Source** |
+|--------------|-----------|----------|-----------|-----------------|-------------------|------------|
+| harvop_db(i)%name | name | character(40) | - | Harvest operation name | harvest_operation%name | Line 44 |
+| harvop_db(i)%typ | typ | character(40) | - | Harvest type (grain/biomass/residue/tree/tuber) | harvest_operation%typ | Line 44 |
+| harvop_db(i)%hi_ovr | hi_ovr | real | kg/ha/kg/ha | Harvest index override | harvest_operation%hi_ovr | Line 44 |
+| harvop_db(i)%eff | eff | real | fraction | Harvest efficiency | harvest_operation%eff | Line 44 |
+| harvop_db(i)%bm_min | bm_min | real | kg/ha | Minimum biomass to allow harvest | harvest_operation%bm_min | Line 44 |
+
+**Type Expansion - harvest_operation** (src/mgt_operations_module.f90:110-118):
+```fortran
+type harvest_operation
+  character (len=40) :: name = ""    ! operation name
+  character (len=40) :: typ = ""     ! grain;biomass;residue;tree;tuber
+  real :: hi_ovr = 0.                ! harvest index target (kg/ha)/(kg/ha)
+  real :: eff = 0.                   ! harvest efficiency (fraction removed)
+  real :: bm_min = 0                 ! minimum biomass to allow harvest (kg/ha)
+end type harvest_operation
+```
+
+**file.cio Cross-Reference**: `in_ops%harv_ops` is loaded from file.cio operation scheduling section
+
+**Notes**:
+- Allocates harvop_db(0:imax)
+- Sets db_mx%harvop_db = imax at line 53
+- If file doesn't exist or is "null", allocates harvop_db(0:0)
+
+---
+
+### 3.26 irr.ops (INPUT)
+
+**File**: src/mgt_read_irrops.f90  
+**Routine**: `mgt_read_irrops`  
+**Expression**: `in_ops%irr_ops`  
+**Unit**: 107
+
+#### Filename Resolution
+
+```
+irr.ops → in_ops%irr_ops
+        → type input_ops (src/input_file_module.f90:191-199)
+        → character(len=25) :: irr_ops = "irr.ops" (line 194)
+```
+
+#### I/O Sites
+
+| **Site** | **File** | **Line(s)** | **Operation** | **Unit** | **Expression** |
+|----------|----------|-------------|---------------|----------|----------------|
+| OPEN | src/mgt_read_irrops.f90 | 28 | `open (107,file=in_ops%irr_ops)` | 107 | `in_ops%irr_ops` |
+| READ (title) | src/mgt_read_irrops.f90 | 29 | Title line | 107 | - |
+| READ (header) | src/mgt_read_irrops.f90 | 31 | Header line | 107 | - |
+| READ (count) | src/mgt_read_irrops.f90 | 33-37 | Count records | 107 | Loop |
+| READ (data) | src/mgt_read_irrops.f90 | 47-49 | Read irrigation operations | 107 | `irrop_db(irr_op)` |
+
+#### Payload Map
+
+**Target Variable**: `irrop_db(:)` (allocated array of type `irrigation_operation`)  
+**Module**: mgt_operations_module  
+**Type Definition**: src/mgt_operations_module.f90:5-14
+
+**PRIMARY DATA READ**:
+
+| **Variable** | **Field** | **Type** | **Units** | **Description** | **Swat_codetype** | **Source** |
+|--------------|-----------|----------|-----------|-----------------|-------------------|------------|
+| irrop_db(i)%name | name | character(40) | - | Irrigation operation name | irrigation_operation%name | Line 48 |
+| irrop_db(i)%amt_mm | amt_mm | real | mm | Irrigation application amount | irrigation_operation%amt_mm | Line 48 |
+| irrop_db(i)%eff | eff | real | fraction | Irrigation in-field efficiency | irrigation_operation%eff | Line 48 |
+| irrop_db(i)%surq | surq | real | fraction | Surface runoff ratio | irrigation_operation%surq | Line 48 |
+| irrop_db(i)%dep_mm | dep_mm | real | mm | Depth for subsurface irrigation | irrigation_operation%dep_mm | Line 48 |
+| irrop_db(i)%salt | salt | real | mg/kg | Total salt concentration | irrigation_operation%salt | Line 48 |
+| irrop_db(i)%no3 | no3 | real | mg/kg | Nitrate concentration | irrigation_operation%no3 | Line 48 |
+| irrop_db(i)%po4 | po4 | real | mg/kg | Phosphate concentration | irrigation_operation%po4 | Line 48 |
+
+**Type Expansion - irrigation_operation** (src/mgt_operations_module.f90:5-14):
+```fortran
+type irrigation_operation
+  character (len=40) :: name = ""
+  real :: amt_mm = 25.4          ! irrigation amount (mm)
+  real :: eff = 0.               ! in-field efficiency
+  real :: surq = 0.              ! surface runoff ratio (frac)
+  real :: dep_mm = 0.            ! subsurface irrigation depth (mm)
+  real :: salt = 0.              ! total salt concentration (mg/kg)
+  real :: no3 = 0.               ! nitrate concentration (mg/kg)
+  real :: po4 = 0.               ! phosphate concentration (mg/kg)
+end type irrigation_operation
+```
+
+**file.cio Cross-Reference**: `in_ops%irr_ops` is loaded from file.cio operation scheduling section
+
+**Notes**:
+- Allocates irrop_db(0:imax)
+- Sets db_mx%irrop_db = imax at line 56
+- If file doesn't exist or is "null", allocates irrop_db(0:0)
+- Default amt_mm = 25.4 mm (1 inch)
+
+---
+
 ### Notes on Complexity
 
 Some files contain highly complex nested structures:
@@ -2653,5 +3536,5 @@ All locations follow the format: `src/file.f90:line` or `src/file.f90:line-range
 
 ---
 
-**Report Status**: Phase 2 Partial - 11 of 145+ files fully documented  
-**Last Updated**: 2026-01-22
+**Report Status**: Phase 2 Extended - 28 of 145+ files fully documented  
+**Last Updated**: 2026-01-23
