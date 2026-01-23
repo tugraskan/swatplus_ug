@@ -4644,5 +4644,732 @@ Similar to reservoir.res reading pattern but for wetlands.
 
 ---
 
-**Report Status**: Phase 2 Extended - 45 of 145+ files documented  
-**Last Updated**: 2026-01-23 (Extended)
+### 3.46 plants.plt (INPUT)
+
+**File**: Plant parameter database  
+**Routine**: `plant_parm_read`  
+**Source**: src/plant_parm_read.f90  
+**Expression**: `in_parmdb%plants_plt`  
+**Unit**: 104
+
+#### Filename Resolution
+
+```
+plants.plt → in_parmdb%plants_plt
+           → type input_parameter_databases (src/input_file_module.f90:176-187)
+           → character(len=25) :: plants_plt = "plants.plt" (line 177)
+           → Swat_codetype: "in_parmdb"
+```
+
+**file.cio Cross-Reference**: Part of parameter database section in file.cio
+
+#### I/O Sites
+
+| **Site** | **Line** | **Action** | **Unit/Var** | **Expression** | **Description** |
+|----------|----------|------------|--------------|----------------|-----------------|
+| 1 | 27 | inquire | - | in_parmdb%plants_plt | Check file existence |
+| 2 | 34 | open | 104 | in_parmdb%plants_plt | Open plants database |
+| 3 | 35 | read | 104 | titldum | Read title |
+| 4 | 37 | read | 104 | header | Read header line |
+| 5 | 40 | read | 104 | titldum | Count records (loop) |
+| 6 | 49 | read | 104 | titldum | Re-read title after rewind |
+| 7 | 51 | read | 104 | header | Re-read header after rewind |
+| 8 | 56 | read | 104 | pldb(ic) | Read plant database (no classes) |
+| 9 | 58 | read | 104 | pldb(ic), pl_class(ic) | Read plant database (with classes) |
+| 10 | 70 | close | 104 | - | Close file |
+
+#### Payload Map
+
+**Target Variable**: `pldb(:)` (allocated array of type `plant_db`)  
+**Module**: plant_data_module  
+**Type Definition**: src/plant_data_module.f90:13-89
+
+**PRIMARY DATA READ**:
+
+| **Variable** | **Field** | **Type** | **Units** | **Description** | **Swat_codetype** | **Source** |
+|--------------|-----------|----------|-----------|-----------------|-------------------|------------|
+| pldb(ic)%plantnm | plantnm | character(40) | - | Crop/plant name | in_parmdb | plant_db%plantnm |
+| pldb(ic)%typ | typ | character(18) | - | Plant category (warm_annual, cold_annual, perennial, etc) | in_parmdb | plant_db%typ |
+| pldb(ic)%trig | trig | character(18) | - | Phenology trigger (moisture_gro, temp_gro) | in_parmdb | plant_db%trig |
+| pldb(ic)%nfix_co | nfix_co | real | - | N fixation coefficient (0.5=legume, 0=non-legume) | in_parmdb | plant_db%nfix_co |
+| pldb(ic)%days_mat | days_mat | integer | days | Days to maturity (default=110) | in_parmdb | plant_db%days_mat |
+| pldb(ic)%bio_e | bio_e | real | kg/ha/(MJ/m²) | Biomass-energy ratio (default=15.0) | in_parmdb | plant_db%bio_e |
+| pldb(ic)%hvsti | hvsti | real | kg/ha/kg/ha | Harvest index: yield/aboveground biomass (default=0.76) | in_parmdb | plant_db%hvsti |
+| pldb(ic)%blai | blai | real | - | Maximum potential leaf area index (default=5.0) | in_parmdb | plant_db%blai |
+| pldb(ic)%frgrw1 | frgrw1 | real | - | Fraction of growing season, 1st LAI point (default=0.05) | in_parmdb | plant_db%frgrw1 |
+| pldb(ic)%laimx1 | laimx1 | real | - | Fraction of max LAI, 1st point (default=0.05) | in_parmdb | plant_db%laimx1 |
+| pldb(ic)%frgrw2 | frgrw2 | real | - | Fraction of growing season, 2nd LAI point (default=0.4) | in_parmdb | plant_db%frgrw2 |
+| pldb(ic)%laimx2 | laimx2 | real | - | Fraction of max LAI, 2nd point (default=0.95) | in_parmdb | plant_db%laimx2 |
+| pldb(ic)%dlai | dlai | real | - | Fraction of growing season when LAI declines (default=0.99) | in_parmdb | plant_db%dlai |
+| pldb(ic)%dlai_rate | dlai_rate | real | - | Exponent governing LAI decline rate (default=1.) | in_parmdb | plant_db%dlai_rate |
+| pldb(ic)%chtmx | chtmx | real | m | Maximum canopy height (default=6.0) | in_parmdb | plant_db%chtmx |
+| pldb(ic)%rdmx | rdmx | real | m | Maximum root depth (default=3.5) | in_parmdb | plant_db%rdmx |
+| pldb(ic)%t_opt | t_opt | real | °C | Optimal temperature for plant growth (default=30.) | in_parmdb | plant_db%t_opt |
+| pldb(ic)%t_base | t_base | real | °C | Minimum temperature for plant growth (default=10.) | in_parmdb | plant_db%t_base |
+| pldb(ic)%cnyld | cnyld | real | kg N/kg yld | Fraction of nitrogen in yield (default=0.0015) | in_parmdb | plant_db%cnyld |
+| pldb(ic)%cpyld | cpyld | real | kg P/kg yld | Fraction of phosphorus in yield (default=0.0003) | in_parmdb | plant_db%cpyld |
+| pldb(ic)%pltnfr1 | pltnfr1 | real | kg N/kg biomass | Nitrogen uptake parameter #1 (default=0.006) | in_parmdb | plant_db%pltnfr1 |
+| pldb(ic)%pltnfr2 | pltnfr2 | real | kg N/kg biomass | Nitrogen uptake parameter #2 (default=0.002) | in_parmdb | plant_db%pltnfr2 |
+| pldb(ic)%pltnfr3 | pltnfr3 | real | kg N/kg biomass | Nitrogen uptake parameter #3 (default=0.0015) | in_parmdb | plant_db%pltnfr3 |
+| pldb(ic)%pltpfr1 | pltpfr1 | real | kg P/kg biomass | Phosphorus uptake parameter #1 (default=0.0007) | in_parmdb | plant_db%pltpfr1 |
+| pldb(ic)%pltpfr2 | pltpfr2 | real | kg P/kg biomass | Phosphorus uptake parameter #2 (default=0.0004) | in_parmdb | plant_db%pltpfr2 |
+| pldb(ic)%pltpfr3 | pltpfr3 | real | kg P/kg biomass | Phosphorus uptake parameter #3 (default=0.0003) | in_parmdb | plant_db%pltpfr3 |
+| pldb(ic)%wsyf | wsyf | real | kg/ha/kg/ha | Lower limit of harvest index range (default=0.01) | in_parmdb | plant_db%wsyf |
+| pldb(ic)%usle_c | usle_c | real | - | Minimum USLE C factor for water erosion (default=0.001) | in_parmdb | plant_db%usle_c |
+| pldb(ic)%gsi | gsi | real | m/s | Maximum stomatal conductance (default=0.002) | in_parmdb | plant_db%gsi |
+| pldb(ic)%vpdfr | vpdfr | real | kPa | Vapor pressure deficit at which GMAXFR is valid (default=4.) | in_parmdb | plant_db%vpdfr |
+| pldb(ic)%gmaxfr | gmaxfr | real | - | Fraction of max stomatal conductance at VPDFR (default=0.75) | in_parmdb | plant_db%gmaxfr |
+| pldb(ic)%wavp | wavp | real | - | Rate of decline in radiation use efficiency (default=8.) | in_parmdb | plant_db%wavp |
+| pldb(ic)%co2hi | co2hi | real | μL CO₂/L air | CO₂ concentration for 2nd point on RUE curve (default=660.) | in_parmdb | plant_db%co2hi |
+| pldb(ic)%bioehi | bioehi | real | kg/ha/(MJ/m²) | Biomass-energy ratio at CO2HI level (default=16.) | in_parmdb | plant_db%bioehi |
+| pldb(ic)%rsdco_pl | rsdco_pl | real | - | Plant residue decomposition coefficient (default=0.05) | in_parmdb | plant_db%rsdco_pl |
+| pldb(ic)%alai_min | alai_min | real | m²/m² | Minimum LAI during winter dormancy (default=0.75) | in_parmdb | plant_db%alai_min |
+| pldb(ic)%laixco_tree | laixco_tree | real | - | Coefficient to estimate max LAI for trees (default=0.3) | in_parmdb | plant_db%laixco_tree |
+| pldb(ic)%mat_yrs | mat_yrs | integer | years | Years to maturity (default=10) | in_parmdb | plant_db%mat_yrs |
+| pldb(ic)%bmx_peren | bmx_peren | real | metric tons/ha | Maximum biomass for forest (default=1000.) | in_parmdb | plant_db%bmx_peren |
+| pldb(ic)%ext_coef | ext_coef | real | - | Light extinction coefficient (default=0.65) | in_parmdb | plant_db%ext_coef |
+| pldb(ic)%leaf_tov_min | leaf_tov_min | real | months | Perennial leaf turnover with min stress (default=12.) | in_parmdb | plant_db%leaf_tov_min |
+| pldb(ic)%leaf_tov_max | leaf_tov_max | real | months | Perennial leaf turnover with max stress (default=3.) | in_parmdb | plant_db%leaf_tov_max |
+| pldb(ic)%bm_dieoff | bm_dieoff | real | fraction | Aboveground biomass dying at dormancy (default=0.) | in_parmdb | plant_db%bm_dieoff |
+| pldb(ic)%rsr1 | rsr1 | real | fraction | Initial root-to-shoot ratio at growth start (default=0.) | in_parmdb | plant_db%rsr1 |
+| pldb(ic)%rsr2 | rsr2 | real | fraction | Root-to-shoot ratio at end of season (default=0.) | in_parmdb | plant_db%rsr2 |
+| pldb(ic)%pop1 | pop1 | real | plants/m² | Plant population, 1st point on pop-LAI curve (default=0.) | in_parmdb | plant_db%pop1 |
+| pldb(ic)%frlai1 | frlai1 | real | fraction | Fraction of max LAI, 1st point on pop curve (default=0.) | in_parmdb | plant_db%frlai1 |
+| pldb(ic)%pop2 | pop2 | real | plants/m² | Plant population, 2nd point on pop-LAI curve (default=0.) | in_parmdb | plant_db%pop2 |
+| pldb(ic)%frlai2 | frlai2 | real | fraction | Fraction of max LAI, 2nd point on pop curve (default=0.) | in_parmdb | plant_db%frlai2 |
+| pldb(ic)%frsw_gro | frsw_gro | real | fraction | 30-day P-PET sum to trigger tropical growth (default=0.5) | in_parmdb | plant_db%frsw_gro |
+| pldb(ic)%aeration | aeration | real | - | Aeration stress factor (default=0.2) | in_parmdb | plant_db%aeration |
+| pldb(ic)%rsd_pctcov | rsd_pctcov | real | - | Residue factor for percent cover equation (default=0.) | in_parmdb | plant_db%rsd_pctcov |
+| pldb(ic)%rsd_covfac | rsd_covfac | real | - | Residue factor for surface cover (C factor) (default=0.) | in_parmdb | plant_db%rsd_covfac |
+| pldb(ic)%res_part_fracs | res_part_fracs | derived type | - | Residue partition fractions (metabolic, structural, lignin) | in_parmdb | residue_partition_fracs |
+
+**Derived Type Expansion - residue_partition_fracs** (embedded in plant_db):
+
+| **Component** | **Type** | **Units** | **Default** | **Description** |
+|---------------|----------|-----------|-------------|-----------------|
+| meta_frac | real | - | 0.85 | Fraction that is metabolic |
+| str_frac | real | - | 0.15 | Fraction that is structural |
+| lig_frac | real | - | 0.12 | Fraction that is lignin |
+
+**Additional Arrays**:
+- `pl_class(:)` - Plant classification (row crop, tree, grass, etc.) - read when bsn_cc%nam1 > 0
+- `plcp(:)` - Calculated plant parameters (shape parameters for LAI, N/P uptake, RUE, stomatal conductance)
+
+**Post-Read Processing** (line 61):
+- `pldb(ic)%mat_yrs = Max(1, pldb(ic)%mat_yrs)` - Ensures maturity years ≥ 1
+
+**file.cio Cross-Reference**: Referenced in parameter database section
+
+**Notes**:
+- Comprehensive plant growth parameter database
+- Controls LAI development, biomass production, nutrient uptake
+- Critical for crop yield simulation and water/nutrient cycling
+- Supports annuals, perennials, and trees with different parameter sets
+- Database size stored in db_mx%plantparm
+
+---
+
+### 3.47 fertilizer.frt (INPUT)
+
+**File**: Fertilizer parameter database  
+**Routine**: `fert_parm_read`  
+**Source**: src/fert_parm_read.f90  
+**Expression**: `in_parmdb%fert_frt`  
+**Unit**: 107
+
+#### Filename Resolution
+
+```
+fertilizer.frt → in_parmdb%fert_frt
+               → type input_parameter_databases (src/input_file_module.f90:176-187)
+               → character(len=25) :: fert_frt = "fertilizer.frt" (line 178)
+               → Swat_codetype: "in_parmdb"
+```
+
+**file.cio Cross-Reference**: Part of parameter database section in file.cio
+
+#### I/O Sites
+
+| **Site** | **Line** | **Action** | **Unit/Var** | **Expression** | **Description** |
+|----------|----------|------------|--------------|----------------|-----------------|
+| 1 | 22 | inquire | - | in_parmdb%fert_frt | Check file existence |
+| 2 | 27 | open | 107 | in_parmdb%fert_frt | Open fertilizer database |
+| 3 | 28 | read | 107 | titldum | Read title |
+| 4 | 30 | read | 107 | header | Read header line |
+| 5 | 33 | read | 107 | titldum | Count records (loop) |
+| 6 | 41 | read | 107 | titldum | Re-read title after rewind |
+| 7 | 43 | read | 107 | header | Re-read header after rewind |
+| 8 | 47 | read | 107 | fertdb(it) | Read fertilizer database record |
+| 9 | 56 | close | 107 | - | Close file |
+
+#### Payload Map
+
+**Target Variable**: `fertdb(:)` (allocated array of type `fertilizer_db`)  
+**Module**: fertilizer_data_module  
+**Type Definition**: src/fertilizer_data_module.f90:5-12
+
+**PRIMARY DATA READ**:
+
+| **Variable** | **Field** | **Type** | **Units** | **Description** | **Swat_codetype** | **Source** |
+|--------------|-----------|----------|-----------|-----------------|-------------------|------------|
+| fertdb(it)%fertnm | fertnm | character(16) | - | Fertilizer name | in_parmdb | fertilizer_db%fertnm |
+| fertdb(it)%fminn | fminn | real | kg minN/kg fert | Fraction of fertilizer that is mineral nitrogen (NO₃+NH₃) | in_parmdb | fertilizer_db%fminn |
+| fertdb(it)%fminp | fminp | real | kg minP/kg fert | Fraction of fertilizer that is mineral phosphorus | in_parmdb | fertilizer_db%fminp |
+| fertdb(it)%forgn | forgn | real | kg orgN/kg fert | Fraction of fertilizer that is organic nitrogen | in_parmdb | fertilizer_db%forgn |
+| fertdb(it)%forgp | forgp | real | kg orgP/kg fert | Fraction of fertilizer that is organic phosphorus | in_parmdb | fertilizer_db%forgp |
+| fertdb(it)%fnh3n | fnh3n | real | kg NH₃-N/kg N | Fraction of mineral N that is ammonia (NH₃) | in_parmdb | fertilizer_db%fnh3n |
+
+**file.cio Cross-Reference**: Referenced in parameter database section
+
+**Notes**:
+- Defines nutrient composition of fertilizers
+- Distinguishes between mineral and organic N/P forms
+- Critical for nutrient cycling and water quality simulation
+- Database size stored in db_mx%fertparm
+- Used by management operations in chem_app.ops
+
+---
+
+### 3.48 tillage.til (INPUT)
+
+**File**: Tillage operations parameter database  
+**Routine**: `till_parm_read`  
+**Source**: src/till_parm_read.f90  
+**Expression**: `in_parmdb%till_til`  
+**Unit**: 105
+
+#### Filename Resolution
+
+```
+tillage.til → in_parmdb%till_til
+            → type input_parameter_databases (src/input_file_module.f90:176-187)
+            → character(len=25) :: till_til = "tillage.til" (line 179)
+            → Swat_codetype: "in_parmdb"
+```
+
+**file.cio Cross-Reference**: Part of parameter database section in file.cio
+
+#### I/O Sites
+
+| **Site** | **Line** | **Action** | **Unit/Var** | **Expression** | **Description** |
+|----------|----------|------------|--------------|----------------|-----------------|
+| 1 | 22 | inquire | - | in_parmdb%till_til | Check file existence |
+| 2 | 27 | open | 105 | in_parmdb%till_til | Open tillage database |
+| 3 | 28 | read | 105 | titldum | Read title |
+| 4 | 30 | read | 105 | header | Read header line |
+| 5 | 33 | read | 105 | titldum | Count records (loop) |
+| 6 | 41 | read | 105 | titldum | Re-read title after rewind |
+| 7 | 43 | read | 105 | header | Re-read header after rewind |
+| 8 | 47 | read | 105 | tilldb(itl) | Read tillage database record |
+| 9 | 65 | close | 105 | - | Close file |
+
+#### Payload Map
+
+**Target Variable**: `tilldb(:)` (allocated array of type `tillage_db`)  
+**Module**: tillage_data_module  
+**Type Definition**: src/tillage_data_module.f90:10-17
+
+**PRIMARY DATA READ**:
+
+| **Variable** | **Field** | **Type** | **Units** | **Description** | **Swat_codetype** | **Source** |
+|--------------|-----------|----------|-----------|-----------------|-------------------|------------|
+| tilldb(itl)%tillnm | tillnm | character(16) | - | Tillage operation name | in_parmdb | tillage_db%tillnm |
+| tilldb(itl)%effmix | effmix | real | - | Mixing efficiency of tillage operation (0-1) | in_parmdb | tillage_db%effmix |
+| tilldb(itl)%deptil | deptil | real | mm | Depth of mixing caused by tillage | in_parmdb | tillage_db%deptil |
+| tilldb(itl)%ranrns | ranrns | real | mm | Random roughness created by tillage | in_parmdb | tillage_db%ranrns |
+| tilldb(itl)%ridge_ht | ridge_ht | real | mm | Ridge height created by tillage | in_parmdb | tillage_db%ridge_ht |
+| tilldb(itl)%ridge_sp | ridge_sp | real | mm | Ridge interval or row spacing | in_parmdb | tillage_db%ridge_sp |
+
+**Post-Read Processing** (lines 48-60):
+- Special handling for "biomix" tillage operation
+- If tillnm == "biomix": stores index in bmix_idtill, efficiency in bmix_eff, depth in bmix_depth
+- If biomix not found: sets default bmix_eff=0.2, bmix_depth=50.0
+
+**Module-Level Variables** (tillage_data_module):
+
+| **Variable** | **Type** | **Default** | **Description** |
+|--------------|----------|-------------|-----------------|
+| bmix_idtill | integer | 0 | Index of biomix tillage in tilldb |
+| till_eff_days | integer | 30 | Days a tillage operation has effect |
+| bmix_eff | real | 0. | Biological mixing efficiency |
+| bmix_depth | real | 0. | Biological mixing depth (mm) |
+
+**file.cio Cross-Reference**: Referenced in parameter database section
+
+**Notes**:
+- Defines tillage operation characteristics
+- Controls soil mixing, surface roughness, and ridge formation
+- Biomix operation represents biological mixing (earthworms, etc.)
+- Critical for erosion modeling and residue management
+- Database size stored in db_mx%tillparm
+
+---
+
+### 3.49 pesticide.pes (INPUT)
+
+**File**: Pesticide parameter database  
+**Routine**: `pest_parm_read`  
+**Source**: src/pest_parm_read.f90  
+**Expression**: `in_parmdb%pest`  
+**Unit**: 106
+
+#### Filename Resolution
+
+```
+pesticide.pes → in_parmdb%pest
+              → type input_parameter_databases (src/input_file_module.f90:176-187)
+              → character(len=25) :: pest = "pesticide.pes" (line 180)
+              → Swat_codetype: "in_parmdb"
+```
+
+**file.cio Cross-Reference**: Part of parameter database section in file.cio
+
+#### I/O Sites
+
+| **Site** | **Line** | **Action** | **Unit/Var** | **Expression** | **Description** |
+|----------|----------|------------|--------------|----------------|-----------------|
+| 1 | 21 | inquire | - | in_parmdb%pest | Check file existence |
+| 2 | 27 | open | 106 | in_parmdb%pest | Open pesticide database |
+| 3 | 28 | read | 106 | titldum | Read title |
+| 4 | 30 | read | 106 | header | Read header line |
+| 5 | 33 | read | 106 | titldum | Count records (loop) |
+| 6 | 42 | read | 106 | titldum | Re-read title after rewind |
+| 7 | 44 | read | 106 | header | Re-read header after rewind |
+| 8 | 48 | read | 106 | pestdb(ip) | Read pesticide database record |
+| 9 | 87 | close | 106 | - | Close file |
+
+#### Payload Map
+
+**Target Variable**: `pestdb(:)` (allocated array of type `pesticide_db`)  
+**Module**: pesticide_data_module  
+**Type Definition**: src/pesticide_data_module.f90:5-22
+
+**PRIMARY DATA READ**:
+
+| **Variable** | **Field** | **Type** | **Units** | **Description** | **Swat_codetype** | **Source** |
+|--------------|-----------|----------|-----------|-----------------|-------------------|------------|
+| pestdb(ip)%name | name | character(16) | - | Pesticide name | in_parmdb | pesticide_db%name |
+| pestdb(ip)%koc | koc | real | mL/g | Soil adsorption coefficient normalized for organic carbon | in_parmdb | pesticide_db%koc |
+| pestdb(ip)%washoff | washoff | real | - | Fraction of pesticide on foliage washed off by rainfall | in_parmdb | pesticide_db%washoff |
+| pestdb(ip)%foliar_hlife | foliar_hlife | real | days | Half-life of pesticide on foliage | in_parmdb | pesticide_db%foliar_hlife |
+| pestdb(ip)%soil_hlife | soil_hlife | real | days | Half-life of pesticide in soil | in_parmdb | pesticide_db%soil_hlife |
+| pestdb(ip)%solub | solub | real | mg/L (ppm) | Solubility of chemical in water | in_parmdb | pesticide_db%solub |
+| pestdb(ip)%aq_hlife | aq_hlife | real | days | Aquatic half-life | in_parmdb | pesticide_db%aq_hlife |
+| pestdb(ip)%aq_volat | aq_volat | real | m/day | Aquatic volatilization coefficient | in_parmdb | pesticide_db%aq_volat |
+| pestdb(ip)%mol_wt | mol_wt | real | g/mol | Molecular weight (for mixing velocity calculation) | in_parmdb | pesticide_db%mol_wt |
+| pestdb(ip)%aq_resus | aq_resus | real | m/day | Aquatic resuspension velocity for sorbed pesticide | in_parmdb | pesticide_db%aq_resus |
+| pestdb(ip)%aq_settle | aq_settle | real | m/day | Aquatic settling velocity for sorbed pesticide | in_parmdb | pesticide_db%aq_settle |
+| pestdb(ip)%ben_act_dep | ben_act_dep | real | m | Depth of active benthic layer | in_parmdb | pesticide_db%ben_act_dep |
+| pestdb(ip)%ben_bury | ben_bury | real | m/day | Burial velocity in benthic sediment | in_parmdb | pesticide_db%ben_bury |
+| pestdb(ip)%ben_hlife | ben_hlife | real | days | Half-life in benthic sediment | in_parmdb | pesticide_db%ben_hlife |
+| pestdb(ip)%pl_uptake | pl_uptake | real | - | Fraction taken up by plant | in_parmdb | pesticide_db%pl_uptake |
+| pestdb(ip)%descrip | descrip | character(32) | - | Pesticide description | in_parmdb | pesticide_db%descrip |
+
+**Calculated Parameters Array**: `pestcp(:)` (type `pesticide_cp`)
+
+**Post-Read Processing** (lines 58-78):
+Calculates decay factors using first-order rate law (dP/dt = -kP):
+- P(t) = P₀ * exp(-kt) where k = 0.693/half-life
+
+| **Calculated Field** | **Type** | **Formula** | **Description** |
+|---------------------|----------|-------------|-----------------|
+| pestcp(ip)%decay_f | real | exp(-0.693/foliar_hlife) | Foliar degradation factor |
+| pestcp(ip)%decay_s | real | exp(-0.693/soil_hlife) | Soil degradation factor |
+| pestcp(ip)%decay_a | real | exp(-0.693/aq_hlife) | Aquatic degradation factor |
+| pestcp(ip)%decay_b | real | exp(-0.693/ben_hlife) | Benthic degradation factor |
+
+**Derived Type - pesticide_cp** (calculated parameters, src/pesticide_data_module.f90:34-42):
+
+| **Component** | **Type** | **Units** | **Description** |
+|---------------|----------|-----------|-----------------|
+| num_metab | integer | - | Number of metabolites |
+| daughter | derived array | - | Daughter decay fractions for metabolites |
+| decay_f | real | - | Exp of rate constant for foliar degradation |
+| decay_s | real | - | Exp of rate constant for soil degradation |
+| decay_a | real | - | Exp of rate constant for aquatic degradation |
+| decay_b | real | - | Exp of rate constant for benthic degradation |
+
+**file.cio Cross-Reference**: Referenced in parameter database section
+
+**Notes**:
+- Comprehensive pesticide fate and transport parameters
+- Handles degradation in multiple compartments: foliage, soil, water, benthic
+- Supports daughter product/metabolite tracking
+- Critical for water quality and pesticide transport modeling
+- Database size stored in db_mx%pestparm
+- Uses exponential decay model based on half-lives
+
+---
+
+### 3.50 urban.urb (INPUT)
+
+**File**: Urban land parameter database  
+**Routine**: `urban_parm_read`  
+**Source**: src/urban_parm_read.f90  
+**Expression**: `in_parmdb%urban_urb`  
+**Unit**: 108
+
+#### Filename Resolution
+
+```
+urban.urb → in_parmdb%urban_urb
+          → type input_parameter_databases (src/input_file_module.f90:176-187)
+          → character(len=25) :: urban_urb = "urban.urb" (line 184)
+          → Swat_codetype: "in_parmdb"
+```
+
+**file.cio Cross-Reference**: Part of parameter database section in file.cio
+
+#### I/O Sites
+
+| **Site** | **Line** | **Action** | **Unit/Var** | **Expression** | **Description** |
+|----------|----------|------------|--------------|----------------|-----------------|
+| 1 | 16 | inquire | - | in_parmdb%urban_urb | Check file existence |
+| 2 | 21 | open | 108 | in_parmdb%urban_urb | Open urban database |
+| 3 | 22 | read | 108 | titldum | Read title |
+| 4 | 24 | read | 108 | header | Read header line |
+| 5 | 27 | read | 108 | titldum | Count records (loop) |
+| 6 | 36 | read | 108 | titldum | Re-read title after rewind |
+| 7 | 38 | read | 108 | header | Re-read header after rewind |
+| 8 | 42 | read | 108 | urbdb(iu) | Read urban database record |
+| 9 | 51 | close | 108 | - | Close file |
+
+#### Payload Map
+
+**Target Variable**: `urbdb(:)` (allocated array of type `urban_db`)  
+**Module**: urban_data_module  
+**Type Definition**: src/urban_data_module.f90:5-17
+
+**PRIMARY DATA READ**:
+
+| **Variable** | **Field** | **Type** | **Units** | **Description** | **Swat_codetype** | **Source** |
+|--------------|-----------|----------|-----------|-----------------|-------------------|------------|
+| urbdb(iu)%urbnm | urbnm | character(16) | - | Urban land parameter set name | in_parmdb | urban_db%urbnm |
+| urbdb(iu)%fimp | fimp | real | fraction | Fraction of HRU area that is impervious (default=0.05) | in_parmdb | urban_db%fimp |
+| urbdb(iu)%fcimp | fcimp | real | fraction | Fraction of HRU directly connected impervious (default=0.05) | in_parmdb | urban_db%fcimp |
+| urbdb(iu)%curbden | curbden | real | km/ha | Curb length density (default=0.0) | in_parmdb | urban_db%curbden |
+| urbdb(iu)%urbcoef | urbcoef | real | 1/mm | Wash-off coefficient for constituent removal (default=0.0) | in_parmdb | urban_db%urbcoef |
+| urbdb(iu)%dirtmx | dirtmx | real | kg/curb km | Maximum solids buildup on impervious surfaces (default=1000.0) | in_parmdb | urban_db%dirtmx |
+| urbdb(iu)%thalf | thalf | real | days | Time to build up to 1/2 max solids level (default=1.0) | in_parmdb | urban_db%thalf |
+| urbdb(iu)%tnconc | tnconc | real | mg N/kg sed | Total nitrogen concentration in suspended solids (default=0.0) | in_parmdb | urban_db%tnconc |
+| urbdb(iu)%tpconc | tpconc | real | mg P/kg sed | Total phosphorus concentration in suspended solids (default=0.0) | in_parmdb | urban_db%tpconc |
+| urbdb(iu)%tno3conc | tno3conc | real | mg NO₃-N/kg sed | Nitrate concentration in suspended solids (default=0.0) | in_parmdb | urban_db%tno3conc |
+| urbdb(iu)%urbcn2 | urbcn2 | real | - | Moisture condition II curve number for impervious (default=98.0) | in_parmdb | urban_db%urbcn2 |
+
+**file.cio Cross-Reference**: Referenced in parameter database section
+
+**Notes**:
+- Defines urban area characteristics and pollutant loadings
+- Distinguishes total impervious from directly connected impervious
+- Models solids buildup and washoff from impervious surfaces
+- Critical for urban hydrology and water quality simulation
+- Database size stored in db_mx%urban
+- High default CN2 (98.0) reflects low infiltration on impervious surfaces
+
+---
+
+### 3.51 septic.sep (INPUT)
+
+**File**: Septic system parameter database  
+**Routine**: `septic_parm_read`  
+**Source**: src/septic_parm_read.f90  
+**Expression**: `in_parmdb%septic_sep`  
+**Unit**: 171
+
+#### Filename Resolution
+
+```
+septic.sep → in_parmdb%septic_sep
+           → type input_parameter_databases (src/input_file_module.f90:176-187)
+           → character(len=25) :: septic_sep = "septic.sep" (line 185)
+           → Swat_codetype: "in_parmdb"
+```
+
+**file.cio Cross-Reference**: Part of parameter database section in file.cio
+
+#### I/O Sites
+
+| **Site** | **Line** | **Action** | **Unit/Var** | **Expression** | **Description** |
+|----------|----------|------------|--------------|----------------|-----------------|
+| 1 | 19 | inquire | - | in_parmdb%septic_sep | Check file existence |
+| 2 | 24 | open | 171 | in_parmdb%septic_sep | Open septic database |
+| 3 | 25 | read | 171 | titldum | Read title |
+| 4 | 27 | read | 171 | header | Read header line |
+| 5 | 30 | read | 171 | titldum | Count records (loop) |
+| 6 | 39 | read | 171 | titldum | Re-read title after rewind |
+| 7 | 41 | read | 171 | header | Re-read header after rewind |
+| 8 | 45 | read | 171 | titldum | Pre-read for backspace |
+| 9 | 48 | read | 171 | sepdb(is) | Read septic database record (after backspace) |
+| 10 | 52 | close | 171 | - | Close file |
+
+#### Payload Map
+
+**Target Variable**: `sepdb(:)` (allocated array of type `septic_db`)  
+**Module**: septic_data_module  
+**Type Definition**: src/septic_data_module.f90:5-17
+
+**PRIMARY DATA READ**:
+
+| **Variable** | **Field** | **Type** | **Units** | **Description** | **Swat_codetype** | **Source** |
+|--------------|-----------|----------|-----------|-----------------|-------------------|------------|
+| sepdb(is)%sepnm | sepnm | character(20) | - | Septic system parameter set name | in_parmdb | septic_db%sepnm |
+| sepdb(is)%qs | qs | real | m³/d | Flow rate of septic tank effluent per capita (default=0.) | in_parmdb | septic_db%qs |
+| sepdb(is)%bodconcs | bodconcs | real | mg/L | Biological oxygen demand in effluent (default=0.) | in_parmdb | septic_db%bodconcs |
+| sepdb(is)%tssconcs | tssconcs | real | mg/L | Total suspended solids concentration in effluent (default=0.) | in_parmdb | septic_db%tssconcs |
+| sepdb(is)%nh4concs | nh4concs | real | mg/L | Ammonium concentration in effluent (default=0.) | in_parmdb | septic_db%nh4concs |
+| sepdb(is)%no3concs | no3concs | real | mg/L | Nitrate concentration in effluent (default=0.) | in_parmdb | septic_db%no3concs |
+| sepdb(is)%no2concs | no2concs | real | mg/L | Nitrite concentration in effluent (default=0.) | in_parmdb | septic_db%no2concs |
+| sepdb(is)%orgnconcs | orgnconcs | real | mg/L | Organic nitrogen concentration in effluent (default=0.) | in_parmdb | septic_db%orgnconcs |
+| sepdb(is)%minps | minps | real | mg/L | Mineral phosphorus concentration in effluent (default=0.) | in_parmdb | septic_db%minps |
+| sepdb(is)%orgps | orgps | real | mg/L | Organic phosphorus concentration in effluent (default=0.) | in_parmdb | septic_db%orgps |
+| sepdb(is)%fcolis | fcolis | real | cfu/100mL | Fecal coliform concentration in effluent (default=0.) | in_parmdb | septic_db%fcolis |
+
+**Additional Type - septic_system** (src/septic_data_module.f90:20-50):
+This more complex type defines individual septic system properties (not read in this routine, but part of the module):
+
+| **Component** | **Type** | **Units** | **Default** | **Description** |
+|---------------|----------|-----------|-------------|-----------------|
+| name | character(13) | - | "default" | Septic system name |
+| typ | integer | - | 0 | Septic system type |
+| yr | integer | - | 0 | Year system became operational |
+| opt | integer | - | 0 | Operation flag (0=not operated, 1=active, 2=failing) |
+| cap | real | - | 0. | Number of permanent residents |
+| area | real | m² | 0. | Average drainfield area |
+| tfail | integer | days | 0 | Time until failing system gets fixed |
+| z | real | mm | 0. | Depth to biozone layer top |
+| thk | real | mm | 0. | Biozone layer thickness |
+| strm_dist | real | km | 0. | Distance to stream |
+| density | real | systems/km² | 0. | Septic systems per km² |
+| bd | real | kg/m³ | 0. | Biomass density |
+| bod_dc | real | m³/day | 0. | BOD decay rate coefficient |
+| bod_conv | real | - | 0. | BOD/bacterial growth conversion factor |
+| fc1 | real | - | 0. | Field capacity linear coefficient |
+| fc2 | real | - | 0. | Field capacity exponential coefficient |
+| fecal | real | m³/day | 0. | Fecal coliform decay rate |
+| plq | real | - | 0. | Plaque conversion factor from TDS |
+| mrt | real | - | 0. | Mortality rate coefficient |
+| rsp | real | - | 0. | Respiration rate coefficient |
+| slg1 | real | - | 0. | Slough-off calibration parameter 1 |
+| slg2 | real | - | 0. | Slough-off calibration parameter 2 |
+| nitr | real | - | 0. | Nitrification rate coefficient |
+| denitr | real | - | 0. | Denitrification rate coefficient |
+| pdistrb | real | L/kg | 0. | Linear P sorption distribution coefficient |
+| psorpmax | real | mg P/kg soil | 0. | Maximum P sorption capacity |
+| solpslp | real | - | 0. | Soluble P equation slope |
+| solpintc | real | - | 0. | Soluble P equation intercept |
+
+**file.cio Cross-Reference**: Referenced in parameter database section
+
+**Notes**:
+- Defines effluent quality from septic systems
+- Critical for rural water quality modeling
+- Database size stored in db_mx%sep
+- Includes comprehensive nutrient and pathogen parameters
+- Unique backspace read pattern (lines 45-48) for data parsing
+
+---
+
+### 3.52 snow.sno (INPUT)
+
+**File**: Snow parameter database  
+**Routine**: `snowdb_read`  
+**Source**: src/snowdb_read.f90  
+**Expression**: `in_parmdb%snow`  
+**Unit**: 107
+
+#### Filename Resolution
+
+```
+snow.sno → in_parmdb%snow
+         → type input_parameter_databases (src/input_file_module.f90:176-187)
+         → character(len=25) :: snow = "snow.sno" (line 186)
+         → Swat_codetype: "in_parmdb"
+```
+
+**file.cio Cross-Reference**: Part of parameter database section in file.cio
+
+#### I/O Sites
+
+| **Site** | **Line** | **Action** | **Unit/Var** | **Expression** | **Description** |
+|----------|----------|------------|--------------|----------------|-----------------|
+| 1 | 23 | inquire | - | in_parmdb%snow | Check file existence |
+| 2 | 28 | open | 107 | in_parmdb%snow | Open snow database |
+| 3 | 29 | read | 107 | titldum | Read title |
+| 4 | 31 | read | 107 | header | Read header line |
+| 5 | 34 | read | 107 | titldum | Count records (loop) |
+| 6 | 40 | read | 107 | titldum | Re-read title after rewind |
+| 7 | 42 | read | 107 | header | Re-read header after rewind |
+| 8 | 48 | read | 107 | snodb(isno) | Read snow database record |
+| 9 | 56 | close | 107 | - | Close file |
+
+#### Payload Map
+
+**Target Variable**: `snodb(:)` (allocated array of type `snow_parameters`)  
+**Module**: hru_module  
+**Type Definition**: src/hru_module.f90:72-82
+
+**PRIMARY DATA READ**:
+
+| **Variable** | **Field** | **Type** | **Units** | **Description** | **Swat_codetype** | **Source** |
+|--------------|-----------|----------|-----------|-----------------|-------------------|------------|
+| snodb(isno)%name | name | character(40) | - | Snow parameter set name | in_parmdb | snow_parameters%name |
+| snodb(isno)%falltmp | falltmp | real | °C | Snowfall temperature (default=0.) | in_parmdb | snow_parameters%falltmp |
+| snodb(isno)%melttmp | melttmp | real | °C | Snow melt base temperature (default=0.5) | in_parmdb | snow_parameters%melttmp |
+| snodb(isno)%meltmx | meltmx | real | mm/°C/day | Maximum melt rate (June 21) (default=4.5) | in_parmdb | snow_parameters%meltmx |
+| snodb(isno)%meltmn | meltmn | real | mm/°C/day | Minimum melt rate (Dec 21) (default=0.5) | in_parmdb | snow_parameters%meltmn |
+| snodb(isno)%timp | timp | real | - | Snow pack temperature lag factor 0-1 (default=0.8) | in_parmdb | snow_parameters%timp |
+| snodb(isno)%covmx | covmx | real | mm H₂O | Snow water content at full ground cover (default=25.0) | in_parmdb | snow_parameters%covmx |
+| snodb(isno)%cov50 | cov50 | real | - | Fraction of covmx at 50% snow cover (default=0.5) | in_parmdb | snow_parameters%cov50 |
+| snodb(isno)%init_mm | init_mm | real | mm H₂O | Initial snow water content at simulation start (default=0.) | in_parmdb | snow_parameters%init_mm |
+
+**file.cio Cross-Reference**: Referenced in parameter database section
+
+**Notes**:
+- Controls snow accumulation and melt processes
+- Seasonal melt rate variation (meltmx in summer, meltmn in winter)
+- Temperature lag factor (timp) accounts for thermal inertia
+- Coverage parameters control albedo and energy balance
+- Database size stored in db_mx%sno
+- Critical for cold-region hydrology simulation
+
+---
+
+### 3.53 pathogens.pth (INPUT)
+
+**File**: Pathogen parameter database  
+**Routine**: `path_parm_read`  
+**Source**: src/path_parm_read.f90  
+**Expression**: `in_parmdb%pathcom_db`  
+**Unit**: 107
+
+#### Filename Resolution
+
+```
+pathogens.pth → in_parmdb%pathcom_db
+              → type input_parameter_databases (src/input_file_module.f90:176-187)
+              → character(len=25) :: pathcom_db = "pathogens.pth" (line 181)
+              → Swat_codetype: "in_parmdb"
+```
+
+**file.cio Cross-Reference**: Part of parameter database section in file.cio
+
+#### I/O Sites
+
+| **Site** | **Line** | **Action** | **Unit/Var** | **Expression** | **Description** |
+|----------|----------|------------|--------------|----------------|-----------------|
+| 1 | 20 | inquire | - | in_parmdb%pathcom_db | Check file existence |
+| 2 | 25 | open | 107 | in_parmdb%pathcom_db | Open pathogen database |
+| 3 | 26 | read | 107 | titldum | Read title |
+| 4 | 28 | read | 107 | header | Read header line |
+| 5 | 31 | read | 107 | titldum | Count records (loop) |
+| 6 | 40 | read | 107 | titldum | Re-read title after rewind |
+| 7 | 42 | read | 107 | header | Re-read header after rewind |
+| 8 | 46 | read | 107 | titldum | Pre-read for backspace |
+| 9 | 49 | read | 107 | path_db(ibac) | Read pathogen database (after backspace) |
+| 10 | 56 | close | 107 | - | Close file |
+
+#### Payload Map
+
+**Target Variable**: `path_db(:)` (allocated array of type `pathogen_db`)  
+**Module**: pathogen_data_module  
+**Type Definition**: src/pathogen_data_module.f90:5-26
+
+**PRIMARY DATA READ**:
+
+| **Variable** | **Field** | **Type** | **Units** | **Description** | **Swat_codetype** | **Source** |
+|--------------|-----------|----------|-----------|-----------------|-------------------|------------|
+| path_db(ibac)%pathnm | pathnm | character(16) | - | Pathogen name | in_parmdb | pathogen_db%pathnm |
+| path_db(ibac)%do_soln | do_soln | real | 1/day | Die-off factor for bacteria in soil solution (default=0.) | in_parmdb | pathogen_db%do_soln |
+| path_db(ibac)%gr_soln | gr_soln | real | 1/day | Growth factor for bacteria in soil solution (default=0.) | in_parmdb | pathogen_db%gr_soln |
+| path_db(ibac)%do_sorb | do_sorb | real | 1/day | Die-off factor for bacteria adsorbed to soil (default=0.) | in_parmdb | pathogen_db%do_sorb |
+| path_db(ibac)%gr_sorb | gr_sorb | real | 1/day | Growth factor for bacteria adsorbed to soil (default=0.) | in_parmdb | pathogen_db%gr_sorb |
+| path_db(ibac)%kd | kd | real | - | Partition coefficient solution/sorbed in runoff (default=0.) | in_parmdb | pathogen_db%kd |
+| path_db(ibac)%t_adj | t_adj | real | - | Temperature adjustment factor for die-off/growth (default=0.) | in_parmdb | pathogen_db%t_adj |
+| path_db(ibac)%washoff | washoff | real | - | Fraction on foliage washed off by rainfall (default=0.) | in_parmdb | pathogen_db%washoff |
+| path_db(ibac)%do_plnt | do_plnt | real | 1/day | Die-off factor on foliage (default=0.) | in_parmdb | pathogen_db%do_plnt |
+| path_db(ibac)%gr_plnt | gr_plnt | real | 1/day | Growth factor on foliage (default=0.) | in_parmdb | pathogen_db%gr_plnt |
+| path_db(ibac)%fr_manure | fr_manure | real | - | Fraction of manure with active CFU (default=0.) | in_parmdb | pathogen_db%fr_manure |
+| path_db(ibac)%perco | perco | real | - | Percolation coefficient for solution bacteria (default=0.) | in_parmdb | pathogen_db%perco |
+| path_db(ibac)%det_thrshd | det_thrshd | real | CFU/m² | Detection threshold; below this level set to zero (default=0.) | in_parmdb | pathogen_db%det_thrshd |
+| path_db(ibac)%do_stream | do_stream | real | 1/day | Die-off factor in streams (default=0.) | in_parmdb | pathogen_db%do_stream |
+| path_db(ibac)%gr_stream | gr_stream | real | 1/day | Growth factor in streams (default=0.) | in_parmdb | pathogen_db%gr_stream |
+| path_db(ibac)%do_res | do_res | real | 1/day | Die-off factor in reservoirs (default=0.) | in_parmdb | pathogen_db%do_res |
+| path_db(ibac)%gr_res | gr_res | real | 1/day | Growth factor in reservoirs (default=0.) | in_parmdb | pathogen_db%gr_res |
+| path_db(ibac)%conc_min | conc_min | real | CFU/100mL | Minimum pathogen concentration (default=0.) | in_parmdb | pathogen_db%conc_min |
+
+**file.cio Cross-Reference**: Referenced in parameter database section
+
+**Notes**:
+- Models pathogen (bacteria) fate and transport
+- Handles multiple environmental compartments: soil, water, vegetation
+- Temperature-dependent die-off and growth rates
+- Critical for microbial water quality modeling (E. coli, fecal coliform)
+- Database size stored in db_mx%path
+- Backspace read pattern similar to septic.sep (lines 46-49)
+- CFU = Colony Forming Units
+
+---
+
+### 3.54 manure.frt (INPUT)
+
+**File**: Manure parameter database  
+**Routine**: `manure_parm_read`  
+**Source**: src/manure_parm_read.f90  
+**Expression**: Hardcoded string literal "manure.frt"  
+**Unit**: 107
+
+#### Filename Resolution
+
+```
+manure.frt → Hardcoded literal "manure.frt" in manure_parm_read.f90
+           → NOT from input_file_module (hardcoded exception)
+           → Swat_codetype: "in_parmdb" (functional equivalent)
+```
+
+**file.cio Cross-Reference**: Part of parameter database section in file.cio (implicit)
+
+#### I/O Sites
+
+| **Site** | **Line** | **Action** | **Unit/Var** | **Expression** | **Description** |
+|----------|----------|------------|--------------|----------------|-----------------|
+| 1 | 22 | inquire | - | "manure.frt" | Check file existence (hardcoded) |
+| 2 | 27 | open | 107 | "manure.frt" | Open manure database (hardcoded) |
+| 3 | 28 | read | 107 | titldum | Read title |
+| 4 | 30 | read | 107 | header | Read header line |
+| 5 | 33 | read | 107 | titldum | Count records (loop) |
+| 6 | 41 | read | 107 | titldum | Re-read title after rewind |
+| 7 | 43 | read | 107 | header | Re-read header after rewind |
+| 8 | 47 | read | 107 | manure_db(it) | Read manure database record |
+| 9 | 56 | close | 107 | - | Close file |
+
+#### Payload Map
+
+**Target Variable**: `manure_db(:)` (allocated array of type `manure_data`)  
+**Module**: fertilizer_data_module  
+**Type Definition**: src/fertilizer_data_module.f90:15-20
+
+**PRIMARY DATA READ**:
+
+| **Variable** | **Field** | **Type** | **Units** | **Description** | **Swat_codetype** | **Source** |
+|--------------|-----------|----------|-----------|-----------------|-------------------|------------|
+| manure_db(it)%manurenm | manurenm | character(16) | - | Manure type name | in_parmdb | manure_data%manurenm |
+
+**Notes on Type Definition**:
+The manure_data type (lines 15-20 of fertilizer_data_module.f90) currently contains:
+- `manurenm` - manure name (character(16))
+- Commented-out fields for pathogen and antibiotic arrays (future expansion)
+
+**file.cio Cross-Reference**: Referenced in parameter database section
+
+**Notes**:
+- Simplified manure database (currently only stores names)
+- Defined in fertilizer_data_module alongside fertdb
+- Database size stored in db_mx%manureparm
+- Filename is HARDCODED (not configurable via file.cio)
+- Future expansion indicated by commented fields for pathogens and antibiotics
+- Likely used in conjunction with fertilizer.frt for organic amendments
+
+---
+
+**Report Status**: Phase 3 - Parameter Databases (Priority 1) - 54 of 145+ files documented  
+**Last Updated**: 2026-01-23 (Parameter Database Focus)
