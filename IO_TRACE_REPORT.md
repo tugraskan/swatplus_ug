@@ -1649,6 +1649,607 @@ close (107)
 
 ---
 
+### 3.3 time.sim (INPUT)
+
+**Routine**: `time_read`  
+**File**: src/time_read.f90  
+**Expression**: `in_sim%time`  
+**Unit mapping**: 107 → in_sim%time → "time.sim"
+
+#### Filename Resolution
+
+**Resolution Chain**:
+- Target filename: `time.sim`
+- Expression: `in_sim%time`
+- Type definition: `input_sim` at src/input_file_module.f90:8-14
+- Variable instance: `in_sim` at src/input_file_module.f90:15
+- Default value: `"time.sim"` set at src/input_file_module.f90:9
+- Runtime overrides: Set via file.cio (line 2, column 2)
+
+**Detailed Mapping**:
+```
+time.sim → in_sim%time 
+         → type input_sim (src/input_file_module.f90:8-14)
+         → character(len=25) :: time = "time.sim" (src/input_file_module.f90:9)
+```
+
+#### I/O Sites
+
+| Line | Statement | Type | Description |
+|------|-----------|------|-------------|
+| 20 | `inquire (file=in_sim%time, exist=i_exist)` | INQUIRE | Check file existence |
+| 23 | `open (107,file=in_sim%time)` | OPEN | Open simulation time file |
+| 24 | `read (107,*,iostat=eof) titldum` | READ | Read title line |
+| 26 | `read (107,*,iostat=eof) header` | READ | Read column headers |
+| 28 | `read (107,*,iostat=eof) time%day_start, time%yrc_start, time%day_end, time%yrc_end, time%step` | READ | Read simulation time parameters |
+| 39 | `close (107)` | CLOSE | Close file |
+
+#### Read Statement Analysis
+
+**Read Statement 1: Title Line**
+**Location**: src/time_read.f90:24  
+**Statement**: `read (107,*,iostat=eof) titldum`  
+**Format**: List-directed (free format)
+
+**Variable**: `titldum`
+- **Name**: titldum
+- **Scope**: Local variable
+- **Type**: character(len=80)
+- **Default**: "" (empty string)
+- **Units**: N/A (text)
+- **Description**: Title of file
+- **Declared at**: src/time_read.f90:10
+
+**Read Statement 2: Header Line**
+**Location**: src/time_read.f90:26  
+**Statement**: `read (107,*,iostat=eof) header`  
+**Format**: List-directed (free format)
+
+**Variable**: `header`
+- **Name**: header
+- **Scope**: Local variable
+- **Type**: character(len=500)
+- **Default**: "" (empty string)
+- **Units**: N/A (text)
+- **Description**: Header line with column names
+- **Declared at**: src/time_read.f90:11
+
+**Read Statement 3: Simulation Time Parameters (PRIMARY DATA READ)**
+**Location**: src/time_read.f90:28  
+**Statement**: `read (107,*,iostat=eof) time%day_start, time%yrc_start, time%day_end, time%yrc_end, time%step`  
+**Format**: List-directed (free format)
+
+**Variable 1**: `time%day_start`
+- **Component**: day_start of time
+- **Type**: integer
+- **Default**: 0
+- **Units**: julian day
+- **Description**: Beginning julian day of simulation
+- **Parent Type**: time_current at src/time_module.f90:16-43
+- **Component Line**: src/time_module.f90:30
+
+**Variable 2**: `time%yrc_start`
+- **Component**: yrc_start of time
+- **Type**: integer
+- **Default**: 0
+- **Units**: year
+- **Description**: Starting calendar year
+- **Parent Type**: time_current at src/time_module.f90:16-43
+- **Component Line**: src/time_module.f90:22
+
+**Variable 3**: `time%day_end`
+- **Component**: day_end of time
+- **Type**: integer
+- **Default**: 0
+- **Units**: julian day
+- **Description**: Input ending julian day of simulation
+- **Parent Type**: time_current at src/time_module.f90:16-43
+- **Component Line**: src/time_module.f90:32
+
+**Variable 4**: `time%yrc_end`
+- **Component**: yrc_end of time
+- **Type**: integer
+- **Default**: 0
+- **Units**: year
+- **Description**: Ending calendar year
+- **Parent Type**: time_current at src/time_module.f90:16-43
+- **Component Line**: src/time_module.f90:23
+
+**Variable 5**: `time%step`
+- **Component**: step of time
+- **Type**: integer
+- **Default**: 0
+- **Units**: timesteps/day
+- **Description**: Number of time steps in a day for rainfall, runoff and routing (0=daily; 1=increment(12hrs); 24=hourly; 96=15mins; 1440=minute)
+- **Parent Type**: time_current at src/time_module.f90:16-43
+- **Component Line**: src/time_module.f90:34
+
+#### PRIMARY DATA READ Table
+
+**Read Statement**: `read (107,*,iostat=eof) time%day_start, time%yrc_start, time%day_end, time%yrc_end, time%step` at src/time_read.f90:28
+**File.cio Reference**: This file (time.sim) is referenced in file.cio as component `time` of derived type `in_sim` (line 2, column 2)
+
+| Line in File | Position in File | Local (Y/N) | Derived Type Name | Component (or Var Name if Local) | Type | Default | Units | Description | Source Line | Swat_codetype |
+|--------------|------------------|-------------|-------------------|-----------------------------------|------|---------|-------|-------------|-------------|---------------|
+| 3 | 1 | N | time | day_start | integer | 0 | julian day | Beginning julian day of simulation | src/time_module.f90:30 | in_sim |
+| 3 | 2 | N | time | yrc_start | integer | 0 | year | Starting calendar year | src/time_module.f90:22 | in_sim |
+| 3 | 3 | N | time | day_end | integer | 0 | julian day | Ending julian day of simulation | src/time_module.f90:32 | in_sim |
+| 3 | 4 | N | time | yrc_end | integer | 0 | year | Ending calendar year | src/time_module.f90:23 | in_sim |
+| 3 | 5 | N | time | step | integer | 0 | timesteps/day | Number of time steps per day (0=daily; 1=12hr; 24=hourly; 96=15min; 1440=1min) | src/time_module.f90:34 | in_sim |
+
+**Post-Read Processing**:
+- Line 30: `if (time%step <= 0) time%step = 1` - Default timestep to 1 if not positive
+- Line 31: `if (time%day_start <= 0) time%day_start = 1` - Default start day to 1 if not positive
+- Line 32: `time%nbyr = time%yrc_end - time%yrc_start + 1` - Calculate number of years
+- Lines 33-36: Convert day_start to month and day of month using xmon subroutine
+
+---
+
+### 3.4 print.prt (INPUT)
+
+**Routine**: `basin_print_codes_read`  
+**File**: src/basin_print_codes_read.f90  
+**Expression**: `in_sim%prt`  
+**Unit mapping**: 107 → in_sim%prt → "print.prt"
+
+#### Filename Resolution
+
+**Resolution Chain**:
+- Target filename: `print.prt`
+- Expression: `in_sim%prt`
+- Type definition: `input_sim` at src/input_file_module.f90:8-14
+- Variable instance: `in_sim` at src/input_file_module.f90:15
+- Default value: `"print.prt"` set at src/input_file_module.f90:10
+- Runtime overrides: Set via file.cio (line 2, column 3)
+
+**Detailed Mapping**:
+```
+print.prt → in_sim%prt 
+          → type input_sim (src/input_file_module.f90:8-14)
+          → character(len=25) :: prt = "print.prt" (src/input_file_module.f90:10)
+```
+
+#### I/O Sites
+
+**Note**: This file has extensive reads. Only primary data reads are listed below. Full detail available in source code lines 20-285.
+
+| Line | Statement | Type | Description |
+|------|-----------|------|-------------|
+| 20 | `inquire (file=in_sim%prt, exist=i_exist)` | INQUIRE | Check file existence |
+| 23 | `open (107,file=in_sim%prt)` | OPEN | Open print control file |
+| 24 | `read (107,*,iostat=eof) titldum` | READ | Read title line |
+| 26 | `read (107,*,iostat=eof) header` | READ | Read column headers |
+| 28 | `read (107,*,iostat=eof) pco%nyskip, pco%day_start, pco%yrc_start, pco%day_end, pco%yrc_end, pco%int_day` | READ | Read print time controls |
+| 30 | `read (107,*,iostat=eof) header` | READ | Read header |
+| 32-36 | `read (107,*,iostat=eof) pco%aa_numint, (pco%aa_yrs(ii), ii = 1, pco%aa_numint)` | READ | Read average annual print intervals |
+| 42 | `read (107,*,iostat=eof) header` | READ | Read header |
+| 44 | `read (107,*,iostat=eof) pco%csvout, pco%use_obj_labels, pco%cdfout` | READ | Read database output flags |
+| 48 | `read (107,*,iostat=eof) header` | READ | Read header |
+| 50 | `read (107,*,iostat=eof) pco%crop_yld, pco%mgtout, pco%hydcon, pco%fdcout` | READ | Read other output flags |
+| 55-285 | Multiple reads | READ | Read object-specific output controls (basin, region, lsu, hru, channels, aquifers, reservoirs, etc.) |
+| 286 | `close (107)` | CLOSE | Close file |
+
+#### Primary Data Read Sections
+
+**Section 1: Time Controls (Line 28)**
+**Statement**: `read (107,*,iostat=eof) pco%nyskip, pco%day_start, pco%yrc_start, pco%day_end, pco%yrc_end, pco%int_day`
+
+| Position | Component | Type | Default | Units | Description | Source Line |
+|----------|-----------|------|---------|-------|-------------|-------------|
+| 1 | nyskip | integer | 0 | years | Number of years to skip before printing | src/basin_module.f90 |
+| 2 | day_start | integer | 0 | julian day | Starting day for printing | src/basin_module.f90 |
+| 3 | yrc_start | integer | 0 | year | Starting year for printing | src/basin_module.f90 |
+| 4 | day_end | integer | 0 | julian day | Ending day for printing | src/basin_module.f90 |
+| 5 | yrc_end | integer | 0 | year | Ending year for printing | src/basin_module.f90 |
+| 6 | int_day | integer | 0 | days | Daily print interval | src/basin_module.f90 |
+
+**Section 2: Average Annual Intervals (Lines 32-36)**
+**Statement**: `read (107,*,iostat=eof) pco%aa_numint, (pco%aa_yrs(ii), ii = 1, pco%aa_numint)`
+
+| Position | Component | Type | Units | Description |
+|----------|-----------|------|-------|-------------|
+| 1 | aa_numint | integer | none | Number of average annual print intervals |
+| 2+ | aa_yrs(:) | integer array | years | Years for each average annual interval |
+
+**Section 3: Database Output Flags (Line 44)**
+**Statement**: `read (107,*,iostat=eof) pco%csvout, pco%use_obj_labels, pco%cdfout`
+
+| Position | Component | Type | Units | Description |
+|----------|-----------|------|-------|-------------|
+| 1 | csvout | character(len=1) | N/A | CSV output flag ("y"/"n") |
+| 2 | use_obj_labels | character(len=1) | N/A | Use object labels in output ("y"/"n") |
+| 3 | cdfout | character(len=1) | N/A | NetCDF output flag ("y"/"n") |
+
+**Section 4: Other Output Flags (Line 50)**
+**Statement**: `read (107,*,iostat=eof) pco%crop_yld, pco%mgtout, pco%hydcon, pco%fdcout`
+
+| Position | Component | Type | Units | Description |
+|----------|-----------|------|-------|-------------|
+| 1 | crop_yld | character(len=1) | N/A | Crop yield output flag ("y"/"n") |
+| 2 | mgtout | character(len=1) | N/A | Management output flag ("y"/"n") |
+| 3 | hydcon | character(len=1) | N/A | Hydrograph connection output flag ("y"/"n") |
+| 4 | fdcout | character(len=1) | N/A | Flow duration curve output flag ("y"/"n") |
+
+**Section 5: Object Output Controls (Lines 55-285)**
+
+Each object type (basin, region, lsu, hru, channel, aquifer, reservoir, recall, etc.) has reads for output intervals in format:
+`read (107,*,iostat=eof) name, object%d, object%m, object%y, object%a`
+
+Where:
+- `name` = object type name (character, not stored)
+- `object%d` = daily output flag (character(len=1), "y"/"n")
+- `object%m` = monthly output flag (character(len=1), "y"/"n")
+- `object%y` = yearly output flag (character(len=1), "y"/"n")
+- `object%a` = average annual output flag (character(len=1), "y"/"n")
+
+**Example Object Output Controls**:
+- Line 58: `pco%wb_bsn` - Basin water balance
+- Line 60: `pco%nb_bsn` - Basin nutrient balance
+- Line 62: `pco%ls_bsn` - Basin losses
+- Line 66: `pco%aqu_bsn` - Basin aquifer
+- Line 68: `pco%res_bsn` - Basin reservoir
+- Line 70: `pco%chan_bsn` - Basin channel
+- And many more...
+
+#### PRIMARY DATA READ Table (Key Records Only)
+
+**File.cio Reference**: This file (print.prt) is referenced in file.cio as component `prt` of derived type `in_sim` (line 2, column 3)
+
+| Line in File | Position in File | Local (Y/N) | Derived Type Name | Component (or Var Name if Local) | Type | Default | Units | Description | Source Line | Swat_codetype |
+|--------------|------------------|-------------|-------------------|-----------------------------------|------|---------|-------|-------------|-------------|---------------|
+| 3 | 1 | N | pco | nyskip | integer | 0 | years | Number of years to skip before printing | src/basin_module.f90 | in_sim |
+| 3 | 2 | N | pco | day_start | integer | 0 | julian day | Starting day for printing | src/basin_module.f90 | in_sim |
+| 3 | 3 | N | pco | yrc_start | integer | 0 | year | Starting year for printing | src/basin_module.f90 | in_sim |
+| 3 | 4 | N | pco | day_end | integer | 0 | julian day | Ending day for printing | src/basin_module.f90 | in_sim |
+| 3 | 5 | N | pco | yrc_end | integer | 0 | year | Ending year for printing | src/basin_module.f90 | in_sim |
+| 3 | 6 | N | pco | int_day | integer | 0 | days | Daily print interval | src/basin_module.f90 | in_sim |
+| 5 | 1 | N | pco | aa_numint | integer | 0 | none | Number of average annual print intervals | src/basin_module.f90 | in_sim |
+| 5 | 2+ | N | pco | aa_yrs(:) | integer | 0 | years | Years for each average annual interval | src/basin_module.f90 | in_sim |
+| 7 | 1 | N | pco | csvout | character(len=1) | "n" | N/A | CSV output flag ("y"/"n") | src/basin_module.f90:167 | in_sim |
+| 7 | 2 | N | pco | use_obj_labels | character(len=1) | "n" | N/A | Use object labels in output ("y"/"n") | src/basin_module.f90 | in_sim |
+| 7 | 3 | N | pco | cdfout | character(len=1) | "n" | N/A | NetCDF output flag ("y"/"n") | src/basin_module.f90 | in_sim |
+| 9 | 1 | N | pco | crop_yld | character(len=1) | "n" | N/A | Crop yield output flag | src/basin_module.f90:173 | in_sim |
+| 9 | 2 | N | pco | mgtout | character(len=1) | "n" | N/A | Management output flag | src/basin_module.f90:176 | in_sim |
+| 9 | 3 | N | pco | hydcon | character(len=1) | "n" | N/A | Hydrograph connection output flag | src/basin_module.f90 | in_sim |
+| 9 | 4 | N | pco | fdcout | character(len=1) | "n" | N/A | Flow duration curve output flag | src/basin_module.f90 | in_sim |
+| 11+ | 1-4 | N | pco | (various)%d,%m,%y,%a | character(len=1) | "n" | N/A | Object-specific output intervals (d=daily, m=monthly, y=yearly, a=avg annual) | src/basin_module.f90 | in_sim |
+
+**Note**: The print.prt file contains 50+ additional lines for object-specific output controls. Each follows the pattern: object_name, daily_flag, monthly_flag, yearly_flag, avg_annual_flag. See src/basin_print_codes_read.f90:55-285 for complete list.
+
+---
+
+### 3.5 codes.bsn (INPUT)
+
+**Routine**: `basin_read_cc`  
+**File**: src/basin_read_cc.f90  
+**Expression**: `in_basin%codes_bas`  
+**Unit mapping**: 107 → in_basin%codes_bas → "codes.bsn"
+
+#### Filename Resolution
+
+**Resolution Chain**:
+- Target filename: `codes.bsn`
+- Expression: `in_basin%codes_bas`
+- Type definition: `input_basin` at src/input_file_module.f90:18-22
+- Variable instance: `in_basin` at src/input_file_module.f90:22
+- Default value: `"codes.bsn"` set at src/input_file_module.f90:19
+- Runtime overrides: Set via file.cio (line 3, column 2)
+
+**Detailed Mapping**:
+```
+codes.bsn → in_basin%codes_bas 
+          → type input_basin (src/input_file_module.f90:18-22)
+          → character(len=25) :: codes_bas = "codes.bsn" (src/input_file_module.f90:19)
+```
+
+#### I/O Sites
+
+| Line | Statement | Type | Description |
+|------|-----------|------|-------------|
+| 16 | `inquire (file=in_basin%codes_bas, exist=i_exist)` | INQUIRE | Check file existence |
+| 19 | `open (107,file=in_basin%codes_bas)` | OPEN | Open basin codes file |
+| 20 | `read (107,*,iostat=eof) titldum` | READ | Read title line |
+| 22 | `read (107,*,iostat=eof) header` | READ | Read column headers |
+| 24 | `read (107,*,iostat=eof) bsn_cc` | READ | Read basin control codes (PRIMARY) |
+| 42 | `close(107)` | CLOSE | Close file |
+
+**Conditional I/O** (if bsn_cc%pet == 3):
+| Line | Statement | Type | Description |
+|------|-----------|------|-------------|
+| 31 | `open (140,file = 'pet.cli')` | OPEN | Open PET climate file |
+| 33 | `read (140,*,iostat=eof) titldum` | READ | Read PET file title |
+| 35 | `read (140,*,iostat=eof) header` | READ | Read PET file header |
+| 37 | `read (140,*,iostat = eof) titldum` | READ | Read PET file data line |
+
+#### Read Statement Analysis
+
+**Read Statement 1: Title Line**
+**Location**: src/basin_read_cc.f90:20  
+**Statement**: `read (107,*,iostat=eof) titldum`  
+**Format**: List-directed (free format)
+
+**Variable**: `titldum`
+- **Name**: titldum
+- **Scope**: Local variable
+- **Type**: character(len=80)
+- **Default**: "" (empty string)
+- **Units**: N/A (text)
+- **Description**: Title of file
+- **Declared at**: src/basin_read_cc.f90:8
+
+**Read Statement 2: Header Line**
+**Location**: src/basin_read_cc.f90:22  
+**Statement**: `read (107,*,iostat=eof) header`  
+**Format**: List-directed (free format)
+
+**Variable**: `header`
+- **Name**: header
+- **Scope**: Local variable
+- **Type**: character(len=80)
+- **Default**: "" (empty string)
+- **Units**: N/A (text)
+- **Description**: Header line
+- **Declared at**: src/basin_read_cc.f90:9
+
+**Read Statement 3: Basin Control Codes (PRIMARY DATA READ)**
+**Location**: src/basin_read_cc.f90:24  
+**Statement**: `read (107,*,iostat=eof) bsn_cc`  
+**Format**: List-directed (free format)
+
+**Variable**: `bsn_cc`
+- **Name**: bsn_cc
+- **Scope**: Module variable (imported from basin_module)
+- **Type**: basin_control_codes (derived type)
+- **Declared at**: src/basin_module.f90:75
+
+**Derived Type: basin_control_codes**  
+**Location**: src/basin_module.f90:17-74
+
+| Component | Type | Default | Units | Description | Line |
+|-----------|------|---------|-------|-------------|------|
+| petfile | character(len=16) | "pet.cli" | N/A | Potential ET filename | 18 |
+| wwqfile | character(len=16) | "" | N/A | Watershed stream water quality filename | 19 |
+| pet | integer | 0 | code | PET method: 0=Priestley-Taylor, 1=Penman-Monteith, 2=Hargreaves | 20 |
+| nam1 | integer | 0 | code | Not used | 24 |
+| crk | integer | 0 | code | Crack flow: 1=compute crack flow | 25 |
+| swift_out | integer | 0 | code | SWIFT output: 0=no, 1=write to swift_hru.inp | 27 |
+| sed_det | integer | 0 | code | Peak rate method: 0=NRCS dimensionless hydrograph, 1=half hour intensity | 30 |
+| rte | integer | 0 | code | Water routing: 0=variable storage, 1=Muskingum | 33 |
+| deg | integer | 0 | code | Not used | 35 |
+| wq | integer | 0 | code | Not used | 36 |
+| nostress | integer | 0 | code | Plant stress: 0=all stresses, 1=no stress, 2=no nutrient stress only | 37 |
+| cn | integer | 0 | code | Not used | 41 |
+| cfac | integer | 0 | code | Not used | 42 |
+| cswat | integer | 0 | code | Carbon: 0=static, 1=C-FARM, 2=Century | 43 |
+| lapse | integer | 0 | code | Lapse rate: 0=no elevation adjust, 1=adjust for elevation | 47 |
+| uhyd | integer | 1 | code | Unit hydrograph: 0=triangular, 1=gamma function | 49 |
+| sed_ch | integer | 0 | code | Not used | 52 |
+| tdrn | integer | 0 | code | Tile drainage: 0=drawdown days, 1=drainmod | 53 |
+| wtdn | integer | 0 | code | Water table depth: 0=original, 1=drainmod | 56 |
+| sol_p_model | integer | 0 | code | Soil P model: 0=original SWAT, 1=Vadas and White (2010) | 59 |
+| gampt | integer | 0 | code | Infiltration: 0=curve number, 1=Green and Ampt | 60 |
+| atmo | character(len=1) | "a" | N/A | Not used | 61 |
+| smax | integer | 0 | code | Not used | 62 |
+| qual2e | integer | 0 | code | Instream nutrient routing: 0=full QUAL2E, 1=simplified | 63 |
+| gwflow | integer | 0 | code | GWFlow module: 0=inactive, 1=active | 65 |
+| idc_till | integer | 3 | code | Tillage method (if cswat=2): 1=DSSAT, 2=EPIC, 3=Kemanian, 4=DNDC | 66 |
+
+#### PRIMARY DATA READ Table
+
+**Read Statement**: `read (107,*,iostat=eof) bsn_cc` at src/basin_read_cc.f90:24
+**File.cio Reference**: This file (codes.bsn) is referenced in file.cio as component `codes_bas` of derived type `in_basin` (line 3, column 2)
+
+| Line in File | Position in File | Local (Y/N) | Derived Type Name | Component (or Var Name if Local) | Type | Default | Units | Description | Source Line | Swat_codetype |
+|--------------|------------------|-------------|-------------------|-----------------------------------|------|---------|-------|-------------|-------------|---------------|
+| 3 | 1 | N | bsn_cc | petfile | character(len=16) | "pet.cli" | N/A | Potential ET filename | src/basin_module.f90:18 | in_basin |
+| 3 | 2 | N | bsn_cc | wwqfile | character(len=16) | "" | N/A | Watershed stream water quality filename | src/basin_module.f90:19 | in_basin |
+| 3 | 3 | N | bsn_cc | pet | integer | 0 | code | PET method (0=Priestley-Taylor, 1=Penman-Monteith, 2=Hargreaves) | src/basin_module.f90:20 | in_basin |
+| 3 | 4 | N | bsn_cc | nam1 | integer | 0 | code | Not used | src/basin_module.f90:24 | in_basin |
+| 3 | 5 | N | bsn_cc | crk | integer | 0 | code | Crack flow code (1=compute crack flow) | src/basin_module.f90:25 | in_basin |
+| 3 | 6 | N | bsn_cc | swift_out | integer | 0 | code | SWIFT output (0=no, 1=write swift_hru.inp) | src/basin_module.f90:27 | in_basin |
+| 3 | 7 | N | bsn_cc | sed_det | integer | 0 | code | Peak rate method (0=NRCS, 1=half hour intensity) | src/basin_module.f90:30 | in_basin |
+| 3 | 8 | N | bsn_cc | rte | integer | 0 | code | Water routing (0=variable storage, 1=Muskingum) | src/basin_module.f90:33 | in_basin |
+| 3 | 9 | N | bsn_cc | deg | integer | 0 | code | Not used | src/basin_module.f90:35 | in_basin |
+| 3 | 10 | N | bsn_cc | wq | integer | 0 | code | Not used | src/basin_module.f90:36 | in_basin |
+| 3 | 11 | N | bsn_cc | nostress | integer | 0 | code | Plant stress (0=all, 1=none, 2=no nutrient stress) | src/basin_module.f90:37 | in_basin |
+| 3 | 12 | N | bsn_cc | cn | integer | 0 | code | Not used | src/basin_module.f90:41 | in_basin |
+| 3 | 13 | N | bsn_cc | cfac | integer | 0 | code | Not used | src/basin_module.f90:42 | in_basin |
+| 3 | 14 | N | bsn_cc | cswat | integer | 0 | code | Carbon model (0=static, 1=C-FARM, 2=Century) | src/basin_module.f90:43 | in_basin |
+| 3 | 15 | N | bsn_cc | lapse | integer | 0 | code | Lapse rate (0=no elevation adjust, 1=adjust) | src/basin_module.f90:47 | in_basin |
+| 3 | 16 | N | bsn_cc | uhyd | integer | 1 | code | Unit hydrograph (0=triangular, 1=gamma function) | src/basin_module.f90:49 | in_basin |
+| 3 | 17 | N | bsn_cc | sed_ch | integer | 0 | code | Not used | src/basin_module.f90:52 | in_basin |
+| 3 | 18 | N | bsn_cc | tdrn | integer | 0 | code | Tile drainage (0=drawdown days, 1=drainmod) | src/basin_module.f90:53 | in_basin |
+| 3 | 19 | N | bsn_cc | wtdn | integer | 0 | code | Water table depth (0=original, 1=drainmod) | src/basin_module.f90:56 | in_basin |
+| 3 | 20 | N | bsn_cc | sol_p_model | integer | 0 | code | Soil P model (0=original, 1=Vadas and White 2010) | src/basin_module.f90:59 | in_basin |
+| 3 | 21 | N | bsn_cc | gampt | integer | 0 | code | Infiltration (0=curve number, 1=Green and Ampt) | src/basin_module.f90:60 | in_basin |
+| 3 | 22 | N | bsn_cc | atmo | character(len=1) | "a" | N/A | Not used | src/basin_module.f90:61 | in_basin |
+| 3 | 23 | N | bsn_cc | smax | integer | 0 | code | Not used | src/basin_module.f90:62 | in_basin |
+| 3 | 24 | N | bsn_cc | qual2e | integer | 0 | code | Instream routing (0=QUAL2E, 1=simplified QUAL2E) | src/basin_module.f90:63 | in_basin |
+| 3 | 25 | N | bsn_cc | gwflow | integer | 0 | code | GWFlow module (0=inactive, 1=active) | src/basin_module.f90:65 | in_basin |
+| 3 | 26 | N | bsn_cc | idc_till | integer | 3 | code | Tillage method if cswat=2 (1=DSSAT, 2=EPIC, 3=Kemanian, 4=DNDC) | src/basin_module.f90:66 | in_basin |
+
+---
+
+### 3.6 parameters.bsn (INPUT)
+
+**Routine**: `basin_read_prm`  
+**File**: src/basin_read_prm.f90  
+**Expression**: `in_basin%parms_bas`  
+**Unit mapping**: 107 → in_basin%parms_bas → "parameters.bsn"
+
+#### Filename Resolution
+
+**Resolution Chain**:
+- Target filename: `parameters.bsn`
+- Expression: `in_basin%parms_bas`
+- Type definition: `input_basin` at src/input_file_module.f90:18-22
+- Variable instance: `in_basin` at src/input_file_module.f90:22
+- Default value: `"parameters.bsn"` set at src/input_file_module.f90:20
+- Runtime overrides: Set via file.cio (line 3, column 3)
+
+**Detailed Mapping**:
+```
+parameters.bsn → in_basin%parms_bas 
+               → type input_basin (src/input_file_module.f90:18-22)
+               → character(len=25) :: parms_bas = "parameters.bsn" (src/input_file_module.f90:20)
+```
+
+#### I/O Sites
+
+| Line | Statement | Type | Description |
+|------|-----------|------|-------------|
+| 15 | `inquire (file=in_basin%parms_bas, exist=i_exist)` | INQUIRE | Check file existence |
+| 19 | `open (107,file=in_basin%parms_bas)` | OPEN | Open basin parameters file |
+| 20 | `read (107,*,iostat=eof) titldum` | READ | Read title line |
+| 22 | `read (107,*,iostat=eof) header` | READ | Read column headers |
+| 24 | `read (107,*,iostat=eof) bsn_prm` | READ | Read basin parameters (PRIMARY) |
+| 29 | `close(107)` | CLOSE | Close file |
+
+#### Read Statement Analysis
+
+**Read Statement 1: Title Line**
+**Location**: src/basin_read_prm.f90:20  
+**Statement**: `read (107,*,iostat=eof) titldum`  
+**Format**: List-directed (free format)
+
+**Variable**: `titldum`
+- **Name**: titldum
+- **Scope**: Local variable
+- **Type**: character(len=80)
+- **Default**: "" (empty string)
+- **Units**: N/A (text)
+- **Description**: Title of file
+- **Declared at**: src/basin_read_prm.f90:8
+
+**Read Statement 2: Header Line**
+**Location**: src/basin_read_prm.f90:22  
+**Statement**: `read (107,*,iostat=eof) header`  
+**Format**: List-directed (free format)
+
+**Variable**: `header`
+- **Name**: header
+- **Scope**: Local variable
+- **Type**: character(len=80)
+- **Default**: "" (empty string)
+- **Units**: N/A (text)
+- **Description**: Header line
+- **Declared at**: src/basin_read_prm.f90:9
+
+**Read Statement 3: Basin Parameters (PRIMARY DATA READ)**
+**Location**: src/basin_read_prm.f90:24  
+**Statement**: `read (107,*,iostat=eof) bsn_prm`  
+**Format**: List-directed (free format)
+
+**Variable**: `bsn_prm`
+- **Name**: bsn_prm
+- **Scope**: Module variable (imported from basin_module)
+- **Type**: basin_parms (derived type)
+- **Declared at**: src/basin_module.f90:136
+
+**Derived Type: basin_parms**  
+**Location**: src/basin_module.f90:77-135
+
+| Component | Type | Default | Units | Description | Line |
+|-----------|------|---------|-------|-------------|------|
+| evlai | real | 3.0 | none | Leaf area index at which no evap occurs | 78 |
+| ffcb | real | 0. | none | Initial soil water content expressed as fraction of field capacity | 79 |
+| surlag | real | 4.0 | days | Surface runoff lag time | 80 |
+| adj_pkr | real | 1.0 | none | Peak rate adjustment factor in the subbasin | 81 |
+| prf | real | 484. | none | Peak rate factor for peak rate equation | 82 |
+| spcon | real | 0.0 | none | Not used | 83 |
+| spexp | real | 0.0 | none | Not used | 84 |
+| cmn | real | 0.003 | none | Rate factor for mineralization on active org N | 85 |
+| n_updis | real | 20.0 | none | Nitrogen uptake distribution parameter | 86 |
+| p_updis | real | 20.0 | none | Phosphorus uptake distribution parameter | 87 |
+| nperco | real | 0.10 | none | Nitrate percolation coefficient (0-1) | 88 |
+| pperco | real | 10.0 | none | Phosphorus percolation coefficient (0-1) | 91 |
+| phoskd | real | 175.0 | none | Phosphorus soil partitioning coefficient | 94 |
+| psp | real | 0.40 | none | Phosphorus availability index | 95 |
+| rsdco | real | 0.05 | none | Residue decomposition coefficient | 96 |
+| percop | real | 0.5 | none | Pesticide percolation coefficient (0-1) | 97 |
+| msk_co1 | real | 0.75 | none | Muskingum coeff to control storage time constant at bankfull | 98 |
+| msk_co2 | real | 0.25 | none | Muskingum coeff to control storage time constant at low flow | 101 |
+| msk_x | real | 0.20 | none | Muskingum weighting factor for inflow/outflow | 104 |
+| nperco_lchtile | real | .5 | none | N concentration coefficient for tile flow and leach | 106 |
+| evrch | real | 0.60 | none | Reach evaporation adjustment factor | 107 |
+| scoef | real | 1.0 | none | Channel storage coefficient (0-1) | 108 |
+| cdn | real | 1.40 | none | Denitrification exponential rate coefficient | 109 |
+| sdnco | real | 1.30 | none | Denitrification threshold fraction of field capacity | 110 |
+| bact_swf | real | 0.15 | none | Fraction of manure containing active colony forming units | 111 |
+| tb_adj | real | 0. | none | Adjustment factor for subdaily unit hydrograph basetime | 112 |
+| cn_froz | real | 0.000862 | none | Parameter for frozen soil adjustment on infiltration/runoff | 113 |
+| dorm_hr | real | -1. | hrs | Time threshold used to define dormant | 114 |
+| plaps | real | 0. | mm/km | Precipitation lapse rate | 115 |
+| tlaps | real | 6.5 | deg C/km | Temperature lapse rate | 116 |
+| nfixmx | real | 20.0 | kg/ha | Maximum daily N-fixation | 117 |
+| decr_min | real | 0.01 | none | Minimum daily residue decay | 118 |
+| rsd_covco | real | 0.75 | none | Residue cover factor for computing fraction of cover | 119 |
+| urb_init_abst | real | 1. | mm | Maximum initial abstraction for urban areas when using Green and Ampt | 120 |
+| petco_pmpt | real | 100.0 | % | PET adjustment for Penman-Monteith and Priestley-Taylor methods | 121 |
+| uhalpha | real | 1.0 | none | Alpha coefficient for estimating unit hydrograph using gamma function | 122 |
+| eros_spl | real | 0. | none | Coefficient of splash erosion varying 0.9-3.1 | 123 |
+| rill_mult | real | 0. | none | Rill erosion coefficient | 124 |
+| eros_expo | real | 0. | none | Exponential coefficient for overland flow | 125 |
+| c_factor | real | 0. | none | Scaling parameter for cover and management factor for overland flow erosion | 126 |
+| ch_d50 | real | 0. | mm | Median particle diameter of main channel | 128 |
+| co2 | real | 400. | ppm | CO2 concentration at start of simulation | 129 |
+| day_lag_mx | integer | 0 | days | Max days to lag hydrographs for hru, ru and channels | 131 |
+| igen | integer | 5 | code | Random generator code (0=default, 1=generate new) | 133 |
+
+#### PRIMARY DATA READ Table
+
+**Read Statement**: `read (107,*,iostat=eof) bsn_prm` at src/basin_read_prm.f90:24
+**File.cio Reference**: This file (parameters.bsn) is referenced in file.cio as component `parms_bas` of derived type `in_basin` (line 3, column 3)
+
+| Line in File | Position in File | Local (Y/N) | Derived Type Name | Component (or Var Name if Local) | Type | Default | Units | Description | Source Line | Swat_codetype |
+|--------------|------------------|-------------|-------------------|-----------------------------------|------|---------|-------|-------------|-------------|---------------|
+| 3 | 1 | N | bsn_prm | evlai | real | 3.0 | none | Leaf area index at which no evaporation occurs | src/basin_module.f90:78 | in_basin |
+| 3 | 2 | N | bsn_prm | ffcb | real | 0. | none | Initial soil water content as fraction of field capacity | src/basin_module.f90:79 | in_basin |
+| 3 | 3 | N | bsn_prm | surlag | real | 4.0 | days | Surface runoff lag time | src/basin_module.f90:80 | in_basin |
+| 3 | 4 | N | bsn_prm | adj_pkr | real | 1.0 | none | Peak rate adjustment factor in subbasin | src/basin_module.f90:81 | in_basin |
+| 3 | 5 | N | bsn_prm | prf | real | 484. | none | Peak rate factor for peak rate equation | src/basin_module.f90:82 | in_basin |
+| 3 | 6 | N | bsn_prm | spcon | real | 0.0 | none | Not used | src/basin_module.f90:83 | in_basin |
+| 3 | 7 | N | bsn_prm | spexp | real | 0.0 | none | Not used | src/basin_module.f90:84 | in_basin |
+| 3 | 8 | N | bsn_prm | cmn | real | 0.003 | none | Rate factor for mineralization on active organic N | src/basin_module.f90:85 | in_basin |
+| 3 | 9 | N | bsn_prm | n_updis | real | 20.0 | none | Nitrogen uptake distribution parameter | src/basin_module.f90:86 | in_basin |
+| 3 | 10 | N | bsn_prm | p_updis | real | 20.0 | none | Phosphorus uptake distribution parameter | src/basin_module.f90:87 | in_basin |
+| 3 | 11 | N | bsn_prm | nperco | real | 0.10 | none | Nitrate percolation coefficient (0-1) | src/basin_module.f90:88 | in_basin |
+| 3 | 12 | N | bsn_prm | pperco | real | 10.0 | none | Phosphorus percolation coefficient (0-1) | src/basin_module.f90:91 | in_basin |
+| 3 | 13 | N | bsn_prm | phoskd | real | 175.0 | none | Phosphorus soil partitioning coefficient | src/basin_module.f90:94 | in_basin |
+| 3 | 14 | N | bsn_prm | psp | real | 0.40 | none | Phosphorus availability index | src/basin_module.f90:95 | in_basin |
+| 3 | 15 | N | bsn_prm | rsdco | real | 0.05 | none | Residue decomposition coefficient | src/basin_module.f90:96 | in_basin |
+| 3 | 16 | N | bsn_prm | percop | real | 0.5 | none | Pesticide percolation coefficient (0-1) | src/basin_module.f90:97 | in_basin |
+| 3 | 17 | N | bsn_prm | msk_co1 | real | 0.75 | none | Muskingum coefficient for storage time at bankfull | src/basin_module.f90:98 | in_basin |
+| 3 | 18 | N | bsn_prm | msk_co2 | real | 0.25 | none | Muskingum coefficient for storage time at low flow | src/basin_module.f90:101 | in_basin |
+| 3 | 19 | N | bsn_prm | msk_x | real | 0.20 | none | Muskingum weighting factor for inflow/outflow | src/basin_module.f90:104 | in_basin |
+| 3 | 20 | N | bsn_prm | nperco_lchtile | real | .5 | none | N concentration coefficient for tile flow and leach | src/basin_module.f90:106 | in_basin |
+| 3 | 21 | N | bsn_prm | evrch | real | 0.60 | none | Reach evaporation adjustment factor | src/basin_module.f90:107 | in_basin |
+| 3 | 22 | N | bsn_prm | scoef | real | 1.0 | none | Channel storage coefficient (0-1) | src/basin_module.f90:108 | in_basin |
+| 3 | 23 | N | bsn_prm | cdn | real | 1.40 | none | Denitrification exponential rate coefficient | src/basin_module.f90:109 | in_basin |
+| 3 | 24 | N | bsn_prm | sdnco | real | 1.30 | none | Denitrification threshold fraction of field capacity | src/basin_module.f90:110 | in_basin |
+| 3 | 25 | N | bsn_prm | bact_swf | real | 0.15 | none | Fraction of manure containing active CFU | src/basin_module.f90:111 | in_basin |
+| 3 | 26 | N | bsn_prm | tb_adj | real | 0. | none | Adjustment factor for subdaily UH basetime | src/basin_module.f90:112 | in_basin |
+| 3 | 27 | N | bsn_prm | cn_froz | real | 0.000862 | none | Parameter for frozen soil adjustment on infiltration | src/basin_module.f90:113 | in_basin |
+| 3 | 28 | N | bsn_prm | dorm_hr | real | -1. | hrs | Time threshold used to define dormant | src/basin_module.f90:114 | in_basin |
+| 3 | 29 | N | bsn_prm | plaps | real | 0. | mm/km | Precipitation lapse rate | src/basin_module.f90:115 | in_basin |
+| 3 | 30 | N | bsn_prm | tlaps | real | 6.5 | deg C/km | Temperature lapse rate | src/basin_module.f90:116 | in_basin |
+| 3 | 31 | N | bsn_prm | nfixmx | real | 20.0 | kg/ha | Maximum daily N-fixation | src/basin_module.f90:117 | in_basin |
+| 3 | 32 | N | bsn_prm | decr_min | real | 0.01 | none | Minimum daily residue decay | src/basin_module.f90:118 | in_basin |
+| 3 | 33 | N | bsn_prm | rsd_covco | real | 0.75 | none | Residue cover factor for fraction of cover | src/basin_module.f90:119 | in_basin |
+| 3 | 34 | N | bsn_prm | urb_init_abst | real | 1. | mm | Max initial abstraction for urban areas (Green-Ampt) | src/basin_module.f90:120 | in_basin |
+| 3 | 35 | N | bsn_prm | petco_pmpt | real | 100.0 | % | PET adjustment for Penman-Monteith/Priestley-Taylor | src/basin_module.f90:121 | in_basin |
+| 3 | 36 | N | bsn_prm | uhalpha | real | 1.0 | none | Alpha coefficient for unit hydrograph (gamma function) | src/basin_module.f90:122 | in_basin |
+| 3 | 37 | N | bsn_prm | eros_spl | real | 0. | none | Coefficient of splash erosion (0.9-3.1) | src/basin_module.f90:123 | in_basin |
+| 3 | 38 | N | bsn_prm | rill_mult | real | 0. | none | Rill erosion coefficient | src/basin_module.f90:124 | in_basin |
+| 3 | 39 | N | bsn_prm | eros_expo | real | 0. | none | Exponential coefficient for overland flow | src/basin_module.f90:125 | in_basin |
+| 3 | 40 | N | bsn_prm | c_factor | real | 0. | none | Scaling parameter for C-factor (overland erosion) | src/basin_module.f90:126 | in_basin |
+| 3 | 41 | N | bsn_prm | ch_d50 | real | 0. | mm | Median particle diameter of main channel | src/basin_module.f90:128 | in_basin |
+| 3 | 42 | N | bsn_prm | co2 | real | 400. | ppm | CO2 concentration at simulation start | src/basin_module.f90:129 | in_basin |
+| 3 | 43 | N | bsn_prm | day_lag_mx | integer | 0 | days | Max days to lag hydrographs for hru/ru/channels | src/basin_module.f90:131 | in_basin |
+| 3 | 44 | N | bsn_prm | igen | integer | 5 | code | Random generator code (0=default, 1=generate new) | src/basin_module.f90:133 | in_basin |
+
+---
+
 ## 6. Summary
 
 ### Phase 1 Coverage
