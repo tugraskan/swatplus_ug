@@ -5371,5 +5371,197 @@ The manure_data type (lines 15-20 of fertilizer_data_module.f90) currently conta
 
 ---
 
-**Report Status**: Phase 3 - Parameter Databases (Priority 1) - 54 of 145+ files documented  
-**Last Updated**: 2026-01-23 (Parameter Database Focus)
+### 3.55 recall.rec (INPUT)
+
+**File**: Recall (point source) definition file  
+**Routine**: `recall_read`  
+**Source**: src/recall_read.f90  
+**Expression**: `in_rec%recall_rec`  
+**Unit**: 107 (index file), 108 (individual recall data files)
+
+#### Filename Resolution
+
+```
+recall.rec → in_rec%recall_rec
+           → type input_rec (src/input_file_module.f90:111-113)
+           → character(len=25) :: recall_rec = "recall.rec" (line 112)
+           → Swat_codetype: "in_rec"
+```
+
+**file.cio Cross-Reference**: Part of recall section in file.cio
+
+#### I/O Sites
+
+| **Site** | **Line** | **Action** | **Unit/Var** | **Expression** | **Description** |
+|----------|----------|------------|--------------|----------------|-----------------|
+| 1 | 110 | inquire | - | in_rec%recall_rec | Check index file existence |
+| 2 | 113 | open | 107 | in_rec%recall_rec | Open recall index file |
+| 3 | 114 | read | 107 | titldum | Read title |
+| 4 | 116 | read | 107 | header | Read header |
+| 5 | 120 | read | 107 | i | Count records, find max index |
+| 6 | 133 | read | 107 | titldum | Re-read title after rewind |
+| 7 | 135 | read | 107 | header | Re-read header after rewind |
+| 8 | 142 | read | 107 | k, recall(i)%name, recall(i)%typ, recall(i)%filename | Read recall definition |
+| 9 | 147 | open | 108 | recall(i)%filename | Open individual recall data file |
+| 10 | 148 | read | 108 | titldum | Read data file title |
+| 11 | 150 | read | 108 | nbyr | Read number of years |
+| 12 | 152 | read | 108 | header | Read data file header |
+| 13 | 174 | read | 108 | jday, mo, day_mo, iyr | Read start date |
+
+#### Payload Map
+
+**Target Variable**: `recall(:)` (allocated array of type `recall_hydrograph_inputs`)  
+**Module**: hydrograph_module  
+**Type Definition**: src/hydrograph_module.f90:438-448
+
+**PRIMARY DATA READ** (recall.rec index file):
+
+| **Variable** | **Field** | **Type** | **Units** | **Description** | **Swat_codetype** | **Source** |
+|--------------|-----------|----------|-----------|-----------------|-------------------|------------|
+| k | - | integer | - | Record index (not stored) | in_rec | - |
+| recall(i)%name | name | character(25) | - | Recall point name | in_rec | recall_hydrograph_inputs%name |
+| recall(i)%typ | typ | integer | - | Recall type: 0=subdaily, 1=daily, 2=monthly, 3=annual, 4=constant | in_rec | recall_hydrograph_inputs%typ |
+| recall(i)%filename | filename | character(25) | - | Individual recall data filename | in_rec | recall_hydrograph_inputs%filename |
+
+**Derived Type - recall_hydrograph_inputs** (src/hydrograph_module.f90:438-448):
+
+| **Component** | **Type** | **Units** | **Description** |
+|---------------|----------|-----------|-----------------|
+| name | character(25) | - | Recall point name |
+| num | integer | - | Number of elements |
+| typ | integer | - | Recall type (0-4) |
+| filename | character(25) | - | Data filename |
+| hd | hyd_output(:,:) allocatable | m³/s, mg/L | Hydrograph data for daily/monthly/annual/exco |
+| hyd_flo | real(:,:) allocatable | m³/s | Flow-only data for subdaily recall |
+| start_yr | integer | - | Start year of point source file |
+| end_yr | integer | - | End year of point source file |
+
+**Allocation Based on Type** (lines 158-171):
+- Type 0 (subdaily): `hyd_flo(time%step*366, time%nbyr)` and `hd(366, time%nbyr)`
+- Type 1 (daily): `hd(366, time%nbyr)`
+- Type 2 (monthly): `hd(12, time%nbyr)`
+- Type 3 (annual): `hd(1, time%nbyr)`
+- Type 4 (constant): No allocation (constant values)
+
+**Additional Arrays**:
+- `rec_d(imax)`, `rec_m(imax)`, `rec_y(imax)`, `rec_a(imax)` - Output arrays for recall hydrographs
+
+**file.cio Cross-Reference**: Links to recall.con for spatial connectivity
+
+**Notes**:
+- Index file pointing to individual time-series data files
+- Supports multiple temporal resolutions (subdaily to annual)
+- Used for point sources (wastewater treatment plants, industries)
+- Individual data files contain full hydrograph data (flow + water quality)
+- Database size stored in db_mx%recall_max
+- Critical for water quality modeling with point source inputs
+
+---
+
+### 3.56 atmodep.cli (INPUT)
+
+**File**: Atmospheric deposition data (N deposition in rainfall and dry deposition)  
+**Routine**: `cli_read_atmodep`  
+**Source**: src/cli_read_atmodep.f90  
+**Expression**: `in_cli%atmo_cli`  
+**Unit**: 127
+
+#### Filename Resolution
+
+```
+atmodep.cli → in_cli%atmo_cli
+            → type input_cli (src/input_file_module.f90:25-36)
+            → character(len=25) :: atmo_cli = "atmodep.cli" (line 35)
+            → Swat_codetype: "in_cli"
+```
+
+**file.cio Cross-Reference**: Part of climate section in file.cio
+
+#### I/O Sites
+
+| **Site** | **Line** | **Action** | **Unit/Var** | **Expression** | **Description** |
+|----------|----------|------------|--------------|----------------|-----------------|
+| 1 | 23 | inquire | - | in_cli%atmo_cli | Check file existence |
+| 2 | 31 | open | 127 | in_cli%atmo_cli | Open atmospheric deposition file |
+| 3 | 32 | read | 127 | titldum | Read title |
+| 4 | 34 | read | 127 | header | Read header |
+| 5 | 36 | read | 127 | atmodep_cont params | Read control: num_sta, timestep, mo_init, yr_init, num |
+| 6 | 74 (aa) | read | 127 | atmodep(iadep)%name | Read station name (average annual) |
+| 7 | 77-84 (aa) | read | 127 | NH4/NO3 values | Read 4 deposition values (aa) |
+| 8 | 92 (mo) | read | 127 | atmodep(iadep)%name | Read station name (monthly) |
+| 9 | 95-101 (mo) | read | 127 | Monthly arrays | Read monthly NH4/NO3 time series |
+| 10 | 110 (yr) | read | 127 | atmodep(iadep)%name | Read station name (annual) |
+| 11 | 113-119 (yr) | read | 127 | Annual arrays | Read annual NH4/NO3 time series |
+
+#### Payload Map
+
+**Target Variable**: `atmodep(:)` (allocated array of type `atmospheric_deposition`)  
+**Module**: climate_module  
+**Type Definition**: src/climate_module.f90:191-205
+
+**Control Structure**: `atmodep_cont` (type `atmospheric_deposition_control`, lines 208-216):
+
+| **Component** | **Type** | **Description** |
+|---------------|----------|-----------------|
+| num_sta | integer | Number of atmospheric deposition stations |
+| timestep | character(2) | Time step: "aa"=average annual, "mo"=monthly, "yr"=annual |
+| ts | integer | Current timestep index |
+| mo_init | integer | Initial month |
+| yr_init | integer | Initial year |
+| num | integer | Number of timesteps |
+| first | integer | First timestep flag |
+
+**PRIMARY DATA READ**:
+
+For **timestep = "aa"** (average annual, lines 74-84):
+
+| **Variable** | **Field** | **Type** | **Units** | **Description** | **Swat_codetype** | **Source** |
+|--------------|-----------|----------|-----------|-----------------|-------------------|------------|
+| atmodep(iadep)%name | name | character(50) | - | Station name | in_cli | atmospheric_deposition%name |
+| atmodep(iadep)%nh4_rf | nh4_rf | real | mg/L | Average annual ammonia in rainfall (default=1.) | in_cli | atmospheric_deposition%nh4_rf |
+| atmodep(iadep)%no3_rf | no3_rf | real | mg/L | Average annual nitrate in rainfall (default=0.2) | in_cli | atmospheric_deposition%no3_rf |
+| atmodep(iadep)%nh4_dry | nh4_dry | real | kg/ha/yr | Average annual ammonia dry deposition (default=0.) | in_cli | atmospheric_deposition%nh4_dry |
+| atmodep(iadep)%no3_dry | no3_dry | real | kg/ha/yr | Average annual nitrate dry deposition (default=0.) | in_cli | atmospheric_deposition%no3_dry |
+
+For **timestep = "mo"** (monthly, lines 88-102):
+
+| **Variable** | **Field** | **Type** | **Units** | **Description** | **Swat_codetype** | **Source** |
+|--------------|-----------|----------|-----------|-----------------|-------------------|------------|
+| atmodep(iadep)%name | name | character(50) | - | Station name | in_cli | atmospheric_deposition%name |
+| atmodep(iadep)%nh4_rfmo(:) | nh4_rfmo | real array(num) | mg/L | Monthly ammonia in rainfall time series | in_cli | atmospheric_deposition%nh4_rfmo |
+| atmodep(iadep)%no3_rfmo(:) | no3_rfmo | real array(num) | mg/L | Monthly nitrate in rainfall time series | in_cli | atmospheric_deposition%no3_rfmo |
+| atmodep(iadep)%nh4_drymo(:) | nh4_drymo | real array(num) | kg/ha/mo | Monthly ammonia dry deposition time series | in_cli | atmospheric_deposition%nh4_drymo |
+| atmodep(iadep)%no3_drymo(:) | no3_drymo | real array(num) | kg/ha/mo | Monthly nitrate dry deposition time series | in_cli | atmospheric_deposition%no3_drymo |
+
+For **timestep = "yr"** (annual, lines 105-121):
+
+| **Variable** | **Field** | **Type** | **Units** | **Description** | **Swat_codetype** | **Source** |
+|--------------|-----------|----------|-----------|-----------------|-------------------|------------|
+| atmodep(iadep)%name | name | character(50) | - | Station name | in_cli | atmospheric_deposition%name |
+| atmodep(iadep)%nh4_rfyr(:) | nh4_rfyr | real array(num) | mg/L | Annual ammonia in rainfall time series | in_cli | atmospheric_deposition%nh4_rfyr |
+| atmodep(iadep)%no3_rfyr(:) | no3_rfyr | real array(num) | mg/L | Annual nitrate in rainfall time series | in_cli | atmospheric_deposition%no3_rfyr |
+| atmodep(iadep)%nh4_dryyr(:) | nh4_dryyr | real array(num) | kg/ha/yr | Annual ammonia dry deposition time series | in_cli | atmospheric_deposition%nh4_dryyr |
+| atmodep(iadep)%no3_dryyr(:) | no3_dryyr | real array(num) | kg/ha/yr | Annual nitrate dry deposition time series | in_cli | atmospheric_deposition%no3_dryyr |
+
+**Additional Array**: `atmo_n(num_sta)` - Station name lookup array
+
+**Time Synchronization** (lines 40-67):
+- Aligns atmospheric deposition data start with simulation start
+- Calculates timestep index (ts) based on initial year/month and simulation start
+- Sets first=0 when data starts before or at simulation start
+
+**file.cio Cross-Reference**: Links to weather-sta.cli for station assignment
+
+**Notes**:
+- Critical for nitrogen cycling and water quality simulation
+- Supports wet (rainfall) and dry deposition separately
+- NH4 (ammonia) and NO3 (nitrate) forms tracked independently
+- Three temporal resolution options: average annual, monthly, annual time series
+- Database size stored in db_mx%atmodep
+- Used in agricultural areas with significant atmospheric N inputs
+- Default values: NH4_rf=1.0 mg/L, NO3_rf=0.2 mg/L (typical rural values)
+
+---
+
+**Report Status**: Phase 3 - Critical Input Files - 56 of 145+ files documented  
+**Last Updated**: 2026-01-23 (Added recall and atmospheric deposition)
