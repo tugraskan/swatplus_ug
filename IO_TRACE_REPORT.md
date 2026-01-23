@@ -6813,3 +6813,199 @@ This reads into `plcal(i)%lum(ilum)%meas` which contains measured soft calibrati
 - Cross-references HRUs with crop regions (lines 64, 73)
 - Only reads land use data if `lum_num > 0` (lines 80-89)
 
+
+---
+
+### 3.77 hydrology.cha (INPUT)
+
+**Subroutine**: `ch_read_hyd` (src/ch_read_hyd.f90:1)
+
+#### Filename Resolution
+
+```
+hydrology.cha → in_cha%hyd
+              → type input_cha (src/input_file_module.f90:58-67)
+              → character(len=25) :: hyd = "hydrology.cha" (line 61)
+              → Swat_codetype: "in_cha"
+```
+
+**file.cio Cross-Reference**: Part of channel section in file.cio
+
+#### I/O Sites
+
+| **Site** | **Line** | **Action** | **Unit/Var** | **Expression** | **Description** |
+|----------|----------|------------|--------------|----------------|-----------------|
+| 1 | 20 | inquire | - | in_cha%hyd | Check file existence |
+| 2 | 25 | open | 105 | in_cha%hyd | Open channel hydrology file |
+| 3 | 26 | read | 105 | titldum | Read title (first pass) |
+| 4 | 28 | read | 105 | header | Read header (first pass) |
+| 5 | 31 | read | 105 | titldum | Read record line to count (first pass) |
+| 6 | 39 | rewind | 105 | - | Rewind file for second pass |
+| 7 | 40 | read | 105 | titldum | Read title (second pass) |
+| 8 | 42 | read | 105 | header | Read header (second pass) |
+| 9 | 46 | read | 105 | titldum | Read record as dummy (second pass) |
+| 10 | 48 | backspace | 105 | - | Backspace to re-read record |
+| 11 | 49 | read | 105 | ch_hyd(ich) | Read channel hydrology data record |
+| 12 | 61 | close | 105 | - | Close channel hydrology file |
+
+#### Payload Map
+
+**Target Variable**: `ch_hyd(:)` (allocated array of type `channel_hyd_data`)  
+**Module**: channel_data_module  
+**Type Definition**: src/channel_data_module.f90:69-83
+
+**PRIMARY DATA READ** (line 49):
+
+| **Column** | **Field Name** | **Type** | **Units** | **Range/Valid Values** | **Description** |
+|------------|----------------|----------|-----------|------------------------|-----------------|
+| 1 | name | character(16) | - | - | Channel hydrology name (default="default") |
+| 2 | w | real | m | - | Average width of main channel (default=2.0) |
+| 3 | d | real | m | - | Average depth of main channel (default=0.5) |
+| 4 | s | real | m/m | >0 | Average slope of main channel (default=0.01; set to 0.0001 if ≤0) |
+| 5 | l | real | km | >0 | Main channel length in subbasin (default=0.1; set to 0.001 if ≤0) |
+| 6 | n | real | none | 0.01-0.70 | Manning's n value for the main channel (default=0.05; constrained) |
+| 7 | k | real | mm/hr | - | Effective hydraulic conductivity of main channel alluvium (default=0.01) |
+| 8 | wdr | real | m/m | >0 | Channel width to depth ratio (default=6.0; set to 3.5 if ≤0) |
+| 9 | alpha_bnk | real | days | - | Alpha factor for bank storage recession curve (default=0.03; transformed to Exp(-alpha_bnk) after read) |
+| 10 | side | real | - | >1.e-6 | Change in horizontal distance per unit (default=0.0; set to 2.0 if ≤1.e-6) |
+
+**Array Sizing**:
+- First pass (lines 26-34): Count records → `imax`
+- `db_mx%ch_hyd = imax` (line 36)
+- Allocation (line 38): `allocate (ch_hyd(0:imax))`
+- Second pass (lines 46-60): Read `db_mx%ch_hyd` channel hydrology records
+
+**Special Handling**:
+- If file doesn't exist or is "null", allocates zero-sized array (line 22)
+- Uses backspace (line 48) to re-read each record after dummy read
+- Post-read adjustments (lines 52-58):
+  - `alpha_bnk = Exp(-alpha_bnk)` (line 52)
+  - Enforces minimum/maximum constraints on several parameters
+
+---
+
+### 3.78 initial.cha (INPUT)
+
+**Subroutine**: `ch_read_init` (src/ch_read_init.f90:1)
+
+#### Filename Resolution
+
+```
+initial.cha → in_cha%init
+            → type input_cha (src/input_file_module.f90:58-67)
+            → character(len=25) :: init = "initial.cha" (line 59)
+            → Swat_codetype: "in_cha"
+```
+
+**file.cio Cross-Reference**: Part of channel section in file.cio
+
+#### I/O Sites
+
+| **Site** | **Line** | **Action** | **Unit/Var** | **Expression** | **Description** |
+|----------|----------|------------|--------------|----------------|-----------------|
+| 1 | 21 | inquire | - | in_cha%init | Check file existence |
+| 2 | 27 | open | 105 | in_cha%init | Open channel initial conditions file |
+| 3 | 28 | read | 105 | titldum | Read title (first pass) |
+| 4 | 30 | read | 105 | header | Read header (first pass) |
+| 5 | 33 | read | 105 | titldum | Read record line to count (first pass) |
+| 6 | 42 | rewind | 105 | - | Rewind file for second pass |
+| 7 | 43 | read | 105 | titldum | Read title (second pass) |
+| 8 | 45 | read | 105 | header | Read header (second pass) |
+| 9 | 49 | read | 105 | ch_init(ich) | Read channel initial conditions data record |
+| 10 | 52 | close | 105 | - | Close channel initial conditions file |
+
+#### Payload Map
+
+**Target Variable**: `ch_init(:)` (allocated array)  
+**Companion Variable**: `sd_init(:)` (allocated array for stream discharge initial conditions)  
+**Module**: channel_data_module / sd_channel_module  
+
+**Note**: This file provides initial water quality conditions for channels, similar to om_water.ini for general water bodies. The exact type depends on whether constituents are enabled.
+
+**Array Sizing**:
+- First pass (lines 28-36): Count records → `imax`
+- `db_mx%ch_init = imax` (line 38)
+- Allocation (lines 40-41): `allocate (ch_init(0:imax))`, `allocate (sd_init(0:imax))`
+- Second pass (lines 49-51): Read `db_mx%ch_init` channel initial condition records
+
+**Special Handling**:
+- If file doesn't exist or is "null", allocates zero-sized arrays (lines 23-24)
+- Allocates both ch_init and sd_init arrays simultaneously
+
+---
+
+### 3.79 aquifer.aqu (INPUT)
+
+**Subroutine**: `aqu_read` (src/aqu_read.f90:1)
+
+#### Filename Resolution
+
+```
+aquifer.aqu → in_aqu%aqu
+            → type input_aqu (src/input_file_module.f90:128-131)
+            → character(len=25) :: aqu = "aquifer.aqu" (line 130)
+            → Swat_codetype: "in_aqu"
+```
+
+**file.cio Cross-Reference**: Part of aquifer section in file.cio
+
+#### I/O Sites
+
+| **Site** | **Line** | **Action** | **Unit/Var** | **Expression** | **Description** |
+|----------|----------|------------|--------------|----------------|-----------------|
+| 1 | 25 | inquire | - | in_aqu%aqu | Check file existence |
+| 2 | 30 | open | 107 | in_aqu%aqu | Open aquifer parameters file |
+| 3 | 31 | read | 107 | titldum | Read title (first pass) |
+| 4 | 33 | read | 107 | header | Read header (first pass) |
+| 5 | 36 | read | 107 | i | Read aquifer index to count (first pass) |
+| 6 | 44 | rewind | 107 | - | Rewind file for second pass |
+| 7 | 45 | read | 107 | titldum | Read title (second pass) |
+| 8 | 47 | read | 107 | header | Read header (second pass) |
+| 9 | 51 | read | 107 | i | Read aquifer index (second pass) |
+| 10 | 53 | backspace | 107 | - | Backspace to re-read record |
+| 11 | 55 | read | 107 | k, aqudb(i) | Read aquifer index and data record |
+| 12 | 59 | close | 107 | - | Close aquifer parameters file |
+
+#### Payload Map
+
+**Target Variable**: `aqudb(:)` (allocated array of type `aquifer_database`)  
+**Module**: aquifer_module  
+**Type Definition**: src/aquifer_module.f90:5-23
+
+**PRIMARY DATA READ** (line 55):
+
+| **Column** | **Field Name** | **Type** | **Units** | **Range/Valid Values** | **Description** |
+|------------|----------------|----------|-----------|------------------------|-----------------|
+| 1 | k (index) | integer | - | - | Aquifer index (for allocation, not stored) |
+| 2 | aqunm | character(16) | - | - | Aquifer name |
+| 3 | aqu_ini | character(16) | - | - | Initial aquifer data - points to name in initial.aqu |
+| 4 | flo | real | mm | - | Flow from aquifer in current time step (default=0.05) |
+| 5 | dep_bot | real | m | - | Depth from mid-slope surface to bottom of aquifer |
+| 6 | dep_wt | real | m | - | Depth from mid-slope surface to water table (initial) |
+| 7 | no3 | real | ppm NO3-N | - | Nitrate-N concentration in aquifer (initial) |
+| 8 | minp | real | ppm P | - | Mineral phosphorus concentration in aquifer (initial) |
+| 9 | cbn | real | percent | - | Organic carbon in aquifer (initial, default=0.5) |
+| 10 | flo_dist | real | m | - | Average flow distance to stream or object (default=50.0) |
+| 11 | bf_max | real | mm | - | Maximum daily baseflow - when all channels are contributing |
+| 12 | alpha | real | 1/days | - | Lag factor for groundwater recession curve |
+| 13 | revap_co | real | - | - | Revap coefficient - evap=pet*revap_co |
+| 14 | seep | real | frac | - | Fraction of recharge that seeps from aquifer |
+| 15 | spyld | real | m³/m³ | - | Specific yield of aquifer |
+| 16 | hlife_n | real | days | - | Half-life of nitrogen in groundwater (default=30.0) |
+| 17 | flo_min | real | m | - | Water table depth for return flow to occur |
+| 18 | revap_min | real | m | - | Water table depth for revap to occur |
+
+**Array Sizing**:
+- First pass (lines 31-40): 
+  - Count records → `msh_aqp`
+  - Find maximum index → `imax`
+- `db_mx%aqudb = msh_aqp` (line 42)
+- Allocation (line 43): `allocate (aqudb(0:imax))` (sized by max index, not count)
+- Second pass (lines 51-57): Read `msh_aqp` aquifer records into indexed positions
+
+**Special Handling**:
+- If file doesn't exist or is "null", allocates zero-sized array (line 27)
+- Uses backspace (line 53) to re-read each record after reading index
+- Array allocated to max index, not count - allows sparse indexing
+- Sets `bsn_cc%gwflow = 0` after reading (line 62)
+
