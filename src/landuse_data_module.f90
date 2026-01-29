@@ -53,6 +53,8 @@
         real :: sl_len_mx = 1.0             !m      !maximum slope length
       end type conservation_practice_table
       type (conservation_practice_table), dimension (:), allocatable :: cons_prac
+      ! Required column names for cons_practice.lum file
+      ! Note: Column names can differ from file headers (e.g., PFAC maps to usle_p)
       character(len=*), parameter :: cons_prac_req_cols = "name PFAC sl_len_mx"
                        
       type overlandflow_n_table
