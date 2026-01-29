@@ -26,7 +26,7 @@ req_cols_param = "cons_prac_req_cols" # Name of the parameter in module_name tha
                                       # in the module specified by module_name.
 col_is_string = ["name"]              # list of header columns that are of
                                       # type character strings in module data type 
-                                      # seperated by a comma (",")
+                                      # separated by a comma (",")
 input_file_name = "in_lum%cons_prac_lum" # file name of the table to read in
 allocation_name = "cons_prac"         # Name of the array to allocate
 dtype = "lu_tbl"                      # Name of the derived type for table reader 
