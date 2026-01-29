@@ -4,6 +4,108 @@
 
 The `make_fortran_table_read.py` script generates Fortran subroutines that read SWAT+ table files using the flexible `table_reader` type from `utils.f90`.
 
+## Options Considered for Required Column Specification
+
+When addressing the hard-coded header string issue, several approaches were evaluated:
+
+### Option 1: Module Parameter (✓ Implemented)
+
+**Description**: Define required columns as a module-level parameter in the data module.
+
+**Pros**:
+- Single source of truth - columns defined once near the type definition
+- Easy to maintain - update in one place
+- Good code organization - related data kept together
+- No external dependencies - stays within Fortran ecosystem
+- Supports custom versions - users can modify the module parameter
+- Self-documenting - parameter serves as documentation
+
+**Cons**:
+- Requires regenerating the read subroutine if parameter name changes
+- Parameter must exist in the module before compiling
+
+**Implementation**: A parameter is added to the module (e.g., `cons_prac_req_cols = "name PFAC sl_len_mx"`), and the generated read subroutine references this parameter.
+
+### Option 2: Schema File
+
+**Description**: Create separate schema files (JSON/YAML/custom) defining expected columns for each table type.
+
+**Pros**:
+- Centralized configuration
+- Could support multiple versions easily
+- More flexible for runtime configuration
+- Could include additional metadata (data types, validation rules)
+
+**Cons**:
+- Requires file I/O at runtime or compile time
+- Adds external dependency
+- More complex implementation
+- Not common in Fortran ecosystem
+- Would need parser for schema format
+- Deployment complexity (additional files to distribute)
+
+**Not Recommended For**: Fortran-based projects where simplicity is preferred.
+
+### Option 3: Read from Data File Header
+
+**Description**: Embed required column information in the data file itself (e.g., special marker in first line).
+
+**Pros**:
+- Self-contained data files
+- Users can see requirements in the data file
+
+**Cons**:
+- Breaks separation of concerns (data vs schema)
+- Difficult to validate before reading data
+- Non-standard file format
+- Error-prone for users to maintain
+- Can't validate file structure before opening
+
+**Not Recommended For**: This use case, as it complicates the data file format.
+
+### Option 4: Runtime Type Introspection
+
+**Description**: Automatically derive required columns from type definition at runtime using Fortran introspection.
+
+**Pros**:
+- Fully automatic
+- No manual configuration needed
+
+**Cons**:
+- Limited Fortran introspection capabilities
+- Complex implementation
+- Performance overhead
+- Not widely supported across compilers
+- Cannot distinguish required vs optional columns
+
+**Not Feasible**: Fortran lacks the necessary introspection features.
+
+### Option 5: Hard-coded String (Legacy)
+
+**Description**: Directly embed the column string in the read subroutine code.
+
+**Pros**:
+- Simple and direct
+- No additional dependencies
+- Works immediately
+
+**Cons**:
+- Duplication - string may appear in multiple places
+- Hard to maintain - need to update code when columns change
+- Not flexible - requires code changes for custom versions
+- Poor code organization
+
+**Why Changed**: This was the original approach, which led to the issue being addressed.
+
+## Chosen Solution: Module Parameter
+
+The module parameter approach (Option 1) was selected as it provides the best balance of:
+- **Simplicity**: Stays within standard Fortran conventions
+- **Maintainability**: Single location to define requirements
+- **Flexibility**: Easy for users to customize
+- **Organization**: Keeps related definitions together
+- **Performance**: Zero runtime overhead
+
 ## Features
 
 ### Required Column Headers
