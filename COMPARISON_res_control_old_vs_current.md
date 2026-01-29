@@ -183,7 +183,7 @@ call res_sediment
   - Prevents oscillations caused by condition changes in decision tables
   - More stable reservoir operations with gradual transitions
   - Better matches expected physical behavior
-- **Spelling fix:** "receeding" → "receding" in comment
+- **Code comment fix:** "receeding" → "receding" (spelling error fixed in code comment from old version)
 
 ---
 
