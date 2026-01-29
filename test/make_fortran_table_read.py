@@ -3,6 +3,9 @@
 # reads a simple swatplus table.
 # The user needs to provide the necessary input
 # specified after "begin user provided input"
+#
+# See doc/table_read_generator.md for detailed documentation
+# on using module parameters for required columns.
 
 # begin user provided input
 
