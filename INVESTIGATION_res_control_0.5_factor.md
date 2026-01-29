@@ -82,7 +82,7 @@ call res_hydro (jres, irel, pvol_m3, evol_m3)
    ```fortran
    b_lo = pvol_m3 + (evol_m3 - pvol_m3) * d_tbl%cond(ic)%lim_const
    b_lo = (evol_m3 - pvol_m3) * d_tbl%cond(ic)%lim_const
-   # ... other operations
+   ! ... other operations
    ```
 
 6. **inflo_targ** (lines 147-152): Release inflow + all volume over target
@@ -106,7 +106,7 @@ call res_hydro (j, irel, pvol_m3, evol_m3)
 ### Comparison Table
 
 | Feature | Reservoir (res_control.f90) | Wetland (wetland_control.f90) |
-|---------|----------------------------|-------------------------------|
+|:--------|:----------------------------|:------------------------------|
 | pvol_m3 calculation | `0.5 * res_ob(jres)%pvol` | `wet_ob(j)%pvol` |
 | evol_m3 calculation | `0.5 * res_ob(jres)%evol` | `wet_ob(j)%evol` |
 | Multiplier | **0.5** | **1.0** (no multiplier) |
