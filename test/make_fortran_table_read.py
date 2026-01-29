@@ -15,6 +15,12 @@ cust_hdr_string = "name PFAC sl_len_mx" # If this string empty, the module type 
                                       # of the headers in the string must match 
                                       # the order and number of variables in the 
                                       # module type def.   
+req_cols_param = "cons_prac_req_cols" # Name of the parameter in module_name that
+                                      # contains the required column headers.
+                                      # If empty string, the cust_hdr_string will
+                                      # be hard-coded in the generated subroutine.
+                                      # If provided, the parameter must be defined
+                                      # in the module specified by module_name.
 col_is_string = ["name"]              # list of header columns that are of
                                       # type character strings in module data type 
                                       # seperated by a comma (",")
@@ -74,7 +80,11 @@ with open(sub_file_name, "w") as f:
     f.write(f"  allocate ({allocation_name}(0:imax))\n\n")
     f.write(f"  if (imax /= 0) then\n\n")
     f.write( "    ! optional call to set minimum required columns\n")
-    f.write(f"    call {dtype}%min_req_cols(\"{cust_hdr_string}\")\n\n")
+    # Use module parameter if provided, otherwise hard-code the string
+    if req_cols_param != "":
+        f.write(f"    call {dtype}%min_req_cols({req_cols_param})\n\n")
+    else:
+        f.write(f"    call {dtype}%min_req_cols(\"{cust_hdr_string}\")\n\n")
     f.write( "    ! get the column headers\n")
     f.write(f"    call {dtype}%get_header_columns(eof)\n\n")
     f.write( "    if (eof == 0) then   ! proceed if not at the end of the file.\n")
