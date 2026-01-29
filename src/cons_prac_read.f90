@@ -1,57 +1,61 @@
       subroutine cons_prac_read
-      
-      use input_file_module
-      use maximum_data_module
-      use landuse_data_module
-      
-      implicit none
-      
-      character (len=80) :: titldum = ""!           |title of file
-      character (len=80) :: header = "" !           |header of file
-      logical :: i_exist              !none       |check to determine if file exists
-      integer :: eof = 0              !           |end of file
-      integer :: imax = 0             !           |
-      integer :: icp = 0              !none       |counter
-      
-      eof = 0
-      imax = 0
-      
-    !! read all curve number data from cn.tbl
-      inquire (file=in_lum%cons_prac_lum, exist=i_exist)
-      if (.not. i_exist .or. in_lum%cons_prac_lum == "null") then
-        allocate (cons_prac(0:0))
-      else
+
+use input_file_module
+use maximum_data_module
+use landuse_data_module
+use utils
+
+implicit none
+
+integer :: eof = 0     ! end of file
+integer :: imax = 0    ! number of elements to be allocated
+integer :: i
+
+type(table_reader) :: lu_tbl
+call lu_tbl%init(unit=107, file_name=in_lum%cons_prac_lum) 
+
+if (lu_tbl%file_exists .eqv. .false.) then
+  allocate (cons_prac(0:0))
+else
+  imax = lu_tbl%get_num_data_lines()  !get number of valid data lines
+  allocate (cons_prac(0:imax))
+
+  if (imax /= 0) then
+
+    ! optional call to set minimum required columns
+    call lu_tbl%min_req_cols("name PFAC sl_len_mx")
+
+    ! get the column headers
+    call lu_tbl%get_header_columns(eof)
+
+    if (eof == 0) then   ! proceed if not at the end of the file.
       do
-        open (107,file=in_lum%cons_prac_lum)
-        read (107,*,iostat=eof) titldum
-        if (eof < 0) exit
-        read (107,*,iostat=eof) header
-        if (eof < 0) exit
-         do while (eof == 0)
-           read (107,*,iostat=eof) titldum
-           if (eof < 0) exit
-           imax = imax + 1
-         end do
-         
-        allocate (cons_prac(0:imax))
-        
-        rewind (107)
-        read (107,*,iostat=eof) titldum
-        if (eof < 0) exit
-        read (107,*,iostat=eof) header
-        if (eof < 0) exit
-        
-        do icp = 1, imax
-          read (107,*,iostat=eof) cons_prac(icp)
-          if (eof < 0) exit
+        ! get a row of data
+        call lu_tbl%get_row_fields(eof)
+        if (eof /= 0) exit  ! exit if at the end of the file.
+
+        ! Assign data to cons_prac fields based on header column names
+        do i = 1, lu_tbl%get_col_count()
+          select case (lu_tbl%header_cols(i))
+            case ("name")
+              cons_prac(lu_tbl%get_row_idx())%name = trim(lu_tbl%row_field(i))
+            case ("PFAC")
+              read(lu_tbl%row_field(i), *) cons_prac(lu_tbl%get_row_idx())%pfac
+            case ("sl_len_mx")
+              read(lu_tbl%row_field(i), *) cons_prac(lu_tbl%get_row_idx())%sl_len_mx
+            case default
+              ! Output warning for unknown column header
+              call lu_tbl%output_column_warning(i)
+          end select
         end do
-        exit
       enddo
-      endif
-      
-      db_mx%cons_prac = imax
-      
-      close(107)
-      
-      return 
-      end subroutine cons_prac_read
+    endif
+  endif
+endif
+
+db_mx%cons_prac = imax
+
+close(lu_tbl%unit)
+
+return 
+end subroutine cons_prac_read
