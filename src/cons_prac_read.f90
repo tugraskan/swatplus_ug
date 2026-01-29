@@ -1,4 +1,4 @@
-      subroutine cons_prac_read
+subroutine cons_prac_read
 
 use input_file_module
 use maximum_data_module
@@ -23,7 +23,7 @@ else
   if (imax /= 0) then
 
     ! optional call to set minimum required columns
-    call lu_tbl%min_req_cols("name PFAC sl_len_mx")
+    call lu_tbl%min_req_cols(cons_prac_req_cols)
 
     ! get the column headers
     call lu_tbl%get_header_columns(eof)
