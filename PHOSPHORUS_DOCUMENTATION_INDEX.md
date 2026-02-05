@@ -27,6 +27,19 @@ This repository contains comprehensive documentation for soil phosphorus (P) mod
 - Complete phosphorus cycle accounting
 - Search methodology and results
 
+#### **LAB_P_LAYER_CLARIFICATION.md** 📋 Layer Distribution Explained
+- Answers: "Is lab_P only set for the first layer?"
+- Code evidence showing loop through ALL layers
+- Example calculations for multi-layer profile
+- Common misconceptions addressed
+
+#### **LAB_P_ALL_LAYERS_VISUAL.md** 📊 Visual Diagrams
+- Visual proof that ALL layers get lab_P values
+- Soil profile diagrams with concentrations
+- Loop flow diagrams
+- Comparison: what code does vs doesn't do
+- Storage structure visualization
+
 ---
 
 ### 2. **codes.bsn P Model Options Documentation**
@@ -58,6 +71,8 @@ This repository contains comprehensive documentation for soil phosphorus (P) mod
 | What is labile P and where is it used? | SOIL_LAB_P_DOCUMENTATION.md |
 | All code locations using labile P | LAB_P_COMPLETE_REFERENCE.md |
 | Proof that all uses are documented | LAB_P_VERIFICATION_SUMMARY.md |
+| Is lab_P only set for first layer? | LAB_P_LAYER_CLARIFICATION.md |
+| Visual proof of all-layer initialization | LAB_P_ALL_LAYERS_VISUAL.md |
 | P model options in codes.bsn | CODES_BSN_P_MODEL_DOCUMENTATION.md |
 | Quick comparison of P models | CODES_BSN_P_MODEL_QUICK_REFERENCE.md |
 
@@ -99,6 +114,18 @@ This repository contains comprehensive documentation for soil phosphorus (P) mod
   - Initialization: Fixed vs dynamic PSP and SSP calculations
   - Daily transformations: Fixed rates (10%/60%) vs time-dependent rates (0.1-0.5)
   - Soil chemistry feedback: None vs daily PSP recalculation from clay, organic C, solution P
+
+### **Question 4: "So is lab_P ever just set for the first layer"**
+
+**Answer:** See **LAB_P_LAYER_CLARIFICATION.md** and **LAB_P_ALL_LAYERS_VISUAL.md**
+
+**NO - lab_P is ALWAYS set for ALL layers:**
+- Code uses loop: `do ly = 1, nly` (processes every layer)
+- Each layer gets unique value based on depth: `lab_P(ly) = lab_p_input × exp(-exp_co × depth(ly))`
+- Surface layer has highest concentration (e.g., 5.0 ppm)
+- Concentration decreases exponentially with depth (e.g., 1.5 ppm at 1200mm)
+- Example 5-layer profile: all 5 layers initialized with different values
+- Visual diagrams show distribution across entire soil profile
 
 ---
 
@@ -195,10 +222,11 @@ This repository contains comprehensive documentation for soil phosphorus (P) mod
 
 | Statistic | Value |
 |-----------|-------|
+| Total documentation files | 8 files |
 | Total labile P references in code | 69 |
 | Files using labile P | 21 |
 | P model options | 2 (original, Vadas & White) |
-| Soil layers affected | All layers (not hardcoded) |
+| Soil layers affected by lab_P | All layers (not hardcoded to one) |
 | Default lab_p value | 5.0 ppm |
 | PSP range (Vadas & White) | 0.10 to 0.70 |
 | SSP range (Vadas & White) | 1.0 to 7.0 |
