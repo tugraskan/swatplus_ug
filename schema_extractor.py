@@ -421,6 +421,20 @@ class CSVUpdater:
         pos = row.get('Position_in_File', '')
         return f"{swat_file}|{line}|{pos}"
     
+    def find_matching_baseline_row(self, baseline_dict: Dict, schema: FieldSchema) -> Optional[Dict]:
+        """Find matching baseline row, handling wildcards."""
+        # Try exact match first
+        exact_key = f"{schema.file_name}|{schema.line_in_file}|{schema.position_in_file}"
+        if exact_key in baseline_dict:
+            return baseline_dict[exact_key]
+        
+        # Try wildcard match: file|*|position
+        wildcard_key = f"{schema.file_name}|*|{schema.position_in_file}"
+        if wildcard_key in baseline_dict:
+            return baseline_dict[wildcard_key]
+        
+        return None
+    
     def update_csv(self, schemas: List[FieldSchema]) -> Tuple[List[Dict], List[Evidence], Dict[str, FileSummary]]:
         """Update CSV with extracted schemas."""
         
@@ -451,19 +465,31 @@ class CSVUpdater:
         
         # Process each schema
         updated_baseline = {}
+        matched_baseline_keys = set()  # Track which baseline rows we've matched
+        
         for schema in schemas:
             key = f"{schema.file_name}|{schema.line_in_file}|{schema.position_in_file}"
             
-            if key in baseline_dict:
+            # Try to find matching baseline row (handles wildcards)
+            baseline_row = self.find_matching_baseline_row(baseline_dict, schema)
+            
+            if baseline_row:
                 # Update existing row
-                row_dict = baseline_dict[key]
+                row_dict = baseline_row.copy()
+                baseline_key = self.create_schema_key(baseline_row)
+                matched_baseline_keys.add(baseline_key)
+                
                 changes = []
                 
                 # Update only specified columns
                 # NOTE: Swat_code_type is NOT updated - it's just the component name and should remain from baseline
-                if row_dict.get('Line_in_file', '') != str(schema.line_in_file):
+                
+                # For Line_in_file: keep wildcard (*) if baseline has it, otherwise update
+                baseline_line = baseline_row.get('Line_in_file', '')
+                if baseline_line != '*' and baseline_line != str(schema.line_in_file):
                     changes.append('Line_in_file')
                     row_dict['Line_in_file'] = str(schema.line_in_file)
+                # If baseline has *, keep it (don't update)
                 
                 if row_dict.get('Position_in_File', '') != str(schema.position_in_file):
                     changes.append('Position_in_File')
@@ -577,7 +603,10 @@ class CSVUpdater:
         # Check for removed rows
         for key, row_dict in baseline_dict.items():
             swat_file = row_dict.get('SWAT_File', '')
-            if swat_file in schemas_by_file and key not in updated_baseline:
+            # Only mark as removed if:
+            # 1. It's for a file we're processing
+            # 2. It wasn't matched to any extracted schema
+            if swat_file in schemas_by_file and key not in matched_baseline_keys:
                 # This row exists in baseline but not in extracted schema
                 file_summaries[swat_file].removed += 1
                 
