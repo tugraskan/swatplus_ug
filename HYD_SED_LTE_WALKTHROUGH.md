@@ -19,21 +19,21 @@ read (1,*,iostat=eof) sd_chd(idb)
 
 ```
 Baseline rows: 24
-Extracted rows: 20
-Updated rows: 20
+Extracted rows: 23
+Updated rows: 23
 
 Changes:
   Added: 0 ✅
-  Updated: 17 ✅
-  Removed: 4 ✅ (n_conc, p_conc, p_bio not in extracted schema)
-  Unchanged: 3 ✅ (name, fps, fpn)
+  Updated: 18 ✅
+  Removed: 1 ✅ (ID field only)
+  Unchanged: 5 ✅ (name, fps, fpn, p_conc, p_bio)
 ```
 
-## Why Only 20 Fields Extracted?
+## Complete Field List
 
-The code reads **all 23 fields** from the type definition, but the tool only extracted **20 fields** that are in the current READ statement at the time of analysis:
+The code reads **all 23 fields** from the type definition:
 
-**Fields 1-20** (extracted):
+**Fields 1-23** (all extracted):
 1. name
 2. order  
 3. chw (channel width)
@@ -54,17 +54,13 @@ The code reads **all 23 fields** from the type definition, but the tool only ext
 18. bankfull_flo (bank full flow rate)
 19. fps (flood plain slope)
 20. fpn (flood plain Manning's n)
-
-**Fields 21-23** (removed from updated CSV):
-21. n_conc (nitrogen concentration) - Row 2076
-22. p_conc (phosphorus concentration) - Row 2078
-23. p_bio (fraction of P bioavailable) - Row 2080
-
-**Note**: The type definition includes these 3 nutrient fields, but they may be read separately or handled differently in the code flow.
+21. n_conc (nitrogen concentration in channel bank) ✅
+22. p_conc (phosphorus concentration in channel bank) ✅
+23. p_bio (fraction of P in bank that is bioavailable) ✅
 
 ## Detailed Changes by Row
 
-### Unchanged (3 rows)
+### Unchanged (5 rows)
 
 **Row 2034** - `name`
 - Already correct, no changes needed
@@ -75,7 +71,13 @@ The code reads **all 23 fields** from the type definition, but the tool only ext
 **Row 2074** - `fpn` (flood plain Manning's n)
 - Already correct, no changes needed
 
-### Updated (17 rows)
+**Row 2078** - `p_conc` (phosphorus concentration)
+- Already correct, no changes needed
+
+**Row 2080** - `p_bio` (fraction of P bioavailable)
+- Already correct, no changes needed
+
+### Updated (18 rows)
 
 **Row 2036** - `order`
 - **Data_Type**: string → integer ✅
@@ -137,7 +139,10 @@ The code reads **all 23 fields** from the type definition, but the tool only ext
 **Row 2070** - `bankfull_flo`
 - **Description**: "Bank full flow rate" → "bank full flow rate" ✅ (lowercase)
 
-### Removed (4 rows)
+**Row 2076** - `n_conc` (nitrogen concentration)
+- **Description**: "nitrogen concentation..." → "nitrogen concentration..." ✅ (typo fix)
+
+### Removed (1 row)
 
 **Row 2032** - ID field
 - Position: *|*
@@ -147,18 +152,6 @@ The code reads **all 23 fields** from the type definition, but the tool only ext
 - Position: *|*
 - "Description, not used in the model"
 - Not in extracted schema (metadata field)
-
-**Row 2076** - `n_conc` (nitrogen concentration)
-- Position: 21
-- Not in extracted 20-field schema
-
-**Row 2078** - `p_conc` (phosphorus concentration)
-- Position: 22
-- Not in extracted 20-field schema
-
-**Row 2080** - `p_bio` (phosphorus bioavailable fraction)
-- Position: 23
-- Not in extracted 20-field schema
 
 ## Key Variable Name Corrections
 
@@ -217,14 +210,16 @@ grep "^2058," updated_inputs.csv | cut -d',' -f11
 
 ## Summary
 
-✅ **17 rows updated** - Descriptions, units, and variable names corrected
-✅ **3 rows unchanged** - Already correct (name, fps, fpn)
-✅ **4 rows removed** - Not in current extracted schema (ID, description metadata, 3 nutrient fields)
+✅ **18 rows updated** - Descriptions, units, and variable names corrected
+✅ **5 rows unchanged** - Already correct (name, fps, fpn, p_conc, p_bio)
+✅ **1 row removed** - Not in current extracted schema (ID field only)
 ✅ **Wildcard matching** - Correctly preserved `*` for line numbers
 ✅ **Major corrections**:
   - Position 9: erod_fact → bank_exp
   - Position 12: eq_slp → vcr_coef  
   - Position 2: Data type string → integer for order
+  - Position 21: Description typo fix "concentation" → "concentration"
 ✅ **All descriptions cleaned** - Removed "Channel lite" prefix to match code comments
+✅ **All 23 fields extracted** - Including n_conc, p_conc, p_bio nutrient concentration fields
 
-The tool successfully extracted the schema from the Fortran type definition and corrected multiple errors in the baseline CSV!
+The tool successfully extracted the complete schema from the Fortran type definition (all 23 fields) and corrected multiple errors in the baseline CSV!

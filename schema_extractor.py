@@ -356,11 +356,12 @@ class FortranParser:
         
         read_file = os.path.join(self.src_dir, 'sd_hydsed_read.f90')
         
-        # Order based on type definition
+        # Order based on type definition - ALL 23 fields
         var_order = [
             'name', 'order', 'chw', 'chd', 'chs', 'chl', 'chn', 'chk',
             'bank_exp', 'cov', 'sinu', 'vcr_coef', 'd50', 'ch_clay',
-            'carbon', 'ch_bd', 'chss', 'bankfull_flo', 'fps', 'fpn'
+            'carbon', 'ch_bd', 'chss', 'bankfull_flo', 'fps', 'fpn',
+            'n_conc', 'p_conc', 'p_bio'  # Added: nitrogen and phosphorus concentration fields
         ]
         
         for pos, var_name in enumerate(var_order, start=1):
