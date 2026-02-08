@@ -460,6 +460,7 @@ class CSVUpdater:
                 changes = []
                 
                 # Update only specified columns
+                # NOTE: Swat_code_type is NOT updated - it's just the component name and should remain from baseline
                 if row_dict.get('Line_in_file', '') != str(schema.line_in_file):
                     changes.append('Line_in_file')
                     row_dict['Line_in_file'] = str(schema.line_in_file)
@@ -468,9 +469,8 @@ class CSVUpdater:
                     changes.append('Position_in_File')
                     row_dict['Position_in_File'] = str(schema.position_in_file)
                 
-                if row_dict.get('Swat_code type', '') != schema.swat_code_type:
-                    changes.append('Swat_code type')
-                    row_dict['Swat_code type'] = schema.swat_code_type
+                # Swat_code_type is intentionally NOT updated per requirements
+                # It represents component name and should remain as-is from baseline
                 
                 if row_dict.get('SWAT_Code_Variable_Name', '') != schema.variable_name:
                     changes.append('SWAT_Code_Variable_Name')
@@ -543,10 +543,11 @@ class CSVUpdater:
                     new_row = {col: '' for col in self.header}
                 
                 # Update with schema data
+                # NOTE: Swat_code_type is NOT updated - keep from template/baseline
                 new_row['SWAT_File'] = schema.file_name
                 new_row['Line_in_file'] = str(schema.line_in_file)
                 new_row['Position_in_File'] = str(schema.position_in_file)
-                new_row['Swat_code type'] = schema.swat_code_type
+                # new_row['Swat_code type'] = schema.swat_code_type  # Do NOT update - keep baseline value
                 new_row['SWAT_Code_Variable_Name'] = schema.variable_name
                 new_row['Description'] = schema.description
                 new_row['Units'] = schema.units

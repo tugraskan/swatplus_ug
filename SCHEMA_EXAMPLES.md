@@ -14,15 +14,16 @@
 ### After (Code-Extracted)
 | Position | Swat_code type | Variable | Description |
 |----------|----------------|----------|-------------|
-| 1 | **time** | day_start | **! beginning julian day of simulation** |
-| 2 | **time** | yrc_start | **! starting calendar year** |
-| 3 | **time** | day_end | **! input ending julian day of simulation** |
-| 4 | **time** | yrc_end | **! ending calendar year** |
-| 5 | **time** | step | **! number of time steps in a day for rainfall, runoff and routing** |
+| 1 | **in_sim** | day_start | **! beginning julian day of simulation** |
+| 2 | **in_sim** | yrc_start | **! starting calendar year** |
+| 3 | **in_sim** | day_end | **! input ending julian day of simulation** |
+| 4 | **in_sim** | yrc_end | **! ending calendar year** |
+| 5 | **in_sim** | step | **! number of time steps in a day for rainfall, runoff and routing** |
 
 **Changes:**
-- Swat_code type: `in_sim` → `time` (matches actual code: `time%day_start`, not `in_sim%day_start`)
-- Descriptions: Updated from type definition comments in `time_module.f90`
+- Swat_code type: **UNCHANGED** (remains `in_sim` - component name)
+- SWAT_Code_Variable_Name: **UNCHANGED** (already correct: day_start, yrc_start, etc.)
+- Descriptions: **UPDATED** from type definition comments in `time_module.f90`
 
 **Code Reference:** `time_read.f90`, line 28:
 ```fortran
@@ -44,23 +45,22 @@ read (107,*,iostat=eof) time%day_start, time%yrc_start, time%day_end, time%yrc_e
 ### After (Code-Extracted)
 | Position | Swat_code type | Variable | Description | Data Type |
 |----------|----------------|----------|-------------|-----------|
-| 1 | **ob** | **num** | HRU number | integer |
-| 2 | **ob** | name | HRU name | string |
-| 3 | **ob** | gis_id | HRU GIS id | string |
-| 4 | **ob** | **area_ha** | **HRU area** | **numeric** |
-| 5 | **ob** | **lat** | **Latitude** | **numeric** |
-| 6 | **ob** | **long** | **Longitude** | **numeric** |
-| 7 | **ob** | **elev** | **Elevation** | **numeric** |
-| 8 | **ob** | **props** | **HRU properties pointer** | **string** |
-| 9 | **ob** | **wst_c** | **Weather station pointer** | **string** |
-| 10 | **ob** | **constit** | **Constituent pointer** | **string** |
-| 11 | **ob** | **props2** | **Properties 2 pointer** | **string** |
-| 12 | **ob** | **ruleset** | **Ruleset pointer** | **string** |
-| 13 | **ob** | **src_tot** | **Total number of sources** | **integer** |
+| 1 | **in_con** | **num** | HRU number | integer |
+| 2 | **in_con** | name | HRU name | string |
+| 3 | **in_con** | gis_id | HRU GIS id | string |
+| 4 | **in_con** | **area_ha** | **HRU area** | **numeric** |
+| 5 | **in_con** | **lat** | **Latitude** | **numeric** |
+| 6 | **in_con** | **long** | **Longitude** | **numeric** |
+| 7 | **in_con** | **elev** | **Elevation** | **numeric** |
+| 8 | **in_con** | **props** | **HRU properties pointer** | **string** |
+| 9 | **in_con** | **wst_c** | **Weather station pointer** | **string** |
+| 10 | **in_con** | **constit** | **Constituent pointer** | **string** |
+| 11 | **in_con** | **props2** | **Properties 2 pointer** | **string** |
+| 12 | **in_con** | **ruleset** | **Ruleset pointer** | **string** |
+| 13 | **in_con** | **src_tot** | **Total number of sources** | **integer** |
 
 **Changes:**
-- Complete schema replacement (18 old rows → 13 new rows)
-- Swat_code type: `in_con` → `ob` (matches code structure)
+- Swat_code type: **UNCHANGED** (remains `in_con` - component name)
 - Variable names: `numb` → `num` (matches actual code variable)
 - Added fields: area_ha, lat, long, elev, props, wst_c, constit, props2, ruleset, src_tot
 
@@ -165,8 +165,9 @@ This reads the entire `swatdeg_hydsed_data` structure defined in `sd_channel_mod
 
 The schema extractor successfully:
 1. ✅ Extracted schemas directly from Fortran source code
-2. ✅ Mapped variable types correctly (time%field, ob%field, pcomdb%field, sd_chd%field)
-3. ✅ Preserved descriptions and units from inline comments
-4. ✅ Maintained data type mappings (integer, string, numeric)
-5. ✅ Handled multi-level structures (plant.ini community vs plants)
-6. ✅ Replaced outdated baseline rows with current code schema
+2. ✅ Kept Swat_code_type unchanged (component names like `in_sim`, `in_con`, etc.)
+3. ✅ Updated SWAT_Code_Variable_Name with actual variable names (day_start, num, etc.)
+4. ✅ Preserved descriptions and units from inline comments
+5. ✅ Maintained data type mappings (integer, string, numeric)
+6. ✅ Handled multi-level structures (plant.ini community vs plants)
+7. ✅ Replaced outdated baseline rows with current code schema

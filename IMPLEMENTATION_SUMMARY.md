@@ -52,19 +52,18 @@ Net change:    -246 rows (outdated schemas removed)
 ### Key Corrections Made
 
 **time.sim**:
-- ✅ Fixed `Swat_code type`: `in_sim` → `time`
+- ✅ Swat_code type: **UNCHANGED** (remains `in_sim` - component name)
+- ✅ SWAT_Code_Variable_Name: Already correct (day_start, yrc_start, etc.)
 - ✅ Updated descriptions from type definition comments
-- ✅ Corrected variable mappings to match `time%field` pattern
 
 **hru.con**:
-- ✅ Fixed `Swat_code type`: `in_con` → `ob`
+- ✅ Swat_code type: **UNCHANGED** (remains `in_con` - component name)
 - ✅ Fixed variable name: `numb` → `num`
 - ✅ Added 8 missing fields (area_ha, lat, long, elev, props, wst_c, constit, props2, ruleset, src_tot)
-- ✅ Complete schema replacement to match current code
 
 **plant.ini**:
 - ✅ Two-level structure properly represented
-- ✅ Community header (`pcomdb`) vs plant details (`pcomdb%pl`)
+- ✅ Community header vs plant details
 - ✅ All 11 fields with correct types
 
 **hyd-sed-lte.cha**:
@@ -80,12 +79,12 @@ Net change:    -246 rows (outdated schemas removed)
 - Only specified columns updated:
   - Line_in_file
   - Position_in_File
-  - Swat_code type
   - SWAT_Code_Variable_Name
   - Description
   - Units
   - Data_Type
   - Number_Decimal_Places
+- **Note**: Swat_code type is NOT updated (component name, remains from baseline)
 
 ### 2. evidence_rows.csv (15 KB, 62 rows)
 Evidence for every change with:

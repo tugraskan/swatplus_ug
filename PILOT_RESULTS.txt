@@ -97,17 +97,18 @@ NOTABLE CORRECTIONS
 --------------------------------------------------------------------------------
 
 time.sim:
-  - Fixed: Swat_code type "in_sim" → "time" (matches time%field in code)
+  - Swat_code type: UNCHANGED (remains "in_sim" - component name)
+  - SWAT_Code_Variable_Name: Already correct (day_start, yrc_start, etc.)
   - Fixed: Descriptions updated from actual type definition comments
 
 hru.con:
-  - Fixed: Variable "numb" → "num" (matches ob%num in code)
-  - Fixed: Swat_code type "in_con" → "ob" (matches ob%field in code)
+  - Swat_code type: UNCHANGED (remains "in_con" - component name)
+  - Fixed: Variable "numb" → "num" (matches actual code variable)
   - Added: 8 missing fields (area_ha, lat, long, elev, props, wst_c, constit, props2, ruleset, src_tot)
 
 plant.ini:
   - Fixed: Two-level structure now properly represented
-  - Fixed: Community header (pcomdb) vs plant details (pcomdb%pl)
+  - Fixed: Community header vs plant details
 
 hyd-sed-lte.cha:
   - Fixed: Complete schema with all 20 fields

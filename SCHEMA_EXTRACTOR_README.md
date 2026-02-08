@@ -31,12 +31,12 @@ Updated version of `Rev_61_0_nbs_inputs_master_full.csv` with:
 - Only specified columns modified:
   - Line_in_file
   - Position_in_File
-  - Swat_code type
-  - SWAT_Code_Variable_Name
+  - SWAT_Code_Variable_Name (the actual variable names: day_start, yrc_start, etc.)
   - Description (when clear comments exist)
   - Units (when clear comments exist)
   - Data_Type
   - Number_Decimal_Places (when format explicit)
+- **Note**: Swat_code type is NOT modified - it represents the component name and remains as-is from baseline
 
 ### 2. `evidence_rows.csv`
 Detailed evidence for every change:
