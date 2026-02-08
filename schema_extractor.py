@@ -387,14 +387,180 @@ class FortranParser:
         
         return schemas
     
+    def extract_schema_plants_plt(self) -> List[FieldSchema]:
+        """Extract schema for plants.plt file."""
+        schemas = []
+        
+        # From plant_parm_read.f90 analysis:
+        # Line 17-23: read (104,*,iostat=eof) pldb(ic)
+        # This reads the entire pldb structure (type plant_db)
+        
+        # Get type definition for pldb
+        module_file = os.path.join(self.src_dir, 'plant_data_module.f90')
+        fields = self.extract_type_definition(module_file, 'plant_db')
+        
+        read_file = os.path.join(self.src_dir, 'plant_parm_read.f90')
+        
+        # Order based on type definition - first field only (name)
+        # The type has 87 fields but typically only name is read from file
+        # Other fields are in a different table (plants_plt.txt)
+        schema = FieldSchema(
+            file_name='plants.plt',
+            line_in_file=3,  # Data lines after title and header
+            position_in_file=1,
+            swat_code_type='pldb',
+            variable_name='plantnm',
+            description=fields.get('plantnm', {}).get('description', 'crop name'),
+            units='',
+            data_type='string',
+            decimal_places='',
+            code_file='plant_parm_read.f90',
+            code_line_start=17,
+            code_line_end=23,
+            code_snippet='read (104,*,iostat=eof) pldb(ic)',
+            confidence='medium',
+            notes='Complex type with 87 fields; file typically contains name only'
+        )
+        schemas.append(schema)
+        
+        return schemas
+    
+    def extract_schema_bmpuser_str(self) -> List[FieldSchema]:
+        """Extract schema for bmpuser.str file."""
+        schemas = []
+        
+        # From scen_read_bmpuser.f90 analysis:
+        # Line 24: read (107,*,iostat=eof) bmpuser_db(ibmpop)
+        # This reads the entire bmpuser_db structure
+        
+        # Get type definition for bmpuser_operation
+        module_file = os.path.join(self.src_dir, 'mgt_operations_module.f90')
+        fields = self.extract_type_definition(module_file, 'bmpuser_operation')
+        
+        read_file = os.path.join(self.src_dir, 'scen_read_bmpuser.f90')
+        
+        # Order based on type definition
+        var_order = [
+            'name', 'bmp_flag', 'bmp_sed', 'bmp_pp', 'bmp_sp', 
+            'bmp_pn', 'bmp_sn', 'bmp_bac'
+        ]
+        
+        for pos, var_name in enumerate(var_order, start=1):
+            field_info = fields.get(var_name, {})
+            
+            schema = FieldSchema(
+                file_name='bmpuser.str',
+                line_in_file=3,  # Data lines after title and header
+                position_in_file=pos,
+                swat_code_type='bmpuser_db',
+                variable_name=var_name,
+                description=field_info.get('description', ''),
+                units=field_info.get('units', ''),
+                data_type=field_info.get('data_type', 'numeric'),
+                decimal_places='',
+                code_file='scen_read_bmpuser.f90',
+                code_line_start=24,
+                code_line_end=24,
+                code_snippet='read (107,*,iostat=eof) bmpuser_db(ibmpop)',
+                confidence='high'
+            )
+            schemas.append(schema)
+        
+        return schemas
+    
+    def extract_schema_object_cnt(self) -> List[FieldSchema]:
+        """Extract schema for object.cnt file."""
+        schemas = []
+        
+        # From basin_read_objs.f90 analysis:
+        # Line 38: read (107,*,iostat=eof) bsn, sp_ob
+        # This reads basin_inputs structure (bsn) and spatial_objects structure (sp_ob)
+        
+        # Get type definitions
+        basin_module_file = os.path.join(self.src_dir, 'basin_module.f90')
+        bsn_fields = self.extract_type_definition(basin_module_file, 'basin_inputs')
+        
+        hydrograph_module_file = os.path.join(self.src_dir, 'hydrograph_module.f90')
+        sp_ob_fields = self.extract_type_definition(hydrograph_module_file, 'spatial_objects')
+        
+        read_file = os.path.join(self.src_dir, 'basin_read_objs.f90')
+        
+        # bsn fields (basin_inputs type)
+        bsn_vars = [
+            ('name', 'string', 'basin name'),
+            ('area_ls_ha', 'numeric', 'area of landscape, (all hrus)'),
+            ('area_tot_ha', 'numeric', 'total area')
+        ]
+        
+        for idx, (var_name, dtype, desc) in enumerate(bsn_vars, start=1):
+            schema = FieldSchema(
+                file_name='object.cnt',
+                line_in_file=3,
+                position_in_file=idx,
+                swat_code_type='bsn',
+                variable_name=var_name if idx == 1 else var_name.replace('area_', '').replace('_ha', '_area'),
+                description=desc,
+                units='ha' if idx > 1 else '',
+                data_type=dtype,
+                decimal_places='',
+                code_file='basin_read_objs.f90',
+                code_line_start=38,
+                code_line_end=38,
+                code_snippet='read (107,*,iostat=eof) bsn, sp_ob',
+                confidence='high'
+            )
+            schemas.append(schema)
+        
+        # sp_ob fields - all 19 fields from spatial_objects type
+        var_order = [
+            'objs', 'hru', 'hru_lte', 'ru', 'gwflow', 'aqu', 'chan', 'res', 
+            'recall', 'exco', 'dr', 'canal', 'pump', 'outlet', 'chandeg', 
+            'aqu2d', 'herd', 'wro'
+        ]
+        
+        # Map to match baseline variable names
+        var_name_map = {
+            'objs': 'obj',
+        }
+        
+        for idx, var_name in enumerate(var_order, start=4):
+            field_info = sp_ob_fields.get(var_name, {})
+            display_name = var_name_map.get(var_name, var_name)
+            
+            schema = FieldSchema(
+                file_name='object.cnt',
+                line_in_file=3,
+                position_in_file=idx,
+                swat_code_type='sp_ob',
+                variable_name=display_name,
+                description=field_info.get('description', ''),
+                units='',
+                data_type='integer',
+                decimal_places='',
+                code_file='basin_read_objs.f90',
+                code_line_start=38,
+                code_line_end=38,
+                code_snippet='read (107,*,iostat=eof) bsn, sp_ob',
+                confidence='high'
+            )
+            schemas.append(schema)
+        
+        return schemas
+    
     def extract_all_schemas(self) -> List[FieldSchema]:
         """Extract schemas for all pilot files."""
         all_schemas = []
         
+        # Original pilot files
         all_schemas.extend(self.extract_schema_time_sim())
         all_schemas.extend(self.extract_schema_hru_con())
         all_schemas.extend(self.extract_schema_plant_ini())
         all_schemas.extend(self.extract_schema_hyd_sed_lte())
+        
+        # New trial files
+        all_schemas.extend(self.extract_schema_plants_plt())
+        all_schemas.extend(self.extract_schema_bmpuser_str())
+        all_schemas.extend(self.extract_schema_object_cnt())
         
         return all_schemas
 
