@@ -1,0 +1,230 @@
+SWAT+ INPUT FILES
+================================================================================
+
+Extracted from: src/input_file_module.f90
+
+Simulation Files
+--------------------------------------------------------------------------------
+  in_sim%time                         -> time.sim
+  in_sim%prt                          -> print.prt
+  in_sim%object_prt                   -> object.prt
+  in_sim%object_cnt                   -> object.cnt
+  in_sim%cs_db                        -> constituents.cs
+
+Basin Files
+--------------------------------------------------------------------------------
+  in_basin%codes_bas                  -> codes.bsn
+  in_basin%parms_bas                  -> parameters.bsn
+
+Climate Files
+--------------------------------------------------------------------------------
+  in_cli%weat_sta                     -> weather-sta.cli
+  in_cli%weat_wgn                     -> weather-wgn.cli
+  in_cli%pet_cli                      -> pet.cli
+  in_cli%pcp_cli                      -> pcp.cli
+  in_cli%tmp_cli                      -> tmp.cli
+  in_cli%slr_cli                      -> slr.cli
+  in_cli%hmd_cli                      -> hmd.cli
+  in_cli%wnd_cli                      -> wnd.cli
+  in_cli%atmo_cli                     -> atmodep.cli
+
+Connection Files
+--------------------------------------------------------------------------------
+  in_con%hru_con                      -> hru.con
+  in_con%hruez_con                    -> hru-lte.con
+  in_con%ru_con                       -> rout_unit.con
+  in_con%gwflow_con                   -> gwflow.con
+  in_con%aqu_con                      -> aquifer.con
+  in_con%aqu2d_con                    -> aquifer2d.con
+  in_con%chan_con                     -> channel.con
+  in_con%res_con                      -> reservoir.con
+  in_con%rec_con                      -> recall.con
+  in_con%exco_con                     -> exco.con
+  in_con%delr_con                     -> delratio.con
+  in_con%out_con                      -> outlet.con
+  in_con%chandeg_con                  -> chandeg.con
+
+Channel Files
+--------------------------------------------------------------------------------
+  in_cha%init                         -> initial.cha
+  in_cha%dat                          -> channel.cha
+  in_cha%hyd                          -> hydrology.cha
+  in_cha%sed                          -> sediment.cha
+  in_cha%nut                          -> nutrients.cha
+  in_cha%chan_ez                      -> channel-lte.cha
+  in_cha%hyd_sed                      -> hyd-sed-lte.cha
+  in_cha%temp                         -> temperature.cha
+
+Reservoir Files
+--------------------------------------------------------------------------------
+  in_res%init_res                     -> initial.res
+  in_res%res                          -> reservoir.res
+  in_res%hyd_res                      -> hydrology.res
+  in_res%sed_res                      -> sediment.res
+  in_res%nut_res                      -> nutrients.res
+  in_res%weir_res                     -> weir.res
+  in_res%wet                          -> wetland.wet
+  in_res%hyd_wet                      -> hydrology.wet
+
+Routing Unit Files
+--------------------------------------------------------------------------------
+  in_ru%ru_def                        -> rout_unit.def
+  in_ru%ru_ele                        -> rout_unit.ele
+  in_ru%ru                            -> rout_unit.rtu
+  in_ru%ru_dr                         -> rout_unit.dr
+
+HRU Files
+--------------------------------------------------------------------------------
+  in_hru%hru_data                     -> hru-data.hru
+  in_hru%hru_ez                       -> hru-lte.hru
+
+External Constant (Recall Constant) Files
+--------------------------------------------------------------------------------
+  in_exco%exco                        -> exco.exc
+  in_exco%om                          -> exco_om.exc
+  in_exco%pest                        -> exco_pest.exc
+  in_exco%path                        -> exco_path.exc
+  in_exco%hmet                        -> exco_hmet.exc
+  in_exco%salt                        -> exco_salt.exc
+
+Recall Files
+--------------------------------------------------------------------------------
+  in_rec%recall_rec                   -> recall.rec
+
+Delivery Ratio Files
+--------------------------------------------------------------------------------
+  in_delr%del_ratio                   -> delratio.del
+  in_delr%om                          -> dr_om.del
+  in_delr%pest                        -> dr_pest.del
+  in_delr%path                        -> dr_path.del
+  in_delr%hmet                        -> dr_hmet.del
+  in_delr%salt                        -> dr_salt.del
+
+Aquifer Files
+--------------------------------------------------------------------------------
+  in_aqu%init                         -> initial.aqu
+  in_aqu%aqu                          -> aquifer.aqu
+
+Herd/Animal Files
+--------------------------------------------------------------------------------
+  in_herd%animal                      -> animal.hrd
+  in_herd%herd                        -> herd.hrd
+  in_herd%ranch                       -> ranch.hrd
+
+Water Rights Files
+--------------------------------------------------------------------------------
+  in_watrts%transfer_wro              -> water_allocation.wro
+  in_watrts%element                   -> element.wro
+  in_watrts%water_rights              -> water_rights.wro
+
+Link Files
+--------------------------------------------------------------------------------
+  in_link%chan_surf                   -> chan-surf.lin
+  in_link%aqu_cha                     -> aqu_cha.lin
+
+Hydrology Files
+--------------------------------------------------------------------------------
+  in_hyd%hydrol_hyd                   -> hydrology.hyd
+  in_hyd%topogr_hyd                   -> topography.hyd
+  in_hyd%field_fld                    -> field.fld
+
+Structural Files
+--------------------------------------------------------------------------------
+  in_str%tiledrain_str                -> tiledrain.str
+  in_str%septic_str                   -> septic.str
+  in_str%fstrip_str                   -> filterstrip.str
+  in_str%grassww_str                  -> grassedww.str
+  in_str%bmpuser_str                  -> bmpuser.str
+
+Parameter Database Files
+--------------------------------------------------------------------------------
+  in_parmdb%plants_plt                -> plants.plt
+  in_parmdb%fert_frt                  -> fertilizer.frt
+  in_parmdb%till_til                  -> tillage.til
+  in_parmdb%pest                      -> pesticide.pes
+  in_parmdb%pathcom_db                -> pathogens.pth
+  in_parmdb%hmetcom_db                -> metals.mtl
+  in_parmdb%saltcom_db                -> salt.slt
+  in_parmdb%urban_urb                 -> urban.urb
+  in_parmdb%septic_sep                -> septic.sep
+  in_parmdb%snow                      -> snow.sno
+
+Operation Scheduling Files
+--------------------------------------------------------------------------------
+  in_ops%harv_ops                     -> harv.ops
+  in_ops%graze_ops                    -> graze.ops
+  in_ops%irr_ops                      -> irr.ops
+  in_ops%chem_ops                     -> chem_app.ops
+  in_ops%fire_ops                     -> fire.ops
+  in_ops%sweep_ops                    -> sweep.ops
+
+Land Use Management Files
+--------------------------------------------------------------------------------
+  in_lum%landuse_lum                  -> landuse.lum
+  in_lum%management_sch               -> management.sch
+  in_lum%cntable_lum                  -> cntable.lum
+  in_lum%cons_prac_lum                -> cons_practice.lum
+  in_lum%ovn_lum                      -> ovn_table.lum
+
+Calibration Files
+--------------------------------------------------------------------------------
+  in_chg%cal_parms                    -> cal_parms.cal
+  in_chg%cal_upd                      -> calibration.cal
+  in_chg%codes_sft                    -> codes.sft
+  in_chg%wb_parms_sft                 -> wb_parms.sft
+  in_chg%water_balance_sft            -> water_balance.sft
+  in_chg%ch_sed_budget_sft            -> ch_sed_budget.sft
+  in_chg%ch_sed_parms_sft             -> ch_sed_parms.sft
+  in_chg%plant_parms_sft              -> plant_parms.sft
+  in_chg%plant_gro_sft                -> plant_gro.sft
+
+Initial Condition Files
+--------------------------------------------------------------------------------
+  in_init%plant                       -> plant.ini
+  in_init%soil_plant_ini              -> soil_plant.ini
+  in_init%om_water                    -> om_water.ini
+  in_init%pest_soil                   -> pest_hru.ini
+  in_init%pest_water                  -> pest_water.ini
+  in_init%path_soil                   -> path_hru.ini
+  in_init%path_water                  -> path_water.ini
+  in_init%hmet_soil                   -> hmet_hru.ini
+  in_init%hmet_water                  -> hmet_water.ini
+  in_init%salt_soil                   -> salt_hru.ini
+  in_init%salt_water                  -> salt_water.ini
+
+Soil Files
+--------------------------------------------------------------------------------
+  in_sol%soils_sol                    -> soils.sol
+  in_sol%nut_sol                      -> nutrients.sol
+  in_sol%lte_sol                      -> soils_lte.sol
+
+Conditional/Decision Table Files
+--------------------------------------------------------------------------------
+  in_cond%dtbl_lum                    -> lum.dtl
+  in_cond%dtbl_res                    -> res_rel.dtl
+  in_cond%dtbl_scen                   -> scen_lu.dtl
+  in_cond%dtbl_flo                    -> flo_con.dtl
+
+Region Definition Files
+--------------------------------------------------------------------------------
+  in_regs%ele_lsu                     -> ls_unit.ele
+  in_regs%def_lsu                     -> ls_unit.def
+  in_regs%ele_reg                     -> ls_reg.ele
+  in_regs%def_reg                     -> ls_reg.def
+  in_regs%cal_lcu                     -> ls_cal.reg
+  in_regs%ele_cha                     -> ch_catunit.ele
+  in_regs%def_cha                     -> ch_catunit.def
+  in_regs%def_cha_reg                 -> ch_reg.def
+  in_regs%ele_aqu                     -> aqu_catunit.ele
+  in_regs%def_aqu                     -> aqu_catunit.def
+  in_regs%def_aqu_reg                 -> aqu_reg.def
+  in_regs%ele_res                     -> res_catunit.ele
+  in_regs%def_res                     -> res_catunit.def
+  in_regs%def_res_reg                 -> res_reg.def
+  in_regs%ele_psc                     -> rec_catunit.ele
+  in_regs%def_psc                     -> rec_catunit.def
+  in_regs%def_psc_reg                 -> rec_reg.def
+
+================================================================================
+Total input files: 147
+
