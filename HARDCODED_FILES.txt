@@ -1,0 +1,388 @@
+HARDCODED FILES IN SWAT+ SOURCE CODE
+================================================================================
+
+Files that are hardcoded in the source and NOT configurable via file.cio
+
+Step 1: Found 149 configurable files in input_file_module.f90
+Step 2: Found 73 hardcoded file references in source code
+
+================================================================================
+HARDCODED FILES NOT IN FILE.CIO (NOT CONFIGURABLE)
+================================================================================
+
+Total: 70 files
+
+File: gwflow.chancells
+  Referenced 2 time(s):
+    - basin_read_objs.f90:52
+      open(107,file='gwflow.chancells')
+    - gwflow_chan_read.f90:31
+      open(1280,file='gwflow.chancells')
+
+File: cs_recall.rec
+  Referenced 1 time(s):
+    - recall_read_cs.f90:43
+      open (107,file="cs_recall.rec")
+
+File: recall_db.rec
+  Referenced 1 time(s):
+    - recall_read.f90:22
+      open (107,file="recall_db.rec")
+
+File: pest.com
+  Referenced 1 time(s):
+    - recall_read.f90:269
+      open (107,file="pest.com")
+
+File: out.key
+  Referenced 1 time(s):
+    - gwflow_read.f90:1717
+      open(5100,file='out.key')
+
+File: looping.con
+  Referenced 1 time(s):
+    - hyd_connect.f90:418
+      open (9002,file="looping.con",recl = 8000)
+
+File: nutrients.rte
+  Referenced 1 time(s):
+    - rte_read_nut.f90:29
+      open (105,file="nutrients.rte")
+
+File: puddle.ops
+  Referenced 1 time(s):
+    - mgt_read_puddle.f90:23
+      open (104,file="puddle.ops")
+
+File: reservoir.res_cs
+  Referenced 1 time(s):
+    - res_read_salt_cs.f90:31
+      open(105,file="reservoir.res_cs")
+
+File: cs_reactions
+  Referenced 1 time(s):
+    - cs_reactions_read.f90:34
+      open(107,file="cs_reactions")
+
+File: carb_coefs.cbn
+  Referenced 1 time(s):
+    - carbon_coef_read.f90:25
+      open (107,file='carb_coefs.cbn', iostat=eof)
+
+File: fertilizer.frt_cs
+  Referenced 1 time(s):
+    - cs_fert_read.f90:25
+      open (107,file="fertilizer.frt_cs")
+
+File: hru-out.cal
+  Referenced 1 time(s):
+    - header_write.f90:25
+      open (4999,file="hru-out.cal", recl = 800)
+
+File: hru-new.cal
+  Referenced 1 time(s):
+    - header_write.f90:34
+      open (5000,file="hru-new.cal", recl = 800)
+
+File: hydrology-cal.hyd
+  Referenced 1 time(s):
+    - header_write.f90:40
+      open (5001,file="hydrology-cal.hyd", recl = 800)
+
+File: hru-lte-out.cal
+  Referenced 1 time(s):
+    - header_write.f90:48
+      !open (5003,file="hru-lte-out.cal", recl = 800)
+
+File: hru-lte-new.cal
+  Referenced 1 time(s):
+    - header_write.f90:54
+      !open (5002,file="hru-lte-new.cal", recl = 800)
+
+File: salt_irrigation
+  Referenced 1 time(s):
+    - salt_irr_read.f90:22
+      open (107,file="salt_irrigation")
+
+File: file.cio
+  Referenced 1 time(s):
+    - readcio_read.f90:22
+      open (107,file="file.cio")
+
+File: cs_res
+  Referenced 1 time(s):
+    - res_read_csdb.f90:29
+      open (105,file="cs_res")
+
+File: cs_aqu.ini
+  Referenced 1 time(s):
+    - cs_aqu_read.f90:23
+      open (107,file="cs_aqu.ini")
+
+File: cs_plants_boron
+  Referenced 1 time(s):
+    - cs_plant_read.f90:22
+      open(107,file="cs_plants_boron")
+
+File: soil_lyr_depths.sol
+  Referenced 1 time(s):
+    - soils_init.f90:166
+      open (107,file="soil_lyr_depths.sol")
+
+File: pest_metabolite.pes
+  Referenced 1 time(s):
+    - pest_metabolite_read.f90:29
+      open (106,file="pest_metabolite.pes")
+
+File: om_use.wal
+  Referenced 1 time(s):
+    - om_use_read.f90:30
+      open (107,file='om_use.wal')
+
+File: salt_road
+  Referenced 1 time(s):
+    - salt_roadsalt_read.f90:40
+      open(5051,file='salt_road')
+
+File: plant_parms.cal
+  Referenced 1 time(s):
+    - pl_write_parms_cal.f90:20
+      open (107,file="plant_parms.cal",recl = 1500)
+
+File: element.ccu
+  Referenced 1 time(s):
+    - ch_read_elements.f90:145
+      open (107,file="element.ccu")
+
+File: salt_res
+  Referenced 1 time(s):
+    - res_read_saltdb.f90:31
+      open (105,file="salt_res")
+
+File: basins_carbon.tes
+  Referenced 1 time(s):
+    - carbon_read.f90:22
+      open (104,file='basins_carbon.tes')
+
+File: salt_plants
+  Referenced 1 time(s):
+    - salt_plant_read.f90:22
+      open(107,file="salt_plants")
+
+File: manure_allo.mnu
+  Referenced 1 time(s):
+    - manure_allocation_read.f90:39
+      open (107,file="manure_allo.mnu")
+
+File: cs_atmo.cli
+  Referenced 1 time(s):
+    - cli_read_atmodep_cs.f90:32
+      open(5050,file='cs_atmo.cli')
+
+File: cs_irrigation
+  Referenced 1 time(s):
+    - cs_irr_read.f90:24
+      open (107,file="cs_irrigation")
+
+File: salt_urban
+  Referenced 1 time(s):
+    - salt_urban_read.f90:28
+      open(5054,file='salt_urban')
+
+File: water_treat.wal
+  Referenced 1 time(s):
+    - water_treatment_read.f90:31
+      open (107,file='water_treat.wal')
+
+File: om_osrc.wal
+  Referenced 1 time(s):
+    - om_osrc_read.f90:31
+      open (107,file='om_osrc.wal')
+
+File: salt_fertilizer.frt
+  Referenced 1 time(s):
+    - salt_fert_read.f90:24
+      open (107,file="salt_fertilizer.frt")
+
+File: salt_channel.ini
+  Referenced 1 time(s):
+    - salt_cha_read.f90:27
+      open (107,file="salt_channel.ini")
+
+File: water_tower.wal
+  Referenced 1 time(s):
+    - water_tower_read.f90:32
+      open (107,file='water_tower.wal')
+
+File: cs_uptake
+  Referenced 1 time(s):
+    - cs_uptake_read.f90:36
+      open(5054,file='cs_uptake')
+
+File: nutbal.sd
+  Referenced 1 time(s):
+    - output_landscape_init.f90:945
+      !       open (4101,file="nutbal.sd", recl = 1500)  !! no nuts in SWAT-DEG
+
+File: nutbal_aa.sd
+  Referenced 1 time(s):
+    - output_landscape_init.f90:947
+      !       open (4105,file="nutbal_aa.sd", recl = 1500)
+
+File: gwflow_head_daily
+  Referenced 1 time(s):
+    - gwflow_simulate.f90:598
+      !open(96622,file='gwflow_head_daily')
+
+File: gwflow_daily_cell_balance
+  Referenced 1 time(s):
+    - gwflow_simulate.f90:805
+      !open(1356,file='gwflow_daily_cell_balance')
+
+File: salt_recall.rec
+  Referenced 1 time(s):
+    - recall_read_salt.f90:43
+      open (107,file="salt_recall.rec")
+
+File: salt_uptake
+  Referenced 1 time(s):
+    - salt_uptake_read.f90:37
+      open(5054,file='salt_uptake')
+
+File: salt_atmo.cli
+  Referenced 1 time(s):
+    - cli_read_atmodep_salt.f90:33
+      open(5050,file='salt_atmo.cli')
+
+File: co2_yr.dat
+  Referenced 1 time(s):
+    - co2_read.f90:45
+      open (107,file="co2_yr.dat")
+
+File: object_prt.swf
+  Referenced 1 time(s):
+    - swift_output.f90:276
+      !open (107,file="object_prt.swf",recl = 1500)
+
+File: res_conds.dat
+  Referenced 1 time(s):
+    - res_read_conds.f90:21
+      open (100,file="res_conds.dat")
+
+File: om_treat.wal
+  Referenced 1 time(s):
+    - om_treat_read.f90:30
+      open (107,file='om_treat.wal')
+
+File: outside_src.wal
+  Referenced 1 time(s):
+    - water_osrc_read.f90:34
+      open (107,file='outside_src.wal')
+
+File: wetland.wet_cs
+  Referenced 1 time(s):
+    - wet_read_salt_cs.f90:31
+      open(105,file="wetland.wet_cs")
+
+File: gwflow_daily_hru_recharge
+  Referenced 1 time(s):
+    - gwflow_rech.f90:38
+      !open(1357,file='gwflow_daily_hru_recharge')
+
+File: sed_nut.cha
+  Referenced 1 time(s):
+    - sd_hydsed_read.f90:74
+      open (1,file="sed_nut.cha")
+
+File: transplant.plt
+  Referenced 1 time(s):
+    - plant_transplant_read.f90:24
+      open (104,file="transplant.plt")
+
+File: salt_aqu.ini
+  Referenced 1 time(s):
+    - salt_aqu_read.f90:23
+      open (107,file="salt_aqu.ini")
+
+File: satbuffer.str
+  Referenced 1 time(s):
+    - sat_buff_read.f90:34
+      open (107,file="satbuffer.str")
+
+File: scen_dtl.upd
+  Referenced 1 time(s):
+    - cal_cond_read.f90:43
+      open (107,file="scen_dtl.upd")
+
+File: water_pipe.wal
+  Referenced 1 time(s):
+    - water_pipe_read.f90:32
+      open (107,file='water_pipe.wal')
+
+File: cs_channel.ini
+  Referenced 1 time(s):
+    - cs_cha_read.f90:28
+      open (107,file="cs_channel.ini")
+
+File: cs_streamobs
+  Referenced 1 time(s):
+    - cs_cha_read.f90:66
+      open(107,file='cs_streamobs')
+
+File: cs_streamobs_output
+  Referenced 1 time(s):
+    - cs_cha_read.f90:74
+      open(8200,file='cs_streamobs_output')
+
+File: initial.aqu_cs
+  Referenced 1 time(s):
+    - aqu_read_init_cs.f90:42
+      open (105,file="initial.aqu_cs")
+
+File: manure.frt
+  Referenced 1 time(s):
+    - manure_parm_read.f90:27
+      open (107,file="manure.frt")
+
+File: initial.cha_cs
+  Referenced 1 time(s):
+    - ch_read_init_cs.f90:27
+      open (105,file="initial.cha_cs")
+
+File: water_use.wal
+  Referenced 1 time(s):
+    - water_use_read.f90:32
+      open (107,file='water_use.wal')
+
+File: cs_hru.ini
+  Referenced 1 time(s):
+    - cs_hru_read.f90:23
+      open (107,file="cs_hru.ini")
+
+File: cs_urban
+  Referenced 1 time(s):
+    - cs_urban_read.f90:28
+      open(5054,file='cs_urban')
+
+
+================================================================================
+FILES THAT ARE BOTH HARDCODED AND CONFIGURABLE
+================================================================================
+
+Total: 3 files
+(These have defaults in input_file_module.f90 but are also hardcoded)
+
+  pet.cli                                  (1 reference(s))
+  salt_hru.ini                             (1 reference(s))
+  gwflow.con                               (1 reference(s))
+
+================================================================================
+SUMMARY
+================================================================================
+Configurable files (in input_file_module.f90):     149
+Hardcoded files (literal strings in code):          73
+  - NOT configurable (hardcoded only):               70
+  - Also configurable (have defaults):                3
+
+NON-CONFIGURABLE RATE: 95.9%
+
