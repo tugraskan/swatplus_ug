@@ -36,7 +36,7 @@ class FieldSchema:
 @dataclass
 class Evidence:
     """Evidence for a change to the CSV."""
-    action: str  # unchanged, updated, added, removed
+    action: str  # unchanged, updated, added, removed, info
     schema_key: str
     swat_file: str
     line_in_file: int
@@ -422,6 +422,32 @@ class CSVUpdater:
         pos = row.get('Position_in_File', '')
         return f"{swat_file}|{line}|{pos}"
     
+    def is_wildcard_row(self, row: Dict) -> bool:
+        """Check if row has wildcard (*) in Line_in_file or Position_in_File."""
+        line = row.get('Line_in_file', '')
+        pos = row.get('Position_in_File', '')
+        return line == '*' or pos == '*'
+    
+    def is_description_only_change(self, changes: List[str]) -> bool:
+        """Check if only description/units changed (not structural fields)."""
+        if not changes:
+            return False
+        
+        # Structural fields that matter
+        structural_fields = {
+            'Line_in_file', 'Position_in_File', 
+            'SWAT_Code_Variable_Name', 'Data_Type', 
+            'Number_Decimal_Places'
+        }
+        
+        # Check if any structural field changed
+        for change in changes:
+            if change in structural_fields:
+                return False
+        
+        # Only non-structural changes (Description, Units)
+        return True
+    
     def find_matching_baseline_row(self, baseline_dict: Dict, schema: FieldSchema) -> Optional[Dict]:
         """Find matching baseline row, handling wildcards."""
         # Try exact match first
@@ -522,23 +548,51 @@ class CSVUpdater:
                 updated_baseline[key] = row_dict
                 
                 if changes:
-                    file_summaries[schema.file_name].updated += 1
-                    evidence = Evidence(
-                        action='updated',
-                        schema_key=key,
-                        swat_file=schema.file_name,
-                        line_in_file=schema.line_in_file,
-                        position_in_file=schema.position_in_file,
-                        swat_code_type=schema.swat_code_type,
-                        variable_name=schema.variable_name,
-                        field_changed=','.join(changes),
-                        confidence=schema.confidence,
-                        code_file=schema.code_file,
-                        code_line_start=schema.code_line_start,
-                        code_line_end=schema.code_line_end,
-                        code_snippet=schema.code_snippet
-                    )
-                    evidence_list.append(evidence)
+                    # Check if only description/units changed (non-structural)
+                    if self.is_description_only_change(changes):
+                        # Don't update master CSV for description-only changes
+                        # Report as informational only
+                        file_summaries[schema.file_name].unchanged += 1
+                        evidence = Evidence(
+                            action='info',
+                            schema_key=key,
+                            swat_file=schema.file_name,
+                            line_in_file=schema.line_in_file,
+                            position_in_file=schema.position_in_file,
+                            swat_code_type=schema.swat_code_type,
+                            variable_name=schema.variable_name,
+                            field_changed=','.join(changes),
+                            confidence=schema.confidence,
+                            code_file=schema.code_file,
+                            code_line_start=schema.code_line_start,
+                            code_line_end=schema.code_line_end,
+                            code_snippet=schema.code_snippet,
+                            notes='description change only; not applied'
+                        )
+                        evidence_list.append(evidence)
+                        # Revert the description/units changes - keep baseline values
+                        for change in changes:
+                            if change in ['Description', 'Units']:
+                                row_dict[change] = baseline_row.get(change, '')
+                    else:
+                        # Structural fields changed - this is a real update
+                        file_summaries[schema.file_name].updated += 1
+                        evidence = Evidence(
+                            action='updated',
+                            schema_key=key,
+                            swat_file=schema.file_name,
+                            line_in_file=schema.line_in_file,
+                            position_in_file=schema.position_in_file,
+                            swat_code_type=schema.swat_code_type,
+                            variable_name=schema.variable_name,
+                            field_changed=','.join(changes),
+                            confidence=schema.confidence,
+                            code_file=schema.code_file,
+                            code_line_start=schema.code_line_start,
+                            code_line_end=schema.code_line_end,
+                            code_snippet=schema.code_snippet
+                        )
+                        evidence_list.append(evidence)
                 else:
                     file_summaries[schema.file_name].unchanged += 1
                     evidence = Evidence(
@@ -604,37 +658,70 @@ class CSVUpdater:
         # Check for removed rows
         for key, row_dict in baseline_dict.items():
             swat_file = row_dict.get('SWAT_File', '')
-            # Only mark as removed if:
-            # 1. It's for a file we're processing
-            # 2. It wasn't matched to any extracted schema
-            if swat_file in schemas_by_file and key not in matched_baseline_keys:
-                # This row exists in baseline but not in extracted schema
-                file_summaries[swat_file].removed += 1
-                
-                # Parse line and position, handling * values
-                try:
-                    line_val = int(row_dict.get('Line_in_file', '0').replace('*', '0') or 0)
-                except ValueError:
-                    line_val = 0
-                try:
-                    pos_val = int(row_dict.get('Position_in_File', '0').replace('*', '0') or 0)
-                except ValueError:
-                    pos_val = 0
-                
-                evidence = Evidence(
-                    action='removed',
-                    schema_key=key,
-                    swat_file=swat_file,
-                    line_in_file=line_val,
-                    position_in_file=pos_val,
-                    swat_code_type=row_dict.get('Swat_code type', ''),
-                    variable_name=row_dict.get('SWAT_Code_Variable_Name', ''),
-                    notes='Not found in current code'
-                )
-                evidence_list.append(evidence)
-            elif swat_file not in schemas_by_file:
+            
+            # Only process rows for files we're handling
+            if swat_file not in schemas_by_file:
                 # Keep rows for files not in pilot
                 updated_baseline[key] = row_dict
+                continue
+            
+            # If row wasn't matched to any extracted schema
+            if key not in matched_baseline_keys:
+                # Check if this is a wildcard row
+                if self.is_wildcard_row(row_dict):
+                    # Wildcard rows are logical/metadata - never remove them
+                    # Keep them unchanged
+                    updated_baseline[key] = row_dict
+                    
+                    # Parse line and position for evidence
+                    line_str = row_dict.get('Line_in_file', '*')
+                    pos_str = row_dict.get('Position_in_File', '*')
+                    try:
+                        line_val = int(line_str) if line_str != '*' else 0
+                    except ValueError:
+                        line_val = 0
+                    try:
+                        pos_val = int(pos_str) if pos_str != '*' else 0
+                    except ValueError:
+                        pos_val = 0
+                    
+                    evidence = Evidence(
+                        action='unchanged',
+                        schema_key=key,
+                        swat_file=swat_file,
+                        line_in_file=line_val,
+                        position_in_file=pos_val,
+                        swat_code_type=row_dict.get('Swat_code type', ''),
+                        variable_name=row_dict.get('SWAT_Code_Variable_Name', ''),
+                        notes='wildcard row; keep even if not mapped to read structure'
+                    )
+                    evidence_list.append(evidence)
+                else:
+                    # Only remove if BOTH Line_in_file AND Position_in_File are real numbers
+                    # This row exists in baseline but not in extracted schema
+                    file_summaries[swat_file].removed += 1
+                    
+                    # Parse line and position
+                    try:
+                        line_val = int(row_dict.get('Line_in_file', '0') or 0)
+                    except ValueError:
+                        line_val = 0
+                    try:
+                        pos_val = int(row_dict.get('Position_in_File', '0') or 0)
+                    except ValueError:
+                        pos_val = 0
+                    
+                    evidence = Evidence(
+                        action='removed',
+                        schema_key=key,
+                        swat_file=swat_file,
+                        line_in_file=line_val,
+                        position_in_file=pos_val,
+                        swat_code_type=row_dict.get('Swat_code type', ''),
+                        variable_name=row_dict.get('SWAT_Code_Variable_Name', ''),
+                        notes='Not found in current code'
+                    )
+                    evidence_list.append(evidence)
         
         # Update row counts
         for fname, summary in file_summaries.items():
