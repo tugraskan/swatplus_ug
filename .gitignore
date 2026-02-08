@@ -115,3 +115,9 @@ ford.md
 /refdata/Osu_1hru/aquifer_aa.txt
 [Tt]mp/
 /workdata
+
+# Schema extraction outputs
+updated_inputs.csv
+evidence_rows.csv
+per_file_summary.csv
+extracted_schema.ndjson
