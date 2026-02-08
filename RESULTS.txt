@@ -14,11 +14,16 @@ Total schema elements extracted: 49
   - time.sim: 5 elements
   - hru.con: 13 elements
   - plant.ini: 11 elements
-  - hyd-sed-lte.cha: 20 elements
+  - hyd-sed-lte.cha: 23 elements
 
 Baseline CSV: 2,324 rows
-Updated CSV: 2,078 rows
-Net change: -246 rows (outdated schemas removed)
+Updated CSV: 2,324 rows (unchanged count - wildcard rows preserved)
+Net change: 0 rows removed (wildcard rows preserved)
+
+NEW BEHAVIOR:
+  - Wildcard rows (Line_in_file="*" or Position_in_File="*") are NEVER removed
+  - Description-only changes are NOT applied (reported as "info" action)
+  - Only structural changes update the master CSV
 
 ================================================================================
 RESULTS BY FILE
@@ -30,24 +35,82 @@ RESULTS BY FILE
    
    Baseline rows: 6
    Extracted rows: 5
-   Updated rows: 5
+   Updated rows: 6 (unchanged - wildcard row preserved)
    
    Changes:
-     Added: 0
-     Updated: 5
-     Removed: 1
-     Unchanged: 0
+     Updated: 0 (no structural changes)
+     Info: 5 (description-only, not applied)
+     Removed: 0 (wildcard row preserved)
+     Unchanged: 1 (wildcard row)
    
    What Changed:
-     - Description updated from type definition comments
-     - Swat_code type: UNCHANGED (remains in_sim)
-     - Variables: day_start, yrc_start, day_end, yrc_end, step
+     - All 5 fields had description differences
+     - BUT these are description-only (not structural)
+     - Master CSV NOT updated - baseline descriptions preserved
+     - Evidence shows "info" action with note: "description change only; not applied"
 
 2. hru.con
    Source: hyd_read_connect.f90 (lines 220-221)
    Type: hydrograph_module.f90, type ob
    
    Baseline rows: 18
+   Extracted rows: 13
+   Updated rows: 18 (unchanged - wildcard rows preserved)
+   
+   Changes:
+     Updated: 6 (structural: variable names)
+     Info: 3 (description-only, not applied)
+     Removed: 0 (wildcard rows preserved)
+     Unchanged: 9 (includes 5 wildcard output connection fields)
+   
+   What Changed:
+     - Variable numb → num (structural change, applied)
+     - Variables hru/props → props, wst → wst_c, overflow/props2 → props2 (structural, applied)
+     - Some descriptions different but not applied (info action)
+     - Wildcard rows for output connections (positions 14-17) preserved
+     - Metadata row (hru.con|*|*) preserved
+
+3. plant.ini
+   Source: readpcom.f90 (lines 62, 68-70)
+   Type: plant_data_module.f90, type pcomdb
+   
+   Baseline rows: 12
+   Extracted rows: 11
+   Updated rows: 12 (unchanged - wildcard rows preserved)
+   
+   Changes:
+     Updated: 8 (structural: variable names)
+     Info: 2 (description-only, not applied)
+     Removed: 0 (wildcard rows preserved)
+     Unchanged: 2 (wildcard rows)
+   
+   What Changed:
+     - Two-level structure: community header + plant details
+     - Plant detail variable names updated (structural changes)
+     - Some description differences not applied (info action)
+     - Wildcard rows preserved (positions 9, 10)
+
+4. hyd-sed-lte.cha
+   Source: sd_hydsed_read.f90 (line 61)
+   Type: sd_channel_module.f90, type swatdeg_hydsed_data
+   
+   Baseline rows: 24
+   Extracted rows: 23
+   Updated rows: 24 (unchanged - wildcard rows preserved)
+   
+   Changes:
+     Updated: 3 (structural: variable names, data type)
+     Info: 15 (description-only, not applied)
+     Removed: 0 (wildcard row preserved)
+     Unchanged: 6 (includes wildcard row)
+   
+   What Changed:
+     - All 23 fields from type definition extracted
+     - Variable erod_fact → bank_exp (structural, applied)
+     - Variable eq_slp → vcr_coef (structural, applied)
+     - Data type for order: string → integer (structural, applied)
+     - Many description differences not applied (info action)
+     - Wildcard metadata row preserved
    Extracted rows: 13
    Updated rows: 13
    
