@@ -166,6 +166,161 @@ lu_change                  hru         0              null              null    
 
 ---
 
+## Burning 40% of All HRUs
+
+To burn approximately 40% of all HRUs on a specific date, use `plant_kill`
+(partial biomass kill) with the `prob` condition. The `const` field sets the
+fraction of above-ground biomass to kill (simulating fire severity).
+
+### `scen_lu.dtl`
+
+```
+scen_lu.dtl: burn 40% of all HRUs
+1
+
+name                     conds      alts      acts       !burn ~40% of all HRUs on Jan 1, 2016
+burn_40pct_all               3         1         1
+var                        obj   obj_num           lim_var            lim_op     lim_const      alt1
+year_cal                  null         0              null                 -    2016.00000         =
+jday                      null         0              null                 -       1.00000         =
+prob                      null         0              null                 -       0.40000         <
+act_typ                    obj   obj_num              name            option         const        const2                fp  outcome
+plant_kill                 hru         0              null              null       1.00000       0.00000              null  y
+```
+
+### `scen_dtl.upd`
+
+```
+scenario decision table used in simulation - scen_dtl.upd
+1
+num_hits     name      dtable
+1            scen_lu   burn_40pct_all
+```
+
+### How It Works
+
+| Condition   | Meaning                                              |
+|-------------|------------------------------------------------------|
+| `year_cal`  | Triggers in 2016                                     |
+| `jday`      | Triggers on January 1                                |
+| `prob`      | Each HRU has a 40% chance of being selected          |
+
+| Action Field | Value   | Meaning                                      |
+|-------------|---------|----------------------------------------------|
+| `act_typ`   | `plant_kill` | Kills a fraction of plant biomass         |
+| `const`     | `1.0`   | Kill 100% of above-ground biomass (severe fire) |
+
+The `prob < 0.40` condition randomly selects ~40% of all HRUs. The `plant_kill`
+action with `const = 1.0` kills 100% of the above-ground biomass in selected
+HRUs (simulating a severe fire). Use a lower `const` value for less severe burns
+(e.g., `const = 0.50` for a moderate fire that kills 50% of biomass).
+
+---
+
+## Burning 40% of All Forest HRUs
+
+To burn approximately 40% of forest HRUs only, add a `land_use` condition to
+filter to forest HRUs before applying the `prob` selection:
+
+### `scen_lu.dtl`
+
+```
+scen_lu.dtl: burn 40% of forest HRUs
+1
+
+name                     conds      alts      acts       !burn ~40% of forest HRUs on Jan 1, 2016
+burn_40pct_frst              4         1         1
+var                        obj   obj_num           lim_var            lim_op     lim_const      alt1
+year_cal                  null         0              null                 -    2016.00000         =
+jday                      null         0              null                 -       1.00000         =
+land_use                   hru         0          frst_lum                 -       0.00000         =
+prob                      null         0              null                 -       0.40000         <
+act_typ                    obj   obj_num              name            option         const        const2                fp  outcome
+plant_kill                 hru         0              null              null       0.70000       0.00000              null  y
+```
+
+### How It Works
+
+| Condition   | Meaning                                              |
+|-------------|------------------------------------------------------|
+| `year_cal`  | Triggers in 2016                                     |
+| `jday`      | Triggers on January 1                                |
+| `land_use`  | Only forest HRUs (`frst_lum`) match                  |
+| `prob`      | Each forest HRU has a 40% chance of being selected   |
+
+| Action Field | Value   | Meaning                                      |
+|-------------|---------|----------------------------------------------|
+| `act_typ`   | `plant_kill` | Kills a fraction of plant biomass         |
+| `const`     | `0.70`  | Kill 70% of above-ground biomass (high severity fire) |
+
+Only forest HRUs pass the `land_use` filter. Of those, ~40% are randomly
+selected by `prob`. The selected HRUs have 70% of their above-ground biomass
+killed and converted to surface residue.
+
+---
+
+## Using the `burn` Action with `fire.ops` Database
+
+For a full burn operation that also updates the curve number and handles soil
+carbon, use the `burn` action type. The `burn` action requires a fire type
+defined in the `fire.ops` database file.
+
+### Example `fire.ops`
+
+```
+fire.ops: fire operations database
+name                   chg_cn2     frac_burn  description
+grass                  8.00000       1.00000
+tree_intense           8.00000       0.90000
+tree_low               6.00000       0.70000
+```
+
+| Field       | Meaning                                            |
+|-------------|----------------------------------------------------|
+| `name`      | Fire type name (referenced in `option` field)      |
+| `chg_cn2`   | Curve number increase after fire                   |
+| `frac_burn` | Fraction of biomass and residue burned             |
+
+### `scen_lu.dtl` with `burn` action
+
+```
+name                     conds      alts      acts       !burn ~40% of forest HRUs (tree_low fire type)
+burn_forest                  4         1         1
+var                        obj   obj_num           lim_var            lim_op     lim_const      alt1
+year_cal                  null         0              null                 -    2016.00000         =
+jday                      null         0              null                 -       1.00000         =
+land_use                   hru         0          frst_lum                 -       0.00000         =
+prob                      null         0              null                 -       0.40000         <
+act_typ                    obj   obj_num              name            option         const        const2                fp  outcome
+burn                       hru         0              null          tree_low       0.00000       1.00000              null  y
+```
+
+| Action Field | Value      | Meaning                                    |
+|-------------|------------|--------------------------------------------|
+| `act_typ`   | `burn`     | Full burn operation from fire database      |
+| `option`    | `tree_low` | Fire type from `fire.ops` (70% burn, CN +6) |
+| `const2`    | `1.0`      | Maximum number of times to apply            |
+
+> **Note:** The `burn` action uses the fire type's `frac_burn` to determine
+> how much biomass is burned, and `chg_cn2` to increase the curve number.
+
+---
+
+## Comparison: `plant_kill` vs `burn`
+
+| Feature | `plant_kill` | `burn` |
+|---------|-------------|--------|
+| Kills fraction of biomass | ✅ via `const` | ✅ via `fire_db%fr_burn` |
+| Updates curve number | ❌ | ✅ via `fire_db%cn2_upd` |
+| Burns soil residue/carbon | ❌ | ✅ |
+| Works from `scen_lu.dtl` | ✅ | ✅ (requires `fire.ops`) |
+| Kill fraction control | Direct (`const` = 0 to 1) | Via fire type in `fire.ops` |
+
+Use `plant_kill` for simple partial biomass kill scenarios. Use `burn` when you
+need the full fire effects including curve number and soil carbon changes.
+
+---
+
 ## Complete Example: Fire and Recovery Scenario
 
 ### `scen_dtl.upd`
@@ -226,11 +381,21 @@ lu_change                  hru         0              null              null    
 | `prob`         | Random selection (each HRU independent)              | `lim_const` = probability threshold |
 | `prob_unif_lu` | Distribute selections across land use HRUs over window | `obj_num` = start day, `lim_const` = end day |
 
+## Action Reference
+
+| Action         | Purpose                                      | Key Fields |
+|----------------|----------------------------------------------|------------|
+| `lu_change`    | Change HRU land use management               | `fp` = target land use name |
+| `plant_kill`   | Kill fraction of above-ground plant biomass  | `const` = kill fraction (0-1) |
+| `burn`         | Full fire: burn biomass, update CN, soil C   | `option` = fire type from `fire.ops`, `const2` = max applications |
+
 ## Summary
 
 | Goal | Method |
 |------|--------|
 | Change ALL forest HRUs | `land_use` condition with `lim_var = frst_lum` |
 | Change ~70% of forest HRUs | Add `prob` condition with `lim_const = 0.70` and `alt1 = <` |
+| Burn ~40% of ALL HRUs | `prob < 0.40` + `plant_kill` with `const = 1.0` |
+| Burn ~40% of forest HRUs | `land_use = frst_lum` + `prob < 0.40` + `plant_kill` or `burn` |
 | Target specific HRU | Set `obj_num` in the action line |
 | Distribute changes over time | Use `prob_unif_lu` condition |

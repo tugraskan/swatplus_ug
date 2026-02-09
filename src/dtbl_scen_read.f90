@@ -24,6 +24,7 @@
       logical :: i_exist              !none       |check to determine if file exists
       integer :: ilum = 0             !none       |counter
       integer :: ihru = 0             !none       |counter
+      integer :: iburn = 0            !none       |counter
       
       mdtbl = 0
       eof = 0
@@ -97,6 +98,13 @@
                   do ilum = 1, db_mx%landuse
                     if (dtbl_scen(i)%act(iac)%file_pointer == lum(ilum)%name) then
                       dtbl_scen(i)%act_typ(iac) = ilum
+                      exit
+                    end if
+                  end do
+                case ("burn")
+                  do iburn = 1, db_mx%fireop_db
+                    if (dtbl_scen(i)%act(iac)%option == fire_db(iburn)%name) then
+                      dtbl_scen(i)%act_typ(iac) = iburn
                       exit
                     end if
                   end do
