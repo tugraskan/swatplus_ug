@@ -1,7 +1,8 @@
 # Land Use Change Scenarios with `scen_lu.dtl` and `scen_dtl.upd`
 
-This guide explains how to change a fraction (e.g., 70%) of a particular HRU's
-land use using the scenario decision table system.
+This guide explains how to change a fraction of HRUs (e.g., 70% of all forest
+HRUs) to a different land use using the scenario decision table system — using
+**input files only**, without modifying the SWAT+ source code.
 
 ## Overview
 
@@ -10,108 +11,29 @@ SWAT+ supports land use change scenarios through two input files:
 - **`scen_lu.dtl`** — Defines decision tables with conditions and actions
 - **`scen_dtl.upd`** — Lists which decision tables to activate during simulation
 
-## Approach: Achieving a 70% Land Use Change Without Source Code Modifications
-
-With the **unmodified** SWAT+ source code, `lu_change` converts the **entire**
-HRU's land use. To convert only 70% of a particular land use area, you need to
-**split the HRU into two parts during model setup**:
-
-1. One HRU representing **70%** of the original area (to be converted)
-2. One HRU representing **30%** of the original area (to remain unchanged)
-
-Both HRUs share the same soil, topography, and initial land use. The `lu_change`
-action then targets only the 70%-area HRU for conversion.
+The simulation loop in `time_control.f90` evaluates each decision table against
+**every HRU** on each time step. Conditions determine which HRUs are eligible,
+and actions are applied only when all conditions are met.
 
 ---
 
-### Step 1: Split the Forest HRU in Model Setup
+## Changing 70% of All Forest HRUs to Rangeland
 
-Suppose your original model has a forest HRU (HRU 5) with `bsn_frac = 0.20` and
-land use `frst_lum`. To convert 70% of it to rangeland:
+To convert approximately 70% of all forest (`frst_lum`) HRUs to rangeland
+(`rnge_lum`) on a specific date, use three conditions together:
 
-**Original `ls_unit.ele`:**
-```
-lsu_unit.ele
-ID  NAME     OBJ_TYP  OBJ_TYP_NO  BSN_FRAC  RU_FRAC
- 5  hru0005  hru      5           0.20      0.0
-```
+1. **`year_cal`** — triggers on the target year
+2. **`land_use`** — filters to only forest HRUs
+3. **`prob`** — randomly selects ~70% of those HRUs
 
-**Split into two HRUs** — the 70% portion gets a new HRU number:
-
-**Updated `ls_unit.ele`:**
-```
-lsu_unit.ele
-ID  NAME     OBJ_TYP  OBJ_TYP_NO  BSN_FRAC  RU_FRAC
- 5  hru0005  hru      5           0.14      0.0
-13  hru0013  hru     13           0.06      0.0
-```
-
-Here:
-- `0.14 = 0.70 × 0.20` — the portion to be converted to rangeland
-- `0.06 = 0.30 × 0.20` — remains as forest
-
-**Updated `hru-data.hru`** — add the new HRU with the same physical properties:
-```
-id  name       topo        hydro    soil        lu_mgt    soil_plant_init  surf_stor  snow     field
- 5  hru0005    topohru005  hyd005   soil_05     frst_lum  soilplant1       null       snow001  null
-13  hru0013    topohru005  hyd005   soil_05     frst_lum  soilplant1       null       snow001  null
-```
-
-> **Note:** You must also update `object.cnt`, `hru.con`, and `rout_unit.ele` to
-> include the new HRU. The new HRU must use the same topography, hydrology, and
-> soil as the original.
-
-### Step 2: Create `scen_lu.dtl`
-
-Define a decision table that targets only HRU 5 (the 70% portion) for conversion:
+### `scen_lu.dtl`
 
 ```
-scen_lu.dtl: land use change scenario
+scen_lu.dtl: written by SWAT+ editor v3.1.0
 1
 
-name                     conds      alts      acts       !change 70% forest HRU to range on Jan 1, 2012
-forest_to_grass              2         1         1
-var                        obj   obj_num           lim_var            lim_op     lim_const      alt1
-year_cal                  null         0              null                 -    2012.00000         =
-jday                      null         0              null                 -       1.00000         =
-act_typ                    obj   obj_num              name            option         const        const2                fp  outcome
-lu_change                  hru         5              null              null       0.00000       0.00000          rnge_lum  y
-```
-
-**Key fields:**
-| Field     | Value      | Meaning                                                |
-|-----------|------------|--------------------------------------------------------|
-| `obj_num` | `5`        | Target specific HRU 5 (the 70% portion)                |
-| `fp`      | `rnge_lum` | New land use management (must exist in `landuse.lum`)  |
-
-> **Note:** Setting `obj_num = 0` would apply the action to whichever HRU the
-> loop is currently evaluating. Use a specific number to target only one HRU.
-
-### Step 3: Create `scen_dtl.upd`
-
-```
-scenario decision table used in simulation - scen_dtl.upd
-1
-num_hits     name      dtable
-1            scen_lu   forest_to_grass
-```
-
-### Step 4: Ensure Target Land Use Exists
-
-The target `rnge_lum` must be defined in `landuse.lum` with plant community,
-management schedule, curve number lookup, etc.
-
----
-
-## Using `land_use` Condition to Filter by Current Land Use
-
-Instead of targeting a specific HRU number, you can use the **`land_use`** condition
-to match all HRUs with a given land use name. This is useful when multiple HRUs
-share the same land use and you want to convert all of them:
-
-```
-name                     conds      alts      acts
-forest_to_grass              3         1         1
+name                     conds      alts      acts       !change 70% of all forest HRUs to range on Jan 1, 2012
+forest_to_range              3         1         1
 var                        obj   obj_num           lim_var            lim_op     lim_const      alt1
 year_cal                  null         0              null                 -    2012.00000         =
 jday                      null         0              null                 -       1.00000         =
@@ -120,58 +42,140 @@ act_typ                    obj   obj_num              name            option    
 lu_change                  hru         0              null              null       0.00000       0.00000          rnge_lum  y
 ```
 
-The `land_use` condition with `lim_var = frst_lum` and `alt1 = =` ensures the
-action only fires for HRUs whose current `land_use_mgt_c` equals `frst_lum`.
+### `scen_dtl.upd`
 
-> **Important:** With `obj_num = 0` and a `land_use` condition, **all** matching
-> HRUs will be changed. If you split forest into a 70% HRU and a 30% HRU, give
-> the 30% HRU a different land use name (e.g., `frst_keep`) so it does not match.
+```
+scenario decision table used in simulation - scen_dtl.upd
+1
+num_hits     name      dtable
+1            scen_lu   forest_to_range
+```
+
+### How It Works
+
+The decision table has 3 conditions and 1 action:
+
+| Condition   | Meaning                                                  |
+|-------------|----------------------------------------------------------|
+| `year_cal`  | Only triggers in calendar year 2012                      |
+| `jday`      | Only triggers on Julian day 1 (January 1)                |
+| `land_use`  | Only matches HRUs whose current `land_use_mgt_c` = `frst_lum` |
+
+| Action      | Meaning                                                  |
+|-------------|----------------------------------------------------------|
+| `lu_change` | Changes the HRU's land use to `rnge_lum`                 |
+
+With `obj_num = 0` in both the `land_use` condition and the `lu_change` action,
+the table is evaluated for every HRU in the model. The `land_use` condition
+filters to only forest HRUs. **All matching forest HRUs** will be converted
+to rangeland.
+
+> **Note:** This changes **100%** of forest HRUs. See the next section for
+> selecting only a fraction.
 
 ---
 
-## Using `hru_fr_update` for Mid-Simulation Area Changes
+## Selecting a Fraction of HRUs Using the `prob` Condition
 
-If you need to change HRU area fractions **during** the simulation, use the
-`hru_fr_update` action. This reads updated `ls_unit.ele` and `rout_unit.ele` files:
+To change only ~70% of forest HRUs (randomly selected), add a **`prob`**
+condition. The `prob` condition generates a random number for each HRU and
+compares it to `lim_const`. Each forest HRU independently has a 70% chance
+of being selected.
+
+### `scen_lu.dtl` with `prob` condition
 
 ```
-name                     conds      alts      acts
-adjust_fractions             2         1         1
+scen_lu.dtl: written by SWAT+ editor v3.1.0
+1
+
+name                     conds      alts      acts       !change ~70% of all forest HRUs to range on Jan 1, 2012
+forest_to_range              4         1         1
 var                        obj   obj_num           lim_var            lim_op     lim_const      alt1
 year_cal                  null         0              null                 -    2012.00000         =
 jday                      null         0              null                 -       1.00000         =
+land_use                   hru         0          frst_lum                 -       0.00000         =
+prob                      null         0              null                 -       0.70000         <
 act_typ                    obj   obj_num              name            option         const        const2                fp  outcome
-hru_fr_update              hru         0              null    ls_unit_upd.ele       0.00000       0.00000   ru_elem_upd.ele  y
+lu_change                  hru         0              null              null       0.00000       0.00000          rnge_lum  y
 ```
 
-| Field    | Value             | Meaning                                    |
-|---------|-------------------|--------------------------------------------|
-| `option`| `ls_unit_upd.ele` | File with updated `bsn_frac` values        |
-| `fp`    | `ru_elem_upd.ele` | File with updated routing unit fractions    |
+### Key Addition: The `prob` Condition
 
-The `ls_unit_upd.ele` file uses the same format as the original `ls_unit.ele`.
+| Field       | Value   | Meaning                                        |
+|-------------|---------|------------------------------------------------|
+| `var`       | `prob`  | Probabilistic condition                        |
+| `lim_const` | `0.70`  | Threshold probability (70%)                    |
+| `lim_op`    | `-`     | Not used                                       |
+| `alt1`      | `<`     | Action fires when random number < 0.70         |
 
-> **Note:** `hru_fr_update` only changes area fractions — it does NOT change land
-> use. Combine it with `lu_change` in separate actions or decision tables if you
-> need both.
+For each HRU, a random number between 0 and 1 is generated. If it is less than
+0.70, the condition is met and the HRU is selected. Over many forest HRUs, this
+gives approximately 70% conversion.
+
+> **Note:** Because `prob` is stochastic, the exact percentage may vary slightly
+> from run to run. With many HRUs, the result converges to 70%.
 
 ---
 
-## Complete Example: Forest to Range with Recovery
+## Using `prob_unif_lu` for Distributed Selection Over Time
 
-### Model Setup
+For scenarios where you want the 70% conversion to happen **gradually across a
+time window** (not all on one day), use the `prob_unif_lu` condition. This
+distributes the selection uniformly across a window of Julian days.
 
-Split a forest HRU (original `bsn_frac = 0.20`) into:
-- HRU 5: `bsn_frac = 0.14` (70%, to be converted) with `lu_mgt = frst_lum`
-- HRU 13: `bsn_frac = 0.06` (30%, stays forest) with `lu_mgt = frst_lum`
+```
+name                     conds      alts      acts       !change ~70% of forest HRUs over days 1-30
+forest_to_range              2         1         1
+var                        obj   obj_num           lim_var            lim_op     lim_const      alt1
+land_use                   hru         0          frst_lum                 -       0.00000         =
+prob_unif_lu              null         1              null                 -      30.00000         =
+act_typ                    obj   obj_num              name            option         const        const2                fp  outcome
+lu_change                  hru         0              null              null       0.00000       0.00000          rnge_lum  y
+```
+
+| Field       | Value          | Meaning                                      |
+|-------------|----------------|----------------------------------------------|
+| `var`       | `prob_unif_lu` | Uniform distribution across land use HRUs    |
+| `obj_num`   | `1`            | Start day of window (Julian day)             |
+| `lim_const` | `30.0`         | End day of window (Julian day)               |
+
+The `prob_unif_lu` condition uses the `hru_lu` count (number of forest HRUs)
+to distribute selections uniformly. Each forest HRU is selected on approximately
+one day within the window.
+
+> **Note:** `prob_unif_lu` requires the `land_use` condition in the same table
+> to count the matching HRUs.
+
+---
+
+## Changing All Forest HRUs (100%)
+
+To convert **all** forest HRUs to rangeland (not just a fraction), simply use
+the `land_use` condition without `prob`:
+
+```
+name                     conds      alts      acts       !change ALL forest HRUs to range
+forest_to_range              3         1         1
+var                        obj   obj_num           lim_var            lim_op     lim_const      alt1
+year_cal                  null         0              null                 -    2012.00000         =
+jday                      null         0              null                 -       1.00000         =
+land_use                   hru         0          frst_lum                 -       0.00000         =
+act_typ                    obj   obj_num              name            option         const        const2                fp  outcome
+lu_change                  hru         0              null              null       0.00000       0.00000          rnge_lum  y
+```
+
+---
+
+## Complete Example: Fire and Recovery Scenario
 
 ### `scen_dtl.upd`
 
 ```
 scenario decision table used in simulation - scen_dtl.upd
-2
+3
 num_hits     name      dtable
-1            scen_lu   forest_to_grass
+1            scen_lu   forest_to_range
+1            scen_lu   fire_2016
 1            scen_lu   reforest_2017
 ```
 
@@ -179,33 +183,54 @@ num_hits     name      dtable
 
 ```
 scen_lu.dtl: land use change scenarios
-2
+3
 
-name                     conds      alts      acts       !change forest HRU 5 to range on Jan 1, 2012
-forest_to_grass              2         1         1
+name                     conds      alts      acts       !change ~70% of forest HRUs to range on Jan 1, 2012
+forest_to_range              4         1         1
 var                        obj   obj_num           lim_var            lim_op     lim_const      alt1
 year_cal                  null         0              null                 -    2012.00000         =
 jday                      null         0              null                 -       1.00000         =
+land_use                   hru         0          frst_lum                 -       0.00000         =
+prob                      null         0              null                 -       0.70000         <
 act_typ                    obj   obj_num              name            option         const        const2                fp  outcome
-lu_change                  hru         5              null              null       0.00000       0.00000          rnge_lum  y
+lu_change                  hru         0              null              null       0.00000       0.00000          rnge_lum  y
 
-name                     conds      alts      acts       !change HRU 5 back to forest on Jan 1, 2017
-reforest_2017                2         1         1
+name                     conds      alts      acts       !burn on Jan 1, 2016
+fire_2016                    3         1         1
+var                        obj   obj_num           lim_var            lim_op     lim_const      alt1
+year_cal                  null         0              null                 -    2016.00000         =
+jday                      null         0              null                 -       1.00000         =
+land_use                   hru         0          rnge_lum                 -       0.00000         =
+act_typ                    obj   obj_num              name            option         const        const2                fp  outcome
+lu_change                  hru         0              null              null       0.00000       0.00000          frst_lum  y
+
+name                     conds      alts      acts       !reforest on Jan 1, 2017
+reforest_2017                3         1         1
 var                        obj   obj_num           lim_var            lim_op     lim_const      alt1
 year_cal                  null         0              null                 -    2017.00000         =
 jday                      null         0              null                 -       1.00000         =
+land_use                   hru         0          rnge_lum                 -       0.00000         =
 act_typ                    obj   obj_num              name            option         const        const2                fp  outcome
-lu_change                  hru         5              null              null       0.00000       0.00000          frst_lum  y
+lu_change                  hru         0              null              null       0.00000       0.00000          frst_lum  y
 ```
 
 ---
 
+## Condition Reference
+
+| Condition      | Purpose                                              | Key Fields |
+|----------------|------------------------------------------------------|------------|
+| `year_cal`     | Match calendar year                                  | `lim_const` = year |
+| `jday`         | Match Julian day of year                             | `lim_const` = day |
+| `land_use`     | Match HRU land use name                              | `lim_var` = land use name |
+| `prob`         | Random selection (each HRU independent)              | `lim_const` = probability threshold |
+| `prob_unif_lu` | Distribute selections across land use HRUs over window | `ob_num` = start day, `lim_const` = end day |
+
 ## Summary
 
-| Goal | Input-Only Method |
-|------|-------------------|
-| Convert 70% of a land use | Split HRU into 70%/30% during model setup, then use `lu_change` on the 70% HRU |
-| Target by current land use | Add `land_use` condition with `lim_var` = land use name |
-| Target specific HRU | Set `obj_num` to the HRU number in the action |
-| Adjust area fractions mid-simulation | Use `hru_fr_update` with updated element files |
-| Combine multiple changes | List multiple decision tables in `scen_dtl.upd` |
+| Goal | Method |
+|------|--------|
+| Change ALL forest HRUs | `land_use` condition with `lim_var = frst_lum` |
+| Change ~70% of forest HRUs | Add `prob` condition with `lim_const = 0.70` and `alt1 = <` |
+| Target specific HRU | Set `obj_num` in the action line |
+| Distribute changes over time | Use `prob_unif_lu` condition |

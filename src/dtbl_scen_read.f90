@@ -8,6 +8,8 @@
       use fertilizer_data_module
       use input_file_module
       use conditional_module
+      use hydrograph_module, only : sp_ob
+      use hru_module, only : hru
       
       implicit none
                   
@@ -20,7 +22,8 @@
       integer :: ial = 0              !none       |counter 
       integer :: iac = 0              !none       !counter 
       logical :: i_exist              !none       |check to determine if file exists
-      integer :: ilum = 0             !none       |counter      
+      integer :: ilum = 0             !none       |counter
+      integer :: ihru = 0             !none       |counter
       
       mdtbl = 0
       eof = 0
@@ -61,6 +64,20 @@
             do ic = 1, dtbl_scen(i)%conds
               read (107,*,iostat=eof) dtbl_scen(i)%cond(ic), (dtbl_scen(i)%alt(ic,ial), ial = 1, dtbl_scen(i)%alts)
               if (eof < 0) exit
+            end do
+            
+            !if land_use conditional variable, determine number of hru's and areas (used for probabilistic operations)
+            dtbl_scen(i)%hru_lu = 0
+            dtbl_scen(i)%ha_lu = 0.
+            do ic = 1, dtbl_scen(i)%conds
+              if (dtbl_scen(i)%cond(ic)%var == "land_use") then
+                do ihru = 1, sp_ob%hru
+                  if (dtbl_scen(i)%cond(ic)%lim_var == hru(ihru)%land_use_mgt_c) then
+                    dtbl_scen(i)%hru_lu = dtbl_scen(i)%hru_lu + 1
+                    dtbl_scen(i)%ha_lu = dtbl_scen(i)%ha_lu + hru(ihru)%area_ha
+                  end if
+                end do
+              end if
             end do
                         
             !read actions and action outcomes
