@@ -89,6 +89,8 @@
       real :: p_factor = 0.
       real :: cn_prev = 0.
       real :: stor_m3 = 0.
+      real :: frac_chg = 0.              !         |fraction of area to change for lu_change
+      real :: kill_frac = 0.             !         |fraction of plant biomass to kill for plant_kill
       character(len=1) :: action = ""      !         |
       character(len=40) :: lu_prev = ""    !         |
 
@@ -525,6 +527,63 @@
               if (iac > 1) pcom(j)%dtbl(idtbl)%days_act(iac-1) =  0     !reset previous action day counter
             end if
   
+          !partial plant kill - kills fraction (const) of plant biomass
+          case ("plant_kill")
+            j = d_tbl%act(iac)%ob_num
+            if (j == 0) j = ob_cur
+            
+            kill_frac = d_tbl%act(iac)%const
+            if (kill_frac > 1.) kill_frac = 1.
+            if (kill_frac < 0.) kill_frac = 0.
+            
+            !! zero total community masses before re-summing
+            pl_mass(j)%tot_com = plt_mass_z
+            pl_mass(j)%ab_gr_com = plt_mass_z
+            pl_mass(j)%leaf_com = plt_mass_z
+            pl_mass(j)%stem_com = plt_mass_z
+            pl_mass(j)%seed_com = plt_mass_z
+            
+            do ipl = 1, pcom(j)%npl
+              biomass = pl_mass(j)%tot(ipl)%m
+              
+              !! add killed above ground biomass fraction to surface residue
+              pl_mass(j)%rsd(ipl) = pl_mass(j)%rsd(ipl) + kill_frac * pl_mass(j)%ab_gr(ipl)
+              
+              !! reduce above ground plant components by kill fraction
+              pl_mass(j)%ab_gr(ipl) = (1. - kill_frac) * pl_mass(j)%ab_gr(ipl)
+              pl_mass(j)%stem(ipl) = (1. - kill_frac) * pl_mass(j)%stem(ipl)
+              pl_mass(j)%leaf(ipl) = (1. - kill_frac) * pl_mass(j)%leaf(ipl)
+              pl_mass(j)%seed(ipl) = (1. - kill_frac) * pl_mass(j)%seed(ipl)
+              
+              !! update total plant mass
+              pl_mass(j)%tot(ipl)%m = pl_mass(j)%ab_gr(ipl)%m + pl_mass(j)%root(ipl)%m
+              
+              !! sum total community masses
+              pl_mass(j)%tot_com = pl_mass(j)%tot_com + pl_mass(j)%tot(ipl)
+              pl_mass(j)%ab_gr_com = pl_mass(j)%ab_gr_com + pl_mass(j)%ab_gr(ipl)
+              pl_mass(j)%leaf_com = pl_mass(j)%leaf_com + pl_mass(j)%leaf(ipl)
+              pl_mass(j)%stem_com = pl_mass(j)%stem_com + pl_mass(j)%stem(ipl)
+              pl_mass(j)%seed_com = pl_mass(j)%seed_com + pl_mass(j)%seed(ipl)
+            end do
+            
+            !! update total surface residue pool
+            pl_mass(j)%rsd_tot = orgz
+            do ipl = 1, pcom(j)%npl
+              pl_mass(j)%rsd_tot = pl_mass(j)%rsd_tot + pl_mass(j)%rsd(ipl)
+            end do
+            
+            if (pco%mgtout == "y") then
+              ipl = 1
+              write (2612, *) j, time%yrc, time%mo, time%day_mo,                     &
+                  d_tbl%act(iac)%name, "  PLANT_KILL", phubase(j),                    &
+                  pcom(j)%plcur(ipl)%phuacc, soil(j)%sw, pl_mass(j)%tot(ipl)%m,      &
+                  pl_mass(j)%rsd_tot%m, sol_sumno3(j), sol_sumsolp(j), kill_frac
+            end if
+            
+            !! write to landuse change file
+            write (3612,*) j, time%yrc, time%mo, time%day_mo,  "   PLANT_KILL ",      &
+                    d_tbl%act(iac)%name, kill_frac
+
           !harvest and kill
           case ("harvest_kill")
             j = d_tbl%act(iac)%ob_num
@@ -690,7 +749,7 @@
             if (j == 0) j = ob_cur
             
             hlt(j)%gro = "y"
-            hlt(j)%g = 0.
+            hlt(j)%g = d_tbl%act(iac)%const
             hlt(j)%alai = 0.
             hlt(j)%dm = 0.
             hlt(j)%hufh = 0.
@@ -894,10 +953,23 @@
             !if (d_tbl%lu_chg_mx(iac) <= Int(d_tbl%act(iac)%const2)) then
             d_tbl%lu_chg_mx(iac) = d_tbl%lu_chg_mx(iac) + 1
             ilu = d_tbl%act_typ(iac)
+            
+            !! get fraction to change - use const if > 0 and < 1
+            frac_chg = d_tbl%act(iac)%const
+            
+            lu_prev = hru(j)%land_use_mgt_c
+            
+            !! apply fractional area change if const is between 0 and 1
+            if (frac_chg > 0. .and. frac_chg < 1.) then
+              hru(j)%area_ha = frac_chg * hru(j)%area_ha
+              hru(j)%km = hru(j)%area_ha / 100.
+              iob = hru(j)%obj_no
+              ob(iob)%area_ha = hru(j)%area_ha
+            end if
+            
             hru(j)%land_use_mgt = ilu
             hru(j)%dbs%land_use_mgt = ilu
 									 
-            lu_prev = hru(j)%land_use_mgt_c
             hru(j)%land_use_mgt_c = d_tbl%act(iac)%file_pointer
             isol = hru(j)%dbs%soil
             call hru_lum_init (j)
@@ -909,7 +981,7 @@
                                  hru(j)%lumv%usle_p * hru(j)%lumv%usle_ls * 11.8
             !! write to new landuse change file
             write (3612,*) j, time%yrc, time%mo, time%day_mo,  "    LU_CHANGE ",        &
-                    lu_prev, hru(j)%land_use_mgt_c, "   0   0"
+                    lu_prev, hru(j)%land_use_mgt_c, frac_chg
                             
               !! add new plants in simulation for yield output
               do ipl = 1, pcom(j)%npl

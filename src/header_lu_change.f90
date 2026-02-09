@@ -9,7 +9,7 @@
         write (3612,*) bsn%name, prog
         write (3612,100) 
 100     format (1x,'         hru','       year','         mon','         day','     operation', &
-        '   lu_before','         lu_after')  
+        '   lu_before','         lu_after','   frac_chg')  
         write (9000,*) "DTBL                      lu_change_out.txt"
          
       return
