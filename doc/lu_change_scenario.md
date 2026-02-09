@@ -310,8 +310,8 @@ burn                       hru         0              null          tree_low    
 
 | Feature | `plant_kill` | `burn` |
 |---------|-------------|--------|
-| Kills fraction of biomass | ✅ via `const` | ✅ via `fire_db%fr_burn` |
-| Updates curve number | ❌ | ✅ via `fire_db%cn2_upd` |
+| Kills fraction of biomass | ✅ via `const` | ✅ via `frac_burn` in `fire.ops` |
+| Updates curve number | ❌ | ✅ via `chg_cn2` in `fire.ops` |
 | Burns soil residue/carbon | ❌ | ✅ |
 | Works from `scen_lu.dtl` | ✅ | ✅ (requires `fire.ops`) |
 | Kill fraction control | Direct (`const` = 0 to 1) | Via fire type in `fire.ops` |
