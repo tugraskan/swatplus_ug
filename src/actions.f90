@@ -544,7 +544,6 @@
             pl_mass(j)%seed_com = plt_mass_z
             
             do ipl = 1, pcom(j)%npl
-              biomass = pl_mass(j)%tot(ipl)%m
               
               !! add killed above ground biomass fraction to surface residue
               pl_mass(j)%rsd(ipl) = pl_mass(j)%rsd(ipl) + kill_frac * pl_mass(j)%ab_gr(ipl)
@@ -582,7 +581,7 @@
             
             !! write to landuse change file
             write (3612,*) j, time%yrc, time%mo, time%day_mo,  "   PLANT_KILL ",      &
-                    d_tbl%act(iac)%name, kill_frac
+                    "null", "null", kill_frac
 
           !harvest and kill
           case ("harvest_kill")
