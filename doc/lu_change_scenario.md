@@ -224,7 +224,7 @@ lu_change                  hru         0              null              null    
 | `jday`         | Match Julian day of year                             | `lim_const` = day |
 | `land_use`     | Match HRU land use name                              | `lim_var` = land use name |
 | `prob`         | Random selection (each HRU independent)              | `lim_const` = probability threshold |
-| `prob_unif_lu` | Distribute selections across land use HRUs over window | `ob_num` = start day, `lim_const` = end day |
+| `prob_unif_lu` | Distribute selections across land use HRUs over window | `obj_num` = start day, `lim_const` = end day |
 
 ## Summary
 
