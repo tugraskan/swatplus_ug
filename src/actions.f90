@@ -1185,12 +1185,11 @@
             j = d_tbl%act(iac)%ob_num
             if (j == 0) j = ob_cur
             
-            if (pcom(j)%dtbl(idtbl)%num_actions(iac) <= Int(d_tbl%act(iac)%const2)) then
-              iburn = d_tbl%act_typ(iac)           !burn type
+            iburn = d_tbl%act_typ(iac)           !burn type from fire.ops
+            if (iburn > 0) then
               do ipl = 1, pcom(j)%npl
                 call pl_burnop (j, iburn)
               end do
-                        
 
               ! reset plant index for output after burn operation
               ipl = 1
@@ -1199,7 +1198,9 @@
                     pcom(j)%plcur(ipl)%phuacc, soil(j)%sw,pl_mass(j)%tot(ipl)%m, pl_mass(j)%rsd_tot%m,   &
                     sol_sumno3(j), sol_sumsolp(j)
               end if
-              pcom(j)%dtbl(idtbl)%num_actions(iac) = pcom(j)%dtbl(idtbl)%num_actions(iac) + 1
+              !! write to landuse change file
+              write (3612,*) j, time%yrc, time%mo, time%day_mo,  "         BURN ",      &
+                      d_tbl%act(iac)%option, "null", fire_db(iburn)%fr_burn
             end if
           
           !update curve number
