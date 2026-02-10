@@ -1,0 +1,148 @@
+Variable,Filename,Category
+in_sim%time,time.sim,Simulation
+in_sim%prt,print.prt,Simulation
+in_sim%object_prt,object.prt,Simulation
+in_sim%object_cnt,object.cnt,Simulation
+in_sim%cs_db,constituents.cs,Simulation
+in_basin%codes_bas,codes.bsn,Basin
+in_basin%parms_bas,parameters.bsn,Basin
+in_cli%weat_sta,weather-sta.cli,Climate
+in_cli%weat_wgn,weather-wgn.cli,Climate
+in_cli%pet_cli,pet.cli,Climate
+in_cli%pcp_cli,pcp.cli,Climate
+in_cli%tmp_cli,tmp.cli,Climate
+in_cli%slr_cli,slr.cli,Climate
+in_cli%hmd_cli,hmd.cli,Climate
+in_cli%wnd_cli,wnd.cli,Climate
+in_cli%atmo_cli,atmodep.cli,Climate
+in_con%hru_con,hru.con,Connection
+in_con%hruez_con,hru-lte.con,Connection
+in_con%ru_con,rout_unit.con,Connection
+in_con%gwflow_con,gwflow.con,Connection
+in_con%aqu_con,aquifer.con,Connection
+in_con%aqu2d_con,aquifer2d.con,Connection
+in_con%chan_con,channel.con,Connection
+in_con%res_con,reservoir.con,Connection
+in_con%rec_con,recall.con,Connection
+in_con%exco_con,exco.con,Connection
+in_con%delr_con,delratio.con,Connection
+in_con%out_con,outlet.con,Connection
+in_con%chandeg_con,chandeg.con,Connection
+in_cha%init,initial.cha,Channel
+in_cha%dat,channel.cha,Channel
+in_cha%hyd,hydrology.cha,Channel
+in_cha%sed,sediment.cha,Channel
+in_cha%nut,nutrients.cha,Channel
+in_cha%chan_ez,channel-lte.cha,Channel
+in_cha%hyd_sed,hyd-sed-lte.cha,Channel
+in_cha%temp,temperature.cha,Channel
+in_res%init_res,initial.res,Reservoir
+in_res%res,reservoir.res,Reservoir
+in_res%hyd_res,hydrology.res,Reservoir
+in_res%sed_res,sediment.res,Reservoir
+in_res%nut_res,nutrients.res,Reservoir
+in_res%weir_res,weir.res,Reservoir
+in_res%wet,wetland.wet,Reservoir
+in_res%hyd_wet,hydrology.wet,Reservoir
+in_ru%ru_def,rout_unit.def,Routing Unit
+in_ru%ru_ele,rout_unit.ele,Routing Unit
+in_ru%ru,rout_unit.rtu,Routing Unit
+in_ru%ru_dr,rout_unit.dr,Routing Unit
+in_hru%hru_data,hru-data.hru,HRU
+in_hru%hru_ez,hru-lte.hru,HRU
+in_exco%exco,exco.exc,External Constant
+in_exco%om,exco_om.exc,External Constant
+in_exco%pest,exco_pest.exc,External Constant
+in_exco%path,exco_path.exc,External Constant
+in_exco%hmet,exco_hmet.exc,External Constant
+in_exco%salt,exco_salt.exc,External Constant
+in_rec%recall_rec,recall.rec,Recall
+in_delr%del_ratio,delratio.del,Delivery Ratio
+in_delr%om,dr_om.del,Delivery Ratio
+in_delr%pest,dr_pest.del,Delivery Ratio
+in_delr%path,dr_path.del,Delivery Ratio
+in_delr%hmet,dr_hmet.del,Delivery Ratio
+in_delr%salt,dr_salt.del,Delivery Ratio
+in_aqu%init,initial.aqu,Aquifer
+in_aqu%aqu,aquifer.aqu,Aquifer
+in_herd%animal,animal.hrd,Herd/Animal
+in_herd%herd,herd.hrd,Herd/Animal
+in_herd%ranch,ranch.hrd,Herd/Animal
+in_watrts%transfer_wro,water_allocation.wro,Water Rights
+in_watrts%element,element.wro,Water Rights
+in_watrts%water_rights,water_rights.wro,Water Rights
+in_link%chan_surf,chan-surf.lin,Link
+in_link%aqu_cha,aqu_cha.lin,Link
+in_hyd%hydrol_hyd,hydrology.hyd,Hydrology
+in_hyd%topogr_hyd,topography.hyd,Hydrology
+in_hyd%field_fld,field.fld,Hydrology
+in_str%tiledrain_str,tiledrain.str,Structural
+in_str%septic_str,septic.str,Structural
+in_str%fstrip_str,filterstrip.str,Structural
+in_str%grassww_str,grassedww.str,Structural
+in_str%bmpuser_str,bmpuser.str,Structural
+in_parmdb%plants_plt,plants.plt,Parameter Database
+in_parmdb%fert_frt,fertilizer.frt,Parameter Database
+in_parmdb%till_til,tillage.til,Parameter Database
+in_parmdb%pest,pesticide.pes,Parameter Database
+in_parmdb%pathcom_db,pathogens.pth,Parameter Database
+in_parmdb%hmetcom_db,metals.mtl,Parameter Database
+in_parmdb%saltcom_db,salt.slt,Parameter Database
+in_parmdb%urban_urb,urban.urb,Parameter Database
+in_parmdb%septic_sep,septic.sep,Parameter Database
+in_parmdb%snow,snow.sno,Parameter Database
+in_ops%harv_ops,harv.ops,Operation Scheduling
+in_ops%graze_ops,graze.ops,Operation Scheduling
+in_ops%irr_ops,irr.ops,Operation Scheduling
+in_ops%chem_ops,chem_app.ops,Operation Scheduling
+in_ops%fire_ops,fire.ops,Operation Scheduling
+in_ops%sweep_ops,sweep.ops,Operation Scheduling
+in_lum%landuse_lum,landuse.lum,Land Use Management
+in_lum%management_sch,management.sch,Land Use Management
+in_lum%cntable_lum,cntable.lum,Land Use Management
+in_lum%cons_prac_lum,cons_practice.lum,Land Use Management
+in_lum%ovn_lum,ovn_table.lum,Land Use Management
+in_chg%cal_parms,cal_parms.cal,Calibration
+in_chg%cal_upd,calibration.cal,Calibration
+in_chg%codes_sft,codes.sft,Calibration
+in_chg%wb_parms_sft,wb_parms.sft,Calibration
+in_chg%water_balance_sft,water_balance.sft,Calibration
+in_chg%ch_sed_budget_sft,ch_sed_budget.sft,Calibration
+in_chg%ch_sed_parms_sft,ch_sed_parms.sft,Calibration
+in_chg%plant_parms_sft,plant_parms.sft,Calibration
+in_chg%plant_gro_sft,plant_gro.sft,Calibration
+in_init%plant,plant.ini,Initial Condition
+in_init%soil_plant_ini,soil_plant.ini,Initial Condition
+in_init%om_water,om_water.ini,Initial Condition
+in_init%pest_soil,pest_hru.ini,Initial Condition
+in_init%pest_water,pest_water.ini,Initial Condition
+in_init%path_soil,path_hru.ini,Initial Condition
+in_init%path_water,path_water.ini,Initial Condition
+in_init%hmet_soil,hmet_hru.ini,Initial Condition
+in_init%hmet_water,hmet_water.ini,Initial Condition
+in_init%salt_soil,salt_hru.ini,Initial Condition
+in_init%salt_water,salt_water.ini,Initial Condition
+in_sol%soils_sol,soils.sol,Soil
+in_sol%nut_sol,nutrients.sol,Soil
+in_sol%lte_sol,soils_lte.sol,Soil
+in_cond%dtbl_lum,lum.dtl,Conditional/Decision Table
+in_cond%dtbl_res,res_rel.dtl,Conditional/Decision Table
+in_cond%dtbl_scen,scen_lu.dtl,Conditional/Decision Table
+in_cond%dtbl_flo,flo_con.dtl,Conditional/Decision Table
+in_regs%ele_lsu,ls_unit.ele,Region Definition
+in_regs%def_lsu,ls_unit.def,Region Definition
+in_regs%ele_reg,ls_reg.ele,Region Definition
+in_regs%def_reg,ls_reg.def,Region Definition
+in_regs%cal_lcu,ls_cal.reg,Region Definition
+in_regs%ele_cha,ch_catunit.ele,Region Definition
+in_regs%def_cha,ch_catunit.def,Region Definition
+in_regs%def_cha_reg,ch_reg.def,Region Definition
+in_regs%ele_aqu,aqu_catunit.ele,Region Definition
+in_regs%def_aqu,aqu_catunit.def,Region Definition
+in_regs%def_aqu_reg,aqu_reg.def,Region Definition
+in_regs%ele_res,res_catunit.ele,Region Definition
+in_regs%def_res,res_catunit.def,Region Definition
+in_regs%def_res_reg,res_reg.def,Region Definition
+in_regs%ele_psc,rec_catunit.ele,Region Definition
+in_regs%def_psc,rec_catunit.def,Region Definition
+in_regs%def_psc_reg,rec_reg.def,Region Definition
