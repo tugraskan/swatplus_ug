@@ -149,7 +149,7 @@ of above-ground biomass, then burn remaining residue.
 | Condition   | Value    | Meaning                          |
 |-------------|---------|-----------------------------------|
 | `year_cal`  | `2016`  | Only triggers in 2016             |
-| `jday`      | `1`     | Only triggers on January 1        |
+| `jday`      | `1`     | Only triggers on Julian day 1 (January 1)|
 
 This table has **2 actions** that execute in sequence:
 
@@ -191,7 +191,7 @@ area to 80% of the original.
 | Condition   | Value    | Meaning                          |
 |-------------|---------|-----------------------------------|
 | `year_cal`  | `2017`  | Only triggers in 2017             |
-| `jday`      | `1`     | Only triggers on January 1        |
+| `jday`      | `1`     | Only triggers on Julian day 1 (January 1)|
 
 | Action Field | Value          | Meaning                                |
 |-------------|----------------|----------------------------------------|
@@ -210,7 +210,7 @@ scales the HRU area by `const = 0.80` (reducing it to 80% of its current area).
 | Condition   | Value    | Meaning                          |
 |-------------|---------|-----------------------------------|
 | `year_cal`  | `2017`  | Only triggers in 2017             |
-| `jday`      | `1`     | Only triggers on January 1        |
+| `jday`      | `1`     | Only triggers on Julian day 1 (January 1)|
 
 | Action Field | Value       | Meaning                              |
 |-------------|-------------|---------------------------------------|
@@ -224,7 +224,7 @@ scales the HRU area by `const = 0.80` (reducing it to 80% of its current area).
 | Condition   | Value    | Meaning                          |
 |-------------|---------|-----------------------------------|
 | `year_cal`  | `2017`  | Only triggers in 2017             |
-| `jday`      | `152`   | Only triggers on Julian day 152   |
+| `jday`      | `152`   | Only triggers on Julian day 152 (June 1) |
 
 | Action Field | Value       | Meaning                              |
 |-------------|-------------|---------------------------------------|
@@ -331,7 +331,7 @@ The fire type determines:
 
 ### `grow_init` — Initialize Plant Growth
 
-Sets the initial plant growth index for the HRU (used for hru_lte).
+Sets the initial plant growth index for the HRU.
 
 | Field    | Purpose                                            |
 |----------|----------------------------------------------------|
