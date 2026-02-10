@@ -17,6 +17,8 @@
       use gwflow_module, only: flood_freq !rtb gwflow
       use ch_pesticide_module               !!!  nbs added 7-20-23
       use channel_velocity_module
+      use water_allocation_module
+      use maximum_data_module
       
       implicit none     
       
@@ -27,7 +29,6 @@
       integer :: isd_db = 0           !              |
       integer :: ipest = 0            !              |
       integer :: isalt = 0            !              |salt ion counter (rtb salt)
-      integer :: id = 0
       real :: ebtm_m = 0.             !m             |erosion of bottom of channel
       real :: ebank_m = 0.            !m             |meander cut on one side
       real :: hc_sed = 0.             !tons          |headcut erosion
@@ -46,6 +47,8 @@
       real :: conc_chng = 0.          !              |change in concentration (and mass) in channel sol and org N and P
       real :: inflo_rate = 0.
       real :: aqu_inflo = 0.          !m3            |aquifer inflow if using geomorphic baseflow
+      integer :: iw = 0               !              |counter for water allocation object
+      integer :: iwallo = 0           !              |variable to pass to wallo_control
       
       ich = isdch
       isd_db = sd_dat(ich)%hyd
@@ -68,12 +71,6 @@
       ch_sed_bud(ich) = ch_sed_budz
       !ch_in_d = chaz
       !ch_out_d = chaz
-      
-      !! add water transfer
-      if (ob(icmd)%trans%flo > 1.e-6) then
-        ht1 = ht1 + ob(icmd)%trans
-        ob(icmd)%trans = hz
-      end if
       
       !set constituents to incoming loads (rtb salt; rtb cs)
       if (cs_db%num_tot > 0) then
@@ -323,19 +320,16 @@
 
       ich = isdch
             
-      !! check decision table for flow control - water diversion
-      if (ob(icmd)%ruleset /= "null" .and. ob(icmd)%ruleset /= "0") then
-        id = ob(icmd)%flo_dtbl
-        d_tbl => dtbl_flo(id)
-        call conditions (ich, id)
-        call actions (ich, icmd, id)
+      !! allocate water for transfers that don't include a channel as a source
+      if (db_mx%wallo_db > 0) then
+        do iwallo = 1, db_mx%wallo_db
+          do while (wallo(iwallo)%trn(wallo(iwallo)%trn_cur)%ch_src == ich)
+            iw = iwallo
+            if (wallo(iwallo)%trn_cur <= wallo(iwallo)%trn_obs) call wallo_control (iw)
+          end do
+        end do
       end if
- 
-      !! check decision table for water allocation
-      if (sd_ch(isdch)%wallo > 0) then
-        call wallo_control (sd_ch(isdch)%wallo)
-      end if
-      
+
       if (ob(icmd)%hyd_flo(1,1) > 1.e-6) then
         if (ht2%flo / ob(icmd)%hyd_flo(1,1) > 1.5) then
           a = 1.
