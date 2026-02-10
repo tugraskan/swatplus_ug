@@ -9,6 +9,7 @@
       use conditional_module
       use constituent_mass_module
       use recall_module
+      use recall_module
       use hru_module, only : hru
       
       implicit none 
@@ -21,19 +22,13 @@
       integer :: i = 0                !none       |counter
       integer :: k = 0                !none       |counter
       integer :: isrc = 0             !none       |counter
-      integer :: jsrc = 0             !none       |counter  
-      !integer :: ircv = 0             !none       |counter
       integer :: iwro = 0             !none       |number of water allocation objects
       integer :: num_objs = 0
       integer :: num_src = 0
-      !integer :: num_rcv = 0
       integer :: itrn = 0
       integer :: idb = 0
       integer :: idb_irr = 0
       integer :: ihru = 0
-      integer :: isrc_wallo = 0
-      integer :: div_found = 0
-      integer :: iom = 0
       
       eof = 0
       imax = 0
@@ -65,10 +60,9 @@
         do iwro = 1, imax
           read (107,*,iostat=eof) header
           if (eof < 0) exit
-          read (107,*,iostat=eof) wallo(iwro)%name, wallo(iwro)%rule_typ, wallo(iwro)%src_obs, &
-            wallo(iwro)%trn_obs, wallo(iwro)%out_src, wallo(iwro)%out_rcv, wallo(iwro)%wtp,    &
-            wallo(iwro)%uses, wallo(iwro)%stor, wallo(iwro)%pipe, wallo(iwro)%canal,           &
-            wallo(iwro)%pump, wallo(iwro)%cha_ob
+          read (107,*,iostat=eof) wallo(iwro)%name, wallo(iwro)%rule_typ, wallo(iwro)%trn_obs, &
+            wallo(iwro)%out_src, wallo(iwro)%out_rcv, wallo(iwro)%wtp, wallo(iwro)%uses,       &
+            wallo(iwro)%stor, wallo(iwro)%pipe, wallo(iwro)%canal, wallo(iwro)%pump
           
           if (eof < 0) exit
           read (107,*,iostat=eof) header
@@ -107,7 +101,6 @@
           allocate (wal_use_oma(wallo(iwro)%uses))
               
           !! read transfer object data
-          read (107,*,iostat=eof) header
           if (eof < 0) exit
           do itrn = 1, num_objs
             read (107,*,iostat=eof) i
@@ -115,10 +108,11 @@
             if (eof < 0) exit
             backspace (107)
             read (107,*,iostat=eof) k, wallo(iwro)%trn(i)%trn_typ, wallo(iwro)%trn(i)%trn_typ_name,   &
-              wallo(iwro)%trn(i)%amount, wallo(iwro)%trn(i)%right, wallo(iwro)%trn(i)%src_num
-            
+                    wallo(iwro)%trn(i)%amount, wallo(iwro)%trn(i)%right, wallo(iwro)%trn(i)%src_num
+          
             num_src = wallo(iwro)%trn(i)%src_num
             allocate (wallo(iwro)%trn(i)%src(num_src))
+            allocate (wallo(iwro)%trn(i)%osrc(num_src))
             allocate (wal_omd(iwro)%trn(i)%src(num_src))
             allocate (wal_omm(iwro)%trn(i)%src(num_src))
             allocate (wal_omy(iwro)%trn(i)%src(num_src))
@@ -158,32 +152,13 @@
               end do
             end if
             
-            !! for municipal treatment - recall option for daily, monthly, or annual mass
-            if (wallo(iwro)%trn(i)%trn_typ == "recall") then
-              !! xwalk with recall database
-              do idb = 1, db_mx%recalldb_max
-                if (wallo(iwro)%trn(i)%trn_typ_name == recall_db(idb)%name) then
-                  wallo(iwro)%trn(i)%rec_num = idb
-                    !! crosswalk organic mineral with recall data file
-                    do iom = 1, db_mx%recall_max
-                      if (recall_db(idb)%org_min%name == recall(iom)%filename) then
-                        wallo(iwro)%trn(i)%rec_num = iom
-                        exit
-                      end if
-                    end do
-                    !! crosswalk pest, path, hmet, salt, constit with recall data file
-                  exit
-                end if
-              end do
-            end if
-            
             backspace (107)
             !read (107,*,iostat=eof) k
             read (107,*,iostat=eof) k, wallo(iwro)%trn(i)%trn_typ, wallo(iwro)%trn(i)%trn_typ_name,   &
               wallo(iwro)%trn(i)%amount, wallo(iwro)%trn(i)%right, wallo(iwro)%trn(i)%src_num,        &
               wallo(iwro)%trn(i)%dtbl_src, & !wallo(iwro)%trn(i)%num,                                 &
               (wallo(iwro)%trn(i)%src(isrc), isrc = 1, num_src), wallo(iwro)%trn(i)%rcv
-            
+          
             !! zero output variables for summing
             do isrc = 1, num_src
               wallod_out(iwro)%trn(i)%src(isrc) = walloz

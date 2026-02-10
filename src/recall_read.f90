@@ -3,6 +3,7 @@
       use water_allocation_module
       use maximum_data_module
       use recall_module
+      use hydrograph_module, only : recall
       
       implicit none
       
@@ -13,6 +14,7 @@
       integer :: i = 0
       integer :: ii = 0
       integer :: k = 0
+      integer :: iom = 0
       logical :: i_exist              !none       |check to determine if file exists
       
       !read all recall files
@@ -49,6 +51,18 @@
                                      recall_db(i)%hmet, recall_db(i)%salt,     &
                                      recall_db(i)%constit
         if (eof < 0) exit
+                  
+        
+        !! crosswalk recall database file with the recall organic/mineral file (recall.rec)
+        do iom = 1, db_mx%recall_max
+          if (recall_db(i)%org_min%name == recall(iom)%filename) then
+            recall_db(i)%iorg_min = iom
+            exit
+          end if
+        end do
+        
+        !! crosswalk other constituents
+          
       end do
       
     end do
@@ -67,11 +81,9 @@
       use maximum_data_module
       use time_module
       use exco_module
+      use recall_module
       
-      implicit none      
- 
-      
-      
+      implicit none    
       
       external :: search
       character (len=80) :: titldum = ""!           |title of file

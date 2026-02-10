@@ -1,4 +1,4 @@
-subroutine wallo_control (iwallo)
+      subroutine wallo_control (iwallo)
       
       use water_allocation_module
       use hydrograph_module   !, only : irrig, hz, recall
@@ -24,7 +24,6 @@ subroutine wallo_control (iwallo)
       real :: div_total = 0.                !m3     |cumulative available diversion water
       real :: div_daily = 0.                !m3     |daily water diverted for irrigation
       
-
       !! zero demand, withdrawal, and unmet for entire allocation object
       wallo(iwallo)%tot = walloz
       
@@ -33,8 +32,8 @@ subroutine wallo_control (iwallo)
       wtp_om_out = hz
       wuse_om_out = hz
       
-      !!loop through each demand object
-      do itrn = 1, wallo(iwallo)%trn_obs
+      !!transfer water from sources to receiving objects for transfer object
+      itrn = wallo(iwallo)%trn_cur
                
         !! zero demand, withdrawal, and unmet for each source
         do isrc = 1, wallo(iwallo)%trn(itrn)%src_num
@@ -154,7 +153,12 @@ subroutine wallo_control (iwallo)
               !! canal storage - compute outflow - change concentrations?
               canal_om_stor(j) = canal_om_stor(j) + wal_omd(iwallo)%trn(itrn)%h_tot
               !! compute losses - evap and seepage, and outflow
-              ! call canal()
+              call wallo_canal (iwallo, itrn, j)
+              
+            case ("orcv")
+              !! outside receiving object
+              orcv_om(j) = orcv_om(j) + wal_omd(iwallo)%trn(itrn)%h_tot
+           
           end select
         
         end if      !if there is demand 
@@ -169,7 +173,7 @@ subroutine wallo_control (iwallo)
         wallo(iwallo)%tot%withdr = wallo(iwallo)%tot%withdr + wallo(iwallo)%trn(itrn)%withdr_tot
         wallo(iwallo)%tot%unmet = wallo(iwallo)%tot%unmet + wallo(iwallo)%trn(itrn)%unmet_m3
         
-      end do        !demand object loop
+        wallo(iwallo)%trn_cur = wallo(iwallo)%trn_cur + 1
         
       return
       end subroutine wallo_control
