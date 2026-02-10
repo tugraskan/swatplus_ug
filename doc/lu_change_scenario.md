@@ -255,7 +255,7 @@ burn                       hru         0              null          tree_low    
 
 Only forest HRUs pass the `land_use` filter. Of those, ~40% are randomly
 selected by `prob`. The selected HRUs are burned using the `tree_low` fire
-type, which burns 70% of biomass and increases the curve number by 6.
+type from `fire.ops`.
 
 ---
 
