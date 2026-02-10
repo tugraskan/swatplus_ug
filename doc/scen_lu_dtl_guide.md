@@ -1,7 +1,8 @@
 # Scenario Decision Table Guide: `scen_lu.dtl`
 
 This guide explains how to use scenario decision tables (`scen_lu.dtl`) to
-perform land use changes, fire/burn operations, and plant recovery in SWAT+.
+perform land use changes, fire/burn operations, and plant recovery in SWAT+
+using **input files only** — no source code modifications required.
 
 ## Overview
 
@@ -55,23 +56,23 @@ prob                      null         0              null                 -    
 act_typ                    obj   obj_num              name            option         const        const2                fp  outcome           
 lu_change                  hru         0      frst_to_rnge              null       0.00000       0.00000          rnge_lum  y   
 
-name                     conds      alts      acts       !Moderate fire (40% kill)
+name                     conds      alts      acts       !Moderate fire (40% kill) on January 1, 2016
 fire_jan_2016                2         1         2  
 var                        obj   obj_num           lim_var            lim_op     lim_const      alt1  
 year_cal                  null         0              null                 -    2016.00000         =  
 jday                      null         0              null                 -       1.00000         =  
 act_typ                    obj   obj_num              name            option         const        const2                fp  outcome           
 plant_kill                 hru         0              null              null       0.40000       0.00000              null  y   
-burn                       hru         0              null              null       1.00000       0.00000              null  y   
+burn                       hru         0              null             grass       0.00000       0.00000              null  y   
 
-name                     conds      alts      acts       !High severity fire (70% kill)
+name                     conds      alts      acts       !High severity fire (70% kill) on June 1, 2016
 fire_june_2016               2         1         2  
 var                        obj   obj_num           lim_var            lim_op     lim_const      alt1  
 year_cal                  null         0              null                 -    2016.00000         =  
 jday                      null         0              null                 -     152.00000         =  
 act_typ                    obj   obj_num              name            option         const        const2                fp  outcome           
 plant_kill                 hru         0              null              null       0.70000       0.00000              null  y   
-burn                       hru         0              null              null       1.00000       0.00000              null  y   
+burn                       hru         0              null      tree_intense       0.00000       0.00000              null  y   
 
 name                     conds      alts      acts       !changing grass to forest (80%) on January 1, 2017
 reforest_2017                2         1         1  
@@ -98,6 +99,19 @@ act_typ                    obj   obj_num              name            option    
 grow_init                  hru         0              null              null       0.30000       0.00000              null  y   
 ```
 
+### `fire.ops` (required for burn operations)
+
+The `burn` action requires a fire type defined in `fire.ops`. The `option`
+field in the decision table must match one of these names:
+
+```
+fire.ops: written by SWAT+ editor v2.2.0
+name                   chg_cn2     frac_burn  description
+grass                  8.00000       1.00000  
+tree_intense           8.00000       0.90000  
+tree_low               6.00000       0.70000
+```
+
 ---
 
 ## Table-by-Table Explanation
@@ -120,9 +134,9 @@ grow_init                  hru         0              null              null    
 | `const`     | `0.0`          | No fractional area change             |
 | `fp`        | `rnge_lum`     | New land use (must exist in `landuse.lum`) |
 
-**How it works:** The decision table is evaluated for every HRU. The `land_use`
-condition filters to only forest HRUs. The `prob < 0.70` condition randomly
-selects ~70% of those. Selected HRUs have their land use changed to `rnge_lum`.
+**How it works:** The `land_use` condition filters to only forest HRUs. The
+`prob < 0.70` condition randomly selects ~70% of those. Selected HRUs have
+their land use changed to `rnge_lum` (rangeland).
 
 > **Note:** `const = 0.0` means the HRU keeps its full area. If `const` were
 > between 0 and 1 (e.g., `0.80`), the HRU's area would be scaled by that fraction.
@@ -139,34 +153,35 @@ of above-ground biomass, then burn remaining residue.
 
 This table has **2 actions** that execute in sequence:
 
-| Action | `const` | Meaning |
-|--------|---------|---------|
-| `plant_kill` | `0.40` | Kill 40% of above-ground biomass, transfer to surface residue |
-| `burn` | `1.00` | Burn 100% of remaining above-ground biomass and surface residue |
+| # | Action | `option` | `const` | Effect |
+|---|--------|----------|---------|--------|
+| 1 | `plant_kill` | `null` | `0.40` | Kill 40% of above-ground biomass, transfer to surface residue |
+| 2 | `burn` | `grass` | — | Burn 100% of remaining biomass and residue (from `fire.ops`) |
 
 **How it works:** First, `plant_kill` kills 40% of the above-ground plant
 biomass and transfers it to the surface residue pool. Then `burn` with
-`const = 1.0` burns 100% of the remaining above-ground biomass and residue.
+`option = grass` burns 100% of the remaining above-ground biomass, surface
+residue, and soil carbon using the `grass` fire type from `fire.ops` (which
+also increases the curve number by 8).
 
-> **Note:** With `option = null` in the `burn` action, the burn fraction comes
-> from `const` instead of `fire.ops`. No curve number update occurs. To use
-> a fire type from `fire.ops` (which also updates the curve number), set
-> `option` to a fire type name like `tree_low`.
+> **Important:** The `burn` action requires a valid fire type in the `option`
+> field. Set `option` to one of the names defined in `fire.ops` (e.g., `grass`,
+> `tree_intense`, `tree_low`). If `option = null`, the burn will not execute.
 
-### 3. `fire_june_2016` — High Severity Fire (70% Kill + Full Burn)
+### 3. `fire_june_2016` — High Severity Fire (70% Kill + Intense Burn)
 
 **Goal:** On June 1, 2016 (Julian day 152), apply a high severity fire to
-**all** HRUs: kill 70% of biomass, then burn remaining residue.
+**all** HRUs: kill 70% of biomass, then burn remaining with 90% intensity.
 
 | Condition   | Value    | Meaning                          |
 |-------------|---------|-----------------------------------|
 | `year_cal`  | `2016`  | Only triggers in 2016             |
 | `jday`      | `152`   | Only triggers on Julian day 152 (June 1) |
 
-| Action | `const` | Meaning |
-|--------|---------|---------|
-| `plant_kill` | `0.70` | Kill 70% of above-ground biomass |
-| `burn` | `1.00` | Burn 100% of remaining biomass and residue |
+| # | Action | `option` | `const` | Effect |
+|---|--------|----------|---------|--------|
+| 1 | `plant_kill` | `null` | `0.70` | Kill 70% of above-ground biomass |
+| 2 | `burn` | `tree_intense` | — | Burn 90% of remaining biomass and residue |
 
 ### 4. `reforest_2017` — Land Use Change Back to Forest (80% Area)
 
@@ -185,7 +200,7 @@ area to 80% of the original.
 | `const`     | `0.80`         | Reduce HRU area to 80% of current     |
 | `fp`        | `frst_lum`     | New land use (forest)                  |
 
-**How it works:** The `lu_change` action sets the land use to `frst_lum` and
+**How it works:** The `lu_change` action changes the land use to `frst_lum` and
 scales the HRU area by `const = 0.80` (reducing it to 80% of its current area).
 
 ### 5. `recovery_fast_2017` — Fast Recovery (60% Growth)
@@ -201,9 +216,6 @@ scales the HRU area by `const = 0.80` (reducing it to 80% of its current area).
 |-------------|-------------|---------------------------------------|
 | `act_typ`   | `grow_init` | Initialize growing season             |
 | `const`     | `0.60`      | Start growth at 60% of potential      |
-
-**How it works:** The `grow_init` action sets the plant growth index to `0.60`
-(60% of full growth), simulating a faster recovery rate.
 
 ### 6. `recovery_slow_2017` — Slow Recovery (30% Growth)
 
@@ -225,8 +237,7 @@ scales the HRU area by `const = 0.80` (reducing it to 80% of its current area).
 
 ### Example A: Burn 40% of Forest HRUs Only
 
-To burn only **forest** HRUs (not all HRUs), add a `land_use` condition and
-a `prob` condition:
+To burn only ~40% of **forest** HRUs, add `land_use` and `prob` conditions:
 
 ```
 name                     conds      alts      acts       !burn ~40% of forest HRUs on Jan 1, 2016
@@ -238,20 +249,19 @@ land_use                   hru         0          frst_lum                 -    
 prob                      null         0              null                 -       0.40000         <
 act_typ                    obj   obj_num              name            option         const        const2                fp  outcome           
 plant_kill                 hru         0              null              null       0.70000       0.00000              null  y   
-burn                       hru         0              null              null       1.00000       0.00000              null  y   
+burn                       hru         0              null          tree_low       0.00000       0.00000              null  y   
 ```
 
 **How it works:**
 
-1. `land_use = frst_lum` filters to only forest HRUs
-2. `prob < 0.40` randomly selects ~40% of those forest HRUs
-3. `plant_kill` with `const = 0.70` kills 70% of above-ground biomass
-4. `burn` with `const = 1.00` burns 100% of remaining biomass and residue
+1. `land_use = frst_lum` — filters to only forest HRUs
+2. `prob < 0.40` — randomly selects ~40% of those forest HRUs
+3. `plant_kill` with `const = 0.70` — kills 70% of above-ground biomass
+4. `burn` with `option = tree_low` — burns 70% of remaining biomass/residue (from `fire.ops`) and increases CN by 6
 
-### Example B: Burn Specific HRUs
+### Example B: Burn Specific HRUs by Number
 
-To burn **specific HRUs** (by HRU number), set `obj_num` in the action line
-to the target HRU number:
+To burn a **specific HRU** (e.g., HRU 5), set `obj_num` in the action lines:
 
 ```
 name                     conds      alts      acts       !burn specific HRU 5 on Jan 1, 2016
@@ -261,21 +271,18 @@ year_cal                  null         0              null                 -    
 jday                      null         0              null                 -       1.00000         =  
 act_typ                    obj   obj_num              name            option         const        const2                fp  outcome           
 plant_kill                 hru         5              null              null       0.50000       0.00000              null  y   
-burn                       hru         5              null              null       1.00000       0.00000              null  y   
+burn                       hru         5              null             grass       0.00000       0.00000              null  y   
 ```
 
 **How it works:**
 
-- `obj_num = 5` in both actions targets only HRU 5
-- `plant_kill` with `const = 0.50` kills 50% of biomass in HRU 5
-- `burn` with `const = 1.00` burns 100% of remaining biomass and residue in HRU 5
+- `obj_num = 5` in both actions — targets only HRU 5
+- `plant_kill` with `const = 0.50` — kills 50% of biomass in HRU 5
+- `burn` with `option = grass` — burns 100% of remaining biomass/residue in HRU 5
 
 > **Note:** When `obj_num = 0`, the action applies to whichever HRU the loop
 > is currently evaluating (all HRUs that pass the conditions). When `obj_num`
-> is a specific number, only that HRU is affected regardless of conditions.
-
-To burn **multiple specific HRUs**, create separate tables for each, or use
-conditions like `land_use` to filter by land use type.
+> is a specific number, only that HRU is affected.
 
 ---
 
@@ -306,32 +313,25 @@ residue pool.
 Does **not** update the curve number or burn soil carbon. Use before `burn`
 to simulate a fire that first kills plants, then burns the dead material.
 
-### `burn` — Burn Operation
+### `burn` — Full Burn Operation
 
-Burns above-ground plant biomass and surface residue. Can use either `fire.ops`
-database or `const` for the burn fraction.
-
-**Mode 1: Using `fire.ops` (with curve number update)**
+Burns above-ground plant biomass, surface residue, and soil carbon. Updates the
+curve number. Requires a fire type from the `fire.ops` database.
 
 | Field    | Purpose                                            |
 |----------|----------------------------------------------------|
-| `option` | Fire type name from `fire.ops` (e.g., `tree_low`)  |
+| `option` | Fire type name from `fire.ops` (**required**, e.g., `grass`, `tree_low`, `tree_intense`) |
 
-The fire type determines `frac_burn` (burn fraction) and `chg_cn2` (curve number increase).
+The fire type determines:
+- `frac_burn` — fraction of biomass and residue burned
+- `chg_cn2` — curve number increase after fire
 
-**Mode 2: Using `const` (without curve number update)**
-
-| Field    | Purpose                                            |
-|----------|----------------------------------------------------|
-| `option` | `null`                                             |
-| `const`  | Burn fraction (0.0 to 1.0). 1.0 = burn 100%       |
-
-When `option = null`, the burn fraction comes directly from `const`. The curve
-number is NOT updated. Carbon emissions are still tracked.
+> **Important:** The `option` field **must** match a name in `fire.ops`.
+> If `option = null`, the burn action will not execute.
 
 ### `grow_init` — Initialize Plant Growth
 
-Sets the initial plant growth index for the HRU.
+Sets the initial plant growth index for the HRU (used for hru_lte).
 
 | Field    | Purpose                                            |
 |----------|----------------------------------------------------|
@@ -365,13 +365,27 @@ table, subsequent tables see the updated land use.
 
 ---
 
+## `fire.ops` Reference
+
+The `burn` action requires a fire type from this database. Default entries:
+
+| Name | `chg_cn2` | `frac_burn` | Description |
+|------|-----------|-------------|-------------|
+| `grass` | 8.0 | 1.00 | Complete burn (grassland fire) |
+| `tree_intense` | 8.0 | 0.90 | High intensity tree fire (90% burned) |
+| `tree_low` | 6.0 | 0.70 | Low intensity tree fire (70% burned) |
+
+You can add custom fire types to `fire.ops` to match your specific scenario.
+
+---
+
 ## Summary
 
 | Goal | Method |
 |------|--------|
 | Change ~70% of forest HRUs to range | `land_use = frst_lum` + `prob < 0.70` + `lu_change` with `fp = rnge_lum` |
-| Moderate fire (40% kill) on all HRUs | `plant_kill` with `const = 0.40` + `burn` with `const = 1.0` |
-| High severity fire (70% kill) | `plant_kill` with `const = 0.70` + `burn` with `const = 1.0` |
+| Moderate fire (40% kill) on all HRUs | `plant_kill` with `const = 0.40` + `burn` with `option = grass` |
+| High severity fire (70% kill) | `plant_kill` with `const = 0.70` + `burn` with `option = tree_intense` |
 | Reforest with 80% area | `lu_change` with `const = 0.80` and `fp = frst_lum` |
 | Fast recovery (60%) | `grow_init` with `const = 0.60` |
 | Slow recovery (30%) | `grow_init` with `const = 0.30` |
