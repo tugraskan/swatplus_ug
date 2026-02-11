@@ -1,0 +1,53 @@
+scen_lu.dtl: written by SWAT+ editor v3.1.0 on 2026-01-23 18:05 for SWAT+ rev.61.0.2
+6
+
+name                     conds      alts      acts       !changing all forest to grass (70%) on January 1, 2012
+forest_to_grass              2         1         1  
+var                        obj   obj_num           lim_var            lim_op     lim_const      alt1  
+year_cal                  null         0              null                 -    2012.00000         =  
+jday                      null         0              null                 -       1.00000         =  
+act_typ                    obj   obj_num              name            option         const        const2                fp  outcome           
+lu_change                  hru         0      frst_to_rnge              null       0.70000       0.00000          rnge_lum  y   
+
+name                     conds      alts      acts       !Moderate fire (40% kill)
+fire_jan_2016                2         1         2  
+var                        obj   obj_num           lim_var            lim_op     lim_const      alt1  
+year_cal                  null         0              null                 -    2016.00000         =  
+jday                      null         0              null                 -       1.00000         =  
+act_typ                    obj   obj_num              name            option         const        const2                fp  outcome           
+plant_kill                 hru         0              null              null       0.40000       0.00000              null  y   
+burn                       hru         0              null              null       1.00000       0.00000              null  y   
+
+name                     conds      alts      acts       !High severity fire (70% kill)
+fire_june_2016               2         1         2  
+var                        obj   obj_num           lim_var            lim_op     lim_const      alt1  
+year_cal                  null         0              null                 -    2016.00000         =  
+jday                      null         0              null                 -     152.00000         =  
+act_typ                    obj   obj_num              name            option         const        const2                fp  outcome           
+plant_kill                 hru         0              null              null       0.70000       0.00000              null  y   
+burn                       hru         0              null              null       1.00000       0.00000              null  y   
+
+name                     conds      alts      acts       !changing all grass to forest (80%) on January 1, 2017
+reforest_2017                2         1         1  
+var                        obj   obj_num           lim_var            lim_op     lim_const      alt1  
+year_cal                  null         0              null                 -    2017.00000         =  
+jday                      null         0              null                 -       1.00000         =  
+act_typ                    obj   obj_num              name            option         const        const2                fp  outcome           
+lu_change                  hru         0      rnge_to_frst              null       0.80000       0.00000          frst_lum  y   
+
+name                     conds      alts      acts       !HRUs recover faster (60%)
+recovery_fast                2         1         1  
+var                        obj   obj_num           lim_var            lim_op     lim_const      alt1  
+year_cal                  null         0              null                 -    2017.00000         =  
+jday                      null         0              null                 -       1.00000         =  
+act_typ                    obj   obj_num              name            option         const        const2                fp  outcome           
+grow_init                  hru         0              null              null       0.60000       0.00000              null  y   
+
+name                     conds      alts      acts       !HRUs recover slower (30%)
+recovery_slow                2         1         1  
+var                        obj   obj_num           lim_var            lim_op     lim_const      alt1  
+year_cal                  null         0              null                 -    2017.00000         =  
+jday                      null         0              null                 -     152.00000         =  
+act_typ                    obj   obj_num              name            option         const        const2                fp  outcome           
+grow_init                  hru         0              null              null       0.30000       0.00000              null  y   
+

@@ -1,0 +1,10 @@
+scenario decision table used in simulation - scen_dtl.upd
+6
+num_hits     name      dtable
+1            scen_lu   forest_to_grass
+2            scen_lu   fire_jan_2016
+3            scen_lu   fire_june_2016
+4            scen_lu   recovery_slow_2017
+5            scen_lu   recovery_fast_2017
+6            scen_lu   reforest_2017
+
