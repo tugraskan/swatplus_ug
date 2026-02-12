@@ -132,7 +132,7 @@
         character (len=25) :: name = ""         !name of the water treatment plant
         character (len=25) :: init = ""         !name of the intitial concentrations in wtp storage
         real :: stor_mx                   !m3   !maximum storage in plant
-        real :: drawdown_days             !days !days to drawdown the storage to zero
+        real :: ddown_days             !days !days to drawdown the storage to zero
         real :: loss_fr                         !water loss during treament
         integer :: num_aqu                      !number of aquifers
         type (aquifer_loss), dimension(:), allocatable :: aqu_loss
@@ -143,11 +143,13 @@
       !! canal data
       type water_canal_data
         character (len=25) :: name = ""         !name of the canal
+        character (len=25) :: w_sta = ""        !name of nearby weather station
         character (len=25) :: init = ""         !name of the intitial concentrations in canal
         character (len=25) :: dtbl = ""         !name of decision table to determine canal outflow
-        real :: drawdown_days             !days !days to drawdown the storage to zero
+        real :: ddown_days                !days !days to drawdown the storage to zero
         real :: w                         !m    !top width of canal
         real :: d                         !m    !depth of canal
+        real :: s                         !m    !slope of canal
         real :: ss                        !m/m  !side slope of trapezoidal canal
         real :: sat_con                         !to compute percolation from canal to groundwater
         integer :: num_aqu                      !number of aquifers

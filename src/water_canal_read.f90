@@ -43,16 +43,16 @@
           read (107,*,iostat=eof) header
           if (eof < 0) exit 
           
-          read (107,*,iostat=eof) i, canal(ic)%name, canal(ic)%init, canal(ic)%dtbl, canal(ic)%lag_days,  &
-                                  canal(ic)%w, canal(ic)%d, canal(ic)%s, canal(ic)%ss, canal(ic)%sat_con, &
+          read (107,*,iostat=eof) i, canal(ic)%name, canal(ic)%init, canal(ic)%dtbl, canal(ic)%ddown_days,  &
+                                  canal(ic)%w, canal(ic)%d, canal(ic)%s, canal(ic)%ss, canal(ic)%sat_con,   &
                                                                                                  num_aqu
           if (eof < 0) exit
           
           !! allocate and read aquifer loss data
           allocate (canal(ic)%aqu_loss(num_aqu))
           
-          read (107,*,iostat=eof) i, canal(ic)%name, canal(ic)%init, canal(ic)%dtbl, canal(ic)%lag_days,  &
-            canal(ic)%w, canal(ic)%d, canal(ic)%s, canal(ic)%ss, canal(ic)%sat_con, canal(ic)%num_aqu,    &
+          read (107,*,iostat=eof) i, canal(ic)%name, canal(ic)%init, canal(ic)%dtbl, canal(ic)%ddown_days,  &
+            canal(ic)%w, canal(ic)%d, canal(ic)%s, canal(ic)%ss, canal(ic)%sat_con, canal(ic)%num_aqu,      &
                                                              (canal(ic)%aqu_loss(iaq), iaq = 1, num_aqu)
           
           !! crosswalk initial concentrations and decision table

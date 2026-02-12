@@ -142,6 +142,7 @@
         integer :: ch_sednut = 0
         integer :: sat_buff = 0
         integer :: canal = 0
+        integer :: water_canal = 0
         integer :: water_pipe = 0
         integer :: water_treat = 0
         integer :: water_use = 0

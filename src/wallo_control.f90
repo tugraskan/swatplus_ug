@@ -153,7 +153,7 @@
               !! canal storage - compute outflow - change concentrations?
               canal_om_stor(j) = canal_om_stor(j) + wal_omd(iwallo)%trn(itrn)%h_tot
               !! compute losses - evap and seepage, and outflow
-              call wallo_canal (iwallo, itrn, j)
+              !call wallo_canal (iwallo, itrn, j)
               
             case ("orcv")
               !! outside receiving object
