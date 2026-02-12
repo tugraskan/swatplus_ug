@@ -134,9 +134,13 @@ tree_low: chg_cn2=6.00, frac_burn=0.70
 
 **How it works:**
 - On Jan 1, 2016, evaluates forest HRUs
-- 40% of forest HRUs randomly selected for burning
-- Burn operation applies 70% biomass reduction (frac_burn=0.70)
+- **40% of forest HRUs randomly selected** for burning (prob < 0.40 = HRU selection probability)
+- **On selected HRUs, burn operation applies 70% biomass reduction** (frac_burn=0.70 = burn intensity)
 - Curve number increased by 6 (chg_cn2=6.00) to reflect reduced cover
+
+**Note**: These are two distinct parameters:
+- `prob < 0.40`: Controls which HRUs are selected (40% spatial coverage)
+- `frac_burn=0.70`: Controls burn intensity on selected HRUs (70% biomass reduction)
 
 #### Fire Event 2: Severe Fire (June 2016)
 ```
@@ -155,9 +159,13 @@ tree_intense: chg_cn2=8.00, frac_burn=0.90
 
 **How it works:**
 - On June 1, 2016, evaluates forest HRUs
-- 70% of forest HRUs randomly selected for burning
-- Burn operation applies 90% biomass reduction (frac_burn=0.90)
+- **70% of forest HRUs randomly selected** for burning (prob < 0.70 = HRU selection probability)
+- **On selected HRUs, burn operation applies 90% biomass reduction** (frac_burn=0.90 = burn intensity)
 - Curve number increased by 8 (chg_cn2=8.00) for more severe fire impact
+
+**Note**: Again, two distinct parameters:
+- `prob < 0.70`: Controls which HRUs are selected (70% spatial coverage)
+- `frac_burn=0.90`: Controls burn intensity on selected HRUs (90% biomass reduction)
 
 **Important Note**: These fires target `frst_lum` HRUs, which includes forests that haven't been converted to grassland yet. The fires happen AFTER the 2012 conversion, so they would affect:
 - The 30% of original forest that didn't convert to grassland in 2012
@@ -279,11 +287,14 @@ The current implementation could be extended to:
 
 2. **Different Plant Communities**: Use different plant community definitions for fast vs slow recovering forest
 
-3. **Fire.ops File**: Add a fire.ops file to TxtInOut (currently relies on reference data) with:
+3. **Fire.ops File**: Add a fire.ops file to TxtInOut (currently relies on reference data) with the actual values used:
    ```
-   moderate_fire    6.00000    0.40000   40% burn intensity
-   severe_fire      8.00000    0.70000   70% burn intensity
+   fire.ops: written by SWAT+ editor v3.1.0
+   name                   chg_cn2     frac_burn  description
+   tree_low               6.00000       0.70000  moderate fire 70% burn
+   tree_intense           8.00000       0.90000  severe fire 90% burn
    ```
+   Note: These match the values from refdata/Osu_1hru/fire.ops that the simulation uses
 
 4. **Post-Fire Recovery**: Add additional decision tables in lum.dtl that trigger growth operations after fire events
 
