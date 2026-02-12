@@ -24,13 +24,20 @@ This scenario appears to model:
 
 ## Critical Issues with the Implementation
 
-### Issue #1: `plant_kill` Action Does Not Exist
+### Issue #1: `plant_kill` Action Does Not Exist and Kill Doesn't Support Partial Mortality
 
-**Problem**: The user specified `plant_kill` as an action type (lines 18 and 27 in scen_lu.dtl):
+**Problem**: The user specified `plant_kill` as an action type (lines 18 and 27 in scen_lu.dtl) attempting to kill 40% and 70% of plants:
 ```
 act_typ                    obj   obj_num              name            option         const        const2                fp  outcome           
 plant_kill                 hru         0              null              null       0.40000       0.00000              null  y
 ```
+
+**Two Issues Here**:
+
+**Two Issues Here**:
+
+1. **Invalid Action Name**: The action is called `"kill"`, not `"plant_kill"`
+2. **Kill is All-or-Nothing**: The kill action completely kills plants - it does not support partial kill percentages
 
 **Source Code Evidence**: After examining `src/actions.f90`, the valid action for killing plants is simply `"kill"`, not `"plant_kill"`. The supported action case statement is:
 ```fortran
@@ -51,6 +58,20 @@ case ("kill")
 **Impact**: SWAT+ would not recognize `plant_kill` as a valid action and would either error out or skip these decision tables entirely.
 
 **Correct Action**: Should use `"kill"` instead of `"plant_kill"`
+
+**Correct Syntax**:
+```
+act_typ                    obj   obj_num              name            option         const        const2                fp  outcome           
+kill                       hru         0              null               all       0.00000       1.00000              null  y
+```
+Where:
+- `option` = "all" kills all plants, or use a specific plant community name to target one plant type
+- `const` = not used by kill action (can be 0.0)
+- `const2` = number of times to apply (1.00 = apply once when conditions met)
+
+**Note**: The kill action completely kills the plant - there is no partial kill percentage. If you want partial mortality (like 40% kill), you would need to combine a burn operation with appropriate fire.ops parameters, or use other plant modification actions.
+
+**What the User Actually Needs**: Since the user wants 40% and 70% mortality (not complete kill), they should use the `burn` action with proper fire.ops configuration rather than kill. See Issue #2 for details on proper burn setup.
 
 ### Issue #2: `burn` Action Requires Management Schedule or fire_db Entry
 
@@ -93,6 +114,20 @@ The burn operation needs:
 - User needs a `fire.ops` file defining fire operations (e.g., "moderate_fire", "severe_fire")
 - The `option` field should reference these fire operation names
 - Alternatively, burns can be scheduled in management schedules (lum.dtl) tied to specific land uses
+
+**Example fire.ops file** (based on refdata/Osu_1hru/fire.ops):
+```
+fire.ops: written by SWAT+ editor v3.1.0
+name                   chg_cn2     frac_burn  description
+moderate_fire          6.00000       0.40000  moderate fire 40% burn
+severe_fire            8.00000       0.70000  severe fire 70% burn
+```
+
+Then the burn actions would be:
+```
+act_typ                    obj   obj_num              name            option         const        const2                fp  outcome           
+burn                       hru         0              null      moderate_fire       0.00000       1.00000              null  y
+```
 
 ### Issue #3: `grow_init` Only Works with hru_lte Objects, Not Regular HRUs
 
