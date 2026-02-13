@@ -447,7 +447,9 @@
         call pl_grow
 
         !! Distribute roots
-        call pl_rootfr
+        do ipl = 1, pcom(j)%npl
+          call pl_rootfr(j, ipl)
+        end do
 
         !! reset harvested biomass and number of harvests for yearly yield output
         if (time%end_yr == 1) then
