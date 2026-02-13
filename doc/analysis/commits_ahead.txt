@@ -1,0 +1,7 @@
+83b1dee89869d26e22e0937cb3082ec0ee0dfa4b|Jeff.Arnold|Jeff.Arnold@agnet.tamu.edu|2026-02-12|fixed no3 and nh4 blopup in cbn_zhang2
+52ab1cd4feddfa06be74164ae6d3211d751b29f8|Jeff.Arnold|Jeff.Arnold@agnet.tamu.edu|2026-02-10|Residue pool updates. Added canals to water allocation and can have multiple channels within a water allication object.
+423ab74ea49efef8941017233ee2d91683e77fb9|Jeff.Arnold|Jeff.Arnold@agnet.tamu.edu|2026-01-21|split water_allocation_read
+9f02b7b1f0049dacfcc348b2e11ae56ea331643b|Jeff.Arnold|Jeff.Arnold@agnet.tamu.edu|2026-01-21|merge
+3a44d93748b299a47aba51333449128b7ba306ce|Jeff.Arnold|Jeff.Arnold@agnet.tamu.edu|2026-01-21|water_allo updates
+10fc6ab1b06d858737cf141ca9a26857297b7f32|Jeff.Arnold|Jeff.Arnold@agnet.tamu.edu|2026-01-06|weland issues resoloved and residue stored by plant type
+7e82c5d15360e95b86d258b8c8e49c2aff315964|Jeff.Arnold|Jeff.Arnold@agnet.tamu.edu|2025-11-19|water allocation updates

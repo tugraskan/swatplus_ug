@@ -1,0 +1,25 @@
+ CMakeLists.txt                      |   7 +-
+ refdata/Ames_sub1/carb_coefs.cbn    |  21 +++-
+ src/carbon_coef_read.f90            |  41 ++++----
+ src/carbon_module.f90               |   4 +
+ src/cbn_rsd_decomp.f90              |  48 +++++----
+ src/ero_cfactor.f90                 |  19 ++--
+ src/fcgd.f90                        |  14 +--
+ src/gwflow_read.f90                 |   6 +-
+ src/gwflow_simulate.f90             |   3 +-
+ src/gwflow_soil.f90                 |   4 +-
+ src/hru_control.f90                 |  17 +++-
+ src/hru_hyds.f90                    |   2 +-
+ src/hru_output.f90                  |   2 +-
+ src/mgt_killop.f90                  |   3 +-
+ src/nut_nminrl.f90                  |   6 +-
+ src/organic_mineral_mass_module.f90 |   3 +
+ src/output_landscape_module.f90     |  52 +++++-----
+ src/pl_rootfr.f90                   | 118 ++++++++++++----------
+ src/ru_control.f90                  |   3 +-
+ src/soil_module.f90                 |   2 +-
+ src/soil_nutcarb_write.f90          |  18 ++--
+ src/soils_init.f90                  |   1 +
+ src/soils_test_adjust.f90           | 196 +++++++++++++++++-------------------
+ src/utils.f90                       |  63 ++++++++----
+ 24 files changed, 371 insertions(+), 282 deletions(-)
