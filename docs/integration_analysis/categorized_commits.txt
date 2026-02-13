@@ -1,0 +1,2084 @@
+
+================================================================================
+Bug Fixes (47 commits)
+================================================================================
+
+0d74307 | 2026-01-07 | Taci Ugraskan
+  Fixed Warnings, removed unused variable declarations and update external function references
+
+9b0ee4e | 2025-12-05 | Celray James CHAWANDA
+  Merge pull request #135 from crazyzlj/bug_fixed_for_swatplus_team
+
+29e238f | 2025-12-04 | Celray James CHAWANDA
+  remove debugging code that created fort.7777 file
+
+d324ded | 2025-11-25 | Liang-Jun Zhu
+  potential bug fixed: Fortran runtime error End of record when writing area_calc.out
+
+7738a04 | 2025-11-24 | Liang-Jun Zhu
+  bug fixed: change the allowed lowest perco to 1.e-6 to avoid negative value for log()
+
+a7022c9 | 2025-11-21 | fgeter
+  further corrections to devcontainer.json to create a populate data folders
+
+f7d8f79 | 2025-11-13 | fgeter
+  modified the devcontainer.json to create the debug folder and populate it with data/Ames_sub1 data.
+
+f8feed6 | 2025-10-30 | Natalja Čerkasova
+  Minor bug fixes and sinching Jeffs code back up to swatplus/main
+
+eb76cac | 2025-10-29 | Natalja Čerkasova
+  Fixed the Green and Amti subdaidy issue (by Jaehak Jeong)
+
+bf7cf5f | 2025-08-27 | Taci Ugraskan
+  patch
+
+3d94fd1 | 2025-08-27 | Taci Ugraskan
+  patch
+
+8167eea | 2025-07-23 | Taci Ugraskan
+  Merge pull request #97 from tugraskan/burn_fix_07232025
+
+072cae9 | 2025-07-23 | Taci Ugraskan
+  Merge branch 'burn_fix_07232025' of https://github.com/tugraskan/swatplus_ug into burn_fix_07232025
+
+99f0b52 | 2025-07-23 | Taci Ugraskan
+  Merge branch 'burn_fix_07232025' of https://github.com/tugraskan/swatplus_ug into burn_fix_07232025
+
+219c02f | 2025-07-23 | Taci Ugraskan
+  Merge branch 'burn_fix_07232025' of https://github.com/tugraskan/swatplus_ug into burn_fix_07232025
+
+f68608e | 2025-07-23 | Taci Ugraskan
+  burn ops fixes
+
+47e7e2e | 2025-07-23 | Taci Ugraskan
+  burn ops fixes
+
+79d6572 | 2025-07-21 | Olaf David
+  Merge pull request #93 from swat-model/burn_fix
+
+4517239 | 2025-07-18 | Taci Ugraskan
+  burn op fixes
+
+4978f46 | 2025-06-26 | Taci Ugraskan
+  quickfix of error
+
+d81f796 | 2025-04-18 | Taci Ugraskan
+  various comment fixes
+
+2488b84 | 2025-03-13 | jjeong2019
+  Osu_1hru input error fixed.
+
+181fda2 | 2025-03-10 | Frank Geter
+  Fixing another occurance where seting org_allo$abco2 was commented out.
+
+49edf67 | 2025-03-07 | jjeong2019
+  errors in actions and hru_control are fixed
+
+d21832a | 2025-02-06 | Olaf David
+  Merge pull request #44 from mwtoews/fix-typos
+
+e35a0a2 | 2025-02-03 | Frank Geter
+  Fixed hard coded switch case statement.
+
+889136d | 2025-02-03 | Mike Taves
+  Fix typos
+
+2bed304 | 2025-01-22 | fgeter
+  Fixed error in do loop when calculating total c for each layer in nut_orgnc2.f90
+
+9746525 | 2025-01-10 | Olaf David
+  Merge pull request #38 from pssp240425/patch-2
+
+90565b4 | 2024-12-05 | Taci Ugraskan
+  Update headers: add vars, fix alignments, rename fields
+
+07a76f1 | 2024-11-08 | Frank Geter
+  fixed a missing end if statement.
+
+c1bcf79 | 2024-10-22 | od
+  fix yaml
+
+0be40b0 | 2024-10-22 | od
+  fix typo
+
+b095cf8 | 2024-10-08 | Taci Ugraskan
+  truncation fixes
+
+f1e61a3 | 2024-10-08 | Taci Ugraskan
+  fixed tabs
+
+1e8a55b | 2024-08-28 | od
+  fix for unwanted new lines.
+
+a28d294 | 2024-08-12 | Taci Ugraskan
+  merge issue fixesMerge branch 'dev_merge' into dev_ug
+
+f5448b6 | 2024-07-18 | Mike-Fuchs
+  Fixed bug.
+
+c639a8c | 2024-07-24 | Taci Ugraskan
+  Revert "Some Fixes to get pesticides running."
+
+ac6918c | 2024-07-18 | Mike-Fuchs
+  Fixed bug.
+
+0913193 | 2024-07-16 | Mike-Fuchs
+  Fixed bug with incorrect loop
+
+2405a68 | 2024-07-16 | Mike-Fuchs
+  Fixing for Compiling
+
+577e2f6 | 2024-07-08 | od
+  added workflow dispatch
+
+e72b7a1 | 2024-04-03 | od
+  fixed Git and Python3 executable variable
+
+be23824 | 2024-04-03 | od
+  fixed comment.
+
+e6b5dde | 2024-04-02 | od
+  fixed typo.
+
+92b4413 | 2024-03-05 | od
+  fixed 'typo'
+
+
+================================================================================
+Build System & CMake (35 commits)
+================================================================================
+
+25455d2 | 2026-01-14 | fgeter
+  Remove static linking condition for ifx compiler Fedora in CMake configuration. Its not needed after all.
+
+7f44392 | 2026-01-09 | Gaurav Atreya
+  Modify build instructions to direct users to make github issue
+
+1e02118 | 2026-01-05 | Gaurav Atreya
+  Add instructions on compiling with dynamic lib + fix floating error
+
+96d19e3 | 2025-12-31 | fgeter
+  Updated CMakeList.txt to check for ifx build on unix to not set the .static link_libraries setting.
+
+3e103a8 | 2025-12-31 | fgeter
+  Updated CMakeList.txt configuration to include Fedora in static link check so that it does not attempt to statically link with gfortran.
+
+5de3eb9 | 2025-12-30 | fgeter
+  Enable static linking for winlibs GNU Fortran compiler on windows operating systems in CMake configuration.
+
+baad8a7 | 2025-12-29 | fgeter
+  Update CMake configuration for improved OS detection and static linking when compiling with gfortran on linux systems when the operating system is not Arch or Arch based.
+
+10181fe | 2025-12-05 | fgeter
+  Updated graphic for compiler select
+
+b1134c3 | 2025-12-04 | fgeter
+  Made changes to CMakePresets.json to be able to build release versions.
+
+667b7af | 2025-11-21 | fgeter
+  changed order of compilers in CMakePresets.json
+
+a4e85d8 | 2025-11-06 | Natalja
+  Fix Fortran dialect flag formatting in CMakeLists
+
+20c879b | 2025-10-14 | fgeter
+  Added checks to sq_surfs.f90 and stor_surfstor.f90 to prevent gfortran underflow errors.
+
+3d7fcfb | 2025-10-08 | fgeter
+  Updates to utils.f90 to have a flag to  print out stack trace or not. Multple changes to get NAM data set to run using gfortran compiled executable. These changes are generally: 1. trapping exp(x) when x is less than -80 by using utils.f90 and using the function exp_w. 2. Error trapping when computed variables get less than 1.e-10.  This was mainly happened with residue decomposition. 3. Output format spec changes in swift_output.f90 because spec like 10xA80 breaks gfortran.  It needs to be 10x,A80.
+
+11d7d6c | 2025-09-24 | od
+  fix: static lib, Py dependency
+
+fd9e1d3 | 2025-09-23 | fgeter
+  Correct ifort compiler flag in CMakeList.txt
+
+9b7f630 | 2025-09-23 | fgeter
+  Remvoved whitespace in carbon_module and channel_module that was causing compiler warnings. Added function/module utils.f90 that implements compiler directives so we can output stack trace on exp underflows. Added a " use utils" statements to mgt_tillfactor and pest_parm_read. Removed unused variable "k" in mgt_newtillmix and changed the prev_depth data type to real to prevent compiler warning. Changed CMakeList.txt to add compiler flags fpp and cpp in order to implement compiler directives in utils.f90
+
+e3f7903 | 2025-09-18 | fgeter
+  Minor change to basin_print_codes_read.f90 to prevent gfortran allocation error when reading print object labels. Modified mgt_harvresidue.f90 to use harvest efficiency from harv.ops input file if harvest efficiency in management schedule is zero and commented out code that was taking residue from meta, str, and lig pools and corrected code that was double reducing the carbon amount in the residue carbon pool.
+
+85f6faa | 2025-05-02 | od
+  fix: bio_mix_event for gfortran
+
+4f418a6 | 2025-05-01 | fgeter
+  Changed == to .eqv. when comparing logicals so that gfortran would build.
+
+dfa176b | 2025-02-19 | od
+  VS for Windows
+
+d7f4fa6 | 2024-12-09 | Frank Geter
+  Changes to CMakePresets to compile/link on windows, linux and mac
+
+4c1c39d | 2024-12-09 | Frank Geter
+  Removed Ninja from Linux build presets.
+
+8a35f30 | 2024-12-09 | Frank Geter
+  test of change to CMakePresets.json to compile, link in both windows and linux
+
+844f506 | 2024-11-06 | od
+  added all GNU builds
+
+0863b54 | 2024-10-22 | od
+  branch build possible now, added compiler tag to exe
+
+136aebc | 2024-08-29 | od
+  zip build
+
+93d25e7 | 2024-08-28 | od
+  updated exe name (compiler/dbg/rel), flags, install; better checks in scenario tests; cleanup
+
+9228b4a | 2024-07-26 | od
+  fixed typos and build description
+
+5328905 | 2024-07-10 | Frank Geter
+  Removed empty blank line at the begining of CmakeLists file
+
+a8113e7 | 2024-07-05 | od
+  ford + cmake
+
+542859f | 2024-06-11 | od
+  GH build/release for Win/Lin/Mac
+
+a5c24c6 | 2024-05-30 | Frank Geter
+  Modified CMakeLists.txt with different compiler flags to compile gfortran on windows.
+
+c95cd7a | 2024-05-30 | Frank Geter
+  Added cmakepresets file
+
+99f4881 | 2024-03-31 | od
+  correct ifort param for GH build
+
+87f528f | 2024-03-31 | od
+  added workflow build
+
+
+================================================================================
+Carbon & Nutrient Cycling (92 commits)
+================================================================================
+
+83b1dee | 2026-02-12 | Jeff.Arnold
+  fixed no3 and nh4 blopup in cbn_zhang2
+
+10fc6ab | 2026-01-06 | Jeff.Arnold
+  weland issues resoloved and residue stored by plant type
+
+fd3d90f | 2025-12-08 | fgeter
+  made changes to include residue partition fractions and read them in plant.plt and initilize the initial residue amounts.
+
+004f62f | 2025-10-10 | fgeter
+  Added the output of  soil properties at the beginning of the simulation and changed the output in both begining and end simulation to use the carbon from the soil1(ihru)%tot(lyr)%c data structure value because that is where total carbon is being tracked.
+
+bf2899d | 2025-10-09 | fgeter
+  Exposed the meta, str, lig partition fractions so they can be calibrated in carb_coefs.cbn
+
+1d08114 | 2025-10-08 | fgeter
+  Added purpose statement to carbon_coef_read.f90
+
+825de70 | 2025-09-23 | fgeter
+  Fixed the call to mgt_harvresidue in actions.f90
+
+e44625c | 2025-09-23 | fgeter
+  Missed adding add utils.f90 on the previous commit. Removed reducing meta, str, and lig pools in pl_dormant.f90 because that reduction is done in cbn_resdecomp.f90.
+
+82a9cc2 | 2025-09-05 | fgeter
+  Removed the unit header line in hru_cbn_lyr.(txt/csv)
+
+fbde4a1 | 2025-08-12 | fgeter
+  Removed code from soils_init.f90 to a subroutine called soil_test_adjust.f90 which modifies the soils data based input soil test values in the carb_coefs.cbn file.  Also improved the calculation wighted averages of sand, silt, and clay based on soil test values.
+
+3a10d20 | 2025-08-07 | fgeter
+  Removed old code that was commented out and put a comment line carb_coefs.cbn in file.
+
+b79df53 | 2025-08-07 | fgeter
+  Updated carb_coefs.cbn file with new soil test values for latest version.
+
+63c81e1 | 2025-08-05 | fgeter
+  Added data structure to soil_module.f90 to hold soil physical property test values for bulk density, sand, silt, and clay content. Modified carbon_coef_read.f90 to read soil physical property test values from the input file carb_coefs.cbn. Updated the carbon_coef_read.f90 subroutine to handle the new soil physical property test values and ensure proper error handling.
+
+118c27b | 2025-07-22 | fgeter
+  Changes to soil_init.f90 to adjust the input soil carbon values based input soil carbon test values.
+
+c5515f7 | 2025-07-02 | fgeter
+  Made changes to the carbon test data in the input file carb_coefs.cbn to be able to inject carbon test into the soils data.  Changed the necessary supporting subroutines to inject the soil carbon test results into the correct soil associated with the hru.   This works for a single or multiple hrus where where there is a one to one relationship between the hru and the soil.  The example Ames_sub1 input data is the case for muliple hrus.
+
+32c92e8 | 2025-06-26 | fgeter
+  changes made to read in soil carbon test values for one hru.  This is not general solution when there is more than one hru-soils.
+
+bed51b1 | 2025-06-26 | Taci Ugraskan
+  Update phosphorus uptake calculations for biomass
+
+7281bea | 2025-06-24 | Taci Ugraskan
+  Update carbon content assignment in soil1 array
+
+de462c5 | 2025-06-24 | fgeter
+  Minor improvements to read in rtof and man_to_c from the carb_coefs.cbn file that makes the code more flexible to adding more manure coefficients in the future.
+
+a946da6 | 2025-06-03 | fgeter
+  Removed carbon pool partitioning from pl_mortality.f90, pl_dormant.f90, and pl_leaf_senes.f90 because carbon pool partitioning is done in cbn_res_decomp.f90. Corrected an error  in pl_mortality.f90 to ensure that dead material is added to the surface soil residue pools, and that the remaining living biomass is reduced. Removed commented out old code in cbn_res_decomp.f90.
+
+0084ec9 | 2025-05-29 | Taci Ugraskan
+  Prevent negative nitrogen values in soil calculations
+
+2199720 | 2025-05-29 | fgeter
+  Modified carbon_coef_read.f90 to read a file named carb_coefs.cbn in a more flexible manner.
+
+0cb11af | 2025-05-28 | fgeter
+  Added the ability to read in and use the carbon coefficient abco2 for the surface layer in the carbon_coef_read.f90 file.
+
+4647154 | 2025-05-22 | fgeter
+  fixed a bug in check for nh4.
+
+23d7a80 | 2025-05-22 | fgeter
+  Moved the check for no3 and nh4 values to the soil1 array to cbn_zhang2.f90, ensuring that negative values are set to zero. This prevents potential issues with negative values in subsequent calculations.
+
+daeb92e | 2025-05-15 | fgeter
+  Corrected the  hru_endsim_soil_prop.csv  file to have the same units for carbon as in the txt file.
+
+08cecb4 | 2025-05-15 | fgeter
+  Fixed the units on carbon amount in hru_endsim_soil_prop file.
+
+05386a3 | 2025-05-15 | fgeter
+  Made changes to output soil properties at the end of the simulation in a file called hru_endsim_soil_prop.txt/csv.  Units are wrong on carbon and will need to be converted to percent.
+
+ce9c1fe | 2025-05-14 | Taci Ugraskan
+  Update cbn_zhang2.f90
+
+6c37879 | 2025-05-14 | Taci Ugraskan
+  Update cbn_zhang2.f90
+
+57f8d7a | 2025-05-07 | fgeter
+  Minor change to file headers for hru_cbn_lyr and hru_seq_lyr
+
+971558c | 2025-05-06 | fgeter
+  Changes to add soil layer depths in mm to hru_cbn_lyr.(txt/csv) and hru_seq_lyr.(txt/csv) files.
+
+17eb341 | 2025-04-30 | fgeter
+  Changes not zero out sequestered carbon for the surface layer to write out the non zero sequestered carbon for the surface layer.
+
+f874783 | 2025-04-25 | fgeter
+   Minor clean up of code in cbn_zhang2.f90
+
+fb0f726 | 2025-04-24 | Taci Ugraskan
+  reverted cbn_zhang2.f90
+
+c7fe1f4 | 2025-04-24 | fgeter
+  Changes to do and use wieghted average carbon if custom soil layers are used.
+
+73c93ed | 2025-03-29 | fgeter
+  Changed cbn_zhang2 to not alter org_con%cs for the surface layer and instead use microb_top_rate for the surface layer when calculating potential microbial biomass.
+
+4dae01b | 2025-03-19 | fgeter
+  Made changes to output no3, nh4, co2 respiration as modified in cbn_zhang2  in hru_carbvar.(txt/csv)
+
+7be409b | 2025-03-18 | fgeter
+  Made final updates to output org_allo to hru_org_allo_vars and corrected carbon_coef_read.f90 to read in asco2 and apco2
+
+70e4d3f | 2025-03-18 | fgeter
+  Updated code to save org_allo variables as calculated in cbn_zhang2
+
+f66c8e6 | 2025-03-17 | fgeter
+  changes made to outpu an initial set of organic control variables to a file called hru_carbvars.  Added new print object in print.prt called hru_cb_vars and fixed bug in the output of hru_cflux.
+
+dbb62fd | 2025-03-13 | fgeter
+  Fixed error in cbn_zhang2 in the use a1co2 coefficient.
+
+e0b4861 | 2025-03-13 | fgeter
+  Merge pull request #19 from fgeter/2_layer_carbon_coef.cbn
+
+942f299 | 2025-03-11 | fgeter
+  changes made to have carbon_coef.cbn in two layers and added asc02 and apco2 as calibratable parameters.
+
+532e70b | 2025-03-10 | Frank Geter
+  Made changes to use a1co2 in place of asco2 and apco2 and added a1co2 to be read in from carbon_coef.cbn file.
+
+179633f | 2025-03-05 | Frank Geter
+  Changes to read an external file with carbon coefficients that are used in cbn_zhang2.f90.  Added a subroutine called carbon_coef_read.f90 to read the file called  carbon_coef.cbn.  Added that file to the ames data set. The call to carbon_coef_read was put at the end of proc_bsn.f90 subroutine.  cbn_zhang2 was changed to use coefficients in the file if that file is available.  If that file is not available, cbn_zhang2 will use the hard coded coefficient values in cbn_zhang2 as originally coded.
+
+e7da13b | 2025-02-24 | fgeter
+  Added a comment in hru_control on the call to cbn_rsd_decomp
+
+efef7be | 2025-02-06 | Frank Geter
+  Made changes to write out hru_cpool_stat file that is written out soil_nutcarb_write.f90 and cleaned up that code so that some carbon output files do not get written out if cswat is not equal to 2.
+
+6e75b36 | 2025-02-06 | Frank Geter
+  added cbn_rsd_decomp.f90 to decompose residue in structrual, metabolic and lignin pools.  This subroutine is called before cbn_zhang2.f90.
+
+c55897a | 2025-02-06 | Taci Ugraskan
+  Included basin_module. Initialized nutrient-related parameters (phoskd, pperco, psp, nperco, cmn, nperco_lchtile) in hru structure using values from bsn_prm.
+
+6f22aa5 | 2025-02-06 | Taci Ugraskan
+  Added new type `nutrient_parameters` , with real variables `phoskd`, `pperco`, `psp`, `nperco`, `cmn`, and `nperco_lchtile`, all initialized to 0 and measured in kg/m3.
+
+922d015 | 2025-02-06 | Taci Ugraskan
+  Refractored nutrient settling calculations.
+
+5bdace3 | 2025-02-05 | Frank Geter
+  Added the ability to print out soil layer data for the files that had soil layer carbon data availabe that are written out in soil_nutcarb_write.f90.
+
+b2e060e | 2025-02-05 | Frank Geter
+  Changed cbn_zhang2 to reduce surface and subsurface residue based on decomposition and removed from mgt_killops.f90 the portioning the residue into structural, lig, and meta pools.
+
+2d106f8 | 2025-02-04 | Frank Geter
+  changes made to create a file called hru_seq_lyr.txt that has the sequestered carbon by layer.
+
+2b1495c | 2025-02-04 | Frank Geter
+  removed a comment line in cbn_zhang2
+
+96cc66d | 2025-02-04 | Frank Geter
+  Changed units in header for hru_cbn_lyr
+
+b40e8d4 | 2025-02-04 | Frank Geter
+  Moved writing the file hru_cbn_lyr to soil_nutcarb_write.
+
+9c706fd | 2025-02-03 | Frank Geter
+  Made a correction to case 3 in the cbn_zhang2.f90 to reset the till_eff to 1.0 after 30 days.
+
+3bd5381 | 2025-01-30 | fgeter
+  Changes so that hru_soilc_stat output file reflects only sequestered carbon
+
+081ff2e | 2025-01-29 | fgeter
+  This is a change to begin correcting and seperating total carbon from total sequestered carbon.
+
+249813c | 2025-01-23 | fgeter
+  Reverted cbn_zhang2 back to original decomposition parameters.
+
+3483e9e | 2025-01-21 | fgeter
+  Added gw_flow and idc_till to basin module bsn_cc data type. Added gw_flow and idc_till columns to codes.bsn input file Added bsn_cc%idc_till to tillage type select case statement cbn_zhang2.f90
+
+eaf56ef | 2025-01-14 | Frank Geter
+  Changed cbn_zhang2 to use armen kamanian to calculate till_eff.  Changed mgt_newtillmix.f90 to call mgt_tillfactor if cswat equals 2.
+
+8836780 | 2025-01-09 | Frank Geter
+  Temporary change to cbn_zhan2.f90 make decomp parameters the same for all soil layers.
+
+fa7f135 | 2025-01-08 | Frank Geter
+  made changes to move the freq header to 2nd header line for output from soil_nutcarb_write.f90 and changes to pl_fert.f90 to not add organc carbon and residue for inorganic fertilizer events.
+
+bb6f220 | 2025-01-07 | Frank Geter
+  Made to read_mgtops.f90 read fertilzer correctly and changed pl_fert.f90 to determine if a fert event is manure or not and commented out line that was adding structural carbon incorrectly (in my opinion).
+
+e5bb3d4 | 2024-12-23 | Jeff Arnold
+  12/23 - changes to MUSLE C factor and some carbon updates
+
+c06223a | 2024-12-19 | Olaf David
+  12/23 - changes to MUSLE C factor and some carbon updates
+
+fcf3891 | 2024-12-23 | Jeff Arnold
+  source code updates 12/12 changes to MUSLE C factor and some carbon updates
+
+148498b | 2024-12-20 | Frank Geter
+  changed format of soil carbon output in soil_nutcarb_write to add a output frequency column.
+
+6d7c506 | 2024-12-18 | Frank Geter
+  made changes to output the carbon files in soil_nutcarb_write.f90 based on the cb_hru setting in print prt.   Still a work in progress because other carbon files should be included that are not in soil_nutcarb_write.f90
+
+b3b930a | 2024-12-09 | Taci Ugraskan
+  Enhance soil residue handling and biomass calculations in pl_mortality
+
+c3951bb | 2024-12-09 | Taci Ugraskan
+  Remove residue_mass1 type and variables in organic_mineral_mass_module
+
+e393bc3 | 2024-12-09 | Taci Ugraskan
+  Add variables for stem and seed mass in organic_mineral_mass_module.f90
+
+35c6031 | 2024-12-09 | Taci Ugraskan
+  Update total organic content calculation in soil_nutcarb_write.f90
+
+aa3db21 | 2024-12-09 | Taci Ugraskan
+  Refactor biomass and residue pool handling in mgt_killop.f90
+
+c9831d7 | 2024-12-05 | Taci Ugraskan
+  RE-Add zero-initialized organic flux variable
+
+ad72e18 | 2024-12-05 | Taci Ugraskan
+  Refactor carbon module variables and types
+
+d07e189 | 2024-12-05 | Taci Ugraskan
+  Refactor residue and soil decomposition calculations
+
+e18a6a7 | 2024-12-05 | Taci Ugraskan
+  Refactor initialization and carbon calculation logic
+
+bf3ab10 | 2024-12-05 | Taci Ugraskan
+  Refactor soil mixing and residue initialization
+
+eb22103 | 2024-12-05 | Taci Ugraskan
+  Refactor residue management to use new soil1 structure
+
+e4c07a8 | 2024-12-05 | Taci Ugraskan
+  Refactor calculations and update coefficients
+
+8b8ec15 | 2024-12-05 | Taci Ugraskan
+  Refactor carbon variable resets and simplify NPP calculation
+
+914687a | 2024-11-14 | Jeff Arnold
+  Revised initialization of residue and soil litter. Added residue decomposition routine.
+
+7f72b39 | 2024-11-12 | Frank Geter
+  Fixed overwrit ten changes to in carbon_module and command.f90
+
+5c06e5b | 2024-11-08 | Frank Geter
+  Made a number of changes to accumlate organic flux during a calendar year and output to hru_cflux_stat.txt and hru_cflux_stat.csv
+
+ebfbbc4 | 2024-11-06 | od
+  Set variables to zero that are used to sum up the total soil carbon for each carbon components before summing the soil carbon components in the soil layers and changed what soil carbon constituents would be added to get a  tot_org&c value.
+
+ee1b472 | 2024-10-10 | Taci Ugraskan
+  Refactor and enhance residue decomposition and output
+
+6cc3bbb | 2024-05-31 | Frank Geter
+  Changed reference dataset for Ames_sub1 to output yearly soil carbon horizon values.
+
+12deb13 | 2024-05-30 | Frank Geter
+  Added changes to Ames input files to print out soil horizon carbon values.
+
+
+================================================================================
+Documentation (20 commits)
+================================================================================
+
+304e65a | 2025-12-02 | fgeter
+  A few more minor clarifications in the Visual Studio install instructions.
+
+0712850 | 2025-12-01 | fgeter
+  Made a couple of edits to the Microsoft Visual Studio installation instructions.
+
+3b4edfd | 2025-11-13 | fgeter
+  Experimented with removing  that last two lines of the Dockor file
+
+10debf5 | 2025-11-12 | fgeter
+  removed comment
+
+531c87d | 2025-11-12 | fgeter
+  Added a comment
+
+09d23f0 | 2025-06-26 | Taci Ugraskan
+  Comment and formatting changes
+
+4c403cf | 2025-06-13 | fgeter
+  Commented out the line that was causing double counting manue being partitioned into meta, str, and lignin pools.
+
+516e5c9 | 2025-04-07 | fgeter
+  uncommented line in basin_module
+
+0608c29 | 2025-03-12 | Taci Ugraskan
+  Create Dockerfile
+
+f98127c | 2025-03-10 | Frank Geter
+  minor revision to correct the commenting out of the calculation of org_allo%abc02.
+
+5491a42 | 2025-02-19 | Olaf David
+  Merge pull request #49 from odav/docs
+
+64d11da | 2025-02-07 | Taci Ugraskan
+  Uncommented line to ensure LAI is at least the minimum allowable value (alai_min).
+
+5476db2 | 2024-08-29 | O David
+  Update README.md
+
+f8bb6ec | 2024-07-25 | Frank Geter
+  Manually coded init changes
+
+c2f2175 | 2024-07-10 | odav
+  Update README.md
+
+dcff384 | 2024-07-08 | od
+  enabled doc for now.
+
+86b8ee7 | 2024-07-08 | od
+  added ford documentation
+
+0cb0941 | 2024-03-31 | od
+  more documentation.
+
+ad3e2d8 | 2024-03-14 | od
+  win32 ifort additions, documentation
+
+f356ed7 | 2024-03-14 | od
+  win32 ifort additions, documentation
+
+
+================================================================================
+Groundwater (1 commits)
+================================================================================
+
+cf3201b | 2025-11-05 | Jeff.Arnold
+  in hyd_connect, code was added to allow multiple input object to routing units. in actions for irrigating from an aquifer, an if statement was put around constiruents in case no constituents are simulated
+
+
+================================================================================
+Hydrological Processes (14 commits)
+================================================================================
+
+9cfcff0 | 2025-09-10 | fgeter
+  Removed unit header line from hru_seq_lyr.txt and hru_seq_lyr.csv files.
+
+1ef5876 | 2025-08-29 | fgeter
+  Corrected incorrect hru indiex for irr_yr.
+
+b8620cd | 2025-03-18 | fgeter
+  made change to outpu org_ratio variables to file hru_org_ratio_vars
+
+d997d32 | 2025-02-06 | Taci Ugraskan
+  Set wet_prm(iihru)%soln_stl_fr and wet_prm(iihru)%solp_stl_fr to 0.2 in xwalk with sediment inputs.
+
+c49e4fe | 2025-02-06 | Taci Ugraskan
+  New cases added to handle additional parameters for `hru` ;`cmn_h`, `nperco_h`, `pperco_h`, `phoskd_h`, `psp_h`, and `nperco_lchtile_h`.
+
+3a09536 | 2025-02-06 | Taci Ugraskan
+  Update psp assignment to o `hru(ihru)%nut%psp from `bsn_prm%psp.
+
+ffb8cce | 2025-02-06 | Taci Ugraskan
+  Update cosurfsalt calculation to use hru(j)%nut%npercoinstead of bsn_prm%nperco.
+
+95d4ff5 | 2025-02-06 | Taci Ugraskan
+  Modified nitrate calculation in surface runoff and tile flow to use HRU-specific parameters instead of basin parameters: `bsn_prm%nperco` to `hru(j)%nut%nperco` for surface runoff and `bsn_prm%nperco_lchtile` to `hru(j)%nut%nperco_lchtile` for tile flow.
+
+b3dc2c2 | 2025-02-06 | Taci Ugraskan
+  Update cosurfcs calculation to use hru(j)%nut%nperco instead of bsn_prm%nperco.
+
+06d4609 | 2025-02-06 | Taci Ugraskan
+  Changed `rto` calculation to use `hru(j)%nut%psp` instead of `bsn_prm%psp`.
+
+cd9a68a | 2025-02-06 | Taci Ugraskan
+  Updated hmn calculation to use `hru(j)%nut%cmn` instead of `bsn_prm%cmn`, shifting the source of the `cmn` parameter from a basin-level to an HRU-level parameter for more localized calculations.
+
+5061ff8 | 2025-02-04 | Frank Geter
+  Changed header on hru_rsdc_statt to be more clear.
+
+fa0f0bc | 2025-01-16 | Frank Geter
+  Initial variable j to be be equal to jj which is the hru number.
+
+54a9d44 | 2024-08-05 | Taci Ugraskan
+  NP_flow.f90 - Subroutine NP_FLOW REMOVED
+
+
+================================================================================
+Merge Commits (273 commits)
+================================================================================
+
+77b722b | 2026-01-16 | Olaf David
+  Merge pull request #143 from Atreyagaurav/main
+
+d849dd9 | 2026-01-16 | Olaf David
+  Merge pull request #145 from tugraskan/arnoldjjms-integration-jan2026
+
+e961375 | 2026-01-16 | Olaf David
+  Merge pull request #147 from odav/main
+
+584d5be | 2026-01-16 | Olaf David
+  Merge pull request #87 from fgeter/main
+
+b2c5218 | 2026-01-14 | fgeter
+  Merge branch 'main' of https://github.com/fgeter/swatplus_fg_fork
+
+ecd5f1e | 2026-01-14 | Olaf David
+  Merge pull request #146 from odav/main
+
+9d3c452 | 2026-01-05 | Olaf David
+  Merge pull request #86 from fgeter/main
+
+65908ce | 2025-12-16 | Olaf David
+  Merge pull request #141 from odav/main
+
+a0952d6 | 2025-12-12 | fgeter
+  Merge branch 'swat-model:main' into main
+
+8327b5b | 2025-12-12 | Olaf David
+  Merge pull request #85 from swat-model/main
+
+3a4ec3a | 2025-12-12 | Olaf David
+  Merge pull request #140 from celray/main
+
+ca250ec | 2025-12-12 | Olaf David
+  Merge pull request #83 from fgeter/main
+
+5d28c4a | 2025-12-12 | Olaf David
+  Merge pull request #84 from swat-model/main
+
+ce5adcb | 2025-12-11 | Taci Ugraskan
+  Merge pull request #137 from Nbsammons/merge
+
+2884993 | 2025-12-08 | Celray James CHAWANDA
+  Merge branch 'swat-model:main' into main
+
+8c72c90 | 2025-12-05 | fgeter
+  Merge pull request #32 from odav/main
+
+2fbebf7 | 2025-12-05 | Olaf David
+  Merge pull request #82 from fgeter/main
+
+1555d2c | 2025-12-02 | Olaf David
+  Merge pull request #81 from fgeter/main
+
+648d397 | 2025-11-25 | Nbsammons
+  Merge pull request #1 from tugraskan/main
+
+369dbd2 | 2025-11-21 | fgeter
+  Merge branch 'main' of https://github.com/fgeter/swatplus_fg_fork
+
+bf213cf | 2025-11-21 | fgeter
+  Merge branch 'swatplus_fg_dev' of https://github.com/fgeter/swatplus_fg_fork into swatplus_fg_dev
+
+12f6829 | 2025-11-21 | fgeter
+  Merge branch 'swatplus_fg_dev'
+
+d86dd21 | 2025-11-20 | Olaf David
+  Merge pull request #80 from fgeter/main
+
+40f7a29 | 2025-11-13 | fgeter
+  Merge branch 'swat-model:main' into main
+
+a67d41c | 2025-11-13 | fgeter
+  Merge branch 'swatplus_fg_dev'
+
+3a7735f | 2025-11-05 | arnoldjjms
+  Merge pull request #133 from arnoldjjms/main
+
+87fae61 | 2025-10-31 | fgeter
+  Merge branch 'swat-model:main' into main
+
+a2682b3 | 2025-10-31 | Olaf David
+  Merge pull request #130 from odav/main
+
+16d34e9 | 2025-10-31 | Olaf David
+  Merge pull request #79 from fgeter/main
+
+ff8f17f | 2025-10-30 | fgeter
+  Merge branch 'swatplus_fg_dev'
+
+cbbabff | 2025-10-30 | fgeter
+  Merge pull request #31 from NataljaC/main
+
+3c1f345 | 2025-10-30 | fgeter
+  Merge branch 'main' into main
+
+f78c4fb | 2025-10-22 | Olaf David
+  Merge pull request #78 from odav/revert-77-main
+
+1f54bea | 2025-10-21 | Olaf David
+  Merge pull request #77 from fgeter/main
+
+37a4dc1 | 2025-10-14 | Olaf David
+  Merge pull request #76 from fgeter/main
+
+b9a1c57 | 2025-10-14 | Olaf David
+  Merge pull request #75 from fgeter/main
+
+02eab73 | 2025-10-13 | fgeter
+  Merge branch 'swatplus_fg_dev'
+
+fab3216 | 2025-10-13 | Olaf David
+  Merge pull request #74 from fgeter/main
+
+2afc9f8 | 2025-10-10 | fgeter
+  Merge branch 'swatplus_fg_dev'
+
+aa9d541 | 2025-10-10 | fgeter
+  Merge branch 'swatplus_fg_dev'
+
+7e079c2 | 2025-10-08 | fgeter
+  Merge branch 'swatplus_fg_dev'
+
+5ea7d85 | 2025-10-08 | fgeter
+  Merge branch 'swat-model:main' into main
+
+d109457 | 2025-10-08 | Olaf David
+  Merge pull request #120 from odav/main
+
+6ec8a40 | 2025-10-08 | Olaf David
+  Merge pull request #73 from fgeter/main
+
+34bf8aa | 2025-09-26 | fgeter
+  Merge branch 'main' of https://github.com/fgeter/swatplus_fg_fork
+
+25a9bfe | 2025-09-24 | Olaf David
+  Merge pull request #119 from odav/main
+
+0202396 | 2025-09-24 | Olaf David
+  Merge pull request #118 from odav/main
+
+a5a8225 | 2025-09-24 | Olaf David
+  Merge branch 'swat-model:main' into main
+
+08785cb | 2025-09-24 | Olaf David
+  Merge pull request #72 from fgeter/main
+
+c2c363c | 2025-09-24 | Olaf David
+  Merge pull request #112 from tugraskan/0909
+
+6475ae4 | 2025-09-18 | Olaf David
+  Merge pull request #71 from fgeter/main
+
+db60f64 | 2025-09-10 | Olaf David
+  Merge pull request #70 from fgeter/main
+
+e1242b6 | 2025-09-10 | Taci Ugraskan
+  Merge branch '0909' of https://github.com/tugraskan/swatplus_ug into 0909
+
+ff4bbe7 | 2025-09-09 | Taci Ugraskan
+  Merge branch '0909' of https://github.com/tugraskan/swatplus_ug into 0909
+
+c62b4bf | 2025-09-10 | fgeter
+  Merge branch 'main' of https://github.com/fgeter/swatplus_fg_fork
+
+033f2aa | 2025-09-09 | Olaf David
+  Merge pull request #69 from fgeter/main
+
+915dc52 | 2025-09-09 | Taci Ugraskan
+  Merge branch '0909' of https://github.com/tugraskan/swatplus_ug into 0909
+
+af2cd47 | 2025-09-05 | fgeter
+  Merge branch 'swat-model:main' into main
+
+0425496 | 2025-09-05 | Olaf David
+  Merge pull request #107 from tugraskan/0827
+
+bb781b3 | 2025-08-29 | fgeter
+  Merge branch 'swat-model:main' into main
+
+1c866bf | 2025-08-28 | Taci Ugraskan
+  Merge branch '0827' of https://github.com/tugraskan/swatplus_ug into 0827
+
+cbc9723 | 2025-08-21 | Taci Ugraskan
+  Merge branch 'main' of https://github.com/tugraskan/swatplus_ug
+
+efd8376 | 2025-08-13 | Taci Ugraskan
+  Merge pull request #99 from celray/main
+
+2fbbe0b | 2025-08-13 | Olaf David
+  Merge pull request #67 from fgeter/main
+
+bacd663 | 2025-08-07 | Olaf David
+  Merge pull request #66 from fgeter/main
+
+630a9cb | 2025-08-07 | fgeter
+  Merge branch 'swat-model:main' into main
+
+e4af6fa | 2025-08-06 | Olaf David
+  Merge pull request #98 from odav/main
+
+0c32bc0 | 2025-07-28 | Olaf David
+  Merge pull request #65 from fgeter/main
+
+4e2b4bd | 2025-07-28 | Olaf David
+  Merge pull request #64 from fgeter/main
+
+6517ade | 2025-07-25 | fgeter
+  Merge branch 'swat-model:main' into main
+
+c051e08 | 2025-07-23 | Olaf David
+  Merge pull request #63 from fgeter/main
+
+d076536 | 2025-07-23 | fgeter
+  Merge branch 'main' of https://github.com/fgeter/swatplus_fg_fork
+
+bce4958 | 2025-07-21 | Olaf David
+  Merge pull request #94 from odav/main
+
+dc2fcc3 | 2025-07-21 | Olaf David
+  Merge branch 'swat-model:main' into main
+
+6149f5b | 2025-07-21 | Olaf David
+  Merge pull request #92 from tugraskan/main_copy
+
+4ba29af | 2025-07-16 | Taci Ugraskan
+  Merge pull request #41 from tugraskan/NAM_BRANCH
+
+1b4579a | 2025-07-16 | Taci Ugraskan
+  Merge branch 'main_copy' into NAM_BRANCH
+
+796bef8 | 2025-07-09 | Olaf David
+  Merge pull request #62 from fgeter/main
+
+15bb945 | 2025-07-08 | Taci Ugraskan
+  Merge branch 'main' of https://github.com/swat-model/swatplus
+
+1b43e51 | 2025-07-03 | Taci Ugraskan
+  Merge pull request #26 from swat-model/NAM_Branch
+
+fd88324 | 2025-07-02 | fgeter
+  Merge branch 'main' into main
+
+b0309d0 | 2025-07-02 | Olaf David
+  Merge pull request #60 from fgeter/main
+
+49989a3 | 2025-07-02 | Olaf David
+  Merge pull request #61 from swat-model/main
+
+458ba69 | 2025-07-02 | Olaf David
+  Merge pull request #84 from tugraskan/src_upadates_0626
+
+ddbceaa | 2025-06-27 | Taci Ugraskan
+  Merge branch 'swat-model:main' into src_upadates_0626
+
+240face | 2025-06-27 | Taci Ugraskan
+  Merge pull request #23 from tugraskan/codex/create-dt-for-irrigation-amount-limit
+
+b49f5ef | 2025-06-25 | Olaf David
+  Merge pull request #82 from odav/main
+
+5bce8b0 | 2025-06-24 | Olaf David
+  Merge pull request #59 from fgeter/main
+
+d38a137 | 2025-06-23 | Olaf David
+  Merge pull request #58 from fgeter/main
+
+b324588 | 2025-06-16 | Olaf David
+  Merge pull request #57 from fgeter/main
+
+9cd9274 | 2025-06-13 | Taci Ugraskan
+  Merge branch 'main' of https://github.com/swat-model/swatplus
+
+4ab8f72 | 2025-06-12 | Olaf David
+  Merge pull request #79 from odav/main
+
+dbaa556 | 2025-06-12 | Olaf David
+  Merge pull request #56 from fgeter/main
+
+8f1eb2d | 2025-06-04 | Olaf David
+  Merge pull request #78 from odav/main
+
+3e6c746 | 2025-06-03 | Olaf David
+  Merge pull request #55 from fgeter/main
+
+3efcd5a | 2025-05-30 | fgeter
+  Merge branch 'swat-model:main' into main
+
+059d17e | 2025-05-30 | Olaf David
+  Merge branch 'swat-model:main' into main
+
+45316bd | 2025-05-30 | Olaf David
+  Merge pull request #76 from tugraskan/alfa
+
+c25ea4f | 2025-05-29 | Olaf David
+  Merge pull request #54 from fgeter/main
+
+27dcb6e | 2025-05-29 | fgeter
+  Merge branch 'swat-model:main' into main
+
+26124f2 | 2025-05-28 | Olaf David
+  Merge pull request #52 from fgeter/main
+
+5bbc7d7 | 2025-05-28 | Olaf David
+  Merge pull request #75 from odav/main
+
+98d1538 | 2025-05-27 | Taci Ugraskan
+  Merge pull request #74 from tugraskan/NAM_BRANCH
+
+325e9d0 | 2025-05-23 | Olaf David
+  Merge pull request #51 from fgeter/main
+
+98f6a9c | 2025-05-21 | Olaf David
+  Merge pull request #50 from fgeter/main
+
+a921e98 | 2025-05-21 | Taci Ugraskan
+  Merge branch 'main' of https://github.com/swat-model/swatplus
+
+bbfd043 | 2025-05-20 | fgeter
+  Merge branch 'swat-model:main' into main
+
+f2009bc | 2025-05-20 | Olaf David
+  Merge pull request #48 from fgeter/main
+
+d410f1c | 2025-05-20 | Olaf David
+  Merge pull request #49 from swat-model/main
+
+e134d83 | 2025-05-20 | Olaf David
+  Merge pull request #72 from tugraskan/manure
+
+78168f1 | 2025-05-14 | Taci Ugraskan
+  Merge branch 'manure' of https://github.com/tugraskan/swatplus_ug into manure
+
+54c0cb9 | 2025-05-14 | Olaf David
+  Merge branch 'swat-model:main' into main
+
+156f2f8 | 2025-05-14 | Olaf David
+  Merge pull request #71 from tugraskan/src_05132025
+
+3fe006c | 2025-05-07 | Olaf David
+  Merge pull request #47 from fgeter/main
+
+d83192b | 2025-05-06 | fgeter
+  Merge pull request #30 from swat-model/main
+
+8bcaa04 | 2025-05-06 | Olaf David
+  Merge pull request #69 from odav/main
+
+d91cf34 | 2025-05-02 | Olaf David
+  Merge pull request #46 from fgeter/main
+
+6c1384e | 2025-05-02 | Olaf David
+  Merge pull request #45 from fgeter/main
+
+cc7e5ad | 2025-05-02 | fgeter
+  Merge pull request #29 from odav/main
+
+349862d | 2025-05-02 | fgeter
+  Merge branch 'main' into main
+
+bbcdc21 | 2025-05-01 | Olaf David
+  Merge pull request #44 from fgeter/main
+
+7615b87 | 2025-05-01 | Olaf David
+  Merge pull request #43 from fgeter/main
+
+61c940f | 2025-04-29 | Olaf David
+  Merge pull request #68 from odav/main
+
+a0e618b | 2025-04-25 | Olaf David
+  Merge pull request #42 from fgeter/main
+
+1419289 | 2025-04-25 | fgeter
+  Merge branch 'main' of https://github.com/fgeter/swatplus_fg_fork
+
+748b2bb | 2025-04-25 | fgeter
+  Merge pull request #28 from swat-model/main
+
+02cda67 | 2025-04-25 | Olaf David
+  Merge pull request #67 from tugraskan/merge_0424
+
+d161874 | 2025-04-24 | Taci Ugraskan
+  Merge branch 'swat-model:main' into merge_0424
+
+a29c59e | 2025-04-23 | Taci Ugraskan
+  Merge branch 'main' of https://github.com/swat-model/swatplus
+
+7a72327 | 2025-04-18 | fgeter
+  Merge pull request #27 from odav/main
+
+216240f | 2025-04-18 | Olaf David
+  Merge pull request #66 from tugraskan/merge_0417
+
+1203e78 | 2025-04-17 | Taci Ugraskan
+  Merge branch 'main' of https://github.com/swat-model/swatplus
+
+5d6bb79 | 2025-04-11 | Olaf David
+  Merge pull request #65 from odav/main
+
+8191ab8 | 2025-04-08 | Olaf David
+  Merge pull request #41 from fgeter/main
+
+d91d444 | 2025-04-07 | Olaf David
+  Merge pull request #40 from fgeter/main
+
+e8355dc | 2025-04-07 | fgeter
+  Merge pull request #26 from odav/main
+
+278f7a9 | 2025-04-04 | Olaf David
+  Merge branch 'swat-model:main' into main
+
+1df6e5d | 2025-04-04 | Olaf David
+  Merge pull request #39 from fgeter/main
+
+984ad9c | 2025-04-04 | fgeter
+  Merge branch 'main' of https://github.com/fgeter/swatplus_fg_fork
+
+5db3b6a | 2025-04-03 | Taci Ugraskan
+  Merge branch 'main' of https://github.com/swat-model/swatplus
+
+c68bfb8 | 2025-04-03 | Taci Ugraskan
+  Merge pull request #64 from swat-model/main
+
+8a77d61 | 2025-04-03 | Taci Ugraskan
+  Merge pull request #63 from tugraskan/main
+
+0c65b69 | 2025-04-02 | fgeter
+  Merge branch 'main' into main
+
+3ee54f1 | 2025-04-02 | fgeter
+  Merge branch 'main' of https://github.com/fgeter/swatplus_fg_fork
+
+82a760c | 2025-04-02 | fgeter
+  Merge pull request #25 from swat-model/main
+
+dfd0a5a | 2025-04-02 | Olaf David
+  Merge branch 'swat-model:main' into main
+
+04e1a6b | 2025-04-02 | Olaf David
+  Merge pull request #61 from tugraskan/main
+
+15ba121 | 2025-03-31 | Olaf David
+  Merge pull request #38 from fgeter/main
+
+77bda96 | 2025-03-31 | fgeter
+  Merge branch 'main' of https://github.com/fgeter/swatplus_fg_fork
+
+3656c50 | 2025-03-31 | Olaf David
+  Merge pull request #37 from fgeter/main
+
+3243159 | 2025-03-31 | fgeter
+  Merge pull request #24 from swat-model/main
+
+f06c3f6 | 2025-03-31 | fgeter
+  Merge branch 'main' into main
+
+19b9a7a | 2025-03-29 | Olaf David
+  Merge pull request #59 from tugraskan/main
+
+0be0800 | 2025-03-26 | Olaf David
+  Merge pull request #35 from fgeter/main
+
+01f9836 | 2025-03-24 | Olaf David
+  Merge pull request #34 from fgeter/main
+
+b8a97a2 | 2025-03-18 | fgeter
+  Merge branch 'swat-model:main' into main
+
+8ae040c | 2025-03-17 | Olaf David
+  Merge pull request #57 from jjeong2019/main
+
+4f66983 | 2025-03-17 | Olaf David
+  Merge pull request #32 from fgeter/main
+
+ce86be1 | 2025-03-13 | Natalja
+  Merge pull request #58 from tugraskan/ugs_codespace
+
+9330cc0 | 2025-03-13 | fgeter
+  Merge pull request #18 from odav/main
+
+81d14be | 2025-03-10 | Olaf David
+  Merge branch 'swat-model:main' into main
+
+491afff | 2025-03-07 | jjeong2019
+  Merge pull request #4 from jjeong2019/paddy_dev
+
+3e61a70 | 2025-03-07 | jjeong2019
+  Merge pull request #3 from jjeong2019/paddy_dev
+
+8048249 | 2025-03-06 | jjeong2019
+  Merge pull request #2 from jjeong2019/paddy_dev
+
+a335b5d | 2025-03-06 | jjeong2019
+  Merge pull request #1 from jjeong2019/paddy_dev
+
+db361f1 | 2025-03-05 | Olaf David
+  Merge pull request #31 from fgeter/main
+
+cb93173 | 2025-03-05 | fgeter
+  Merge pull request #17 from odav/swatplus/main
+
+7638cd4 | 2025-03-05 | Frank Geter
+  Merge branch 'main' of https://github.com/fgeter/swatplus_fg_fork
+
+09349e7 | 2025-02-28 | Olaf David
+  Merge pull request #54 from odav/main
+
+dafc1d2 | 2025-02-27 | Olaf David
+  Merge pull request #30 from fgeter/main
+
+2508ea7 | 2025-02-27 | fgeter
+  Merge pull request #16 from odav/main
+
+1820dc7 | 2025-02-26 | Frank Geter
+  Merge branch 'main' of https://github.com/fgeter/swatplus_fg_fork
+
+3669634 | 2025-02-25 | Olaf David
+  Merge branch 'swat-model:main' into main
+
+67a2cc9 | 2025-02-26 | Natalja
+  Merge pull request #51 from NataljaC/main
+
+0f092e0 | 2025-02-19 | Olaf David
+  Merge pull request #29 from swat-model/main
+
+26f37ad | 2025-02-13 | Olaf David
+  Merge pull request #28 from fgeter/main
+
+537e10d | 2025-02-13 | fgeter
+  Merge pull request #15 from odav/main
+
+9d3e6f0 | 2025-02-12 | Frank Geter
+  Merge branch 'main' of https://github.com/fgeter/swatplus_fg_fork
+
+8f9c224 | 2025-02-10 | Olaf David
+  Merge pull request #27 from fgeter/main
+
+ebc03a4 | 2025-02-10 | fgeter
+  Merge pull request #14 from odav/main
+
+ff72e84 | 2025-02-07 | Olaf David
+  Merge pull request #26 from fgeter/main
+
+2b5b542 | 2025-02-07 | Olaf David
+  Merge branch 'swat-model:main' into main
+
+c4df212 | 2025-02-07 | Olaf David
+  Merge pull request #47 from tugraskan/02062025
+
+5f79852 | 2025-02-07 | Taci Ugraskan
+  Merge branch '02062025' of https://github.com/tugraskan/swatplus_ug into 02062025
+
+7f2d610 | 2025-02-06 | Frank Geter
+  Merge branch 'main' of https://github.com/fgeter/swatplus_fg_fork
+
+c45107e | 2025-02-06 | fgeter
+  Merge pull request #13 from odav/main
+
+29a41b9 | 2025-02-06 | Olaf David
+  Merge pull request #25 from swat-model/main
+
+b67c180 | 2025-02-06 | Olaf David
+  Merge branch 'main' into main
+
+9ff8938 | 2025-02-06 | Olaf David
+  Merge pull request #46 from tugraskan/02062025
+
+e779a7e | 2025-02-06 | Olaf David
+  Merge pull request #24 from fgeter/main
+
+8a444d7 | 2025-02-06 | Taci Ugraskan
+  Merge branch 'main' of https://github.com/tugraskan/swatplus_ug
+
+92e0f80 | 2025-02-05 | Olaf David
+  Merge pull request #21 from fgeter/main
+
+c8e085b | 2025-02-04 | Olaf David
+  Merge pull request #20 from fgeter/main
+
+458feee | 2025-02-03 | Frank Geter
+  Merge branch 'main' of https://github.com/fgeter/swatplus_fg_fork
+
+61cad65 | 2025-02-03 | Olaf David
+  Merge pull request #19 from fgeter/main
+
+7cd818d | 2025-02-03 | fgeter
+  Merge pull request #12 from odav/main
+
+576ce06 | 2025-01-24 | Olaf David
+  Merge pull request #43 from odav/main
+
+a357262 | 2025-01-23 | fgeter
+  Merge branch 'main' of https://github.com/fgeter/swatplus_fg_fork
+
+e8d207e | 2025-01-23 | Olaf David
+  Merge pull request #18 from fgeter/main
+
+9aa0eee | 2025-01-22 | fgeter
+  Merge pull request #11 from odav/main
+
+0dce35d | 2025-01-22 | fgeter
+  Merge branch 'main' of https://github.com/fgeter/swatplus_fg_fork
+
+d32a445 | 2025-01-21 | Olaf David
+  Merge pull request #17 from fgeter/main
+
+60221da | 2025-01-21 | fgeter
+  Merge pull request #10 from odav/main
+
+d44ceb4 | 2025-01-21 | Olaf David
+  Merge pull request #16 from fgeter/main
+
+cb393d0 | 2025-01-16 | fgeter
+  Merge pull request #9 from odav/main
+
+6088fc6 | 2025-01-16 | Frank Geter
+  Merge branch 'main' of https://github.com/fgeter/swatplus_fg_fork
+
+49d6ac5 | 2025-01-15 | Olaf David
+  Merge pull request #15 from fgeter/main
+
+ea0da1f | 2025-01-14 | fgeter
+  Merge pull request #8 from odav/main
+
+d267a4c | 2025-01-14 | Frank Geter
+  Merge branch 'main' of https://github.com/fgeter/swatplus_fg_fork
+
+752f8ca | 2025-01-10 | Olaf David
+  Merge pull request #13 from fgeter/main
+
+ad06593 | 2025-01-10 | Olaf David
+  Merge pull request #14 from swat-model/main
+
+8bb7d19 | 2025-01-09 | fgeter
+  Merge pull request #7 from odav/main
+
+b2334f0 | 2025-01-08 | Olaf David
+  Merge pull request #12 from fgeter/main
+
+3b0cce2 | 2025-01-08 | Frank Geter
+  Merge branch 'main' of https://github.com/fgeter/swatplus_fg_fork
+
+97799a7 | 2025-01-08 | fgeter
+  Merge pull request #6 from odav/main
+
+f6544c2 | 2025-01-03 | Olaf David
+  Merge pull request #10 from fgeter/main
+
+3ac2c4a | 2025-01-03 | Olaf David
+  Merge branch 'main' into main
+
+1e9e0a7 | 2025-01-03 | Olaf David
+  Merge pull request #11 from swat-model/main
+
+bb8b72c | 2025-01-03 | Taci Ugraskan
+  Merge branch 'main' of https://github.com/tugraskan/swatplus_ug
+
+adbe18d | 2025-01-03 | fgeter
+  Merge pull request #5 from swat-model/main
+
+039e912 | 2025-01-03 | Olaf David
+  Merge pull request #37 from tugraskan/jeffs
+
+ce5022f | 2025-01-02 | fgeter
+  Merge pull request #4 from swat-model/main
+
+0937104 | 2025-01-02 | Olaf David
+  Merge pull request #36 from tugraskan/jeffs
+
+76efbf1 | 2024-12-31 | Taci Ugraskan
+  Merge branch 'jeffs' of https://github.com/tugraskan/swatplus_ug into jeffs
+
+1d09f2b | 2024-12-31 | Jeff Arnold
+  Merge branch 'jeffs' of https://github.com/tugraskan/swatplus_ug into jeffs
+
+34b0451 | 2024-12-30 | fgeter
+  Merge branch 'swat-model:main' into main
+
+b5c414e | 2024-12-30 | Olaf David
+  Merge pull request #35 from tugraskan/jeffs
+
+9d5176d | 2024-12-23 | Jeff Arnold
+  Merge branch 'jeffs' of https://github.com/tugraskan/swatplus_ug into jeffs
+
+ec1affe | 2024-12-20 | Taci Ugraskan
+  Merge branch 'swat-model:main' into jeffs
+
+2e63bb7 | 2024-12-20 | Olaf David
+  Merge pull request #5 from fgeter/main
+
+01ce54e | 2024-12-20 | Olaf David
+  Merge pull request #6 from swat-model/main
+
+6dfe431 | 2024-12-19 | Olaf David
+  Merge pull request #34 from tugraskan/1212
+
+bd6dd3b | 2024-12-16 | fgeter
+  Merge pull request #3 from swat-model/main
+
+ce92a04 | 2024-12-13 | Taci Ugraskan
+  Merge branch '1212a' into 1212
+
+738a4f0 | 2024-12-12 | Jeff Arnold
+  Merge branch '1210_a' of https://github.com/tugraskan/swatplus_ug into 1210_a
+
+3a6ae13 | 2024-12-12 | Olaf David
+  Merge pull request #33 from fgeter/main
+
+b064c02 | 2024-12-12 | fgeter
+  Merge pull request #2 from swat-model/main
+
+7d0c639 | 2024-12-11 | Olaf David
+  Merge pull request #32 from tugraskan/1210_a
+
+d5b086e | 2024-12-05 | Olaf David
+  Merge pull request #30 from tugraskan/1204
+
+344efc6 | 2024-11-18 | Olaf David
+  Merge pull request #26 from fgeter/main
+
+3ad364c | 2024-11-18 | fgeter
+  Merge pull request #1 from swat-model/main
+
+1c25953 | 2024-11-14 | arnoldjjms
+  Merge pull request #24 from arnoldjjms/main
+
+370c1a4 | 2024-11-13 | arnoldjjms
+  Merge pull request #22 from fgeter/main
+
+f9b1200 | 2024-11-08 | Olaf David
+  Merge pull request #19 from fgeter/main
+
+303eead | 2024-11-08 | Olaf David
+  Merge pull request #18 from swat-model/dev_ug
+
+935dc67 | 2024-11-08 | Taci Ugraskan
+  Merge branch 'main' into dev_ug
+
+7a222b8 | 2024-11-06 | Olaf David
+  Merge pull request #16 from odav/main
+
+117351c | 2024-11-06 | Olaf David
+  Merge pull request #4 from odav/develop
+
+2202899 | 2024-11-06 | Olaf David
+  Merge pull request #3 from odav/develop
+
+4e944de | 2024-11-06 | Olaf David
+  Merge pull request #2 from odav/develop
+
+f6f8307 | 2024-10-08 | Taci Ugraskan
+  Merge branch 'develop' of https://github.com/swat-model/swatplus into develop
+
+3c907e6 | 2024-10-08 | Taci Ugraskan
+  Merge pull request #15 from swat-model/merge_10_07_2024
+
+f320bd6 | 2024-09-09 | Taci Ugraskan
+  Merge pull request #13 from swat-model/main
+
+d4c0d08 | 2024-08-29 | O David
+  Merge pull request #12 from odav/main
+
+5f932ba | 2024-08-28 | O David
+  Merge pull request #11 from odav/main
+
+8957aca | 2024-08-28 | O David
+  Merge pull request #1 from swat-model/main
+
+e498f60 | 2024-08-28 | O David
+  Merge pull request #10 from odav/main
+
+7444b98 | 2024-08-28 | O David
+  Merge pull request #9 from fgeter/main
+
+68b1328 | 2024-08-23 | Taci Ugraskan
+  Merge branch 'main' of https://github.com/swat-model/swatplus
+
+8d2da84 | 2024-08-21 | Taci Ugraskan
+  Merge pull request #8 from swat-model/dev_ug2
+
+d31de48 | 2024-08-21 | Taci Ugraskan
+  Merge pull request #8 from swat-model/dev_ug2
+
+57cebcc | 2024-08-21 | Taci Ugraskan
+  Merge branch 'main' into dev_ug2
+
+e030553 | 2024-08-16 | Taci Ugraskan
+  Merge pull request #7 from swat-model/dev_ug
+
+2e94f30 | 2024-08-12 | Taci Ugraskan
+  Merge branch 'dev_ug' of https://github.com/swat-model/swatplus into dev_ug
+
+a6e901d | 2024-07-26 | odav
+  Merge pull request #5 from fgeter/main
+
+dac8dc9 | 2024-07-25 | odav
+  Merge pull request #2 from fgeter/main
+
+598ca80 | 2024-07-24 | Taci Ugraskan
+  Merge branch 'main' of https://github.com/swat-model/swatplus
+
+ca93295 | 2024-07-24 | Taci Ugraskan
+  Reapply "Merge pull request #3 from Mike-Fuchs/main"
+
+563734f | 2024-07-24 | Taci Ugraskan
+  Merge pull request #4 from swat-model/revert-3-main
+
+a65eb10 | 2024-07-24 | Taci Ugraskan
+  Revert "Merge pull request #3 from Mike-Fuchs/main"
+
+5bb0c80 | 2024-07-24 | Taci Ugraskan
+  Merge pull request #3 from Mike-Fuchs/main
+
+6f22d5f | 2024-07-09 | odav
+  Merge pull request #1 from fgeter/main
+
+3c59d7c | 2024-06-11 | od
+  Merge branch 'main' of https://github.com/odav/swatplus
+
+
+================================================================================
+Output & Reporting (62 commits)
+================================================================================
+
+85b2a8b | 2025-12-12 | Olaf David
+  Merge pull request #136 from crazyzlj/bug_fixed_write_area_calc_out
+
+6b0100b | 2025-12-12 | Olaf David
+  Merge branch 'main' into bug_fixed_write_area_calc_out
+
+06731ff | 2025-12-11 | Taci Ugraskan
+  Merge pull request #139 from swat-model/output-dir-merge
+
+9299ca5 | 2025-12-04 | Celray James CHAWANDA
+  allow specifying output directory
+
+186970f | 2025-12-04 | Celray James CHAWANDA
+  remove orphan write statement
+
+0bd6225 | 2025-11-21 | fgeter
+  Minor mod to .vscode/launch.json to add a comment on which line to change to point to a different input directory
+
+698b7f7 | 2025-11-21 | fgeter
+  changed .gitignore to ignore output files in /refdata/Osu_1hru/
+
+0d9bb63 | 2025-10-29 | Natalja Čerkasova
+  Reviwing some of the output printing
+
+c62e9eb | 2025-10-29 | Natalja Čerkasova
+  Updated on the outputs
+
+78b0756 | 2025-10-29 | fgeter
+  Removed workship print statement in actions.f90
+
+db3006f | 2025-10-21 | fgeter
+  Added print statement to actions.f90
+
+6ae8b3a | 2025-10-13 | fgeter
+  Fixed file unit bug in output_landscape_init.f90
+
+9257cbe | 2025-10-07 | fgeter
+  correction to hru_cpool.txt write statement because it was outputing the wrong variable
+
+5457ba5 | 2025-10-01 | fgeter
+  Added write format spec to hru_rsdc output.
+
+e44da48 | 2025-09-25 | fgeter
+  Added a err_output logical variable in utils.f90 to control whether output is generated if the exponent result causes and underflow.
+
+f2741ed | 2025-09-25 | fgeter
+  Fixed output stack trace message in utils.f90
+
+661112b | 2025-09-25 | fgeter
+  Improve utils.f90 to write all error output to error_unit (i.e. stderr) Add [Tt]mp/ to .gitignore to ignore tmp folder
+
+9c1743b | 2025-08-13 | Taci Ugraskan
+  Update lsu_output.f90
+
+58806d7 | 2025-08-12 | Celray James CHAWANDA
+  correct gis_id printing in lsu outputs
+
+cf8d92c | 2025-07-28 | fgeter
+  Updated hru_output so that average annual output for bm_max is the maximum daily biomas for the entire simulation
+
+7137750 | 2025-07-25 | fgeter
+  Changes to get bm_max working correctly for yearly output in hru_pw
+
+b7a8fba | 2025-07-25 | fgeter
+  Changes to get bm_max working on a monthlhy basis in hru_pw output file.
+
+41f984e | 2025-06-27 | fgeter
+  removed unneeded print statement.
+
+0972daf | 2025-05-05 | od
+  fix for tot_p output
+
+fdb10b1 | 2025-05-02 | fgeter
+  Changes to output total n and p for all the pools in hru_n_p_pools_stat
+
+463f8e8 | 2025-04-30 | fgeter
+  Changes to output n and p pools
+
+d2e03ac | 2025-04-08 | fgeter
+  Made changes to fix bug in basin_print_codes_read where it was skipping every other lines.
+
+6f95374 | 2025-04-03 | Taci Ugraskan
+  Comment out unused logical variable `already_read_in` in the `print_interval` type
+
+5054b1f | 2025-04-02 | fgeter
+  Changes made to basin_print_codes.f90 to read either print objects in a fixed sequential order or to read the print objects using the first colum as labels
+
+8412729 | 2025-03-31 | fgeter
+  Corrected the removal of a variable declaration in basin_print_codes_read.f90
+
+3ccbc1d | 2025-03-18 | fgeter
+  Changes to output org_trans values to hru_org_trans_vars
+
+64cf5cb | 2025-03-18 | fgeter
+  made changes to output_landscape_module to define org_ration header
+
+402d255 | 2025-03-18 | fgeter
+  Updated output_landscape_init and output_landscape module to prepare for output org_allo values.
+
+b0c85d6 | 2025-03-17 | fgeter
+  Made changes to print.prt in data/Ames_Sub1 to add print object hru_cb_vars
+
+c81a863 | 2025-03-14 | fgeter
+  Merge pull request #20 from fgeter/output_org_con_values
+
+f15ba79 | 2025-03-13 | jjeong2019
+  output files removed
+
+6a96a12 | 2025-03-13 | jjeong2019
+  Output files added to the list of ignored files.
+
+de9d23f | 2025-03-13 | jjeong2019
+  print file is updated.
+
+8d2886f | 2025-03-07 | jjeong2019
+  Update print.prt
+
+84e7997 | 2025-02-27 | Frank Geter
+  Changes to move the percn output to the last column in the hru_ls output files.
+
+74b595c | 2025-02-26 | Frank Geter
+  Minor spelling changes and changed to error stop on duplicate print objects in print.prt file.
+
+36203d9 | 2025-02-13 | Frank Geter
+  Changes made to add percn to hru_ls output files.
+
+bb5bed9 | 2025-02-12 | Frank Geter
+  Made changes to detect duplicate print object codes in the input file print.prt
+
+3841f25 | 2025-02-06 | Frank Geter
+  created cpool output file header and units.
+
+daae0d8 | 2025-02-06 | Taci Ugraskan
+  Comment out unused assignments in basin_output.f90
+
+688de41 | 2025-02-04 | Frank Geter
+  Made changes to the file hru_cflux_stat so that the cflux output is not cumulative.
+
+a1d7f68 | 2025-01-03 | Frank Geter
+  Made changes to basin_print_codes_read.f90 to conform the swatplus editor labels
+
+abe4d3d | 2024-12-19 | Frank Geter
+  Minor change to remove debug print statement and to skip blank lines in reading print.prt
+
+1d19d6e | 2024-12-18 | Frank Geter
+  Made changes to create print.prt output object "hru_cb"
+
+f02ee54 | 2024-12-17 | Frank Geter
+  Modified basin_print_codes_read.f90 to read outptut objects in any order and to accomodate adding additional output objects without impacting the others.
+
+0db8866 | 2024-12-09 | Taci Ugraskan
+  Update file handling and output in output_landscape_init.f90
+
+ffab7e2 | 2024-12-09 | Taci Ugraskan
+  Rename & update output header types/variables in output_landscape_module
+
+fd6bdd5 | 2024-11-14 | Frank Geter
+  Added column  header units to hru_cflux_stat output
+
+576314b | 2024-10-08 | Taci Ugraskan
+  Separate write statements for bsn%name and prog
+
+5350f0d | 2024-08-27 | Frank Geter
+  Updated swatplus output files in the data folder
+
+e0f14c3 | 2024-08-19 | Taci Ugraskan
+  08192024 updates: swift_outputs: - output header revisions
+
+e844e51 | 2024-08-19 | Taci Ugraskan
+  08192024 updates: swift_outputs: - output header revisions
+
+39fabde | 2024-08-08 | Frank Geter
+  Initialized varables with python script, corrected input data where integers where floats in two input files, trapped underflow errors in three files where an exp function was done on too negative of a number and updated the data/Ames_sub1 output data to reflect the input data changes against the intel complied version.
+
+32d3582 | 2024-07-08 | Frank Geter
+  Updated data/Ames_sub1 output data with the lastest swat executable from the sorce code provided by texas.
+
+d81f4c4 | 2024-06-11 | od
+  Fix: first line handling in output
+
+1f72511 | 2024-06-11 | Frank Geter
+  Update swatplus output in data/ames based on updated weather_wgn.cli file.
+
+fde5d7c | 2024-05-30 | Frank Geter
+  Added basin_chanbud_output.f90 from latest bitbucket code
+
+
+================================================================================
+Plant & Soil Management (73 commits)
+================================================================================
+
+374c54c | 2025-12-04 | Celray James CHAWANDA
+  make crop_yld output to respect print.prt option
+
+75887dc | 2025-12-04 | Celray James CHAWANDA
+  conditioned crop yield write on print.prt
+
+50e44c5 | 2025-11-21 | fgeter
+  Deleted  basin_print_codes_read.f90  out of workspace root
+
+37bbabe | 2025-11-21 | fgeter
+  Deleted input data out of workspace root.
+
+5823fa8 | 2025-10-30 | fgeter
+  reverted some changes back to original from merge with Natalya's pull request in actions.f90, basin_print_codes_read, pl_dormant, and soils_init. Code now compiles and runs to completion.
+
+ded9d38 | 2025-10-29 | Natalja Čerkasova
+  minor change: wetland storage check
+
+50968d0 | 2025-10-29 | Natalja Čerkasova
+  Amended wetland initialisation: minor fixes
+
+900f620 | 2025-10-29 | fgeter
+  Removed mixing of rocks for when biomixing in mgt_newtillmix.f90
+
+c06f91d | 2025-10-29 | fgeter
+  Changed mgt_newtillmix.f90 to use the exposed till_eff_days instead a hardcoded 30 day value.
+
+0212c64 | 2025-10-16 | fgeter
+  Removed purpose statement from soils_init.f90
+
+d77b130 | 2025-10-16 | fgeter
+  Added purpose statement to soils.init
+
+f52e9d8 | 2025-10-14 | fgeter
+  Removed a debug print statement in sq_greenampt and added use utils to a pl_pup and basin_prm_default to catch exp(x) underflows.
+
+cc28f83 | 2025-10-07 | fgeter
+  Added tot_sw to the soil phys data structure and added a computation in hru_control to calculate tot_sw and output the tot_sw as the last column in hru_cpool_stat.txt
+
+ea5b574 | 2025-09-24 | fgeter
+  Fixed issue with dissappearing rock fraction in mgt_newtillmix.f90
+
+759dd36 | 2025-09-10 | fgeter
+  Added soil moisture content by layer that includes wilting point to the hru_cpool_stat.(txt/csv) file.  Other changes are cosmetic (removal of old commented out code and some code indentation for clarity)
+
+58bdaca | 2025-09-10 | fgeter
+  Incomplete changes to soil_nutcarb_write.f90.
+
+1c812c1 | 2025-08-20 | Taci Ugraskan
+  Refactor soil-plant initialization and pesticide calculations
+
+a408ce8 | 2025-08-20 | Taci Ugraskan
+  Refactor soil-plant initialization and pesticide calculations
+
+882cfd9 | 2025-08-07 | fgeter
+  Made refinements to injecting soil test data.  Determined that sand, silt, clay weighted averages cannot be done independently then have them total 100%.
+
+51a41f8 | 2025-08-06 | fgeter
+  Refactored code to read soil test data that may have missing values and adjust soil data based on these values. Added comments to clarify the process of adjusting soil data based on soil test values. Improved error handling to provide more informative error messages when the number of soil tests does not match the number of soil test values in the input file.  The code runs but is not yet tested.
+
+2e38acc | 2025-07-25 | fgeter
+  Fixed problem with bm_grow so that it is zero in hru_pw when no crop is growing,
+
+926fe7b | 2025-07-23 | fgeter
+  Minor adjustments to variable names  in soils_init.f90
+
+4fd19d5 | 2025-07-16 | Taci Ugraskan
+  Update pl_mortality.f90
+
+a238807 | 2025-06-26 | Olaf David
+  Merge pull request #83 from tugraskan/soil_nutcarb_patch
+
+6285dcf | 2025-06-25 | Taci Ugraskan
+  Merge branch 'swat-model:main' into soil_nutcarb_patch
+
+3e41a16 | 2025-06-24 | fgeter
+  refactored soils_init.f90 to do weighted averages in one loop instead of multiple loops.
+
+a22bf6c | 2025-06-23 | fgeter
+  Changes to expose pl_fert.f90 variables rtof and the hard coded 0.42 manure to c conversion factor to a man_to_c variable.
+
+ed41056 | 2025-06-12 | fgeter
+  Improved the clarity and logic of determining the number of custom soil layers.
+
+7c891c5 | 2025-06-11 | fgeter
+  Corrected a bug in soils_init.f90 when using custom soil layer depths.
+
+aef12f3 | 2025-05-29 | Taci Ugraskan
+  Add growth check before calling pl_dormant subroutine
+
+49349b1 | 2025-05-28 | fgeter
+  Fixed an error where the soil layer number was not being set correctly in pl_dormant.f90 for the soil1(j)%meta, soil1(j)%str, and soil1(j)%lig arrays. The error was fixed by updating the soil layer number to 1, ensuring that the changes were applied to the correct layer.
+
+c9d92fe | 2025-05-06 | fgeter
+  Removed unnecessary code from soils_init.f90
+
+93d7856 | 2025-05-06 | fgeter
+  Fixed error in the depth of the last soil layer when custom soil layer is used.
+
+5c7af0b | 2025-05-02 | fgeter
+  Removed unused vars in mgt_newtillmix.f90
+
+16fe288 | 2025-05-02 | fgeter
+  Fixed biomixing so that it only occures if all soil layers down to biomix depth are above zero temperature.
+
+de12eba | 2025-05-01 | fgeter
+  changes to actually biomix in mgt_newtillmix.f90
+
+ae59039 | 2025-04-29 | fgeter
+  Changes to soils_init.f90 so that first custom soil layer is always 10mm deep.
+
+8f7065d | 2025-04-25 | fgeter
+  format change to soils_init
+
+b848976 | 2025-04-24 | Jeff.Arnold
+  mgt_newtillmix
+
+bdbd422 | 2025-04-07 | fgeter
+  Fixed bug in reading multiple soils while using custom/modified soil layer depths.
+
+3e7e77c | 2025-04-04 | fgeter
+  Added biomix to tillage.til input file.
+
+62cc4fc | 2025-04-04 | fgeter
+  Changes to read bio mix efficiency and bio mix depth from tillage.til input file.  Use of these variables is only implemented if cswat == 2.  If cswat does equal 2, then the code works as it did before where bio_mix efficiency is read form the input file hydrology.hyd and bio mix depth is hard coded to 50 mm.
+
+b11be0a | 2025-04-02 | fgeter
+  Changed the output files hru_rsdc_stat.(txt/csv), hru_soilc_stat.(txt/csv),  hru_cflux_stat.(txt/csv), hru_soilcarb_mb_stat.(txt/csv), and hru_cpool_stat.(txt/csv), to include soil layer depth.
+
+8908c94 | 2025-04-02 | fgeter
+  output soil layer depth as integers rather than reals for output files written in soil_carbvar_write.f90 and changed the name of of the output file hru_org_trans_stat.(txt/csv) to hru_org_trans_vars.(.txt/csv) to be more conistent with othre file names.
+
+6426791 | 2025-04-01 | fgeter
+  Added soil layer depth to all output files that are associated with the print.prt object hru_cb_vars.
+
+bd54c07 | 2025-03-31 | fgeter
+  Removed redundent line of code from soils_init.f90
+
+ab52dfc | 2025-03-31 | fgeter
+  made chages to add soil depth and soil temperature to hru_carbvars.(txt/csv)
+
+87ef57c | 2025-03-28 | fgeter
+  Made to debug if soil profie depth was less than the greatest soil layer depth in the soil_lyr_depths.sol
+
+c890298 | 2025-03-27 | fgeter
+  Add the file soil_lyr_depths.sol to data/Ames_sub1.  This file specifies custom soil depths to be used.
+
+d462a2d | 2025-03-27 | fgeter
+  debug the previous commit and  some code clean up in soil_phys_init.f90
+
+56aa528 | 2025-03-27 | fgeter
+  changes made to use custom soil layer depths specified in the file soil_lyr_depths.sol
+
+f8a8e41 | 2025-03-25 | fgeter
+  Changes to have bio mixing always occuring when there is not another active tillage event and the soil layer is not frozen.
+
+17a37c4 | 2025-02-12 | Frank Geter
+  made changes to prevent empty strings from being written out to mgt_out.txt
+
+23efce5 | 2025-02-10 | Frank Geter
+  Changes to intialize hp, hs, microb, to zero for surface layer and changed mgt_schedule to output irrigation name.
+
+f797125 | 2025-02-06 | Taci Ugraskan
+  Replaced bsn_prm%phoskd and bsn_prm%pperco with hru(j)%nut%phoskd and hru(j)%nut%pperco in three sections: 1. Soluble P lost in surface runoff. 2. Soluble P leaching through soil layers. 3. P leaching to the next soil layer and tile drainage.
+
+0a995de | 2025-02-06 | Taci Ugraskan
+  Added integer variable `nam1`, used in plant parm read
+
+203759c | 2025-02-06 | Taci Ugraskan
+  Included  `reservoir_module` and `landuse_data_module`. Added new integer variable `icom` used in pl_class condition check. Added condition check for `res_pvol`. Modified `pl_class` condition check to iterate over `pcom(ielem)%npl` and compare `targc` with `lum(icom)%cal_group`. Commented out old `pl_class` condition check.
+
+3ec9329 | 2025-02-03 | Frank Geter
+  summed up soil_prof_(str,meta,lig) to correct the zero output in hry_rsdc_stat.txt
+
+2781f5d | 2025-01-29 | fgeter
+  Simplified the do loop in soil_nutcarb_write.f90 fixed the calculations for tot_org, seq_org, and surf_org.
+
+e22cb49 | 2025-01-03 | Taci Ugraskan
+  Update plant_parm_read.f90
+
+87c3f43 | 2024-12-31 | Jeff Arnold
+  Refactor modules for plant class handling, erosion, sediment, & biomass.
+
+85cb4ae | 2024-12-31 | Frank Geter
+  Addes hru_cb label to print.prt and changed soil_nutcarb_write to output 7 significant digits to the csv files.
+
+0ff6bdc | 2024-12-20 | Frank Geter
+  Changes necessary to combine hru_soilc_stat and hru_cflux_stat into one output file call hru_soilcarb_mb_stat (.txt & .csv).  Original two files are still output until the combined file can be double checked.
+
+0172d0d | 2024-12-20 | Frank Geter
+  made changes to command.f90 to call soil_nutcarb_write based on the print flags in print.prt
+
+363e471 | 2024-12-12 | Frank Geter
+  Fixed the order of column print out for hru_soilc_stat.csv to match hru_soilc_stat.txt
+
+4ccb648 | 2024-12-09 | Taci Ugraskan
+  Enhance perennial dormant period logic and cleanup in Pl_dormant.f90
+
+011b76a | 2024-12-09 | Taci Ugraskan
+  Initialize mix_clay, mix_silt, and mix_sand to 0 in mgt_newtillmix.f90
+
+aa13477 | 2024-12-09 | Taci Ugraskan
+  Add pl_manure subroutine for N & P application in pl_manure.f90
+
+789f3da | 2024-12-05 | Taci Ugraskan
+  Remove orgncswat2 and pl_leaf_drop subroutines
+
+d235b84 | 2024-12-05 | Taci Ugraskan
+  Update bsn_org_rsd calculation to use soil1 data
+
+ee28296 | 2024-12-05 | Taci Ugraskan
+  Enhance soil mass modeling with new types and functions
+
+339741b | 2024-12-05 | Taci Ugraskan
+  Refactor soil profile calculations and output writes
+
+0783ef9 | 2024-05-22 | Natalja
+  Update plant_module.f90
+
+
+================================================================================
+Testing & Validation (14 commits)
+================================================================================
+
+f0cdffa | 2025-12-11 | Taci Ugraskan
+  Merge branch 'main' into pr/celray/138. Changes to Header_cs and wb_check.f90 not done as they have been deleted from main branch.
+
+f11a717 | 2025-11-21 | fgeter
+  renamed data folder to refdata
+
+209ea76 | 2025-10-16 | fgeter
+  Removed a meaningless test message.
+
+15abd83 | 2025-10-09 | fgeter
+  Removed dev branch test code.
+
+b2a7165 | 2025-10-09 | fgeter
+  test of dev branch
+
+ab159a0 | 2025-10-08 | fgeter
+  test of bracnch sync
+
+ea52970 | 2025-03-13 | jjeong2019
+  test
+
+e95f1d9 | 2025-03-13 | jjeong2019
+  test
+
+e237679 | 2025-02-06 | Taci Ugraskan
+  Included  basin_module. Replaced plclass variable check for "nam1" with loop condition to check bsn_cc%nam1 != 0 flag instead.
+
+f656b9e | 2024-10-22 | od
+  test versioning
+
+0483fac | 2024-06-11 | od
+  added test support
+
+c7c8e22 | 2024-05-30 | Frank Geter
+  Added latest source code from bitbucket
+
+94b6dec | 2024-05-30 | Frank Geter
+  Added latest source code from bitbucket
+
+081bf1e | 2024-04-03 | od
+  check for Git location
+
+
+================================================================================
+Utilities & Infrastructure (9 commits)
+================================================================================
+
+0af2e22 | 2026-01-14 | fgeter
+  added chack for required columns in utils.f90
+
+7218654 | 2026-01-14 | fgeter
+  Add table_reader type to utils.f90 and associated methods for file data handling when reading a simple table.
+
+059bc50 | 2025-12-19 | Celray James CHAWANDA
+  update  launch.json with new data path
+
+f664cc4 | 2025-12-05 | Olaf David
+  Change image paths to relative in VSCode_Codespace.md
+
+d1b35a3 | 2025-12-04 | fgeter
+  Added changes and markdown file for starting a GitHub virtual instance of VSCode.
+
+4527333 | 2025-11-21 | fgeter
+  Added .vscode back to .gitingore
+
+916db39 | 2025-11-21 | fgeter
+  temporarily removed .vscode from .gitignore so launch.json could be changed and added to .gitignore workdata.
+
+b633f79 | 2024-05-31 | Frank Geter
+  Remove .vscode and .vs from gitignore
+
+5f00b2a | 2024-05-31 | Frank Geter
+  Removed .vscode and .vs from .gitignore and addeded .vscode/launch.json file for debutting
+
+
+================================================================================
+Warnings & Code Quality (9 commits)
+================================================================================
+
+35d329f | 2025-11-25 | Nbsammons
+  added a real statement in wq_k2m.f90 to prevent a warning.
+
+d70017a | 2025-11-24 | Nbsammons
+  code cleanup of stacked routines,  unused routines,  added 'end subroutine/function' to some codes to be consistent., remove warnings in code with  'real, external ::' statement;  #8889 warnings with 'external ::' statement followed by routines called in the routine.
+
+2ee1889 | 2025-11-17 | Nbsammons
+  Cleanup of  sine warnings.
+
+8b482a8 | 2024-12-05 | Taci Ugraskan
+  Remove unused type definitions from module
+
+c717049 | 2024-11-08 | Taci Ugraskan
+  Remove and comment out unused code in dbsc and d_tbl
+
+dab22e1 | 2024-10-08 | Taci Ugraskan
+  Remove unused format labels in Fortran source files
+
+e18817a | 2024-10-08 | Taci Ugraskan
+  Refactor and enhance various modules and subroutines
+
+cfa8445 | 2024-07-05 | od
+  cleanup doc generation
+
+326c634 | 2024-04-01 | od
+  cleanup, ctest cleanup
+
+
+================================================================================
+Water Allocation (24 commits)
+================================================================================
+
+52ab1cd | 2026-02-10 | Jeff.Arnold
+  Residue pool updates. Added canals to water allocation and can have multiple channels within a water allication object.
+
+423ab74 | 2026-01-21 | Jeff.Arnold
+  split water_allocation_read
+
+3a44d93 | 2026-01-21 | Jeff.Arnold
+  water_allo updates
+
+72206bc | 2026-01-06 | Jeff.Arnold
+  Enhance water allocation with recall support and update soil cover calculations
+
+815ec79 | 2025-11-19 | Jeff.Arnold
+  water allocation updates
+
+406df33 | 2025-12-04 | Celray James CHAWANDA
+  fix creation of empty file when daily channel output is disabled in print.prt
+
+7e82c5d | 2025-11-19 | Jeff.Arnold
+  water allocation updates
+
+914f365 | 2025-10-30 | Natalja Čerkasova
+  Changes to the manure allocation module. Mainly changed the demand object names
+
+29e2d36 | 2025-10-29 | Natalja Čerkasova
+  Bug fixes and changes related to water allocation
+
+90fa54f | 2025-10-29 | Natalja Čerkasova
+  Channel deposition and erosion adjusment. Water allocation modeule related adjustemnts
+
+23142ed | 2025-10-29 | Natalja Čerkasova
+  Water allocation now has explicit structured output objects and headers, with per-transfer (daily/monthly/yearly/avg) accumulators and CSV write support. Water-body (reservoir / wetland / channel) output type and aggregators were added so water-body fluxes (precip, evap, seep) can be accumulated and combined using operator overloads.
+
+64bd2a6 | 2025-10-29 | Natalja Čerkasova
+  Water allocation module development: major changes to the structure and code
+
+7e1b2e4 | 2025-10-29 | Natalja Čerkasova
+  subroutine wallo_allo_output(iwallo) Purpose · Produce and accumulate water-allocation output for a single wallo(iwallo) object: daily output -> monthly accumulators -> yearly accumulators -> average-annual values. Also optionally write text and CSV output. Input · integer, intent(in) :: iwallo — index of the water-allocation object to process. Main control flow · Outer loop: itrn = 1 .. wallo(iwallo)%trn_obs (iterate transactions). · Inner loop: isrc = 1 .. wallo(iwallo)%trn(itrn)%src_num (iterate sources for each transaction).
+
+c1bc3ed | 2025-10-13 | fgeter
+  Fixed soil water error in hru_cpool_stat.csv file
+
+7c955b0 | 2025-07-16 | Taci Ugraskan
+  Update sd_channel_sediment3.f90
+
+dbf54e9 | 2025-05-28 | fgeter
+  Added the carbon_water_coef.cbn file to the data/Ames_sub1 directory
+
+15bb350 | 2025-05-28 | fgeter
+  Added the ability to read prmt_21 and prmt_44 from a file named carbon_water_coef_read.f90 if that file exists.  If it does not exist it defaults to 1000. and 0.5 respectively.
+
+e77b28e | 2025-05-21 | fgeter
+  Added temporary code to correct negative soil no3 and solp values in pl_nut_demand.f90
+
+84e6a49 | 2025-05-13 | Taci Ugraskan
+  Update sd_channel_control3.f90
+
+44fa729 | 2025-02-06 | Taci Ugraskan
+  Added two new real variables, `soln_stl_fr` and `solp_stl_fr`,  to the `water_body_data_parameters` type. Used in wet_inital sediment xwalk and res_read.
+
+dbed7f8 | 2024-12-09 | Taci Ugraskan
+  Refactor soil nutrient allocation and update comments in pl_fert.f90
+
+4a6b87e | 2024-12-05 | Taci Ugraskan
+  Update comments and deactivate channel assignments
+
+7a9273b | 2024-08-21 | Taci Ugraskan
+  08202024 updates sd_channel_control3 : - Updated nutrient transformation logic to ensure accurate updates to organic nitrogen and phosphorus levels. - Corrected logic for `orgn`, `no3`, `sedp`, and `solp` transformations by applying minimum constraints. - Added detailed output routines for channel sediment and nutrient budgets, including deposition, erosion, and concentration calculations. - Cleaned up unnecessary comments and redundant code, and clarified sediment and nutrient handling steps. - Added additional checks and constraints to ensure mass balance consistency across various flow conditions.
+
+f146c70 | 2024-08-15 | Taci Ugraskan
+  sd_channel_control3 : - Updated nutrient transformation logic to ensure accurate updates to organic nitrogen and phosphorus levels. - Corrected logic for `orgn`, `no3`, `sedp`, and `solp` transformations by applying minimum constraints. - Added detailed output routines for channel sediment and nutrient budgets, including deposition, erosion, and concentration calculations. - Cleaned up unnecessary comments and redundant code, and clarified sediment and nutrient handling steps. - Added additional checks and constraints to ensure mass balance consistency across various flow conditions.
+
