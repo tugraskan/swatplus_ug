@@ -1,0 +1,37 @@
+e40efc91d9cd767e4489b45357a2e17638dcf782|copilot-swe-agent[bot]|198982749+Copilot@users.noreply.github.com|2026-02-13|Initial plan
+7a7e3919df7df61a5d1b7485dd056578e24ac197|Olaf David|odavid@colostate.edu|2026-02-06|Merge pull request #156 from tugraskan/Jaehak_02042026
+78b295f27ef78910714d6bbda054654ad18a8914|Jaehak Jeong|Jaehak.Jeong@brc.tamus.edu|2026-02-05|Updated hydrological calculations to include time step adjustments for flow conversions in hru_hyds and ru_control subroutines.
+57f4d0176a639318616c256453f8dd7db646f77a|Olaf David|odavid@colostate.edu|2026-02-04|Merge pull request #154 from fgeter/main
+74a3389611ddfeb101656f7df2f282c74e343145|fgeter|fgeter@gmail.com|2026-02-03|Corrected the units line for the hru_ls_[day,mon,yr].[txt,csv] files.
+a9cf473e36f4070744472d8456017a18dcda8d0b|fgeter|110357015+fgeter@users.noreply.github.com|2026-02-03|Merge branch 'swat-model:main' into main
+2cd7698b7067fcd2505ef29b98f0b881390c862b|fgeter|fgeter@gmail.com|2026-02-03|Changes made to increase field width plus a space when writing out output losses in the file hru_ls_[day, mon, yr]
+f20322d5172bb34ea590c8ea3ec242c37fbdfc52|Celray James CHAWANDA|39268978+celray@users.noreply.github.com|2026-02-03|Merge pull request #155 from crazyzlj/bug_fixed_for_swatplus_team
+a38a28c84c7ef8b8178b0eb0bd2b9d84531d6ca5|Liang-Jun Zhu|crazyzlj@gmail.com|2026-01-30|typo corrected
+ba62c238001c565172053b26936f22396a6fea01|Liang-Jun Zhu|crazyzlj@gmail.com|2026-01-30|bug fix: decomp is an temporary variable that must be assign
+55638250c6c62d5597998895a917f11dc7aecd9a|Liang-Jun Zhu|crazyzlj@gmail.com|2026-01-30|bug fix: accumulate solute mass transferred from aquifer grids to HRU's soil
+dde34434ccb1418dcbd198155eb5fe823fb0f5de|Liang-Jun Zhu|crazyzlj@gmail.com|2026-01-30|bug fixed: Reset hru_soil to zero for the next day for gwflow module
+0217189f44ca990f1484526d392761a5f60dfe1f|Liang-Jun Zhu|crazyzlj@gmail.com|2026-01-30|Clarify comment of cell_size in gwflow.input
+0b603da453a5db04050cce560b9dad7ed4874817|fgeter|fgeter@gmail.com|2026-01-30|Prevent runtime underflow errors in cbn_rsd_decomp and update residue decomposition call in hru_control based on cswat condition.
+4a61ead8464e46f88706011ceb401a4d622bb503|fgeter|fgeter@gmail.com|2026-01-30|Update error handling in carbon_coef_read to issue warnings for unrecognized variables instead of stopping execution.
+2b7ba2e5ce2ff0a20e8e917c3fe7de257de43afb|fgeter|110357015+fgeter@users.noreply.github.com|2026-01-29|Merge branch 'swat-model:main' into main
+16294b21823542c7d27de90c317b8c11df494b67|fgeter|fgeter@gmail.com|2026-01-29|Changes needed to handle soil test layer insertion into soils for multiple hrus.
+834fad2ef8457477d2339359b06f45b269657565|Olaf David|odavid@colostate.edu|2026-01-29|Merge pull request #152 from tugraskan/cbn_rsd_decomp_guard
+72f3363e111c52a1940fa4cd0176902349202322|Olaf David|odavid@colostate.edu|2026-01-29|Merge branch 'main' into cbn_rsd_decomp_guard
+5e702101292b1f384cf93c07f49c29a6640fc205|fgeter|fgeter@gmail.com|2026-01-28|changed the name of nmbr_soil_tests to nmbr_soil_test_layers
+70767615f5b5b18681c1a3de75c2e58b883d8b29|fgeter|fgeter@gmail.com|2026-01-28|finished subroutine to insert soil test values.
+82cc00007b9bce41bb7cfc014f4c8487f060ba73|fgeter|fgeter@gmail.com|2026-01-28|Refactor soil test adjustment logic to improve handling of previous depths and ensure proper bulk density adjustments based on soil test data.  Not complete work, need to adjust the other input soil test parameters next.
+85c9d9564faa44dc6fa54eb2750503f40ca533ce|Olaf David|odavid@colostate.edu|2026-01-28|Merge pull request #151 from odav/main
+39771df371a636d4af422f66633b7e47f0e689f0|Olaf David|odavid@colostate.edu|2026-01-28|Merge pull request #92 from fgeter/main
+58519e98f6e389e9c83fab7d134929f5bc9f5b04|Olaf David|odavid@colostate.edu|2026-01-28|Merge pull request #93 from swat-model/main
+fd0c5874216c580998df7d3cbb98c55207524dc2|Olaf David|odavid@colostate.edu|2026-01-28|Merge pull request #150 from odav/main
+febcf0cea26fa233890301ec2d61311d13b78271|fgeter|fgeter@gmail.com|2026-01-27|corrections to  root distribution  and tracking features to soil and plant modules
+6593d3bcb75be50e560f691c48b64fcd6f4d3010|Olaf David|odavid@colostate.edu|2026-01-23|Merge pull request #90 from fgeter/main
+fd1697e55f121153147e0651462ee985e5b8de51|fgeter|fgeter@gmail.com|2026-01-23|Put if statement around code in cbn_rsd_decomp.f90 to prevent divide by zero
+deb0f311bf451039109b95ccd427060fb611fba0|Olaf David|odavid@colostate.edu|2026-01-23|Merge pull request #89 from fgeter/main
+da2b09b0a113f0cacac0457d6317fd407f6fa68d|fgeter|110357015+fgeter@users.noreply.github.com|2026-01-23|Merge branch 'swat-model:main' into main
+4983fdc65d814384a2661797664f72a8303cf943|fgeter|fgeter@gmail.com|2026-01-22|updates to utils.f90 to allow for better backwards compatiblity by recoginizing a description column and all data associated with that column.  Also provided way to allow for a row that is the units of the fields but adding a start_data_row_numbr skip the units row(s).
+89b5d94eb80a4700a56d8bf8d863ea60eb983fac|Taci Ugraskan|143652012+tugraskan@users.noreply.github.com|2026-01-21|Add nitrogen and phosphorus handling in decomposition
+7018bbd6ee25bab12c45e94fd380037cb8f2c185|Olaf David|odavid@colostate.edu|2026-01-21|Merge pull request #88 from fgeter/main
+8f6717a7d0eff653cde90a18ab5350a07e717b13|Olaf David|odavid@colostate.edu|2026-01-21|Merge pull request #149 from odav/main
+48f0b7de84ef7b7ae12831b2dd9c9f374ee88313|od|odavid@colostate.edu|2026-01-21|reverting missing static link
+6e6757a79f9aa59697dcb4b6ce9b144032158ff5|fgeter|fgeter@gmail.com|2026-01-20|Exposed tn, tx, top temperature equation coefficieants and minor changes/corrections to comments in CMakeList.txt file.

@@ -1,0 +1,7 @@
+83b1dee fixed no3 and nh4 blopup in cbn_zhang2
+52ab1cd Residue pool updates. Added canals to water allocation and can have multiple channels within a water allication object.
+423ab74 split water_allocation_read
+9f02b7b merge
+3a44d93 water_allo updates
+10fc6ab weland issues resoloved and residue stored by plant type
+7e82c5d water allocation updates

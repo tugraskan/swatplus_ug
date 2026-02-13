@@ -171,18 +171,35 @@
             soil1(ihru)%hp(ly)%n = soil1(ihru)%hp(ly)%c / 10.                       !assume 10:1 C:N ratio
             soil1(ihru)%hp(ly)%p = soil1(ihru)%hp(ly)%c / 80.                       !assume 80:1 C:P ratio
               
-            !initialize slow humus pool
-            soil1(ihru)%hs(ly)%m = frac_hum_slow * soil1(ihru)%tot(ly)%m
-            soil1(ihru)%hs(ly)%c = frac_hum_slow * soil1(ihru)%tot(ly)%c
-            soil1(ihru)%hs(ly)%n = soil1(ihru)%hs(ly)%c / 10.                       !assume 10:1 C:N ratio
-            soil1(ihru)%hs(ly)%p = soil1(ihru)%hs(ly)%c / 80.                       !assume 80:1 C:P ratio
-              
-            !initialize microbial pool
-            soil1(ihru)%microb(ly)%m = frac_hum_microb * soil1(ihru)%tot(ly)%m
-            soil1(ihru)%microb(ly)%c = frac_hum_microb * soil1(ihru)%tot(ly)%c
-            soil1(ihru)%microb(ly)%n = soil1(ihru)%microb(ly)%c / 8.                !assume 8:1 C:N ratio
-            soil1(ihru)%microb(ly)%p = soil1(ihru)%microb(ly)%c / 80.               !assume 80:1 C:P ratio
-          ! endif
+!!initialize slow humus pool
+          soil1(ihru)%hs(ly)%m = frac_hum_slow * soil1(ihru)%tot(ly)%m
+          soil1(ihru)%hs(ly)%c = frac_hum_slow * soil1(ihru)%tot(ly)%c
+          soil1(ihru)%hs(ly)%n = soil1(ihru)%hs(ly)%c / 10.                   !assume 10:1 C:N ratio
+          soil1(ihru)%hs(ly)%p = soil1(ihru)%hs(ly)%c / 80.                   !assume 80:1 C:P ratio
+          
+          !!initialize microbial pool
+          soil1(ihru)%microb(ly)%m = frac_hum_microb * soil1(ihru)%tot(ly)%m
+          soil1(ihru)%microb(ly)%c = frac_hum_microb * soil1(ihru)%tot(ly)%c
+          soil1(ihru)%microb(ly)%n = soil1(ihru)%microb(ly)%c / 8.            !assume 8:1 C:N ratio
+          soil1(ihru)%microb(ly)%p = soil1(ihru)%microb(ly)%c / 80.           !assume 80:1 C:P ratio
+          
+          !! metabolic residue
+          soil1(ihru)%meta(ly)%m = 0.85 * soil1(ihru)%tot(ly)%m
+          soil1(ihru)%meta(ly)%c = 0.357 * soil1(ihru)%tot(ly)%m              !0.357=0.42*0.85
+          soil1(ihru)%meta(ly)%n = soil1(ihru)%meta(ly)%c / 10.               !assume 10:1 C:N ratio (EPIC)
+          soil1(ihru)%meta(ly)%p = soil1(ihru)%meta(ly)%c / 100.   
+          
+          !! structural residue
+          soil1(ihru)%str(ly)%m = 0.15 * soil1(ihru)%tot(ly)%m
+          soil1(ihru)%str(ly)%c = 0.063 * soil1(ihru)%tot(ly)%m               !0.063=0.42*0.15
+          soil1(ihru)%str(ly)%n = soil1(ihru)%str(ly)%c / 150.                !assume 150:1 C:N ratio (EPIC)
+          soil1(ihru)%str(ly)%p = soil1(ihru)%str(ly)%c / 1500.
+          
+          !! lignin residue
+          soil1(ihru)%lig(ly)%m = 0.8 * soil1(ihru)%str(ly)%m
+          soil1(ihru)%lig(ly)%c = 0.8 * soil1(ihru)%str(ly)%c                 !assume 80% Structural C is lig
+          soil1(ihru)%lig(ly)%n = 0.2 * soil1(ihru)%str(ly)%n
+          soil1(ihru)%lig(ly)%p = 0.02 * soil1(ihru)%str(ly)%p
 
           soil1(ihru)%tot(ly) = soil1(ihru)%str(ly) + soil1(ihru)%meta(ly) + soil1(ihru)%hs(ly) + soil1(ihru)%hp(ly) + soil1(ihru)%microb(ly)
           soil1(ihru)%seq(ly) = soil1(ihru)%hs(ly) + soil1(ihru)%hp(ly) + soil1(ihru)%microb(ly)
