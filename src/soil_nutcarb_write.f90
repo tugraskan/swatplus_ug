@@ -29,7 +29,6 @@
       real :: tot_prof_p
       real :: prf_swc = 0.0     !mm/mm       |average profile soil water content including wilting point moisture content.
       real :: prf_depth = 0.0   !mm          |depth of soil profile.
-      real :: layer_root_frac = 0.0
       integer :: iihru = 0      !none        |counter
       integer :: j = 0          !none        |counter
       integer :: ipl = 0        !none        |counter
@@ -145,9 +144,7 @@
             end do
             soil_prof_rsd = soil_prof_rsd + soil1(j)%rsd_tot(ly)
             soil_prof_root = soil_prof_root + soil1(j)%root_tot(ly)
-            layer_root_frac = 0.
-            if (pl_mass(j)%root_com%m > 1.e-12) layer_root_frac = soil1(j)%root_tot(ly)%m / pl_mass(j)%root_com%m
-            soil_prof_root_frac = soil_prof_root_frac + layer_root_frac
+            soil_prof_root_frac = soil_prof_root_frac + soil1(j)%root_tot(ly)%m / max(1.e-12, pl_mass(j)%root_com%m)
             soil_prof_str = soil_prof_str + soil1(j)%str(ly)
             soil_prof_hact = soil_prof_hact + soil1(j)%hact(ly)
             soil_prof_hsta = soil_prof_hsta + soil1(j)%hsta(ly)
