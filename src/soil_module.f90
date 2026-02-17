@@ -24,6 +24,7 @@
         real :: percc = 0.       !!
         real :: latc = 0.        !!
         real :: vwt = 0.         !!
+        real :: rtfr = 0.        !! none          |root fraction for soil layer
       end type soilayer
       type (soilayer), dimension(:), allocatable :: layer1
       
