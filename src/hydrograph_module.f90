@@ -226,9 +226,6 @@
       !! outside source outflow
       type (hyd_output), dimension (:), allocatable :: osrc_om
       
-      !! outside receiving inflow
-      type (hyd_output), dimension (:), allocatable :: orcv_om
-      
       !! canal storage and outflow
       type (hyd_output), dimension (:), allocatable :: canal_om_stor
       type (hyd_output), dimension (:), allocatable :: canal_om_out
@@ -385,6 +382,7 @@
         real, dimension(:,:), allocatable :: uh                             !subdaily surface runoff unit hydrograph
         real, dimension(:,:), allocatable :: hyd_flo                        !subdaily surface runoff hydrograph
         real, dimension(:),allocatable :: tsin                              !inflow subdaily flow hydrograph
+        type (hyd_output) :: trans                                          !water transfer in water allocation
         type (hyd_output) :: hin_tot                                        !total inflow hydrograph to the object
         type (hyd_output) :: hout_tot                                       !total outflow hydrograph to the object
         type (hyd_output) :: conc_prev                                      !concentration of previous timestep for watqual2e routine

@@ -1,9 +1,21 @@
-    module water_allocation_module
+      module water_allocation_module
     
       implicit none
             
       real :: trans_m3 = 0.
       real :: trn_m3 = 0.                   !m3     |demand
+      
+      !! water source objects
+      type water_source_objects
+        integer :: num = 0                      !source object number
+        character (len=6) :: ob_typ = ""        !channel(cha), reservoir(res), aquifer(aqu), unlimited source(unl)
+        integer :: ob_num = 0                   !number of the object type
+        character (len=10) :: lim_typ = ""      !selecting how to determine available water - decision table (dtbl), recall file (rec), or monthly limit (mon_lim)
+        character (len=25) :: lim_name = ""     !name of decision table or recall file
+        integer :: dtbl_num = 0                 !number of decision table for available water (if used)
+        integer :: rec_num = 0                  !number of recall file for available water (if used)
+        real, dimension (12) :: limit_mon = 0.  !min chan flow(m3/s), min res level(frac prinicpal), max aqu depth(m)
+      end type water_source_objects
       
       !! transfer source objects
       type transfer_source_objects
@@ -11,8 +23,6 @@
         integer :: num = 0                      !number of the source object
         character (len=10) :: conv_typ = ""     !conveyance type - pipe or pump
         integer :: conv_num = 0                 !number of the conveyance object
-        character (len=25) :: dtbl_lim = ""     !decision table name to set withdrawal limit of the source object
-        real :: wdraw_lim = 0.                  !actual withdrawal limit of source object (res-frac principal, aqu-max depth (m); cha-min flow (m3/s))
         real :: frac = 0.                       !fraction of transfer supplied by the source
         character (len=1) :: comp = ""          !compensate if other source objects are past withdrawal threshold (y/n)
       end type transfer_source_objects
@@ -21,14 +31,13 @@
       type transfer_receiving_objects
         character (len=10) :: typ = ""          !receiving object type
         integer :: num = 0                      !number of the receiving object
-        !character (len=25) :: dtbl_rob = ""     !decision table name to set fraction to each receiving object
-        integer :: frac = 0.                    !soil layer to receive incoming tile flow
+        character (len=25) :: dtbl_rob = ""     !decision table name to set fraction to each receiving object
+        real :: frac = 0.                       !fraction of transfer sent to the receiving object
       end type transfer_receiving_objects
         
       !! water transfer objects
       type water_transfer_objects
         integer :: num = 0                      !transfer object number
-        integer :: ch_src = 0                   !channel number in transfer object (0 if no channel)
         character (len=10) :: trn_typ = ""      !transfer type - decision table, recall, ave daily
         character (len=40) :: trn_typ_name = "" !transfer type name of table or recall
         integer :: dtbl_num = 0                 !number of decision table for demand amount (if used)
@@ -39,9 +48,9 @@
         character (len=25) :: dtbl_src = ""     !decision table name to allocate sources
         integer :: dtbl_src_num = 0             !number of source allocation decision table
         type (transfer_source_objects), dimension(:), allocatable :: src      !sequential source objects as listed in wallo object
-        integer, dimension(:), allocatable :: osrc      !number of outside basin source object - recall_db.rec file
+        integer, dimension(:), allocatable :: src_wal
         integer :: rcv_num = 0                  !number of receiving objects
-        !character (len=25) :: dtbl_rcv = ""     !decision table name to allocate receiving objects
+        character (len=25) :: dtbl_rcv = ""     !decision table name to allocate receiving objects
         type (transfer_receiving_objects) :: rcv  !receiving object
         real :: unmet_m3 = 0.                   !m3     |unmet demand for the object
         real :: withdr_tot = 0.                 !m3     |total withdrawal of demand object from all sources
@@ -62,7 +71,7 @@
       type water_allocation
         character (len=25) :: name = ""         !name of the water allocation object
         character (len=25) :: rule_typ = ""     !rule type to allocate water
-        integer :: trn_cur = 1                  !current transfer object
+        integer :: src_obs = 0                  !number of source objects
         integer :: trn_obs = 0                  !number of transfer objects
         integer :: out_src = 0                  !number of source objects outside the basin
         integer :: out_rcv = 0                  !number of receiving objects outside the basin
@@ -72,8 +81,10 @@
         integer :: pipe = 0                     !number of pipe objects
         integer :: canal = 0                    !number of canal objects
         integer :: pump = 0                     !number of pump objects
+        character (len=1) :: cha_ob = ""        !y-yes there is a channel object; n-no channel object (only one per water allocation object)
         type (source_output) :: tot             !total demand, withdrawal and unmet for entire allocation object
-        type (water_transfer_objects), dimension(:), allocatable :: trn     !dimension by transfer objects
+        type (water_source_objects), dimension(:), allocatable :: src       !dimension by source objects
+        type (water_transfer_objects), dimension(:), allocatable :: trn     !dimension by demand objects
       end type water_allocation
       type (water_allocation), dimension(:), allocatable :: wallo           !dimension by water allocation objects
       type (water_allocation), pointer :: wal
@@ -101,9 +112,9 @@
       type (water_treatment_use_data), dimension(:), allocatable :: wtp
       type (water_treatment_use_data), dimension(:), allocatable :: wuse
       
-      !! outside basin source object data
-      type outside_basin_source
-        character (len=25) :: name = ""         !name of outside basin source
+      !! outside basin data
+      type outside_basin_data
+        character (len=25) :: name = ""         !name of the water treatment plant
         real :: stor_mx                   !m3   !maximum storage in plant
         real :: lag_days                  !days !treatement time - lag outflow
         real :: loss_fr                         !water loss during treament
@@ -112,15 +123,8 @@
         integer :: ipaths = 0                   !pathogens
         integer :: isalts = 0                   !salt ions
         integer :: iconstit = 0                 !other constituents
-      end type outside_basin_source        
-      type (outside_basin_source), dimension(:), allocatable :: osrc
-      
-      !! outside basin receivng object data
-      type outside_basin_receive
-        character (len=25) :: name = ""         !name of outside basin receiving object
-        character (len=25) :: filename = ""     !name of outside basin receiving object
-      end type outside_basin_receive        
-      type (outside_basin_receive), dimension(:), allocatable :: orcv
+      end type outside_basin_data        
+      type (outside_basin_data), dimension(:), allocatable :: osrc
       
       type aquifer_loss
         real :: aqu_num                         !aquifer number
@@ -132,30 +136,14 @@
         character (len=25) :: name = ""         !name of the water treatment plant
         character (len=25) :: init = ""         !name of the intitial concentrations in wtp storage
         real :: stor_mx                   !m3   !maximum storage in plant
-        real :: ddown_days             !days !days to drawdown the storage to zero
+        real :: lag_days                  !days !treatement time - lag outflow
         real :: loss_fr                         !water loss during treament
         integer :: num_aqu                      !number of aquifers
         type (aquifer_loss), dimension(:), allocatable :: aqu_loss
       end type water_transfer_data
       type (water_transfer_data), dimension(:), allocatable :: wtow        
-      type (water_transfer_data), dimension(:), allocatable :: pipe
-      
-      !! canal data
-      type water_canal_data
-        character (len=25) :: name = ""         !name of the canal
-        character (len=25) :: w_sta = ""        !name of nearby weather station
-        character (len=25) :: init = ""         !name of the intitial concentrations in canal
-        character (len=25) :: dtbl = ""         !name of decision table to determine canal outflow
-        real :: ddown_days                !days !days to drawdown the storage to zero
-        real :: w                         !m    !top width of canal
-        real :: d                         !m    !depth of canal
-        real :: s                         !m    !slope of canal
-        real :: ss                        !m/m  !side slope of trapezoidal canal
-        real :: sat_con                         !to compute percolation from canal to groundwater
-        integer :: num_aqu                      !number of aquifers
-        type (aquifer_loss), dimension(:), allocatable :: aqu_loss
-      end type water_canal_data    
-      type (water_canal_data), dimension(:), allocatable :: canal
+      type (water_transfer_data), dimension(:), allocatable :: pipe        
+      type (water_transfer_data), dimension(:), allocatable :: canal
       
       character(len=16), dimension(:), allocatable :: om_init_name
       character(len=16), dimension(:), allocatable :: om_treat_name
@@ -266,4 +254,4 @@
         wallo2%unmet = wallo1%unmet / const
       end function wallo_div_const
 
-    end module water_allocation_module
+      end module water_allocation_module

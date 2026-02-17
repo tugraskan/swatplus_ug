@@ -25,7 +25,6 @@
       use maximum_data_module
       use gwflow_module
       use soil_module
-      use water_allocation_module
       implicit none
       
       external :: aqu_1d_control, aqu_cs_output, aqu_pesticide_output, aqu_salt_output, aquifer_output, &
@@ -62,8 +61,6 @@
       real :: frac_in = 0.            !              |
       integer :: ts1 = 0
       integer :: ts2 = 0
-      integer :: iw = 0               !              |counter for water allocation object
-      integer :: iwallo = 0           !              |variable to pass to wallo_control
       integer :: i_count = 0          !rtb gwflow
       integer :: i_mfl = 0            !rtb gwflow    |counter
       integer :: i_chan = 0           !rtb gwflow    |counter
@@ -71,28 +68,21 @@
 
       icmd = sp_ob1%objs
       do while (icmd /= 0)
-          
-        !! allocate water for transfers that don't include a channel as a source
-        if (db_mx%wallo_db > 0) then
-          do iwallo = 1, db_mx%wallo_db
-            do while (wallo(iwallo)%trn(wallo(iwallo)%trn_cur)%ch_src == 0)
-              iw = iwallo
-              if (wallo(iwallo)%trn_cur <= wallo(iwallo)%trn_obs) call wallo_control (iw)
-            end do
-          end do
-        end if
-
-        if (ob(icmd)%typ == "hru" .or. ob(icmd)%typ == "ru") then
-          !! hru and ru can have hyrdographs that lag into next day
-          ob(icmd)%day_cur = ob(icmd)%day_cur + 1
-          if (ob(icmd)%day_cur > ob(icmd)%day_max) ob(icmd)%day_cur = 1
-        else
-        !! assume only one day is saved for all other objects
-          ob(icmd)%day_cur = 1
-          !!update current day of hydrograph for the object
-          ob(icmd)%day_cur = ob(icmd)%day_cur + 1
-          if (ob(icmd)%day_cur > ob(icmd)%day_max) ob(icmd)%day_cur = 1
-        end if
+        !subdaily - set current day of hydrograph
+       !if (time%step > 0) then
+          if (ob(icmd)%typ == "hru" .or. ob(icmd)%typ == "ru") then
+            !! hru and ru can have hyrdographs that lag into next day
+            ob(icmd)%day_cur = ob(icmd)%day_cur + 1
+            if (ob(icmd)%day_cur > ob(icmd)%day_max) ob(icmd)%day_cur = 1
+          else
+            !! assume only one day is saved for all other objects
+            ob(icmd)%day_cur = 1
+            !update current day of hydrograph for the object
+            ob(icmd)%day_cur = ob(icmd)%day_cur + 1
+            if (ob(icmd)%day_cur > ob(icmd)%day_max) ob(icmd)%day_cur = 1
+          end if
+        !end if
+        
         
         !sum all receiving hydrographs
         !if (ob(icmd)%rcv_tot > 0) then

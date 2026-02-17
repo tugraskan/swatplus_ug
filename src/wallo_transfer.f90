@@ -24,7 +24,6 @@
           !! organic hydrograph being transfered from the source to the receiving object
           wal_omd(iwallo)%trn(itrn)%src(isrc)%hd = (1. - pipe(iconv)%loss_fr) *            &
                                                  wal_omd(iwallo)%trn(itrn)%src(isrc)%hd
-          !! add to aquifers
         case ("pump")
           !! include pump losses here
         end select
