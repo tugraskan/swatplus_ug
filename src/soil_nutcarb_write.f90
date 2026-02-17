@@ -29,6 +29,7 @@
       real :: tot_prof_p
       real :: prf_swc = 0.0     !mm/mm       |average profile soil water content including wilting point moisture content.
       real :: prf_depth = 0.0   !mm          |depth of soil profile.
+      real :: layer_root_frac = 0.0
       integer :: iihru = 0      !none        |counter
       integer :: j = 0          !none        |counter
       integer :: ipl = 0        !none        |counter
@@ -140,11 +141,13 @@
             soil1(j)%root_tot(ly) = orgz
             do ipl = 1, pcom(j)%npl
               soil1(j)%rsd_tot(ly) = soil1(j)%rsd_tot(ly) + soil1(j)%pl(ipl)%rsd(ly)
-              soil1(j)%root_tot(ly)%m = soil1(j)%root_tot(ly)%m + soil(j)%ly(ly)%rtfr * pl_mass(j)%root(ipl)%m 
+              soil1(j)%root_tot(ly)%m = soil1(j)%root_tot(ly)%m + pcom(j)%plg(ipl)%rtfr(ly) * pl_mass(j)%root(ipl)%m 
             end do
             soil_prof_rsd = soil_prof_rsd + soil1(j)%rsd_tot(ly)
             soil_prof_root = soil_prof_root + soil1(j)%root_tot(ly)
-            soil_prof_root_frac = soil_prof_root_frac + soil(j)%ly(ly)%rtfr
+            layer_root_frac = 0.
+            if (pl_mass(j)%root_com%m > 1.e-12) layer_root_frac = soil1(j)%root_tot(ly)%m / pl_mass(j)%root_com%m
+            soil_prof_root_frac = soil_prof_root_frac + layer_root_frac
             soil_prof_str = soil_prof_str + soil1(j)%str(ly)
             soil_prof_hact = soil_prof_hact + soil1(j)%hact(ly)
             soil_prof_hsta = soil_prof_hsta + soil1(j)%hsta(ly)
@@ -233,7 +236,7 @@
               do ly = 1, soil(j)%nly
                 write (4561,10) freq_label, ly, int(soil(j)%phys(ly)%d), time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, &
                     pl_mass(j)%rsd_tot%c, soil1(j)%meta(1)%c, soil1(j)%str(1)%c, soil1(j)%lig(1)%c,              &
-                    soil(j)%ly(ly)%rtfr, soil1(j)%root_tot(ly)%m, soil1(j)%rsd_tot(ly)%c, soil1(j)%meta(ly)%c, soil1(j)%str(ly)%c, soil1(j)%lig(ly)%c
+                    soil1(j)%root_tot(ly)%m / max(1.e-12, pl_mass(j)%root_com%m), soil1(j)%root_tot(ly)%m, soil1(j)%rsd_tot(ly)%c, soil1(j)%meta(ly)%c, soil1(j)%str(ly)%c, soil1(j)%lig(ly)%c
               enddo
             endif
             write (4561,10) freq_label, -1, int(profile_depth), time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, &
@@ -243,7 +246,7 @@
               do ly = 1, soil(j)%nly
                 write (4564,'(*(G0.7,:,","))') freq_label, ly, int(soil(j)%phys(ly)%d), time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, &
                     pl_mass(j)%rsd_tot%c, soil1(j)%meta(1)%c, soil1(j)%str(1)%c, soil1(j)%lig(1)%c,              &
-                    soil(j)%ly(ly)%rtfr, soil1(j)%root_tot(ly)%m, soil1(j)%rsd_tot(ly)%c, soil1(j)%meta(ly)%c, soil1(j)%str(ly)%c, soil1(j)%lig(ly)%c
+                    soil1(j)%root_tot(ly)%m / max(1.e-12, pl_mass(j)%root_com%m), soil1(j)%root_tot(ly)%m, soil1(j)%rsd_tot(ly)%c, soil1(j)%meta(ly)%c, soil1(j)%str(ly)%c, soil1(j)%lig(ly)%c
               enddo
               write (4564,'(*(G0.7,:,","))') freq_label, -1, int(profile_depth), time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, &
                 pl_mass(j)%rsd_tot%c, soil1(j)%meta(1)%c, soil1(j)%str(1)%c, soil1(j)%lig(1)%c,              &
