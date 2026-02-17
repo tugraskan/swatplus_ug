@@ -72,7 +72,6 @@
               ob(i)%sp_ob_no = isp_ob
               allocate (ob(i)%hd(nhyds))
               allocate (ob(i)%hd_aa(nhyds))
-              ob(i)%trans = hz
               ob(i)%hin_tot = hz
               ob(i)%hout_tot = hz
                                       

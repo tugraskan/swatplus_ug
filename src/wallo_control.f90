@@ -11,18 +11,19 @@
       use constituent_mass_module !rtb
       
       implicit none 
-      
-      external :: cs_irrig, recall_nut, salt_irrig, wallo_demand, wallo_transfer, wallo_treatment, wallo_use, wallo_withdraw
 
       integer, intent (inout) :: iwallo     !water allocation object number
       integer :: itrn = 0                   !water demand object number
       integer :: iosrc = 0                  !source object number
       integer :: isrc = 0                   !source object number
-      integer :: irec = 0                   !recall object number
       integer :: j = 0                      !hru number
       integer :: jj = 0                     !variable for passing
+      integer :: irec = 0                   !recall id
+      integer :: dum = 0
       real :: irr_mm = 0.                   !mm     |irrigation applied
-    
+      real :: div_total = 0.                !m3     |cumulative available diversion water
+      real :: div_daily = 0.                !m3     |daily water diverted for irrigation
+      
       !! zero demand, withdrawal, and unmet for entire allocation object
       wallo(iwallo)%tot = walloz
       
@@ -31,62 +32,13 @@
       wtp_om_out = hz
       wuse_om_out = hz
       
-      !!loop through each demand object
-      do itrn = 1, wallo(iwallo)%trn_obs
+      !!transfer water from sources to receiving objects for transfer object
+      itrn = wallo(iwallo)%trn_cur
                
         !! zero demand, withdrawal, and unmet for each source
         do isrc = 1, wallo(iwallo)%trn(itrn)%src_num
           wallod_out(iwallo)%trn(itrn)%src(isrc) = walloz
           wal_omd(iwallo)%trn(itrn)%src(isrc)%hd = hz
-        end do
-  
-        !! compute flow from outside sources
-        do isrc = 1, wallo(iwallo)%src_obs
-          if (wallo(iwallo)%src(isrc)%ob_typ == "osrc") then
-            iosrc = wallo(iwallo)%src(isrc)%ob_num
-            select case (wallo(iwallo)%src(isrc)%lim_typ)
-            case ("mon_lim")
-              osrc_om(iosrc)%flo = wallo(iwallo)%src(isrc)%limit_mon(time%mo)
-            case ("dtbl")
-              !! use decision table for outflow
-            case ("recall")
-              !! use recall for outflow
-              !wallo(iwallo)%trn(itrn)%src(iosrc)%num
-              irec = osrc(iosrc)%iorg_min
-            select case (recall(irec)%typ)
-              case (0)    !subdaily
-                !ts1 = (time%day - 1) * time%step + 1
-                !ts2 = time%day * time%step
-                !ob(icmd)%hyd_flo(ob(icmd)%day_cur,:) = recall(irec)%hyd_flo(ts1:ts2,time%yrs)
-                !ob(icmd)%hd(1) = recall(irec)%hd(time%day,time%yrs)
-              case (1)    !daily
-                if (time%yrc >= recall(irec)%start_yr .and. time%yrc <= recall(irec)%end_yr) then 
-                  osrc_om(irec) = recall(irec)%hd(time%day,time%yrs)
-                  !if negative flow (diversion), then remove nutrient mass
-                  if(recall(irec)%hd(time%day,time%yrs)%flo < 0) then
-                    call recall_nut(irec)
-                  endif
-                else
-                  osrc_om(irec) = hz
-                end if
-              case (2)    !monthly
-                if (time%yrc >= recall(irec)%start_yr .and. time%yrc <= recall(irec)%end_yr) then 
-                    osrc_om(irec) = recall(irec)%hd(time%mo,time%yrs)
-                else
-                    osrc_om(irec) = hz
-                end if
-              case (3)    !annual
-                if (time%yrc >= recall(irec)%start_yr .or. time%yrc <= recall(irec)%end_yr) then
-                  osrc_om(irec) = recall(irec)%hd(1,time%yrs)
-                else
-                  osrc_om(irec) = hz
-                end if
-              case (4)    !average annual
-                osrc_om(irec) = recall(irec)%hd(1,1)
-              end select
-              
-            end select
-          end if
         end do
           
         !! set demand for each transfer object - wallod_out(iwallo)%trn(itrn)%trn_flo
@@ -201,7 +153,12 @@
               !! canal storage - compute outflow - change concentrations?
               canal_om_stor(j) = canal_om_stor(j) + wal_omd(iwallo)%trn(itrn)%h_tot
               !! compute losses - evap and seepage, and outflow
-              ! call canal()
+              !call wallo_canal (iwallo, itrn, j)
+              
+            case ("orcv")
+              !! outside receiving object
+              orcv_om(j) = orcv_om(j) + wal_omd(iwallo)%trn(itrn)%h_tot
+           
           end select
         
         end if      !if there is demand 
@@ -216,7 +173,7 @@
         wallo(iwallo)%tot%withdr = wallo(iwallo)%tot%withdr + wallo(iwallo)%trn(itrn)%withdr_tot
         wallo(iwallo)%tot%unmet = wallo(iwallo)%tot%unmet + wallo(iwallo)%trn(itrn)%unmet_m3
         
-      end do        !demand object loop
+        wallo(iwallo)%trn_cur = wallo(iwallo)%trn_cur + 1
         
       return
       end subroutine wallo_control

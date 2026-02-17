@@ -1,4 +1,4 @@
-      subroutine water_pipe_read
+      subroutine water_canal_read
       
       use input_file_module
       use water_allocation_module
@@ -15,7 +15,7 @@
       integer :: imax = 0             !none       |determine max number for array (imax) and total number in file
       logical :: i_exist              !none       |check to determine if file exists
       integer :: i = 0                !none       |counter
-      integer :: ipipe = 0
+      integer :: ic = 0
       integer :: num_aqu = 0
       integer :: iaq = 0
       
@@ -24,33 +24,38 @@
       
       !! read water allocation inputs
 
-      inquire (file='water_pipe.wal', exist=i_exist)
-      if (.not. i_exist .or. 'water_pipe.wal' == "null") then
-        allocate (pipe(0:0))
+      inquire (file='water_canal.wal', exist=i_exist)
+      if (.not. i_exist .or. 'water_canal.wal' == "null") then
+        allocate (canal(0:0))
       else
       do 
-        open (107,file='water_pipe.wal')
+        open (107,file='water_canal.wal')
         read (107,*,iostat=eof) titldum
         if (eof < 0) exit
         read (107,*,iostat=eof) imax
         read (107,*,iostat=eof) header
-        db_mx%water_pipe = imax
+        db_mx%water_canal = imax
         if (eof < 0) exit
         
-        allocate (pipe(imax))
+        allocate (canal(imax))
 
-        do ipipe = 1, imax
+        do ic = 1, imax
           read (107,*,iostat=eof) header
           if (eof < 0) exit 
-          read (107,*,iostat=eof) i, pipe(ipipe)%name, pipe(ipipe)%stor_mx,                &
-                                     pipe(ipipe)%ddown_days, pipe(ipipe)%loss_fr, num_aqu
+          
+          read (107,*,iostat=eof) i, canal(ic)%name, canal(ic)%init, canal(ic)%dtbl, canal(ic)%ddown_days,  &
+                                  canal(ic)%w, canal(ic)%d, canal(ic)%s, canal(ic)%ss, canal(ic)%sat_con,   &
+                                                                                                 num_aqu
           if (eof < 0) exit
           
           !! allocate and read aquifer loss data
-          allocate (pipe(ipipe)%aqu_loss(num_aqu))
+          allocate (canal(ic)%aqu_loss(num_aqu))
           
-          read (107,*,iostat=eof) i, pipe(ipipe)%name, pipe(ipipe)%stor_mx, pipe(ipipe)%ddown_days,     &
-                pipe(ipipe)%loss_fr, pipe(ipipe)%num_aqu, (pipe(ipipe)%aqu_loss(iaq), iaq = 1, num_aqu)
+          read (107,*,iostat=eof) i, canal(ic)%name, canal(ic)%init, canal(ic)%dtbl, canal(ic)%ddown_days,  &
+            canal(ic)%w, canal(ic)%d, canal(ic)%s, canal(ic)%ss, canal(ic)%sat_con, canal(ic)%num_aqu,      &
+                                                             (canal(ic)%aqu_loss(iaq), iaq = 1, num_aqu)
+          
+          !! crosswalk initial concentrations and decision table
         end do
         
       end do
@@ -59,4 +64,4 @@
       close(107)
 
       return
-    end subroutine water_pipe_read
+    end subroutine water_canal_read
