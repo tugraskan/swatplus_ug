@@ -1,21 +1,21 @@
-      subroutine wallo_withdraw (iwallo, itrn, isrc)
+subroutine wallo_withdraw (iwallo, itrn, isrc)
       
       use water_allocation_module
       use hydrograph_module
       use aquifer_module
       use reservoir_module
       use time_module
+      use recall_module
       use basin_module, only : bsn_cc
       
       implicit none 
-      
-      external :: gwflow_ppag
 
       integer, intent (in):: iwallo         !water allocation object number
       integer, intent (in) :: itrn          !water demand object number
       integer, intent (in) :: isrc          !source object number
-      integer :: isrc_wallo = 0             !source object number
       integer :: j = 0              !none       |hru number
+      integer :: dum = 0
+      integer :: iom = 0            !           |recall id
       real :: res_min = 0.          !m3         |min reservoir volume for withdrawal
       real :: res_vol = 0.          !m3         |reservoir volume after withdrawal
       real :: cha_min = 0.          !m3         |minimum allowable flow in channel after withdrawal
@@ -27,6 +27,7 @@
       real :: hru_demand = 0.   !m3         |demand (copy to pass into gwflow subroutine - rtb)
       real :: withdraw = 0.         !m3
       real :: unmet = 0.            !m3
+      real :: total_trn = 0.        !m3
         
       !! zero withdrawal hyd for the demand source
       wdraw_om = hz
@@ -37,10 +38,21 @@
       !! outside the basin source
       case ("osrc")
         j = wallo(iwallo)%trn(itrn)%src(isrc)%num
-        wallod_out(iwallo)%trn(itrn)%src(isrc)%withdr = osrc_om(j)%flo
-        wallod_out(iwallo)%trn(itrn)%src(isrc)%unmet = 0.
-        wal_omd(iwallo)%trn(itrn)%src(isrc)%hd = osrc_om(j)
+        iom = recall_db(j)%iorg_min
         
+        !! for other transfer types (ave_day, dtbls), only take the transfer amount - for out of basin reservoirs/storages
+        !! if the transfer demand > outside source use all the outside source
+        if (trn_m3 > osrc_om(iom)%flo) then
+          wallod_out(iwallo)%trn(itrn)%src(isrc)%withdr = osrc_om(iom)%flo
+          wallod_out(iwallo)%trn(itrn)%src(isrc)%unmet = trn_m3 - osrc_om(iom)%flo
+          wal_omd(iwallo)%trn(itrn)%src(isrc)%hd = osrc_om(iom)
+        else
+          !! only take what is needed - the transfer demand
+          wallod_out(iwallo)%trn(itrn)%src(isrc)%withdr = trn_m3
+          wallod_out(iwallo)%trn(itrn)%src(isrc)%unmet = 0.
+          wal_omd(iwallo)%trn(itrn)%src(isrc)%hd = (trn_m3 / osrc_om(iom)%flo) * osrc_om(iom)
+        end if
+            
       !! water treatment plant source
       case ("wtp")
         j = wallo(iwallo)%trn(itrn)%src(isrc)%num
@@ -78,8 +90,7 @@
       !! divert flowing water from channel source
       case ("cha")
         j = wallo(iwallo)%trn(itrn)%src(isrc)%num
-        isrc_wallo = wallo(iwallo)%trn(itrn)%src_wal(isrc)
-        cha_min = wallo(iwallo)%src(isrc_wallo)%limit_mon(time%mo) * 86400.  !m3 = m3/s * 86400s/d
+        cha_min = wallo(iwallo)%trn(itrn)%src(isrc)%wdraw_lim * 86400.  !m3 = m3/s * 86400s/d
         !! amount that can be diverted without falling below low flow limit
         cha_div = ht2%flo - cha_min
         if (trn_m3 < cha_div) then
@@ -96,8 +107,24 @@
         !! reservoir source
         case ("res") 
           j = wallo(iwallo)%trn(itrn)%src(isrc)%num
-          isrc_wallo = wallo(iwallo)%trn(itrn)%src_wal(isrc)
-          res_min = wallo(iwallo)%src(isrc_wallo)%limit_mon(time%mo) * res_ob(j)%pvol
+          res_min = wallo(iwallo)%trn(itrn)%src(isrc)%wdraw_lim * res_ob(j)%pvol
+          res_vol = res(j)%flo - trn_m3
+          if (res_vol > res_min) then
+            rto = trn_m3 / res(j)%flo
+            wal_omd(iwallo)%trn(itrn)%src(isrc)%hd = rto * res(j)
+            res(j) = (1. - rto) * res(j)
+            wallod_out(iwallo)%trn(itrn)%src(isrc)%withdr = wallod_out(iwallo)%trn(itrn)%src(isrc)%withdr + trn_m3
+            
+          else
+            wallod_out(iwallo)%trn(itrn)%src(isrc)%unmet = wallod_out(iwallo)%trn(itrn)%src(isrc)%unmet + trn_m3
+            wallod_out(iwallo)%trn(itrn)%src(isrc)%unmet = Min (wallod_out(iwallo)%trn(itrn)%src(isrc)%unmet,      &
+                                                                wallod_out(iwallo)%trn(itrn)%src(isrc)%demand)
+          end if
+         
+        !! canal source
+        case ("canal") 
+          j = wallo(iwallo)%trn(itrn)%src(isrc)%num
+          res_min = wallo(iwallo)%trn(itrn)%src(isrc)%wdraw_lim * res_ob(j)%pvol
           res_vol = res(j)%flo - trn_m3
           if (res_vol > res_min) then
             rto = trn_m3 / res(j)%flo
@@ -115,8 +142,7 @@
         case ("aqu") 
           if(bsn_cc%gwflow == 0) then !proceed with original code
           j = wallo(iwallo)%trn(itrn)%src(isrc)%num
-          isrc_wallo = wallo(iwallo)%trn(itrn)%src_wal(isrc)
-          avail = (wallo(iwallo)%src(isrc_wallo)%limit_mon(time%mo) - aqu_d(j)%dep_wt)  * aqu_dat(j)%spyld
+          avail = (wallo(iwallo)%trn(itrn)%src(isrc)%wdraw_lim - aqu_d(j)%dep_wt)  * aqu_dat(j)%spyld
           avail = avail * 10000. * aqu_prm(j)%area_ha     !m3 = 10,000*ha*m
           if (trn_m3 < avail) then
             !! only have flow, no3, and minp(solp) for aquifer
