@@ -958,6 +958,7 @@
               hru(j)%dbs%snow = isno
               hru(j)%dbsc%snow = d_tbl%act(iac)%file_pointer
               hru(j)%sno = snodb(isno)
+              hru(j)%sno_mm = snodb(isno)%init_mm
               call ascrv(.5, .95, hru(j)%sno%cov50, .95, hru(j)%snocov1, hru(j)%snocov2)
               write (3613,*) j, time%yrc, time%mo, time%day_mo,  "  SNOW_CHANGE ",        &
                       snow_prev, hru(j)%dbsc%snow
