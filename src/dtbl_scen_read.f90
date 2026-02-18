@@ -7,7 +7,7 @@
       use tillage_data_module
       use fertilizer_data_module
       use input_file_module
-      use conditional_module
+      use conditional_module, only : dtbl_scen
       
       implicit none
                   

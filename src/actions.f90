@@ -944,6 +944,7 @@
               end do
               !pcom(j)%dtbl(idtbl)%num_actions(iac) = pcom(j)%dtbl(idtbl)%num_actions(iac) + 1
             !end if
+
           !land use change - contouring
           case ("p_factor")
             j = d_tbl%act(iac)%ob_num
