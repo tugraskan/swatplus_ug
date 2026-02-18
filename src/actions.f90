@@ -24,6 +24,7 @@
       use calibration_data_module
       use fertilizer_data_module
       use maximum_data_module
+      use snow_data_module
       use tiles_data_module
       use water_body_module
       use reservoir_data_module
@@ -35,7 +36,7 @@
       external :: cn2_init, cs_fert, curno, hru_fr_change, hru_lum_init, mgt_harvbiomass, mgt_harvgrain, &
                   mgt_harvresidue, mgt_harvtuber, mgt_killop, mgt_newtillmix, mgt_newtillmix_wet, &
                   mgt_transplant, pest_apply, pl_burnop, pl_fert, pl_fert_wet, pl_graze, pl_manure, &
-                  plant_init, salt_fert, structure_set_parms, wet_initial, chg_par
+                  plant_init, salt_fert, structure_set_parms, wet_initial, chg_par, ascrv
 
       integer, intent (in)  :: ob_cur      !none     |sequential number of individual objects
       integer, intent (in)  :: ob_num      !none     |sequential number for all objects
@@ -69,6 +70,7 @@
       integer :: ipdl = 0
       integer :: ires = 0
       integer :: idb = 0
+      integer :: isno = 0
       integer :: imallo = 0
       integer :: itrn = 0
       integer :: iplt = 0
@@ -91,6 +93,7 @@
       real :: stor_m3 = 0.
       character(len=1) :: action = ""      !         |
       character(len=40) :: lu_prev = ""    !         |
+      character(len=40) :: snow_prev = ""  !         |
 
       do iac = 1, d_tbl%acts
         action = "n"
@@ -944,6 +947,21 @@
               end do
               !pcom(j)%dtbl(idtbl)%num_actions(iac) = pcom(j)%dtbl(idtbl)%num_actions(iac) + 1
             !end if
+
+          case ("snow_change")
+            j = d_tbl%act(iac)%ob_num
+            if (j == 0) j = ob_cur
+
+            isno = d_tbl%act_typ(iac)
+            if (isno > 0) then
+              snow_prev = hru(j)%dbsc%snow
+              hru(j)%dbs%snow = isno
+              hru(j)%dbsc%snow = d_tbl%act(iac)%file_pointer
+              hru(j)%sno = snodb(isno)
+              call ascrv(.5, .95, hru(j)%sno%cov50, .95, hru(j)%snocov1, hru(j)%snocov2)
+              write (3613,*) j, time%yrc, time%mo, time%day_mo,  "  SNOW_CHANGE ",        &
+                      snow_prev, hru(j)%dbsc%snow
+            end if
 
           !land use change - contouring
           case ("p_factor")

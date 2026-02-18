@@ -3,7 +3,8 @@
       implicit none
       
       external :: header_aquifer, header_channel, header_const, header_hyd, header_lu_change, header_mgt, &
-                  header_path, header_pest, header_reservoir, header_salt, header_sd_channel, header_snutc, &
+                  header_path, header_pest, header_reservoir, header_salt, header_sd_channel, header_snow_change, &
+                  header_snutc, &
                   header_water_allocation, header_wetland, header_write, header_yield, &
                   output_landscape_init, search
 
@@ -14,6 +15,7 @@
       call header_sd_channel
       call header_mgt
       call header_lu_change
+      call header_snow_change
       call header_yield
       call header_hyd
       call header_reservoir

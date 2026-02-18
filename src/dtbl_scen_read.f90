@@ -3,6 +3,7 @@
       use maximum_data_module
       use reservoir_data_module
       use landuse_data_module
+      use snow_data_module
       use mgt_operations_module
       use tillage_data_module
       use fertilizer_data_module
@@ -79,6 +80,13 @@
                 case ("lu_change")
                   do ilum = 1, db_mx%landuse
                     if (dtbl_scen(i)%act(iac)%file_pointer == lum(ilum)%name) then
+                      dtbl_scen(i)%act_typ(iac) = ilum
+                      exit
+                    end if
+                  end do
+                case ("snow_change")
+                  do ilum = 1, db_mx%sno
+                    if (dtbl_scen(i)%act(iac)%file_pointer == snodb(ilum)%name) then
                       dtbl_scen(i)%act_typ(iac) = ilum
                       exit
                     end if
