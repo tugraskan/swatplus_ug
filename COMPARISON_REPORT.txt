@@ -1,0 +1,173 @@
+COMPARISON: Provided List vs ALL_INPUTS.md
+================================================================================
+
+Files in provided list: 159
+Files in ALL_INPUTS.md: 181
+
+================================================================================
+SECTION 1: FILES IN PROVIDED LIST BUT NOT IN ALL_INPUTS.MD
+================================================================================
+
+Total: 21 files
+
+  ❌ amt_mm
+  ❌ atmo.cli
+  ❌ cha.key
+  ❌ cons_prac.lum
+  ❌ hru_sub.key
+  ❌ management.sch
+  ❌ metl.cst
+  ❌ mgt.key
+  ❌ modflow.con
+  ❌ object.cnt
+  ❌ path.cst
+  ❌ path_hru_ini
+  ❌ pest.cst
+  ❌ recann.dat
+  ❌ recday.dat
+  ❌ res.dtl
+  ❌ res.key
+  ❌ salt.cst
+  ❌ salt_hru_ini
+  ❌ transfer.wro
+  ❌ wind-dir.cli
+
+================================================================================
+SECTION 2: FILES IN ALL_INPUTS.MD BUT NOT IN PROVIDED LIST
+================================================================================
+
+Total: 43 files
+
+  ➕ atmodep.cli
+  ➕ co2_yr.dat
+  ➕ cons_practice.lum
+  ➕ cs_aqu.ini
+  ➕ cs_atmo.cli
+  ➕ cs_channel.ini
+  ➕ cs_hru.ini
+  ➕ cs_recall.rec
+  ➕ gwflow.con
+  ➕ hru-lte-new.cal
+  ➕ hru-lte-out.cal
+  ➕ hru-new.cal
+  ➕ hru-out.cal
+  ➕ hydrology-cal.hyd
+  ➕ looping.con
+  ➕ manure.frt
+  ➕ metals.mtl
+  ➕ object.prt
+  ➕ om_osrc.wal
+  ➕ om_treat.wal
+  ➕ om_use.wal
+  ➕ out.key
+  ➕ outside_src.wal
+  ➕ path_hru.ini
+  ➕ pest_metabolite.pes
+  ➕ plant_parms.cal
+  ➕ puddle.ops
+  ➕ recall_db.rec
+  ➕ res_conds.dat
+  ➕ res_rel.dtl
+  ➕ salt.slt
+  ➕ salt_aqu.ini
+  ➕ salt_atmo.cli
+  ➕ salt_channel.ini
+  ➕ salt_hru.ini
+  ➕ salt_recall.rec
+  ➕ satbuffer.str
+  ➕ soil_lyr_depths.sol
+  ➕ transplant.plt
+  ➕ water_pipe.wal
+  ➕ water_tower.wal
+  ➕ water_treat.wal
+  ➕ water_use.wal
+
+================================================================================
+SECTION 3: FILES IN BOTH LISTS (MATCHED)
+================================================================================
+
+Total: 138 files
+
+  ✓ animal.hrd
+  ✓ aqu_catunit.def
+  ✓ aqu_catunit.ele
+  ✓ aqu_cha.lin
+  ✓ aqu_reg.def
+  ✓ aquifer.aqu
+  ✓ aquifer.con
+  ✓ aquifer2d.con
+  ✓ bmpuser.str
+  ✓ cal_parms.cal
+  ✓ calibration.cal
+  ✓ ch_catunit.def
+  ✓ ch_catunit.ele
+  ✓ ch_reg.def
+  ✓ ch_sed_budget.sft
+  ✓ ch_sed_parms.sft
+  ✓ chan-surf.lin
+  ✓ chandeg.con
+  ✓ channel-lte.cha
+  ✓ channel.cha
+  ... and 118 more
+
+================================================================================
+SUMMARY
+================================================================================
+Files in provided list:                  159
+Files in ALL_INPUTS.md:                  181
+  ├─ Matched (in both):                  138
+  ├─ Only in provided list:               21
+  └─ Only in ALL_INPUTS.md:               43
+
+Match rate: 86.8% of provided list
+Coverage: 76.2% of ALL_INPUTS.md
+
+================================================================================
+ANALYSIS: MISSING FILES BY TYPE
+================================================================================
+
+Missing files grouped by extension:
+
+  .cli (2 files):
+    - atmo.cli
+    - wind-dir.cli
+
+  .cnt (1 files):
+    - object.cnt
+
+  .con (1 files):
+    - modflow.con
+
+  .cst (4 files):
+    - metl.cst
+    - path.cst
+    - pest.cst
+    - salt.cst
+
+  .dat (2 files):
+    - recann.dat
+    - recday.dat
+
+  .dtl (1 files):
+    - res.dtl
+
+  .key (4 files):
+    - cha.key
+    - hru_sub.key
+    - mgt.key
+    - res.key
+
+  .lum (1 files):
+    - cons_prac.lum
+
+  .no_ext (3 files):
+    - amt_mm
+    - path_hru_ini
+    - salt_hru_ini
+
+  .sch (1 files):
+    - management.sch
+
+  .wro (1 files):
+    - transfer.wro
+
