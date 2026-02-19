@@ -957,8 +957,8 @@
             snow_prev = hru(j)%dbsc%snow
             hru(j)%dbsc%snow = d_tbl%act(iac)%file_pointer
             hru(j)%sno = snodb(ilu)
-            !! write to snow change file (format matches lu_change output)
-            write (3613,*) j, time%yrc, time%mo, time%day_mo,  " SNOW_CHANGE ",        &
+            !! write to lu_change output file
+            write (3612,*) j, time%yrc, time%mo, time%day_mo,  " SNOW_CHANGE ",        &
                     snow_prev, hru(j)%dbsc%snow, "   0   0"
                             
           !land use change - contouring
