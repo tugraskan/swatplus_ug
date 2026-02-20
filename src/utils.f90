@@ -602,7 +602,7 @@ subroutine min_header_cols(self, min_cols)
 ! Purpose: Checks to see if user specified required columns are in the header 
 !          columns that are read in and if not print error and stop.
 !===============================================================================
-
+    use error_stop_mod
     class(table_reader), intent(inout) :: self
     character(len=*), intent(in) :: min_cols
     character(MAX_NAME_LEN)  :: min_hdr_cols(MAX_TABLE_COLS) = ''  !array of header column names
@@ -617,7 +617,7 @@ subroutine min_header_cols(self, min_cols)
         if (index(self%line, min_col) == 0) then
             write(9001, '(4A)') "Error: Required column ", min_col, " not found in ", self%file_name
             print *, "Error: Required column ", min_col, " not found in ", self%file_name
-            stop
+            call error_stop(1)
         end if
     end do
 end subroutine min_header_cols

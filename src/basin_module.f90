@@ -417,12 +417,13 @@
       contains
 
       function print_prt_error(name) result (r)
+         use error_stop_mod
          character (len=16), intent (in) :: name
          integer :: r
          r = 1
          write(*, fmt="(a,a,a)", advance="no") "Error: ", name, "print object is duplicated in the input file print.prt.  Aborting"
          print*; print*
-         error stop
+         call error_stop(1)
       end function
       
       end module basin_module

@@ -10,6 +10,7 @@
       !! Initialize output path - validates and creates directory if needed
       subroutine init_output_path(path_in)
       
+      use error_stop_mod
       implicit none
       
       character(len=*), intent(in) :: path_in
@@ -67,7 +68,7 @@
         if (index(path_work, ':') > 0) then
           write (*,*) "! ERROR: cannot create path specified in file.cio (out_path)"
           write (*,*) "  > Windows-style path detected on Unix system: ", trim(path_in)
-          stop 1
+          call error_stop(1)
         end if
         
         !! Remove trailing slash(es) for consistent processing
@@ -114,7 +115,7 @@
         if (stat /= 0) then
           write (*,*) "! ERROR: cannot create or access path specified in file.cio (out_path)"
           write (*,*) "  > Path: ", trim(path_in)
-          stop 1
+          call error_stop(1)
         end if
       end if
       

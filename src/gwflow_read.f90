@@ -15,6 +15,7 @@
       use cs_data_module
       use constituent_mass_module, only : cs_db
       use input_file_module, only : in_con
+      use error_stop_mod
       
       implicit none
       
@@ -231,7 +232,7 @@
         endif 
       else !cannot find connection file; write out message and stop
         write(out_gw,*) '          neither gwflow.hrucell or gwflow.lsucell found; stop simulation'  
-        stop
+        call error_stop(1)
       endif
       
 
