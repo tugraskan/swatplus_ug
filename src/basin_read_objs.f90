@@ -11,7 +11,6 @@
       use constituent_mass_module
       use basin_module
       use gwflow_module, only : out_gw
-      use error_stop_mod
       
       implicit none
       
@@ -28,7 +27,7 @@
       inquire (file=in_sim%object_cnt, exist=i_exist)
       if (.not. i_exist .or. in_sim%object_cnt == "null") then
           write (*,*) 'Cannot find object.cnt input file'
-          call error_stop(1)
+          stop
       else
       do
         open (107,file=in_sim%object_cnt)

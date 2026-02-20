@@ -12,7 +12,6 @@
       use constituent_mass_module
       use ru_module
       use basin_module
-      use error_stop_mod
       
       implicit none
       
@@ -426,7 +425,7 @@
             end if 
           end do
           write (*,1002)
-          call error_stop(1)
+          call exit(1)
         end if 
    
       

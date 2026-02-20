@@ -3,7 +3,6 @@
       use input_file_module
       use basin_module
       use time_module
-      use error_stop_mod
       
       implicit none
        
@@ -620,7 +619,7 @@
                   !print*, "Error: The output object ", name, "in the input file print.prt is not a valid object."
                   !print*, "         and cannot be processed."
                   print*
-                  call error_stop(1)
+                  error stop
             end select
           end do
         end if

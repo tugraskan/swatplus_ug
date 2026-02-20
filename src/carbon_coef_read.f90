@@ -7,7 +7,6 @@ subroutine carbon_coef_read
     use tillage_data_module 
     use soil_module
     use organic_mineral_mass_module
-    use error_stop_mod
     
     implicit none
 
@@ -109,13 +108,13 @@ subroutine carbon_coef_read
                         write(*, fmt="(a)", advance="yes") "       in the input file carb_coefs.cbn."
                         write(*, fmt="(a)")                "       The soil_test values cannot be processed."
                         print*
-                        call error_stop(1)
+                        error stop
                     endif
                     if (soil_test_cntr > nmbr_soil_test_layers) then
                         write(*, fmt="(a,i3)", advance="yes") "Error: The number input soil test layers exceeds nmbr_soil_test_layers of ", nmbr_soil_test_layers
                         write(*, fmt="(a)")                   "       The soil layer test values cannot be processed."
                         print*
-                        call error_stop(1)
+                        error stop
                     endif
                     backspace (107)
                     read (107,*,iostat=eof) var_name, sol_test(soil_test_cntr)%snam,    &
@@ -141,7 +140,7 @@ subroutine carbon_coef_read
             write(*, fmt="(a)", advance="yes")           "       in the input file carb_coefs.soil."
             write(*, fmt="(a)")                          "       The soil_test values cannot be processed."
             print*
-            call error_stop(1)
+            error stop
           endif
         endif
     endif
