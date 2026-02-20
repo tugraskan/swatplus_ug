@@ -425,7 +425,7 @@
             end if 
           end do
           write (*,1002)
-          call exit(1)
+          error stop 1
         end if 
    
       
