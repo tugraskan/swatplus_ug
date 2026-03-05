@@ -1,7 +1,7 @@
 # Water Right Logic: NOT Yet Implemented in the SWAT+ Model
 
 This document lists every parameter and algorithm described in `WR_Logi_Code.pptx` that is
-**absent from the current SWAT+ codebase**.  No source code was changed to produce this file.
+**absent from the current SWAT+ codebase**, and tracks incremental additions as they are made.
 
 Cross-reference: features that ARE already in the model are documented in
 `doc/WR_Logic_Already_Implemented.md`.
@@ -40,9 +40,29 @@ whether return flow occurs, and whether instream-flow rules apply.
 | 22 | Storage |
 | 23 | Wildlife |
 
-**What is missing:**  There is no `water_use_code` (or equivalent) field anywhere in
-`water_allocation_module.f90` or its type definitions.  The model has no mechanism to
-distinguish domestic, instream, livestock, irrigation, municipal, etc. at the allocation level.
+**What is missing:**  There was no `water_use_code` (or equivalent) field in
+`water_allocation_module.f90`'s type definitions.
+
+**Partial fix now implemented:** A `use_typ` field (character, 16-char) has been added to the
+`water_treatment_use_data` type and is read from the second column of `water_use.wal`.
+Supported tokens are:
+
+| Token | Meaning |
+|---|---|
+| `dom` | Domestic / residential |
+| `ind` | Industrial / manufacturing |
+| `com` | Commercial |
+| `mun` | Municipal |
+| `agr` | Agricultural |
+| `lsk` | Livestock |
+| `pwr` | Power development |
+| `rec` | Recreational |
+| `oth` | Other / unclassified |
+
+**What is still missing:**  The model stores but does not yet *act on* `use_typ`.  The 23 OWRD
+water-use codes from the presentation are not yet mapped to these tokens, and the simulation
+logic in `wallo_use.f90` does not branch on `use_typ` to vary demand calculations, return-flow
+fractions, or duty caps by use category.
 
 ---
 
@@ -280,7 +300,9 @@ every day the simulation is active, regardless of the legal operation window.
 
 | Feature | In model? | Note |
 |---|---|---|
-| Water Use Code (23 OWRD categories) | ❌ | No `water_use_code` field at all |
+| Use type field on water-use object (`use_typ`) | ✅ | Added to `water_treatment_use_data`; read from `water_use.wal` col 2 |
+| Use-type-driven simulation logic (demand, return flow, duty) | ❌ | Field stored but not yet acted upon |
+| Water Use Code (23 OWRD categories) mapped to use_typ | ❌ | Mapping and branching logic not implemented |
 | Priority Date (calendar date per right) | ❌ | Only sr/jr flag; no actual date |
 | `Cut_off()` – priority sort + junior curtailment | ❌ | Entire algorithm missing |
 | `check_if_upstream()` spatial check | ❌ | Required by Cut_off |
