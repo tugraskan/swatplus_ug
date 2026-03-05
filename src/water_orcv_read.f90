@@ -36,7 +36,7 @@
         if (eof < 0) exit
         read (107,*,iostat=eof) imax
         read (107,*,iostat=eof) header
-        db_mx%outside_rcv = imax
+        db_mx%out_rcv = imax
         if (eof < 0) exit
         
         allocate (orcv(imax))

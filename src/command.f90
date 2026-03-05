@@ -25,6 +25,7 @@
       use maximum_data_module
       use gwflow_module
       use soil_module
+      use recall_module
       use water_allocation_module
       implicit none
       
@@ -70,18 +71,23 @@
       real :: sumflo = 0.
 
       icmd = sp_ob1%objs
+      wallo(:)%trn_cur = 1
+      res_ob(:)%wallo_call = 0
+      
       do while (icmd /= 0)
           
         !! allocate water for transfers that don't include a channel as a source
+        !! check here in case channel is last object
         if (db_mx%wallo_db > 0) then
-          do iwallo = 1, db_mx%wallo_db
-            do while (wallo(iwallo)%trn(wallo(iwallo)%trn_cur)%ch_src == 0)
+          do iwallo = 1, db_mx%wallo_db  
+            do while (wallo(iwallo)%trn_cur > 0)
+              if (wallo(iwallo)%trn(wallo(iwallo)%trn_cur)%ch_src > 0) exit
               iw = iwallo
               if (wallo(iwallo)%trn_cur <= wallo(iwallo)%trn_obs) call wallo_control (iw)
             end do
           end do
         end if
-
+          
         if (ob(icmd)%typ == "hru" .or. ob(icmd)%typ == "ru") then
           !! hru and ru can have hyrdographs that lag into next day
           ob(icmd)%day_cur = ob(icmd)%day_cur + 1
@@ -252,7 +258,7 @@
                 hyd_flo(:) = ob(iob)%hd(ihyd)%flo / time%step
               case ("recall")   ! point source inflow
                 irec = ob(iob)%num
-                if (recall(irec)%typ == 0) then    !subdaily
+                if (recall_db(irec)%org_min%tstep == "sub") then    !subdaily
                   hyd_flo(:) = ob(iob)%hyd_flo(ob(iob)%day_cur,:)
                 else                                ! monthly, yearly, and ave annual
                   hyd_flo(:) = ob(iob)%hd(1)%flo / time%step
@@ -325,13 +331,13 @@
               
           case ("recall")   ! recall hydrograph
             irec = ob(icmd)%num
-            select case (recall(irec)%typ)
-              case (0)    !subdaily
+            select case (recall_db(irec)%org_min%tstep)
+              case ("sub")    !subdaily
                 ts1 = (time%day - 1) * time%step + 1
                 ts2 = time%day * time%step
                 ob(icmd)%hyd_flo(ob(icmd)%day_cur,:) = recall(irec)%hyd_flo(ts1:ts2,time%yrs)
                 ob(icmd)%hd(1) = recall(irec)%hd(time%day,time%yrs)
-              case (1)    !daily
+              case ("day")    !daily
                 if (time%yrc >= recall(irec)%start_yr .and. time%yrc <= recall(irec)%end_yr) then 
                     ob(icmd)%hd(1) = recall(irec)%hd(time%day,time%yrs)
                     !if negative flow (diversion), then remove nutrient mass
@@ -341,20 +347,20 @@
                 else
                     ob(icmd)%hd(1) = hz
                 end if
-              case (2)    !monthly
+              case ("mo")    !monthly
                 if (time%yrc >= recall(irec)%start_yr .and. time%yrc <= recall(irec)%end_yr) then 
                     ob(icmd)%hd(1) = recall(irec)%hd(time%mo,time%yrs)
                 else
                     ob(icmd)%hd(1) = hz
                 end if
-              case (3)    !annual
+              case ("yr")    !yearly
                 if (time%yrc >= recall(irec)%start_yr .or. time%yrc <= recall(irec)%end_yr) then
                   ob(icmd)%hd(1) = recall(irec)%hd(1,time%yrs)
                 else
                   ob(icmd)%hd(1) = hz
                 end if
-              case (4)    !average annual
-                ob(icmd)%hd(1) = recall(irec)%hd(1,1)
+              !case (4)    !average annual
+              !  ob(icmd)%hd(1) = recall(irec)%hd(1,1)
               end select
               
               rec_d(irec) = ob(icmd)%hd(1)
@@ -416,6 +422,20 @@
             end if
             
           end select
+          
+        !! allocate water for transfers that don't include a channel as a source
+        !! check here in case channel is not the last object
+        if (db_mx%wallo_db > 0) then
+          do iwallo = 1, db_mx%wallo_db  
+            do while (wallo(iwallo)%trn_cur > 0)
+              if (wallo(iwallo)%trn(wallo(iwallo)%trn_cur)%ch_src > 0) exit
+              iw = iwallo
+              if (wallo(iwallo)%trn_cur <= wallo(iwallo)%trn_obs) call wallo_control (iw)
+            end do
+          end do
+        end if
+          
+        !! compute flow duration curves for channels
         if (pco%fdcout == "y" .and. ob(icmd)%typ == "chandeg") then
           call flow_dur_curve
           !! compute flashiness index

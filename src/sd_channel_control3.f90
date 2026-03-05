@@ -72,6 +72,12 @@
       !ch_in_d = chaz
       !ch_out_d = chaz
       
+      !! add water transfer
+      if (ob(icmd)%trans%flo > 1.e-6) then
+        ht1 = ht1 + ob(icmd)%trans
+        ob(icmd)%trans = hz
+      end if
+      
       !set constituents to incoming loads (rtb salt; rtb cs)
       if (cs_db%num_tot > 0) then
         hcs1 = obcs(icmd)%hin(1)
@@ -144,26 +150,33 @@
       ch_in_d(ich) = ht1                        !set inflow om hydrograph
       ch_in_d(ich)%flo = ht1%flo / 86400.       !flow for om output - m3/s
       
-      !set constituents (rtb salt) to incoming loads
+      !! set constituents (rtb salt) to incoming loads
       if (cs_db%num_tot > 0) then
         hcs1 = obcs(icmd)%hin(1)
       end if
+      
       !! zero outgoing flow and sediment - ht2
       ht2 = hz
   
-      ! compute flood plain deposition and channel erosion   
+      !! compute flood plain deposition and channel erosion   
       call sd_channel_sediment3
         
-      !call Muskingum and variable storage coefficient flood routing method
+      !! call Muskingum and variable storage coefficient flood routing method
       call ch_rtmusk
             
-      !! route constituents
-      call ch_rtpest
-      !! call mike winchell's new routine for pesticide routing
-      ! call ch_rtpest2
-      call ch_rtpath
-        
-      !salt and constituent concentrations (g/m3) for inflow water
+      !! route pesticides
+      if (cs_db%num_pests > 0) then
+        call ch_rtpest
+        !call ch_rtpest2 -  mike winchell's new routine for pesticide routing
+        obcs(icmd)%hd(1)%pest = hcs2%pest
+      end if
+      
+      !! route pathogens
+      if (cs_db%num_paths > 0) then
+        call ch_rtpath
+      end if
+      
+      !! salt and constituent concentrations (g/m3) for inflow water
       if(cs_db%num_salts > 0 .or. cs_db%num_cs > 0) then
         hcs2 = hcs1 !set outflow to inflow
         do isalt=1,cs_db%num_salts
@@ -233,18 +246,9 @@
           hcs2%cs(ics) = hcs2%cs(ics) - seep_mass !kg
           chcs_d(ich)%cs(ics)%seep = seep_mass !kg (channel constituent output)
         end do
-        !! route constituents
-        call ch_rtpest
-        !! call mike winchell's new routine for pesticide routing
-        !call ch_rtpest2
-        if (cs_db%num_pests > 0) then
-          obcs(icmd)%hd(1)%pest = hcs2%pest
-        end if
-      
+        
         !! total outgoing to output to SWIFT
         ob(icmd)%hout_tot = ob(icmd)%hout_tot + ht2
-        !! route pathogens
-        call ch_rtpath
         
         !compute stream temperature
         ! Call Subroutune for Ficklin Model, Linear Equation Model, Energy Balance Model
@@ -325,16 +329,17 @@
         do iwallo = 1, db_mx%wallo_db
           do while (wallo(iwallo)%trn(wallo(iwallo)%trn_cur)%ch_src == ich)
             iw = iwallo
+            trn_m3 = ht2%flo
             if (wallo(iwallo)%trn_cur <= wallo(iwallo)%trn_obs) call wallo_control (iw)
           end do
         end do
       end if
 
-      if (ob(icmd)%hyd_flo(1,1) > 1.e-6) then
-        if (ht2%flo / ob(icmd)%hyd_flo(1,1) > 1.5) then
-          a = 1.
-        end if
-      end if
+    ! if (ob(icmd)%hyd_flo(1,1) > 1.e-6) then
+    !    if (ht2%flo / ob(icmd)%hyd_flo(1,1) > 1.5) then
+    !      a = 1.
+    !    end if
+    !  end if
       
       !! set outflow hyd to ht2 after diverting water
       ob(icmd)%hd(1) = ht2

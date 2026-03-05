@@ -19,17 +19,16 @@
       end if
       
       !! outflow is the fraction of the withdrawal from the canal
-      outflo_om = (wallod_out(iwallo)%trn(itrn)%trn_flo / canal_om_stor(ican)%flo) * canal_om_stor(ican)
+      canal_om_out(ican) = (wallod_out(iwallo)%trn(itrn)%trn_flo / canal_om_stor(ican)%flo) *    &
+                                                                            canal_om_stor(ican)
       
-      !! amount that is removed
-      wal_tr_omd(ican) = canal_om_stor(ican) - wal_omd(iwallo)%trn(itrn)%h_tot
+      !! subtract amount that is removed
+      canal_om_stor(ican) = canal_om_stor(ican) - canal_om_out(ican)
       
       !! organic hydrograph being transfered from the source to the receiving object
-      !wal_omd(iwallo)%trn(itrn)%src(isrc)%hd = (1. - canal(ican)%loss_fr) *                &
-      !                                             wal_omd(iwallo)%trn(itrn)%src(isrc)%hd
-      !! add to aquifers
+      outflo_om = (1. - canal(ican)%loss_fr) * canal_om_out(ican)
       
-      outflo_om = hz
+      !! add loss (outflo_om) to aquifers
       
     return
     end subroutine wallo_canal

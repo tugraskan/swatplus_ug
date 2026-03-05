@@ -34,7 +34,7 @@
         if (eof < 0) exit
         read (107,*,iostat=eof) imax
         read (107,*,iostat=eof) header
-        db_mx%water_pipe = imax
+        db_mx%pipe = imax
         if (eof < 0) exit
         
         allocate (pipe(imax))

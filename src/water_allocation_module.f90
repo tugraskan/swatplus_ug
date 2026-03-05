@@ -25,6 +25,12 @@
         integer :: frac = 0.                    !soil layer to receive incoming tile flow
       end type transfer_receiving_objects
         
+      !! counters for outside basin source objects
+      type outside_basin_objects
+        integer :: daymoyr = 0              !recall file number - recall_db - daily, monthly or yearly
+        integer :: aa = 0                   !exco number in exco_db - ave annual constant
+      end type outside_basin_objects
+        
       !! water transfer objects
       type water_transfer_objects
         integer :: num = 0                      !transfer object number
@@ -32,6 +38,7 @@
         character (len=10) :: trn_typ = ""      !transfer type - decision table, recall, ave daily
         character (len=40) :: trn_typ_name = "" !transfer type name of table or recall
         integer :: dtbl_num = 0                 !number of decision table for demand amount (if used)
+        integer :: dtbl_lum = 0                 !number of decision table for demand amount for irrigation (if used)
         integer :: rec_num = 0                  !number of recall file for demand amount (if used)
         real :: amount = 0.                     !m3 per day for urban objects and mm for hru
         character (len=2) :: right = ""         !water right (sr -senior or jr - junior right)
@@ -39,7 +46,7 @@
         character (len=25) :: dtbl_src = ""     !decision table name to allocate sources
         integer :: dtbl_src_num = 0             !number of source allocation decision table
         type (transfer_source_objects), dimension(:), allocatable :: src      !sequential source objects as listed in wallo object
-        integer, dimension(:), allocatable :: osrc      !number of outside basin source object - recall_db.rec file
+        type (outside_basin_objects), dimension(:), allocatable :: osrc      !number of outside basin source object - recall_db.rec file
         integer :: rcv_num = 0                  !number of receiving objects
         !character (len=25) :: dtbl_rcv = ""     !decision table name to allocate receiving objects
         type (transfer_receiving_objects) :: rcv  !receiving object
@@ -64,14 +71,6 @@
         character (len=25) :: rule_typ = ""     !rule type to allocate water
         integer :: trn_cur = 1                  !current transfer object
         integer :: trn_obs = 0                  !number of transfer objects
-        integer :: out_src = 0                  !number of source objects outside the basin
-        integer :: out_rcv = 0                  !number of receiving objects outside the basin
-        integer :: wtp = 0                      !number of water treatment objects
-        integer :: uses = 0                     !number of water use objects (domestic, industrial, municipal)
-        integer :: stor = 0                     !number of urban storage objects (water towers)
-        integer :: pipe = 0                     !number of pipe objects
-        integer :: canal = 0                    !number of canal objects
-        integer :: pump = 0                     !number of pump objects
         type (source_output) :: tot             !total demand, withdrawal and unmet for entire allocation object
         type (water_transfer_objects), dimension(:), allocatable :: trn     !dimension by transfer objects
       end type water_allocation
@@ -123,16 +122,16 @@
       type (outside_basin_receive), dimension(:), allocatable :: orcv
       
       type aquifer_loss
-        real :: aqu_num                         !aquifer number
+        integer :: aqu_num                      !aquifer number
         real :: frac                            !fraction of loss in specific aquifer
       end type aquifer_loss
       
       !! water_transfer_data
       type water_transfer_data
-        character (len=25) :: name = ""         !name of the water treatment plant
-        character (len=25) :: init = ""         !name of the intitial concentrations in wtp storage
+        character (len=25) :: name = ""         !name of the water tower or pipe
+        character (len=25) :: init = ""         !name of the intitial concentrations
         real :: stor_mx                   !m3   !maximum storage in plant
-        real :: ddown_days             !days !days to drawdown the storage to zero
+        real :: ddown_days                !days !days to drawdown the storage to zero
         real :: loss_fr                         !water loss during treament
         integer :: num_aqu                      !number of aquifers
         type (aquifer_loss), dimension(:), allocatable :: aqu_loss
@@ -152,6 +151,7 @@
         real :: s                         !m    !slope of canal
         real :: ss                        !m/m  !side slope of trapezoidal canal
         real :: sat_con                         !to compute percolation from canal to groundwater
+        real :: loss_fr                         !water loss during treament
         integer :: num_aqu                      !number of aquifers
         type (aquifer_loss), dimension(:), allocatable :: aqu_loss
       end type water_canal_data    

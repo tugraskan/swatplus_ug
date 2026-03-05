@@ -22,7 +22,7 @@
       eof = 0
       imax = 0
       
-      !! read water allocation inputs
+      !! read water canal inputs
 
       inquire (file='water_canal.wal', exist=i_exist)
       if (.not. i_exist .or. 'water_canal.wal' == "null") then
@@ -34,26 +34,29 @@
         if (eof < 0) exit
         read (107,*,iostat=eof) imax
         read (107,*,iostat=eof) header
-        db_mx%water_canal = imax
+        db_mx%canal = imax
         if (eof < 0) exit
         
         allocate (canal(imax))
+        allocate (canal_om_stor(imax))
+        allocate (canal_om_out(imax))
+        allocate (canal_cs_stor(imax))
 
         do ic = 1, imax
-          read (107,*,iostat=eof) header
-          if (eof < 0) exit 
-          
-          read (107,*,iostat=eof) i, canal(ic)%name, canal(ic)%init, canal(ic)%dtbl, canal(ic)%ddown_days,  &
-                                  canal(ic)%w, canal(ic)%d, canal(ic)%s, canal(ic)%ss, canal(ic)%sat_con,   &
-                                                                                                 num_aqu
+          read (107,*,iostat=eof) i, canal(ic)%name, canal(ic)%w_sta, canal(ic)%init, canal(ic)%dtbl,       &
+              canal(ic)%ddown_days, canal(ic)%w, canal(ic)%d, canal(ic)%s, canal(ic)%ss, canal(ic)%sat_con, &
+                                                                                 canal(ic)%loss_fr, num_aqu
           if (eof < 0) exit
+          backspace (107)
           
           !! allocate and read aquifer loss data
           allocate (canal(ic)%aqu_loss(num_aqu))
           
-          read (107,*,iostat=eof) i, canal(ic)%name, canal(ic)%init, canal(ic)%dtbl, canal(ic)%ddown_days,  &
-            canal(ic)%w, canal(ic)%d, canal(ic)%s, canal(ic)%ss, canal(ic)%sat_con, canal(ic)%num_aqu,      &
-                                                             (canal(ic)%aqu_loss(iaq), iaq = 1, num_aqu)
+          read (107,*,iostat=eof) i, canal(ic)%name, canal(ic)%w_sta, canal(ic)%init, canal(ic)%dtbl,       &
+              canal(ic)%ddown_days, canal(ic)%w, canal(ic)%d, canal(ic)%s, canal(ic)%ss, canal(ic)%sat_con, &
+              canal(ic)%loss_fr, canal(ic)%num_aqu, (canal(ic)%aqu_loss(iaq), iaq = 1, num_aqu)
+          
+          !! crosswalk with weather station
           
           !! crosswalk initial concentrations and decision table
         end do
@@ -64,4 +67,4 @@
       close(107)
 
       return
-    end subroutine water_canal_read
+      end subroutine water_canal_read

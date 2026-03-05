@@ -9,7 +9,7 @@
       use conditional_module
       use constituent_mass_module
       use recall_module
-      use recall_module
+      use exco_module
       use hru_module, only : hru
       
       implicit none 
@@ -29,6 +29,10 @@
       integer :: idb = 0
       integer :: idb_irr = 0
       integer :: ihru = 0
+      integer :: iexco = 0
+      integer :: iexco_om = 0
+      integer :: irec = 0
+      integer :: iom = 0
       
       eof = 0
       imax = 0
@@ -60,26 +64,12 @@
         do iwro = 1, imax
           read (107,*,iostat=eof) header
           if (eof < 0) exit
-          read (107,*,iostat=eof) wallo(iwro)%name, wallo(iwro)%rule_typ, wallo(iwro)%trn_obs, &
-            wallo(iwro)%out_src, wallo(iwro)%out_rcv, wallo(iwro)%wtp, wallo(iwro)%uses,       &
-            wallo(iwro)%stor, wallo(iwro)%pipe, wallo(iwro)%canal, wallo(iwro)%pump
+          read (107,*,iostat=eof) wallo(iwro)%name, wallo(iwro)%rule_typ, wallo(iwro)%trn_obs
           
           if (eof < 0) exit
           read (107,*,iostat=eof) header
           if (eof < 0) exit
           
-          allocate (wuse_om_stor(wallo(iwro)%uses))
-          allocate (wtp_om_stor(wallo(iwro)%wtp))
-          allocate (wtow_om_stor(wallo(iwro)%stor))
-          allocate (canal_om_stor(wallo(iwro)%canal))
-          allocate (wuse_om_out(wallo(iwro)%uses))
-          allocate (wtp_om_out(wallo(iwro)%wtp))
-          allocate (wtow_om_out(wallo(iwro)%stor))
-          allocate (canal_om_out(wallo(iwro)%canal))
-          allocate (wuse_cs_stor(wallo(iwro)%uses))
-          allocate (wtp_cs_stor(wallo(iwro)%wtp))
-          allocate (wtow_cs_stor(wallo(iwro)%stor))
-          allocate (canal_cs_stor(wallo(iwro)%canal))
           num_objs = wallo(iwro)%trn_obs
           allocate (wallo(iwro)%trn(num_objs))
           allocate (wal_omd(iwro)%trn(num_objs))
@@ -91,14 +81,6 @@
           allocate (walloy_out(iwro)%trn(num_objs))
           allocate (walloa_out(iwro)%trn(num_objs))
           
-          allocate (wal_tr_omd(wallo(iwro)%wtp))
-          allocate (wal_tr_omm(wallo(iwro)%wtp))
-          allocate (wal_tr_omy(wallo(iwro)%wtp))
-          allocate (wal_tr_oma(wallo(iwro)%wtp))
-          allocate (wal_use_omd(wallo(iwro)%uses))
-          allocate (wal_use_omm(wallo(iwro)%uses))
-          allocate (wal_use_omy(wallo(iwro)%uses))
-          allocate (wal_use_oma(wallo(iwro)%uses))
               
           !! read transfer object data
           if (eof < 0) exit
@@ -128,7 +110,7 @@
               do idb = 1, db_mx%dtbl_lum
                 if (wallo(iwro)%trn(i)%trn_typ_name == dtbl_lum(idb)%name) then
                   ihru = wallo(iwro)%trn(i)%rcv%num
-                  hru(ihru)%irr_trn_dtbl = idb
+                  wallo(iwro)%trn(itrn)%dtbl_lum = idb
                   do idb_irr = 1, db_mx%irrop_db
                     if (dtbl_lum(idb)%act(1)%option == irrop_db(idb_irr)%name) then
                       wallo(iwro)%trn(itrn)%irr_eff = irrop_db(idb_irr)%eff
@@ -159,6 +141,36 @@
               wallo(iwro)%trn(i)%dtbl_src, & !wallo(iwro)%trn(i)%num,                                 &
               (wallo(iwro)%trn(i)%src(isrc), isrc = 1, num_src), wallo(iwro)%trn(i)%rcv
           
+            !! check if a channel is a source
+            do isrc = 1, num_src
+              if (wallo(iwro)%trn(i)%src(isrc)%typ == "cha") then
+                wallo(iwro)%trn(i)%ch_src = wallo(iwro)%trn(i)%src(isrc)%num
+                exit
+              end if
+            end do
+        
+            !! xwalk with recall file to get sequential number
+            do isrc = 1, num_src
+              irec = wallo(iwro)%trn(i)%src(isrc)%num
+              if (wallo(iwro)%trn(i)%src(isrc)%typ == "osrc") then
+                wallo(iwro)%trn(i)%osrc(isrc)%daymoyr  = recall_db(irec)%iorg_min
+                exit
+              end if
+            end do
+                
+            !! xwalk with exco file to get sequential number
+            do isrc = 1, num_src
+              if (wallo(iwro)%trn(i)%src(isrc)%typ == "osrc_a") then
+                iexco = wallo(iwro)%trn(i)%src(isrc)%num
+                do iexco_om = 1, db_mx%exco_om
+                  if (exco_db(iexco)%om_file == exco_om_name(iexco_om)) then
+                    wallo(iwro)%trn(i)%osrc(isrc)%aa = iexco_om
+                    exit
+                  end if
+                end do
+              end if
+            end do
+                
             !! zero output variables for summing
             do isrc = 1, num_src
               wallod_out(iwro)%trn(i)%src(isrc) = walloz
