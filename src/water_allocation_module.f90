@@ -80,6 +80,9 @@
       !! water treatment and use data
       type water_treatment_use_data
         character (len=25) :: name = ""         !name of the water treatment plant
+        character (len=16) :: use_typ = ""      !use type: dom (domestic/residential), ind (industrial),
+                                                !  com (commercial), mun (municipal), agr (agricultural),
+                                                !  lsk (livestock), pwr (power), rec (recreational), oth (other)
         !character (len=25) :: init = ""         !name of the intitial concentrations in wtp storage
         real :: stor_mx                   !m3   !maximum storage in plant
         real :: lag_days                  !days !treatement time - lag outflow

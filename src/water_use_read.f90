@@ -47,12 +47,24 @@
         allocate (wal_use_oma(imax))
 
         do iwuse = 1, imax
-          read (107,*,iostat=eof) i, wuse(iwuse)%name, wuse(iwuse)%stor_mx,     &
-                                     wuse(iwuse)%lag_days, wuse(iwuse)%loss_fr, &
-                                     wuse(iwuse)%org_min, wuse(iwuse)%pests,    &
-                                     wuse(iwuse)%paths, wuse(iwuse)%salts,      &
+          !! water_use.wal column order (v2): num name use_typ stor_mx lag_days loss_fr
+          !!   org_min pests paths salts constit descrip
+          !! use_typ tokens: dom ind com mun agr lsk pwr rec oth
+          read (107,*,iostat=eof) i, wuse(iwuse)%name, wuse(iwuse)%use_typ,       &
+                                     wuse(iwuse)%stor_mx,                          &
+                                     wuse(iwuse)%lag_days, wuse(iwuse)%loss_fr,   &
+                                     wuse(iwuse)%org_min, wuse(iwuse)%pests,      &
+                                     wuse(iwuse)%paths, wuse(iwuse)%salts,        &
                                      wuse(iwuse)%constit, wuse(iwuse)%descrip
           if (eof < 0) exit
+
+          !! validate use_typ; default to "oth" for unrecognised tokens
+          select case (trim(wuse(iwuse)%use_typ))
+            case ("dom","ind","com","mun","agr","lsk","pwr","rec","oth")
+              !! valid token - no action needed
+            case default
+              wuse(iwuse)%use_typ = "oth"
+          end select
           
           !! crosswalk organic mineral with 
           do iom = 1, db_mx%om_use
