@@ -83,6 +83,7 @@ __The following sections are emphasizing various development aspects.__
 
 [SWAT+ Input/Output Documentation on Gitbook](https://swatplus.gitbook.io/docs)
 
+- [file.cio — Master Input File Reference](doc/file_cio.md)
 - [Soft Calibration Files](doc/soft_cal_files.md)
 
 [SWAT at TAMU](https://swat.tamu.edu)
