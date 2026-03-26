@@ -83,6 +83,8 @@ __The following sections are emphasizing various development aspects.__
 
 [SWAT+ Input/Output Documentation on Gitbook](https://swatplus.gitbook.io/docs)
 
+- [Soft Calibration Files](doc/soft_cal_files.md)
+
 [SWAT at TAMU](https://swat.tamu.edu)
 
 [Older SWAT+ versions on Bitbucket](https://bitbucket.org/blacklandgrasslandmodels/modular_swatplus/src/master)
