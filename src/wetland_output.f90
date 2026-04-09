@@ -1,4 +1,4 @@
-      subroutine wetland_output(j)
+subroutine wetland_output(j)
       
       use time_module
       use basin_module
