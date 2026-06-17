@@ -1542,7 +1542,7 @@
         if (pco%csvout == "y") then
             call open_output_file(4011, "crop_yld_yr.csv")
             write (4011,*) bsn%name, prog
-            write (4011,'(*(G0.6,:,","))') "jday","mon","day","year","unit","plantnm","yield"
+            write (4011,'(*(G0.6,:,","))') "jday","mon","day","year","unit","plantnm","mass","c","n","p"
             write (9000,*) "CROP                      crop_yld_yr.csv"
         end if
       end if
@@ -1556,7 +1556,7 @@
         if (pco%csvout == "y") then
             call open_output_file(4009, "crop_yld_aa.csv")
             write (4009,*) bsn%name, prog
-            write (4009,'(*(G0.6,:,","))') "jday","mon","day","year","unit","plantnm","yield"
+            write (4009,'(*(G0.6,:,","))') "jday","mon","day","year","unit","plantnm","mass","c","n","p"
             write (9000,*) "CROP                      crop_yld_aa.csv"
         end if
       end if
