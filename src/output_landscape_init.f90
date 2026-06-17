@@ -384,6 +384,29 @@
           call open_cb_wide_pair(4601, 4605, "hru_soil_snap_tot.txt", "hru_soil_snap_tot.csv", soil_snap_vars)
           if (bsn_cc%cswat == 2) call soil_nutcarb_write(" b")  !! emit begsim row to hru_soil_snap_tot
         end if
+            !! write beginning of simulation wilting-point water by layer
+            call open_output_file(4588, "hru_begsim_wp_lyr.txt", 1500)
+            write (4588,*)  bsn%name, prog
+            write (4588,*) begsim_wp_lyr_hdr
+            write (9000,*) "HRU                       hru_begsim_wp_lyr.txt"
+            if (pco%csvout == "y") then
+              call open_output_file(4589, "hru_begsim_wp_lyr.csv", 1500)
+              write (4589,*)  bsn%name, prog
+              write (4589,'(*(G0.6,:,","))') begsim_wp_lyr_hdr
+              write (9000,*) "HRU                       hru_begsim_wp_lyr.csv"
+            endif
+
+            !! write end of simulation soil properties headers to hru_endsim_soil_prop
+            call open_output_file(4584, "hru_endsim_soil_prop.txt", 1500)
+            write (4584,*)  bsn%name, prog
+            write (4584,*)  endsim_soil_prop_hdr
+            write (9000,*) "HRU                       hru_endsim_soil_prop.txt"
+            if (pco%csvout == "y") then
+              call open_output_file(4585, "hru_endsim_soil_prop.csv", 1500)
+              write (4585,*)  bsn%name, prog
+              write (4585,'(*(G0.6,:,","))') endsim_soil_prop_hdr
+              write (9000,*) "HRU                       hru_endsim_soil_prop.csv"
+            end if
 
         !! hru_plc_stat: HRU-level plant carbon state (no layers).
         if (pco%cb_plt_hru%d == "y") call open_cb_flat_pair(4574, 4578, "hru_plc_stat_day.txt", "hru_plc_stat_day.csv", ["total_c    ","ab_gr_c    ","leaf_c     ","stem_c     ","seed_c     ","root_c     ","surf_rsd_c "])
@@ -1260,7 +1283,7 @@
         if (pco%csvout == "y") then
             call open_output_file(4011, "crop_yld_yr.csv")
             write (4011,*) bsn%name, prog
-            write (4011,'(*(G0.6,:,","))') "jday","mon","day","year","unit","plantnm","yield"
+            write (4011,'(*(G0.6,:,","))') "jday","mon","day","year","unit","plantnm","mass","c","n","p"
             write (9000,*) "CROP                      crop_yld_yr.csv"
         end if
       end if
@@ -1274,7 +1297,7 @@
         if (pco%csvout == "y") then
             call open_output_file(4009, "crop_yld_aa.csv")
             write (4009,*) bsn%name, prog
-            write (4009,'(*(G0.6,:,","))') "jday","mon","day","year","unit","plantnm","yield"
+            write (4009,'(*(G0.6,:,","))') "jday","mon","day","year","unit","plantnm","mass","c","n","p"
             write (9000,*) "CROP                      crop_yld_aa.csv"
         end if
       end if
