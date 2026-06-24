@@ -1675,6 +1675,8 @@
         integer :: isol = 0
 
         soil_layers_for_hru = 1
+        if (.not. allocated(hru)) return
+        if (ihru < lbound(hru,1) .or. ihru > ubound(hru,1)) return
         isol = hru(ihru)%dbs%soil
         if (isol > 0) then
           soil_layers_for_hru = soildb(isol)%s%nly
