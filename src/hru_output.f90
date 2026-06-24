@@ -225,9 +225,29 @@
                                                                 hpw_y(j), lum(ilu)%plant_cov, lum(ilu)%mgt_ops  
                end if 
            end if
-          hpw_y(j)%bm_max = 0.0
-           
-          !reset yearly parameters in time_control - for calibration runs
+           hpw_y(j)%bm_max = 0.0
+
+           !! write yearly crop yields
+           if (pco%crop_yld == "y" .or. pco%crop_yld == "b") then
+             do ipl = 1, pcom(j)%npl
+               idp = pcom(j)%plcur(ipl)%idplt
+               if (pcom(j)%plcur(ipl)%harv_num_yr > 0) then
+                 pl_mass(j)%yield_yr(ipl) = pl_mass(j)%yield_yr(ipl) / float(pcom(j)%plcur(ipl)%harv_num_yr)
+               end if
+               write (4010,103) time%day, time%mo, time%day_mo, time%yrc, j, pldb(idp)%plantnm, pl_mass(j)%yield_yr(ipl)
+               if (pco%csvout == "y") then
+                 write (4011,'(*(G0.6,:","))') time%day, time%mo, time%day_mo, time%yrc, j, pldb(idp)%plantnm,             &
+                                               pl_mass(j)%yield_yr(ipl)
+               end if
+             end do
+           end if
+
+           do ipl = 1, pcom(j)%npl
+             pl_mass(j)%yield_yr(ipl) = plt_mass_z
+             pcom(j)%plcur(ipl)%harv_num_yr = 0
+           end do
+
+           !reset yearly parameters in time_control - for calibration runs
         end if
         
 !!!!! average annual print

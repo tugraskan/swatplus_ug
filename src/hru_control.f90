@@ -442,14 +442,6 @@
         !! compute plant biomass, leaf, root and seed growth
         call pl_grow
 
-        !! reset harvested biomass and number of harvests for yearly yield output
-        if (time%end_yr == 1) then
-          do ipl = 1, pcom(j)%npl
-            pl_mass(j)%yield_yr(ipl) = plt_mass_z
-            pcom(j)%plcur(ipl)%harv_num_yr = 0
-          end do
-        end if
-        
         !! compute total parms for all plants in the community
         strsw_av = 0.; strsa_av = 0.; strsn_av = 0.; strsp_av = 0.; strstmp_av = 0.
         strss_av = 0.
