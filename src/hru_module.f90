@@ -164,7 +164,8 @@
         character(len=40) :: soil_plant_init = ""
         character(len=40) :: surf_stor = ""
         character(len=40) :: snow = ""
-        character(len=40) :: field = ""
+        integer :: field = 0
+        real :: slope_len = 0.              !m                 |lateral slope length
       end type hru_databases_char
 
       type hydrologic_response_unit_db

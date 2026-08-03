@@ -27,7 +27,6 @@
       integer :: ithyd = 0            !none       |counter
       integer :: isol = 0             !none       |counter
       integer :: isno = 0             !none       |counter
-      integer :: ifld = 0             !none       |counter
       integer :: isp_ini = 0          !none       |counter
       integer :: ics = 0              !none       |counter
       
@@ -165,15 +164,7 @@
          
          if (hru_db(i)%dbs%snow == 0 .and. hru_db(i)%dbsc%snow /= 'null') write (9001,*) hru_db(i)%dbsc%snow, "not found (snow.sno)"
          
-         do ifld = 1, db_mx%field
-             if (hru_db(i)%dbsc%field == field_db(ifld)%name) then
-               hru_db(i)%dbs%field = ifld
-            exit
-            end if
-         end do
-         
-        if (hru_db(i)%dbs%field == 0 .and. hru_db(i)%dbsc%field /= 'null') write (9001,*) &
-          hru_db(i)%dbsc%field, "not found (field.fld)"
+         hru_db(i)%dbs%field = hru_db(i)%dbsc%field
 
       end do
       exit

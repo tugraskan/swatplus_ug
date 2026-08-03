@@ -314,7 +314,7 @@
           pcom(j)%plcur(ipl)%phumat_p = pcom(j)%plcur(ipl)%phumat * pldb(idp)%mat_yrs
             
           cvm_com(j) = plcp(idp)%cvm + cvm_com(j)
-          pcom(j)%rsd_covfac = pcom(j)%rsd_covfac + pldb(idp)%rsd_covfac
+          pcom(j)%rsd_covfac = pcom(j)%rsd_covfac + 0.04
           pcom(j)%plcur(ipl)%idplt = pcomdb(icom)%pl(ipl)%db_num
           
           !! set initial n and p contents in total plant

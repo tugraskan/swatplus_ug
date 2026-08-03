@@ -28,7 +28,7 @@
         if (pldb(ic)%rsr2 <= 0.0) pldb(ic)%rsr2 = 0.2
         if (pldb(ic)%aeration <= 0.0) pldb(ic)%aeration = 0.2
         if (pldb(ic)%rsd_pctcov <= 0.0) pldb(ic)%rsd_pctcov = 0.4
-        if (pldb(ic)%rsd_covfac <= 0.0) pldb(ic)%rsd_covfac = 0.04
+        if (pldb(ic)%co2_resp <= 0.0) pldb(ic)%co2_resp = 0.0
         
         !! check if tuber, root to total biomass ratio = 0.7
         if (pldb(ic)%typ == "warm_annual_tuber" .or. pldb(ic)%typ == "cold_annual_tuber") then

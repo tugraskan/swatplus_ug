@@ -27,6 +27,8 @@
           open (105,file=in_parmdb%till_til)
           read (105,*,iostat=eof) titldum
           if (eof < 0) exit
+          read (105,*,iostat=eof) titldum
+          if (eof < 0) exit
           read (105,*,iostat=eof) header
           if (eof < 0) exit
             do while (eof == 0)
@@ -34,13 +36,15 @@
               if (eof < 0) exit
               imax = imax + 1
             end do
-            
+
           allocate (tilldb(0:imax))
-          
+
           rewind (105)
           read (105,*,iostat=eof) titldum
           if (eof < 0) exit
-          read (105,*,iostat=eof) header  
+          read (105,*,iostat=eof) titldum
+          if (eof < 0) exit
+          read (105,*,iostat=eof) header
           if (eof < 0) exit
           
             do itl = 1, imax

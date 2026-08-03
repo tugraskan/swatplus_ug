@@ -6,7 +6,7 @@
         character (len=25) :: name = "default"
         character (len=25) :: init = ""             !initial data-points to initial.res
         character (len=25) :: hyd = ""              !points to hydrology.res for hydrology inputs
-        character (len=25) :: release = ""          !0=simulated; 1=measured outflow
+        character (len=25) :: outflow = ""          !0=simulated; 1=measured outflow
         character (len=25) :: sed = ""              !sediment inputs-points to sediment.res
         character (len=25) :: nut = ""              !nutrient inputs-points to nutrient.res    
       end type reservoir_data_char_input

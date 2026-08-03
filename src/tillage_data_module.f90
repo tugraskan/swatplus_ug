@@ -23,6 +23,7 @@
         real :: ranrns = 0.          !! mm                 |random roughness
         real :: ridge_ht = 0.        !! mm                 |ridge height
         real :: ridge_sp = 0.        !! mm                 |ridge interval (or row spacing)
+        real :: compaction_co = 0.   !! none               |soil compaction coefficient (0=no compaction; 1=full compaction)
       end type tillage_db
       type (tillage_db), dimension(:),allocatable, save :: tilldb  
       

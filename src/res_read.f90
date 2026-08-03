@@ -118,17 +118,17 @@
            end if
          end do
                 
-         if (res_dat_c(ires)%release(1:5) == "ctbl_") then
+         if (res_dat_c(ires)%outflow(1:5) == "ctbl_") then
            do irel = 1, db_mx%ctbl_res
-             if (ctbl(irel)%name == res_dat_c(ires)%release) then 
+             if (ctbl(irel)%name == res_dat_c(ires)%outflow) then
                res_dat(ires)%release = irel
                res_ob(ires)%rel_tbl = "c"
                exit
              end if
-           end do 
+           end do
          else
           do irel = 1, db_mx%dtbl_res
-            if (dtbl_res(irel)%name == res_dat_c(ires)%release) then
+            if (dtbl_res(irel)%name == res_dat_c(ires)%outflow) then
              res_dat(ires)%release = irel
              res_ob(ires)%rel_tbl = "d"
              exit
@@ -158,7 +158,7 @@
          
 
        if (res_dat(ires)%hyd == 0) write (9001,*) res_dat_c(ires)%hyd, " not found (res-hyd)"
-       if (res_dat(ires)%release == 0) write (9001,*) res_dat_c(ires)%release, " not found (res-release)"         
+       if (res_dat(ires)%release == 0) write (9001,*) res_dat_c(ires)%outflow, " not found (res-release)"         
        if (res_dat(ires)%sed == 0) write (9001,*) res_dat_c(ires)%sed, " not found (res-sed)"
        if (res_dat(ires)%nut == 0) write (9001,*) res_dat_c(ires)%nut, " not found (res-nut)"
        end do

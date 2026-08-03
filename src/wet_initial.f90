@@ -86,7 +86,7 @@
        
               !! xwalk release decision table
               do irel = 1, db_mx%dtbl_res
-                if (dtbl_res(irel)%name == wet_dat_c(isstor)%release) then
+                if (dtbl_res(irel)%name == wet_dat_c(isstor)%outflow) then
                   wet_dat(isstor)%release = irel
                   exit
                   end if
@@ -116,7 +116,7 @@
         
               if (wet_dat(isstor)%init == 0) write (9001,*) wet_dat_c(isstor)%init, " not found (wet-init)"
               if (wet_dat(isstor)%hyd == 0) write (9001,*) wet_dat_c(isstor)%hyd, " not found (wet-hyd)"
-              if (wet_dat(isstor)%release == 0) write (9001,*) wet_dat_c(isstor)%release, " not found (wet-release)"
+              if (wet_dat(isstor)%release == 0) write (9001,*) wet_dat_c(isstor)%outflow, " not found (wet-release)"
               if (wet_dat(isstor)%sed == 0) write (9001,*) wet_dat_c(isstor)%sed, " not found (wet-sed)"
               if (wet_dat(isstor)%nut == 0) write (9001,*) wet_dat_c(isstor)%nut, " not found (wet-nut)"
 

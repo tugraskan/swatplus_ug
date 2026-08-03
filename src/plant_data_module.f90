@@ -100,7 +100,7 @@
                                          !                     plants during monsoon season - pcom()%plcur()%iseason
         real :: aeration = 0.2           !                  |aeration stress factor
         real :: rsd_pctcov = 0.          !                  |residue factor for percent cover equation
-        real :: rsd_covfac = 0.          !                  |residue factor for surface cover (C factor) equation
+        real :: co2_resp = 0.            !none              |CO2 response factor for radiation use efficiency
         !character(len=45) :: desc = "unknown"
         type (residue_partition_fracs) :: res_part_fracs
       end type plant_db
