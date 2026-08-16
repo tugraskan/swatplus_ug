@@ -71,27 +71,27 @@
       
       type snow_parameters
          character (len=40) :: name = ""
-         real :: falltmp = 0.     !deg C         |snowfall temp
-         real :: melttmp = 0.5    !deg C         |snow melt base temp 
-         real :: meltmx = 4.5     !mm/deg C/day  |Max melt rate for snow during year (June 21)
-         real :: meltmn = 0.5     !mm/deg C/day  |Min melt rate for snow during year (Dec 21)
-         real :: timp = 0.8       !none          |snow pack temp lag factor (0-1)
-         real :: covmx = 25.0     !mm H20        |snow water content at full ground cover
-         real :: cov50 = 0.5      !none          |frac of covmx at 50% snow cover
-         real :: init_mm = 0.     !mm H20        |initial snow water content at start of simulation
+         real :: falltmp = 0.     !deg C         |snowfall temp |range: -5..5
+         real :: melttmp = 0.5    !deg C         |snow melt base temp |range: -5..5
+         real :: meltmx = 4.5     !mm/deg C/day  |Max melt rate for snow during year (June 21) |range: 0..10
+         real :: meltmn = 0.5     !mm/deg C/day  |Min melt rate for snow during year (Dec 21) |range: 0..10
+         real :: timp = 0.8       !none          |snow pack temp lag factor (0-1) |range: 0..1
+         real :: covmx = 25.0     !mm H20        |snow water content at full ground cover |range: 0..500
+         real :: cov50 = 0.5      !none          |frac of covmx at 50% snow cover |range: 0..1
+         real :: init_mm = 0.     !mm H20        |initial snow water content at start of simulation |range: 0..5
       end type snow_parameters
       type (snow_parameters), dimension (:), allocatable :: snodb
       
       type subsurface_drainage_parameters
         character(len=40) :: name = "null"
-        real :: depth = 0.    !! |mm            |depth of drain tube from the soil surface
-        real :: time = 0.     !! |hrs           |time to drain soil to field capacity
-        real :: lag = 0.      !! |hours         |drain tile lag time
-        real :: radius = 0.   !! |mm            |effective radius of drains
-        real :: dist = 0.     !! |mm            |distance between two drain tubes or tiles
-        real :: drain_co = 0. !! |mm/day        |drainage coefficient
-        real :: pumpcap = 0.  !! |mm/hr         |pump capacity 
-        real :: latksat = 0.  !! !na            |multiplication factor to determine lat sat hyd conductivity for profile
+        real :: depth = 0.    !! |mm            |depth of drain tube from the soil surface |range: 0..6000
+        real :: time = 0.     !! |hrs           |time to drain soil to field capacity |range: 0..100
+        real :: lag = 0.      !! |hours         |drain tile lag time |range: 0..100
+        real :: radius = 0.   !! |mm            |effective radius of drains |range: 3..40
+        real :: dist = 0.     !! |mm            |distance between two drain tubes or tiles |range: 7600..30000
+        real :: drain_co = 0. !! |mm/day        |drainage coefficient |range: 10..51
+        real :: pumpcap = 0.  !! |mm/hr         |pump capacity |range: 0..10
+        real :: latksat = 0.  !! !na            |multiplication factor to determine lat sat hyd conductivity for profile |range: 0.01..4
       end type subsurface_drainage_parameters
       type (subsurface_drainage_parameters), dimension (:), allocatable :: sdr
       
@@ -127,7 +127,7 @@
       
       type soil_plant_initialize
         character(len=40) :: name = ""
-        real :: sw_frac = 0.
+        real :: sw_frac = 0.                !! none |range: >=1
         character(len=40) :: nutc = ""
         character(len=40) :: pestc = ""
         character(len=40) :: pathc = ""

@@ -14,8 +14,8 @@
                                     !              |0 = fc; 1 = saturation (porosity)
         real :: tc = 0.             !min           |time of concentration
         real :: soildep = 0.        !mm            |soil profile depth
-        real :: perco = 0.          !              |soil percolation coefficient
-        real :: slope = 0.          !m/m           |land surface slope
+        real :: perco = 0.          !              |soil percolation coefficient |range: 0..6000
+        real :: slope = 0.          !m/m           |land surface slope |range: 0..0.6
         real :: slopelen = 0.       !m             |land surface slope length
         real :: etco = 0.           !              |et coefficient - use with pet and aet
         real :: sy = 0.             !mm            |specific yld of the shallow aquifer

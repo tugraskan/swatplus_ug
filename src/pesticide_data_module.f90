@@ -8,15 +8,15 @@
         real :: washoff = 0.        !! none                 |frac of pesticide on foliage which is washed off by rainfall event 
         real :: foliar_hlife = 0.   !! days                 |half-life of pest on foliage
         real :: soil_hlife = 0.     !! days                 |half-life of pest in soil
-        real :: solub = 0.          !! mg/L (ppm)           |solubility of chemical in water
-        real :: aq_hlife = 0.       !! days                 |aquatic half-life
-        real :: aq_volat = 0.       !! m/day                |aquatic volatilization coeff
-        real :: mol_wt = 0.         !! g/mol                |molecular weight - to calculate mixing velocity
-        real :: aq_resus = 0.       !! m/day                |aquatic resuspension velocity for pesticide sorbed to sediment
-        real :: aq_settle = 0.      !! m/day                |aquatic settling velocity for pesticide sorbed to sediment
-        real :: ben_act_dep = 0.    !! m                    |depth of active benthic layer
-        real :: ben_bury = 0.       !! m/day                |burial velocity in benthic sediment
-        real :: ben_hlife = 0.      !! days                 |half-life of pest in benthic sediment
+        real :: solub = 0.          !! mg/L (ppm)           |solubility of chemical in water |range: >=0
+        real :: aq_hlife = 0.       !! days                 |aquatic half-life |range: >=0
+        real :: aq_volat = 0.       !! m/day                |aquatic volatilization coeff |range: >=0
+        real :: mol_wt = 0.         !! g/mol                |molecular weight - to calculate mixing velocity |range: >=0
+        real :: aq_resus = 0.       !! m/day                |aquatic resuspension velocity for pesticide sorbed to sediment |range: >=0
+        real :: aq_settle = 0.      !! m/day                |aquatic settling velocity for pesticide sorbed to sediment |range: >=0
+        real :: ben_act_dep = 0.    !! m                    |depth of active benthic layer |range: >=0
+        real :: ben_bury = 0.       !! m/day                |burial velocity in benthic sediment |range: >=0
+        real :: ben_hlife = 0.      !! days                 |half-life of pest in benthic sediment |range: >=0
         real :: pl_uptake = 0.      !! none                 |fraction taken up by plant 
         character(len=32) :: descrip = ""                   !pesticide description
       end type pesticide_db

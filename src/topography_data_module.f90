@@ -4,11 +4,11 @@
      
       type topography_db
         character(len=16) :: name = "default"
-        real :: slope = .02       !!    hru_slp(:) |m/m           |average slope steepness in HRU
-        real :: slope_len = 50.   !! slsubbsn(:)   |m             |average slope length for erosion
-        real :: lat_len = 50.     !! slsoil(:)     |m             |slope length for lateral subsurface flow
-        real :: dis_stream = 100. !! dis_stream(:) |m             |average distance to stream
-        real :: dep_co = 1.       !!               |              |deposition coefficient
+        real :: slope = .02       !!    hru_slp(:) |m/m           |average slope steepness in HRU |range: >=0
+        real :: slope_len = 50.   !! slsubbsn(:)   |m             |average slope length for erosion |range: >=0
+        real :: lat_len = 50.     !! slsoil(:)     |m             |slope length for lateral subsurface flow |range: >=0
+        real :: dis_stream = 100. !! dis_stream(:) |m             |average distance to stream |range: 0..100000
+        real :: dep_co = 1.       !!               |              |deposition coefficient |range: >=0
       end type topography_db
       type (topography_db), dimension (:), allocatable :: topo_db
       

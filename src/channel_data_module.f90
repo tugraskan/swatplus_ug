@@ -71,88 +71,88 @@
         !surface areas are ha for 0 and frac of hru for 1; volumes are ha-m for 0 and mm for 1
         !br1 and br2 are used for 0 and acoef for 0 -- for surface area - volume relationship
         character(len=16) :: name = "default"
-        real :: w = 2.           ! m             |average width of main channel
-        real :: d = .5           ! m             |average depth of main channel
-        real :: s = .01          ! m/m           |average slope of main channel
-        real :: l = 0.1          ! km            |main channel length in subbasin
-        real :: n = .05          ! none          |Manning"s "n" value for the main channel
-        real :: k = 0.01         ! mm/hr         |effective hydraulic conductivity of main channel alluvium
-        real :: wdr = 6.         ! m/m           |channel width to depth ratio
-        real :: alpha_bnk = 0.03 ! days          |alpha factor for bank storage recession curve
-        real :: side = 0.        !               |change in horizontal distance per unit
+        real :: w = 2.           ! m             |average width of main channel |range: 0..1000
+        real :: d = .5           ! m             |average depth of main channel |range: 0..30
+        real :: s = .01          ! m/m           |average slope of main channel |range: 0..10
+        real :: l = 0.1          ! km            |main channel length in subbasin |range: 0..500
+        real :: n = .05          ! none          |Manning"s "n" value for the main channel |range: 0..0.3
+        real :: k = 0.01         ! mm/hr         |effective hydraulic conductivity of main channel alluvium |range: 0..500
+        real :: wdr = 6.         ! m/m           |channel width to depth ratio |range: 0..10000
+        real :: alpha_bnk = 0.03 ! days          |alpha factor for bank storage recession curve |range: 0..1
+        real :: side = 0.        !               |change in horizontal distance per unit |range: 0..5
       end type channel_hyd_data
       type (channel_hyd_data), dimension(:), allocatable :: ch_hyd
       
       type channel_sed_data
         character(len=16) :: name = ""
-        integer :: eqn  = 0      !               |sediment routine methods: 
+        integer :: eqn  = 0      !               |sediment routine methods: |range: 0..4
                                    !                   0 = original SWAT method
                                    !                   1 = Bagnold"seqn        
                                    !                   2 = Kodatie
                                    !                   3 = Molinas WU
                                    !                   4 = Yang
-        real :: cov1 = 0.1       ! none          |channel erodibility factor (0.0-1.0)
-        real :: cov2 = 0.1       ! none          |channel cover factor (0.0-1.0)
-        real :: bnk_bd  = 0.     ! (g/cc)        |bulk density of channel bank sediment (1.1-1.9)
-        real :: bed_bd  = 0.     ! (g/cc)        |bulk density of channel bed sediment (1.1-1.9)
-        real :: bnk_kd  = 0.     !               |erodibility of channel bank sediment by jet test
-        real :: bed_kd  = 0.     !               |erodibility of channel bed sediment by jet test
-        real :: bnk_d50  = 0.    !               |D50(median) particle size diameter of channel 
-        real :: bed_d50  = 0.    !               |D50(median) particle size diameter of channel
-        real :: tc_bnk  = 0.     ! N/m2          |critical shear stress of channel bank
-        real :: tc_bed  = 0.     ! N/m2          |critical shear stress of channel bed 
-        real, dimension(12) :: erod  = 0.  !     |value of 0.0 indicates a non-erosive channel while a value
+        real :: cov1 = 0.1       ! none          |channel erodibility factor (0.0-1.0) |range: 0..1 * (modular db: 0..0.6)
+        real :: cov2 = 0.1       ! none          |channel cover factor (0.0-1.0) |range: 0..1
+        real :: bnk_bd  = 0.     ! (g/cc)        |bulk density of channel bank sediment (1.1-1.9) |range: 1.1..1.9
+        real :: bed_bd  = 0.     ! (g/cc)        |bulk density of channel bed sediment (1.1-1.9) |range: 1.1..1.9
+        real :: bnk_kd  = 0.     !               |erodibility of channel bank sediment by jet test |range: 0.001..3.75
+        real :: bed_kd  = 0.     !               |erodibility of channel bed sediment by jet test |range: 0.001..3.75
+        real :: bnk_d50  = 0.    !               |D50(median) particle size diameter of channel |range: 1..10000
+        real :: bed_d50  = 0.    !               |D50(median) particle size diameter of channel |range: 1..10000
+        real :: tc_bnk  = 0.     ! N/m2          |critical shear stress of channel bank |range: 0..400
+        real :: tc_bed  = 0.     ! N/m2          |critical shear stress of channel bed |range: 0..400
+        real, dimension(12) :: erod  = 0.  !     |value of 0.0 indicates a non-erosive channel while a value |range: 0..1
                                                      !of 1.0 indicates no resistance to erosion
       end type channel_sed_data
       type (channel_sed_data), dimension(:), allocatable :: ch_sed
             
       type channel_nut_data
         character(len=16) :: name = ""
-        real :: onco = 0.        ! ppm           |channel organic n concentration
-        real :: opco = 0.        ! ppm           |channel organic p concentration
-        real :: rs1 = 1.          ! m/day or m/hr   |local algal settling rate in reach at 20 deg C
-        real :: rs2 = .05         ! (mg disP-P)/    |benthos source rate for dissolved phos ((m**2)*day)|in reach at 20 deg C
+        real :: onco = 0.        ! ppm           |channel organic n concentration |range: 0..100
+        real :: opco = 0.        ! ppm           |channel organic p concentration |range: 0..100
+        real :: rs1 = 1.          ! m/day or m/hr   |local algal settling rate in reach at 20 deg C |range: 0.15..1.82
+        real :: rs2 = .05         ! (mg disP-P)/    |benthos source rate for dissolved phos ((m**2)*day)|in reach at 20 deg C |range: 0.001..0.1
         !                                              or (mg disP-P)/((m**2)*hr)|
-        real :: rs3 = .5          ! (mg NH4-N)/     |benthos source rate for ammonia nit in ((m**2)*day)|reach at 20 deg C
+        real :: rs3 = .5          ! (mg NH4-N)/     |benthos source rate for ammonia nit in ((m**2)*day)|reach at 20 deg C |range: 0..1
         !                                              or (mg NH4-N)/((m**2)*hr)|
-        real :: rs4 = .05         ! 1/day or 1/hr   |rate coeff for organic nitrogen settling in reach at 20 deg C
-        real :: rs5 = .05         ! 1/day or 1/hr   |org phos settling rate in reach at 20 deg C
-        real :: rs6 = 2.5         ! 1/day           |rate coeff for settling of arbitrary non-conservative constituent in reach
-        real :: rs7 = 2.5         ! (mg ANC)/       |benthal source rate for arbitrary ((m**2)*day)|non-conservative constituent in reach
-        real :: rk1 = 1.71        ! 1/day or 1/hr   |CBOD deoxygenation rate coeff in reach at 20 deg C
-        real :: rk2 = 1.          ! 1/day or 1/hr   |reaeration rate in accordance with Fickian diffusion in reach at 20 deg C
-        real :: rk3 = 2.          ! 1/day or 1/hr   |rate of loss of CBOD due to settling in reach at 20 deg C
-        real :: rk4 = 0.          ! mg O2/          |sed oxygen demand rate in reach ((m**2)*day)|at 20 deg C or mg O2/((m**2)*hr)
-        real :: rk5 = 1.71        ! 1/day           |coliform die-off rate in reach
-        real :: rk6 = 1.71        ! 1/day           |decay rate for arbitrary non-conservative constituent in reach
-        real :: bc1 = .55         ! 1/hr            |rate constant for biological oxidation of NH3 to NO2 in reach at 20 deg C
-        real :: bc2 = 1.1         ! 1/hr            |rate constant for biological oxidation of NO2 to NO3 in reach at 20 deg C
-        real :: bc3 = .21         ! 1/hr            |rate constant for hydrolysis of organic N to ammonia in reach at 20 deg C
-        real :: bc4 = .35         ! 1/hr            |rate constant for the decay of organic P to dissolved P in reach at 20 deg C
-        real :: lao  = 2          ! NA              |Qual2E light averaging option. Qual2E defines four light averaging options. The only option
+        real :: rs4 = .05         ! 1/day or 1/hr   |rate coeff for organic nitrogen settling in reach at 20 deg C |range: 0.001..0.1
+        real :: rs5 = .05         ! 1/day or 1/hr   |org phos settling rate in reach at 20 deg C |range: 0.001..0.1
+        real :: rs6 = 2.5         ! 1/day           |rate coeff for settling of arbitrary non-conservative constituent in reach |range: 0.01..10
+        real :: rs7 = 2.5         ! (mg ANC)/       |benthal source rate for arbitrary ((m**2)*day)|non-conservative constituent in reach |range: 0.01..10
+        real :: rk1 = 1.71        ! 1/day or 1/hr   |CBOD deoxygenation rate coeff in reach at 20 deg C |range: 0.02..3.4
+        real :: rk2 = 1.          ! 1/day or 1/hr   |reaeration rate in accordance with Fickian diffusion in reach at 20 deg C |range: 0..100
+        real :: rk3 = 2.          ! 1/day or 1/hr   |rate of loss of CBOD due to settling in reach at 20 deg C |range: -0.36..0.36
+        real :: rk4 = 0.          ! mg O2/          |sed oxygen demand rate in reach ((m**2)*day)|at 20 deg C or mg O2/((m**2)*hr) |range: 0..100
+        real :: rk5 = 1.71        ! 1/day           |coliform die-off rate in reach |range: 0.05..4
+        real :: rk6 = 1.71        ! 1/day           |decay rate for arbitrary non-conservative constituent in reach |range: 0..10
+        real :: bc1 = .55         ! 1/hr            |rate constant for biological oxidation of NH3 to NO2 in reach at 20 deg C |range: 0.1..1
+        real :: bc2 = 1.1         ! 1/hr            |rate constant for biological oxidation of NO2 to NO3 in reach at 20 deg C |range: 0.2..2
+        real :: bc3 = .21         ! 1/hr            |rate constant for hydrolysis of organic N to ammonia in reach at 20 deg C |range: 0.2..0.4
+        real :: bc4 = .35         ! 1/hr            |rate constant for the decay of organic P to dissolved P in reach at 20 deg C |range: 0.01..0.7
+        real :: lao  = 2          ! NA              |Qual2E light averaging option. Qual2E defines four light averaging options. The only option |range: 1..4
                                                     !currently available in SWAT is #2.
-        integer :: igropt = 2     ! none            |Qual2E option for calculating the local specific growth rate of algae
+        integer :: igropt = 2     ! none            |Qual2E option for calculating the local specific growth rate of algae |range: 1..3
                                                     ! 1: multiplicative: u = mumax * fll * fnn * fpp
                                                     ! 2: limiting nutrient: u = mumax * fll * Min(fnn, fpp)
                                                     ! 3: harmonic mean: u = mumax * fll * 2. / ((1/fnn)+(1/fpp))
-        real :: ai0 = 50.         ! ug chla/mg alg  |ratio of chlorophyll-a to algal biomass
-        real :: ai1 = 0.08        ! mg N/mg alg     |fraction of algal biomass that is nitrogen
-        real :: ai2 = 0.015       ! mg P/mg alg     |fraction of algal biomass that is phosphorus
-        real :: ai3 = 1.60        ! mg O2/mg alg    |the rate of oxygen production per unit of algal photosynthesis
-        real :: ai4 = 2.0         ! mg O2/mg alg    |the rate of oxygen uptake per unit of algae respiration
-        real :: ai5 = 3.5         ! mg O2/mg N      |the rate of oxygen uptake per unit of NH3 nitrogen oxidation
-        real :: ai6 = 1.07        ! mg O2/mg N      |the rate of oxygen uptake per unit of NO2 nitrogen oxidation
-        real :: mumax = 2.0       ! 1/hr            |maximum specific algal growth rate at 20 deg C
-        real :: rhoq = 2.5        ! 1/day or 1/hr   |algal respiration rate
-        real :: tfact = 0.3       ! none            |fraction of solar radiation computed in the temperature heat balance that is 
+        real :: ai0 = 50.         ! ug chla/mg alg  |ratio of chlorophyll-a to algal biomass |range: 10..100
+        real :: ai1 = 0.08        ! mg N/mg alg     |fraction of algal biomass that is nitrogen |range: 0.07..0.09
+        real :: ai2 = 0.015       ! mg P/mg alg     |fraction of algal biomass that is phosphorus |range: 0.01..0.02
+        real :: ai3 = 1.60        ! mg O2/mg alg    |the rate of oxygen production per unit of algal photosynthesis |range: 1.4..1.8
+        real :: ai4 = 2.0         ! mg O2/mg alg    |the rate of oxygen uptake per unit of algae respiration |range: 1.6..2.3
+        real :: ai5 = 3.5         ! mg O2/mg N      |the rate of oxygen uptake per unit of NH3 nitrogen oxidation |range: 3..4
+        real :: ai6 = 1.07        ! mg O2/mg N      |the rate of oxygen uptake per unit of NO2 nitrogen oxidation |range: 1..1.14
+        real :: mumax = 2.0       ! 1/hr            |maximum specific algal growth rate at 20 deg C |range: 1..3
+        real :: rhoq = 2.5        ! 1/day or 1/hr   |algal respiration rate |range: 0.05..5
+        real :: tfact = 0.3       ! none            |fraction of solar radiation computed in the temperature heat balance that is |range: 0..1
                                                     ! photosynthetically active
-        real :: k_l = 0.75        ! MJ/(m2*hr)      |half-saturation coefficient for light
-        real :: k_n = 0.02        ! mg N/L          |michaelis-menton half-saturation constant for nitrogen
-        real :: k_p = 0.025       ! mg P/L          |michaelis-menton half saturation constant for phosphorus
-        real :: lambda0 = 1.0     ! 1/m             |non-algal portion of the light extinction coefficient
-        real :: lambda1 = 0.03    ! 1/(m*ug chla/L) |linear algal self-shading coefficient
-        real :: lambda2 = 0.054   ! (1/m)(ug chla/L)**(-2/3) |nonlinear algal self-shading coefficient
-        real :: p_n = 0.5         ! none            |algal preference factor for ammonia
+        real :: k_l = 0.75        ! MJ/(m2*hr)      |half-saturation coefficient for light |range: 0.223..1.135
+        real :: k_n = 0.02        ! mg N/L          |michaelis-menton half-saturation constant for nitrogen |range: 0.01..0.3
+        real :: k_p = 0.025       ! mg P/L          |michaelis-menton half saturation constant for phosphorus |range: 0.001..0.05
+        real :: lambda0 = 1.0     ! 1/m             |non-algal portion of the light extinction coefficient |range: 0..10
+        real :: lambda1 = 0.03    ! 1/(m*ug chla/L) |linear algal self-shading coefficient |range: 0.006..0.065
+        real :: lambda2 = 0.054   ! (1/m)(ug chla/L)**(-2/3) |nonlinear algal self-shading coefficient |range: 0..1
+        real :: p_n = 0.5         ! none            |algal preference factor for ammonia |range: 0..1
       end type channel_nut_data
       type (channel_nut_data), dimension(:), allocatable :: ch_nut
 

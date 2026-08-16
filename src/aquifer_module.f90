@@ -5,21 +5,21 @@
       type aquifer_database
         character(len=16) :: aqunm = ""         !aquifer name
         character(len=16) :: aqu_ini = ""       !initial aquifer data- points to name in initial.aqu
-        real :: flo = 0.05          !mm         |flow from aquifer in current time step 
-        real :: dep_bot = 0.        !m          |depth - mid-slope surface to bottom of aquifer 
-        real :: dep_wt = 0.         !m          |depth - mid-slope surface to water table (initial)
-        real :: no3 = 0.            !ppm NO3-N  |nitrate-N concentration in aquifer (initial)
-        real :: minp = 0.           !ppm P      |mineral phosphorus concentration in aquifer (initial)
-        real :: cbn = .5            !percent    |organic carbon in aquifer (initial)
-        real :: flo_dist = 50.      !m          |average flow distance to stream or object
-        real :: bf_max = 0.         !mm         |maximum daily baseflow - when all channels are contributing
-        real :: alpha = 0.          !1/days     |lag factor for groundwater recession curve
-        real :: revap_co = 0.       !           |revap oefficient - evap=pet*revap_co
-        real :: seep = 0.           !frac       |fraction of recharge that seeps from aquifer
-        real :: spyld = 0.          !m^3/m^3    |specific yield of aquifer
-        real :: hlife_n = 30.       !days       |half-life of nitrogen in groundwater
-        real :: flo_min = 0.        !m          |water table depth for return flow to occur
-        real :: revap_min = 0.      !m          |water table depth for revap to occur 
+        real :: flo = 0.05          !mm         |flow from aquifer in current time step |range: 0..2
+        real :: dep_bot = 0.        !m          |depth - mid-slope surface to bottom of aquifer |range: 0..10
+        real :: dep_wt = 0.         !m          |depth - mid-slope surface to water table (initial) |range: 0..10
+        real :: no3 = 0.            !ppm NO3-N  |nitrate-N concentration in aquifer (initial) |range: 0..1000
+        real :: minp = 0.           !ppm P      |mineral phosphorus concentration in aquifer (initial) |range: 0..1000
+        real :: cbn = .5            !percent    |organic carbon in aquifer (initial) |range: 0..15
+        real :: flo_dist = 50.      !m          |average flow distance to stream or object |range: 0..1000
+        real :: bf_max = 0.         !mm         |maximum daily baseflow - when all channels are contributing |range: 0..2
+        real :: alpha = 0.          !1/days     |lag factor for groundwater recession curve |range: 0..1
+        real :: revap_co = 0.       !           |revap oefficient - evap=pet*revap_co |range: 0..1
+        real :: seep = 0.           !frac       |fraction of recharge that seeps from aquifer |range: 0..1
+        real :: spyld = 0.          !m^3/m^3    |specific yield of aquifer |range: 0..0.4
+        real :: hlife_n = 30.       !days       |half-life of nitrogen in groundwater |range: 0..200
+        real :: flo_min = 0.        !m          |water table depth for return flow to occur |range: 0..10
+        real :: revap_min = 0.      !m          |water table depth for revap to occur |range: 0..10
       end type aquifer_database
       type (aquifer_database), dimension(:), allocatable :: aqudb
       type (aquifer_database), dimension(:), allocatable :: aqu_dat
