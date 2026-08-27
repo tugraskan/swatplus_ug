@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "swatplus-source": {
+      "command": "swatplus-mcp",
+      "args": ["--facts", "swatplus-facts.json", "--compact"]
+    }
+  }
+}
