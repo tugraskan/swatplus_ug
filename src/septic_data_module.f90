@@ -4,16 +4,16 @@
                           
       type septic_db
           character(len=20) :: sepnm = ""
-          real :: qs = 0.               !! m3/d          |flow rate of the septic tank effluent per capita (sptq)
-          real :: bodconcs = 0.         !! mg/l          |biological oxygen demand of the septic tank effluent
-          real :: tssconcs = 0.         !! mg/l          |concentration of total suspended solid in the septic tank effluent
-          real :: nh4concs = 0.         !! mg/l          |concentration of total phosphorus in the septic tank effluent
-          real :: no3concs = 0.         !! mg/l          |concentration of nitrate in the septic tank effluent
-          real :: no2concs = 0.         !! mg/l          |concentration of nitrite in the septic tank effluent
-          real :: orgnconcs = 0.        !! mg/l          |concentration of organic nitrogen in the septic tank effluent
-          real :: minps = 0.            !! mg/l          |concentration of mineral phosphorus in the septic tank effluent    
-          real :: orgps = 0.            !! mg/l          |concentration of organic phosphorus in the septic tank effluent
-          real :: fcolis = 0.           !! mg/l          |concentration of fecal coliform in the septic tank effluent
+          real :: qs = 0.               !! m3/d          |flow rate of the septic tank effluent per capita (sptq) |range: 0..1
+          real :: bodconcs = 0.         !! mg/l          |biological oxygen demand of the septic tank effluent |range: 0..300
+          real :: tssconcs = 0.         !! mg/l          |concentration of total suspended solid in the septic tank effluent |range: 0..300
+          real :: nh4concs = 0.         !! mg/l          |concentration of total phosphorus in the septic tank effluent |range: >=0
+          real :: no3concs = 0.         !! mg/l          |concentration of nitrate in the septic tank effluent |range: >=0
+          real :: no2concs = 0.         !! mg/l          |concentration of nitrite in the septic tank effluent |range: >=0
+          real :: orgnconcs = 0.        !! mg/l          |concentration of organic nitrogen in the septic tank effluent |range: >=0
+          real :: minps = 0.            !! mg/l          |concentration of mineral phosphorus in the septic tank effluent |range: >=0
+          real :: orgps = 0.            !! mg/l          |concentration of organic phosphorus in the septic tank effluent |range: >=0
+          real :: fcolis = 0.           !! mg/l          |concentration of fecal coliform in the septic tank effluent |range: >=0
       end type septic_db
       type (septic_db), dimension (:), allocatable :: sepdb
       

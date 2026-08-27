@@ -18,11 +18,11 @@
 
       type tillage_db
         character(len=16) :: tillnm = " "
-        real :: effmix = 0.          !! none               |mixing efficiency of tillage operation
-        real :: deptil = 0.          !! mm                 |depth of mixing caused by tillage
-        real :: ranrns = 0.          !! mm                 |random roughness
-        real :: ridge_ht = 0.        !! mm                 |ridge height
-        real :: ridge_sp = 0.        !! mm                 |ridge interval (or row spacing)
+        real :: effmix = 0.          !! none               |mixing efficiency of tillage operation |range: 0..1
+        real :: deptil = 0.          !! mm                 |depth of mixing caused by tillage |range: 0..750
+        real :: ranrns = 0.          !! mm                 |random roughness |range: 0..200
+        real :: ridge_ht = 0.        !! mm                 |ridge height |range: >=0
+        real :: ridge_sp = 0.        !! mm                 |ridge interval (or row spacing) |range: >=0
       end type tillage_db
       type (tillage_db), dimension(:),allocatable, save :: tilldb  
       

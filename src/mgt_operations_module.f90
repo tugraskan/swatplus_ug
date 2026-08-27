@@ -4,8 +4,8 @@
       
      type irrigation_operation
         character (len=40) :: name = ""
-        real :: amt_mm = 25.4           !! mm     |irrigation application amount
-        real :: eff = 0.                !!        |irrigation in-field efficiency
+        real :: amt_mm = 25.4           !! mm     |irrigation application amount |range: 0..1
+        real :: eff = 0.                !!        |irrigation in-field efficiency |range: 0..1
         real :: surq = 0.               !! frac   |surface runoff ratio
         real :: dep_mm = 0.             !! mm     |depth of application for subsurface irrigation
         real :: salt = 0.               !! mg/kg  |concentration of total salt in irrigation
@@ -29,9 +29,9 @@
 
       type filtstrip_operation
         character (len=40) :: name = ""
-        integer :: vfsi = 0             !       |on/off flag for vegetative filter strip
-        real :: vfsratio = 0.           !       |contouring USLE P factor
-        real :: vfscon = 0.             !       |fraction of the total runoff from the entire field
+        integer :: vfsi = 0             !       |on/off flag for vegetative filter strip |range: 0..1
+        real :: vfsratio = 0.           !       |contouring USLE P factor |range: 0..300
+        real :: vfscon = 0.             !       |fraction of the total runoff from the entire field |range: 0.25..0.75
         real :: vfsch = 0.              !       |fraction of flow entering the most concentrated 10% of the VFS.
                                         !          which is fully channelized
       end type filtstrip_operation
@@ -46,25 +46,25 @@
       
       type grwaterway_operation
         character (len=40) :: name = ""
-        integer :: grwat_i = 0.     !none          |On/off Flag for waterway simulation
-        real :: grwat_n = 0.        !none          |Mannings"s n for grassed waterway
-        real :: grwat_spcon = 0.    !none          |sediment transport coefficant defined by user
-        real :: grwat_d = 0.        !m             |depth of Grassed waterway
-        real :: grwat_w = 0.        !none          |width of grass waterway
-        real :: grwat_l = 0.        !km            |length of Grass Waterway
-        real :: grwat_s = 0.        !m/m           |slope of grass waterway
+        integer :: grwat_i = 0.     !none          |On/off Flag for waterway simulation |range: 0..1
+        real :: grwat_n = 0.        !none          |Mannings"s n for grassed waterway |range: 0.001..0.5
+        real :: grwat_spcon = 0.    !none          |sediment transport coefficant defined by user |range: 0..1
+        real :: grwat_d = 0.        !m             |depth of Grassed waterway |range: 0..10
+        real :: grwat_w = 0.        !none          |width of grass waterway |range: 0..1000
+        real :: grwat_l = 0.        !km            |length of Grass Waterway |range: 0..10000
+        real :: grwat_s = 0.        !m/m           |slope of grass waterway |range: 0..1
       end type grwaterway_operation
       type (grwaterway_operation),dimension(:), allocatable :: grwaterway_db
 
       type bmpuser_operation  
         character (len=40) :: name = ""
-        integer :: bmp_flag = 0
-        real :: bmp_sed = 0.       !%              | Sediment removal by BMP       
-        real :: bmp_pp = 0.        !%              | Particulate P removal by BMP
-        real :: bmp_sp = 0.        !%              | Soluble P removal by BMP
-        real :: bmp_pn = 0.        !%              | Particulate N removal by BMP 
-        real :: bmp_sn = 0.        !%              | Soluble N removal by BMP  
-        real :: bmp_bac = 0.       !%              | Bacteria removal by BMP
+        integer :: bmp_flag = 0     !! none |BMP flag (1=active;2=inactive) ArcSWAT 0 and 1 |range: 1..2
+        real :: bmp_sed = 0.       !%              | Sediment removal by BMP |range: 0..100
+        real :: bmp_pp = 0.        !%              | Particulate P removal by BMP |range: 0..100
+        real :: bmp_sp = 0.        !%              | Soluble P removal by BMP |range: 0..100
+        real :: bmp_pn = 0.        !%              | Particulate N removal by BMP |range: 0..100
+        real :: bmp_sn = 0.        !%              | Soluble N removal by BMP |range: 0..100
+        real :: bmp_bac = 0.       !%              | Bacteria removal by BMP |range: 0..100
       end type bmpuser_operation 
       
       type bmpuser_operation1  
@@ -110,8 +110,8 @@
       type harvest_operation
         character (len=40) :: name = ""
         character (len=40) :: typ = ""!none              |grain;biomass;residue;tree;tuber
-        real :: hi_ovr = 0.         !(kg/ha)/(kg/ha)   |harvest index target specified at harvest
-        real :: eff = 0.            !none              |harvest efficiency: fraction of harvested yield that is removed 
+        real :: hi_ovr = 0.         !(kg/ha)/(kg/ha)   |harvest index target specified at harvest |range: 0..1
+        real :: eff = 0.            !none              |harvest efficiency: fraction of harvested yield that is removed |range: 0..1
                                                        !the remainder becomes residue on the soil surface
         real :: bm_min = 0          !kg/ha             |minimum biomass to allow harvest
       end type harvest_operation
@@ -123,18 +123,18 @@
         character (len=40) :: name = ""
         character (len=40) :: fertnm = " "
         integer :: manure_id = 0                         !fertilizer number from fertilizer.frt
-        real :: eat = 0.              !!(kg/ha)/day      |dry weight of biomass removed by grazing daily
-        real :: tramp = 0.            !!(kg/ha)/day      |dry weight of biomass removed by trampling daily
-        real :: manure = 0.           !!(kg/ha)/day      |dry weight of manure deposited
-        real :: biomin = 0.           !!kg/ha            |minimum plant biomass for grazing
+        real :: eat = 0.              !!(kg/ha)/day      |dry weight of biomass removed by grazing daily |range: 0..500
+        real :: tramp = 0.            !!(kg/ha)/day      |dry weight of biomass removed by trampling daily |range: 0..500
+        real :: manure = 0.           !!(kg/ha)/day      |dry weight of manure deposited |range: 0..500
+        real :: biomin = 0.           !!kg/ha            |minimum plant biomass for grazing |range: 0..5000
       end type grazing_operation
       type (grazing_operation), dimension(:), allocatable :: grazeop_db
       type (grazing_operation) :: graze
       
       type streetsweep_operation
         character (len=40) :: name = ""
-        real :: eff = 0.               !!none             |removal efficiency of sweeping operation
-        real :: fr_curb = 0.           !!none             |availability factor, the fraction of the
+        real :: eff = 0.               !!none             |removal efficiency of sweeping operation |range: 0..1
+        real :: fr_curb = 0.           !!none             |availability factor, the fraction of the |range: 0..1
                                        !!                    curb length that is sweepable
       end type streetsweep_operation
       type (streetsweep_operation), dimension(:), allocatable :: sweepop_db
@@ -157,8 +157,8 @@
         !! swep; autoswep - street sweep
         !! prtp - print plant vars
         !! skip - skip to end of the year
-        integer :: mon = 0
-        integer :: day = 0
+        integer :: mon = 0          !! none |Month of operation |range: 1..12
+        integer :: day = 0          !! none |Day of Operation |range: 1..31
         integer :: jday = 0
         integer :: year = 0
         real :: husc = 0.
