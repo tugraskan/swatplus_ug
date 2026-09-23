@@ -316,9 +316,9 @@
         character(len=16) :: name = "default"
         character(len=8) :: typ = " "   !object type - ie hru, hru_lte, sub, chan, res, recall
         integer :: nhyds = 0            !hru=5, chan=3 - see type hd_tot for each object
-        real :: lat = 0.                !latitude (degrees)
-        real :: long = 0.               !longitude (degrees)
-        real :: elev = 100.             !elevation (m)
+        real :: lat = 0.                !latitude (degrees) |range: -90..90
+        real :: long = 0.               !longitude (degrees) |range: -180..180
+        real :: elev = 100.             !elevation (m) |range: 1..7000
         real :: plaps = 0.              !precipitation lapse applied to object precip
         real :: tlaps = 0.              !temperature lapse applied to object precip
         real :: area_ha = 80.           !input drainag area - ha
@@ -338,7 +338,7 @@
         integer :: cmd_next = 0         !next command (object) number
         integer :: cmd_prev = 0         !previous command (object) number
         integer :: cmd_order = 0        !1=headwater,2=2nd order,etc
-        integer :: src_tot = 0          !total number of outgoing (source) objects
+        integer :: src_tot = 0          !total number of outgoing (source) objects |range: 1..12
         integer :: rcv_tot = 0          !total number of incoming (receiving) hydrographs
         integer :: dfn_tot = 0          !total number of defining objects (ie hru"s within a subbasin)
         integer :: ru_tot = 0           !number of routing units that contain this object
@@ -352,7 +352,7 @@
         integer, dimension(:), allocatable :: obj_out               !outflow object
         character (len=3), dimension (:), allocatable :: htyp_out   !outflow hyd type (ie 1=tot, 2= recharge, 3=surf, etc)
         integer, dimension (:), allocatable :: ihtyp_out            !outflow hyd type (ie 1=tot, 2= recharge, 3=surf, etc)
-        real, dimension (:), allocatable :: frac_out                !fraction of hydrograph
+        real, dimension (:), allocatable :: frac_out                !fraction of hydrograph |range: 0..1
         character(len=8), dimension(:), allocatable :: obtyp_in     !inflow object type (ie 1=hru, 2=sd_hru, 3=sub, 4=chan, etc)
         integer, dimension(:), allocatable :: obtypno_in            !inflow object type number
         integer, dimension(:), allocatable :: obj_in
@@ -428,25 +428,25 @@
       type (recall_hydrograph_inputs),dimension(:),allocatable:: recall
 
       type spatial_objects
-        integer :: objs = 0      !number of objects or 1st object command
-        integer :: hru = 0       !1-number of hru"s or 1st hru command
-        integer :: hru_lte = 0   !2-number of hru_lte"s or 1st hru_lte command
+        integer :: objs = 0      !number of objects or 1st object command |range: >=0
+        integer :: hru = 0       !1-number of hru"s or 1st hru command |range: >=0
+        integer :: hru_lte = 0   !2-number of hru_lte"s or 1st hru_lte command |range: >=0
         
-        integer :: ru = 0        !3-number of ru"s or 1st ru command
+        integer :: ru = 0        !3-number of ru"s or 1st ru command |range: >=0
         integer :: gwflow = 0    !4-number of gwflow"s or 1st gwflow command !rtb gwflow
-        integer :: aqu = 0       !5-number of aquifer"s or 1st aquifer command
-        integer :: chan = 0      !6-number of chan"s or 1st chan command
-        integer :: res = 0       !7-number of res"s or 1st res command
-        integer :: recall = 0    !8-number of recdays"s or 1st recday command
-        integer :: exco = 0      !11-number of exco"s or 1st export coeff command
-        integer :: dr = 0        !12-number of dr"s or 1st del ratio command
-        integer :: canal = 0     !13-number of canal"s or 1st canal command
-        integer :: pump = 0      !14-number of pump"s or 1st pump command
-        integer :: outlet = 0    !15-number of outlet"s or 1st outlet command
-        integer :: chandeg = 0   !16-number of swat-deg channel"s or 1st swat-deg channel command
-        integer :: aqu2d = 0     !17-not currently used (number of 2D aquifer"s or 1st 2D aquifer command)
-        integer :: herd = 0      !18-not currently used (number of herds)
-        integer :: wro = 0       !19-not currently used (number of water rights)
+        integer :: aqu = 0       !5-number of aquifer"s or 1st aquifer command |range: >=0
+        integer :: chan = 0      !6-number of chan"s or 1st chan command |range: >=0
+        integer :: res = 0       !7-number of res"s or 1st res command |range: >=0
+        integer :: recall = 0    !8-number of recdays"s or 1st recday command |range: >=0
+        integer :: exco = 0      !11-number of exco"s or 1st export coeff command |range: >=0
+        integer :: dr = 0        !12-number of dr"s or 1st del ratio command |range: >=0
+        integer :: canal = 0     !13-number of canal"s or 1st canal command |range: >=0
+        integer :: pump = 0      !14-number of pump"s or 1st pump command |range: >=0
+        integer :: outlet = 0    !15-number of outlet"s or 1st outlet command |range: >=0
+        integer :: chandeg = 0   !16-number of swat-deg channel"s or 1st swat-deg channel command |range: >=0
+        integer :: aqu2d = 0     !17-not currently used (number of 2D aquifer"s or 1st 2D aquifer command) |range: >=0
+        integer :: herd = 0      !18-not currently used (number of herds) |range: >=0
+        integer :: wro = 0       !19-not currently used (number of water rights) |range: >=0
       end type spatial_objects
       type (spatial_objects) :: sp_ob       !total number of the object
       type (spatial_objects) :: sp_ob1      !first sequential number of the object
@@ -483,7 +483,7 @@
         integer :: obj = 1              !object number
         character (len=3) :: obtyp = "" !object type- 1=hru, 2=hru_lte, 11=export coef, etc
         integer :: obtypno = 0          !2-number of hru_lte"s or 1st hru_lte command
-        real :: frac = 0                !fraction of element in ru (expansion factor)
+        real :: frac = 0                !fraction of element in ru (expansion factor) |range: 0..1
         character(len=16) :: dr_name = "" !name of dr in delratio.del
         type (hyd_output) :: dr         !calculated (or input in delratio.del) dr's for element
       end type routing_unit_elements

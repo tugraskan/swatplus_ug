@@ -8,8 +8,8 @@
       
       type basin_inputs
         character(len=25) :: name = ""
-        real :: area_ls_ha = 0.
-        real :: area_tot_ha = 0.
+        real :: area_ls_ha = 0.     !! ha |area of landscape, (all hrus) |range: >=0
+        real :: area_tot_ha = 0.    !! ha |total area |range: >=0
       end type basin_inputs
       type (basin_inputs) :: bsn
       
@@ -17,57 +17,57 @@
         !character(len=16) :: update     !! pointer to basin updates in schedule.upd                                      
         character(len=16) :: petfile ='         pet.cli'    !! potential et filename
         character(len=16) :: wwqfile = ""  !! watershed stream water quality filename
-        integer :: pet = 0       !! potential ET method code
+        integer :: pet = 0       !! potential ET method code |range: 0..3
                                  !!   0 = Priestley-Taylor 
                                  !!   1 = Penman-Monteith
                                  !!   2 = Hargreaves method
         integer :: nam1 = 0      !! not used
-        integer :: crk = 0       !! crack flow code 
+        integer :: crk = 0       !! crack flow code |range: 0..1
                                  !!   1 = compute flow in cracks
         integer :: swift_out = 0 !! write to SWIFT input file
                                  !!   0 = do not write
                                  !!   1 = write to swift_hru.inp
-        integer :: sed_det = 0   !! peak rate method
+        integer :: sed_det = 0   !! peak rate method |range: 0..1
                                  !!   0 = NRCS dimensionless hydrograph with PRF
                                  !!   1 = half hour rainfall intensity method
-        integer :: rte = 0       !! water routing method
+        integer :: rte = 0       !! water routing method |range: 0..1
                                  !!   0 variable storage method
                                  !!   1 Muskingum method
         integer :: deg = 0       !! not used
         integer :: wq = 0        !! not used
-        integer :: nostress = 0  !! redefined to the sequence number  -- changed to no nutrient stress
+        integer :: nostress = 0  !! redefined to the sequence number  -- changed to no nutrient stress |range: 0..250
                                  !!   0 = all stresses applied
                                  !!   1 = turn off all plant stress
                                  !!   2 = turn off nutrient plant stress only
         integer :: cn = 0        !! not used
         integer :: cfac = 0      !! not used     
-        integer :: cswat = 0     !! carbon code: 0 = off (static), 1 = C-FARM (reserved,
+        integer :: cswat = 0     !! carbon code: 0 = off (static), 1 = C-FARM (reserved, |range: 0..2
                                  !! not implemented), 2 = dynamic CENTURY/SWAT-C model.
                                  !! numbering aligned with legacy SWAT as directed by Srinivasan.
                                  !!  = 0 Static soil carbon (old mineralization routines)
                                  !!  = 1 C-FARM one carbon pool model 
                                  !!  = 2 Century model
-        integer :: lapse = 0     !! precip and temperature lapse rate control
+        integer :: lapse = 0     !! precip and temperature lapse rate control |range: 0..1
                                  !!   0 = do not adjust for elevation
                                  !!   1 = adjust for elevation
-        integer :: uhyd = 1      !! Unit hydrograph method: 
+        integer :: uhyd = 1      !! Unit hydrograph method: |range: 0..1
                                  !!   0 = triangular UH
                                  !!   1 = gamma function UH
         integer :: sed_ch = 0    !! not used
-        integer :: tdrn = 0      !! tile drainage eq code
+        integer :: tdrn = 0      !! tile drainage eq code |range: 0..1
                                  !!   0 = tile flow using drawdown days equation
                                  !!   1 = tile flow using drainmod equations
-        integer :: wtdn = 0      !! shallow water table depth algorithms code
+        integer :: wtdn = 0      !! shallow water table depth algorithms code |range: 0..1
                                  !!   0 = depth using orig water table depth routine - fill to upper limit
                                  !!   1 = depth using drainmod water table depth routine
-        integer :: sol_p_model=0 !! 0 = original soil P model in SWAT documentation
+        integer :: sol_p_model=0 !! 0 = original soil P model in SWAT documentation |range: 0..1
                                  !! 1 = new soil P model in Vadas and White (2010)
         integer :: gampt = 0     !! 0 = curve number; 1 = Green and Ampt 
         character(len=1) :: atmo = "a"   !! not used
         integer :: smax = 0      !! not used
         integer :: qual2e = 0    !! 0 = instream nutrient routing using QUAL2E 
                                  !! 1 = instream nutrient routing using QUAL2E - with simplified nutrient transformations
-        integer :: gwflow = 0    !!   0 = gwflow module not active; 1 = gwflow module active
+        integer :: gwflow = 0    !!   0 = gwflow module not active; 1 = gwflow module active |range: >=0
         integer :: idc_till = 3  !! 1 = Use dssat tillage method to use if cswat = 2 
                                  !! 2 = Use epic tillage method to use if cswat = 2
                                  !! 3 = Use Kemanian tillage method to use if cswat = 2
@@ -77,61 +77,61 @@
       type (basin_control_codes) :: bsn_cc
 
       type basin_parms
-        real :: evlai = 3.0         !! none          |leaf area index at which no evap occurs
+        real :: evlai = 3.0         !! none          |leaf area index at which no evap occurs |range: 0..1
         real :: ffcb = 0.           !! none          |initial soil water cont expressed as a fraction of fc 
-        real :: surlag = 4.0        !! days          |surface runoff lag time (days)
-        real :: adj_pkr = 1.0       !! none          |peak rate adjustment factor in the subbasin
-        real :: prf = 484.          !! peak rate factor for peak rate equation
+        real :: surlag = 4.0        !! days          |surface runoff lag time (days) |range: 0.5..2
+        real :: adj_pkr = 1.0       !! none          |peak rate adjustment factor in the subbasin |range: 0..2
+        real :: prf = 484.          !! peak rate factor for peak rate equation |range: 0.0001..0.01
         real :: spcon = 0.0         !! not used
         real :: spexp = 0.0         !! not used
-        real :: cmn = 0.003         !! rate factor for mineralization on active org N - 0.0003 -> 0.003
-        real :: n_updis = 20.0      !! nitrogen uptake dist parm
-        real :: p_updis = 20.0      !! phosphorus uptake dist parm
-        real :: nperco = 0.10       !! nitrate perc coeff (0-1)
+        real :: cmn = 0.003         !! rate factor for mineralization on active org N - 0.0003 -> 0.003 |range: 0..100
+        real :: n_updis = 20.0      !! nitrogen uptake dist parm |range: 0..100
+        real :: p_updis = 20.0      !! phosphorus uptake dist parm |range: 0..1
+        real :: nperco = 0.10       !! nitrate perc coeff (0-1) |range: 0..1 * (modular db: 10..17.5)
                                     !!   0 = conc of nitrate in surface runoff is zero
                                     !!   1 = perc has same conc of nitrate as surf runoff
-        real :: pperco = 10.0       !! phos perc coeff (0-1)
+        real :: pperco = 10.0       !! phos perc coeff (0-1) |range: 0..1 * (modular db: 0..10)
                                     !!  0 = conc of sol P in surf runoff is zero
                                     !!  1 = percolate has some conc of sol P as surf runoff      
-        real :: phoskd = 175.0      !! phos soil partitioning coef
-        real :: psp = 0.40          !! phos availability index
-        real :: rsdco = 0.05        !! residue decomposition coeff
-        real :: percop = 0.5        !! pestcide perc coeff (0-1)
-        real :: msk_co1 = 0.75      !! calibration coeff to control impact of the storage
+        real :: phoskd = 175.0      !! phos soil partitioning coef |range: 100..250
+        real :: psp = 0.40          !! phos availability index |range: 0.02..0.7
+        real :: rsdco = 0.05        !! residue decomposition coeff |range: 0..0.03
+        real :: percop = 0.5        !! pestcide perc coeff (0-1) |range: 0..1 * (modular db: 0..10)
+        real :: msk_co1 = 0.75      !! calibration coeff to control impact of the storage |range: 0..10
                                     !!  time constant for the reach at bankfull depth
-        real :: msk_co2 = 0.25      !! calibration coefficient used to control impact of the 
+        real :: msk_co2 = 0.25      !! calibration coefficient used to control impact of the |range: 0..0.3
                                     !!   storage time constant for low flow (where low flow is when
                                     !!   river is at 0.1 bankfull depth) upon the Km value calculated
                                     !!   for the reach
-        real :: msk_x = 0.20        !! weighting factor control relative importance of inflow rate 
+        real :: msk_x = 0.20        !! weighting factor control relative importance of inflow rate |range: 0..1
                                     !!  and outflow rate in determining storage on reach
-        real :: nperco_lchtile = .5 !! n concentration coeff for tile flow and leach from bottom layer
-        real :: evrch = 0.60        !! reach evaporation adjustment factor
-        real :: scoef = 1.0         !! channel storage coefficient (0-1)
-        real :: cdn = 1.40          !! denitrification exponential rate coefficient        
-        real :: sdnco = 1.30        !! denitrification threshold frac of field cap
-        real :: bact_swf = 0.15     !! frac of manure containing active colony forming units
+        real :: nperco_lchtile = .5 !! n concentration coeff for tile flow and leach from bottom layer |range: 0..1
+        real :: evrch = 0.60        !! reach evaporation adjustment factor |range: 0..1
+        real :: scoef = 1.0         !! channel storage coefficient (0-1) |range: 0..1 * (modular db: 0..3)
+        real :: cdn = 1.40          !! denitrification exponential rate coefficient |range: 0..1
+        real :: sdnco = 1.30        !! denitrification threshold frac of field cap |range: 0..1
+        real :: bact_swf = 0.15     !! frac of manure containing active colony forming units |range: 0..1
         real :: tb_adj = 0.         !! adjustment factor for subdaily unit hydrograph basetime
-        real :: cn_froz = 0.000862  !! parameter for frozen soil adjustment on infiltraion/runoff
-        real :: dorm_hr = -1.       !! time threshold used to define dormant (hrs)
-        real :: plaps = 0.          !! mm/km        |precipitation lapse rate: mm per km of elevation difference
-        real :: tlaps = 6.5         !! deg C/km     |temperature lapse rate: deg C per km of elevation difference
-        real :: nfixmx = 20.0       !! max daily n-fixation (kg/ha)
-        real :: decr_min = 0.01     !! minimum daily residue decay
-        real :: rsd_covco = 0.75    !! residue cover factor for computing frac of cover         
-        real :: urb_init_abst = 1.  !! maximum initial abstraction for urban areas when using Green and Ampt
-        real :: petco_pmpt = 100.0  !! PET adjustment (%) for Penman-Montieth and Preiestly-Taylor methods
-        real :: uhalpha = 1.0       !! alpha coeff for est unit hydrograph using gamma func
-        real :: eros_spl = 0.       !! coeff of splash erosion varying 0.9-3.1 
-        real :: rill_mult = 0.      !! rill erosion coefficient
-        real :: eros_expo = 0.      !! exponential coefficient for overland flow
-        real :: c_factor = 0.       !! scaling parameter for cover and management factor for 
+        real :: cn_froz = 0.000862  !! parameter for frozen soil adjustment on infiltraion/runoff |range: 0..24
+        real :: dorm_hr = -1.       !! time threshold used to define dormant (hrs) |range: -2..0
+        real :: plaps = 0.          !! mm/km        |precipitation lapse rate: mm per km of elevation difference |range: -25..25
+        real :: tlaps = 6.5         !! deg C/km     |temperature lapse rate: deg C per km of elevation difference |range: 3..8
+        real :: nfixmx = 20.0       !! max daily n-fixation (kg/ha) |range: 0..0.05
+        real :: decr_min = 0.01     !! minimum daily residue decay |range: 0.1..0.5
+        real :: rsd_covco = 0.75    !! residue cover factor for computing frac of cover |range: 0..10
+        real :: urb_init_abst = 1.  !! maximum initial abstraction for urban areas when using Green and Ampt |range: 0..1
+        real :: petco_pmpt = 100.0  !! PET adjustment (%) for Penman-Montieth and Preiestly-Taylor methods |range: 0..1
+        real :: uhalpha = 1.0       !! alpha coeff for est unit hydrograph using gamma func |range: 0.9..3.1
+        real :: eros_spl = 0.       !! coeff of splash erosion varying 0.9-3.1 |range: 0.5..2
+        real :: rill_mult = 0.      !! rill erosion coefficient |range: 1..3
+        real :: eros_expo = 0.      !! exponential coefficient for overland flow |range: 0.001..0.45
+        real :: c_factor = 0.       !! scaling parameter for cover and management factor for |range: 10..100
                                     !!  overland flow erosion
-        real :: ch_d50 = 0.         !! median particle diameter of main channel (mm)
-        real :: co2 = 400.          !! co2 concentration at start of simulation (ppm)
-        integer :: day_lag_mx = 0   !! max days to lag hydrographs for hru, ru and channels
+        real :: ch_d50 = 0.         !! median particle diameter of main channel (mm) |range: 1..5
+        real :: co2 = 400.          !! co2 concentration at start of simulation (ppm) |range: 100..1000
+        integer :: day_lag_mx = 0   !! max days to lag hydrographs for hru, ru and channels |range: 0..3
                                     !!  non-draining soils
-        integer :: igen = 5         !!  random generator code: 
+        integer :: igen = 5         !!  random generator code: |range: 0..1
                                     !!   0 = use default numbers
                                     !!   1 = generate new numbers in every simulation 
       end type basin_parms
@@ -156,10 +156,10 @@
         integer :: nyskip = 0                           !!  number of years to skip output summarization
         character (len=1)  :: sw_init = "n"             !!  n=sw not initialized, y=sw initialized for output (when hit nyskip)
       ! DAILY START/END AND INTERVAL
-        integer :: day_start = 0                        !!  julian day to start printing output
-        integer :: day_end = 0                          !!  julian day to end printing output
+        integer :: day_start = 0                        !!  julian day to start printing output |range: 0..366
+        integer :: day_end = 0                          !!  julian day to end printing output |range: 0..366
         integer :: yrc_start = 0                        !!  calendar year to start printing output
-        integer :: yrc_end = 0                          !!  calendar year to end printing output
+        integer :: yrc_end = 0                          !!  calendar year to end printing output |range: 0..2020
         integer :: int_day = 1                          !!  interval between daily printing
         integer :: int_day_cur = 1                      !!  current day since last print
       ! AVE ANNUAL END YEARS

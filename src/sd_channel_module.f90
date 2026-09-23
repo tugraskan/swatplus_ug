@@ -34,28 +34,28 @@
         real :: ch_bd = 0.          !t/m3       |dry bulk density
         real :: chss = 0.           !           |channel side slope
         real :: bankfull_flo = 0.   !           |bank full flow rate
-        real :: fps = 0.000001      !m/m        |flood plain slope
+        real :: fps = 0.000001      !m/m        |flood plain slope |range: 1e-06..0.1
         real :: fpn = 0.1           !           |flood plain Manning's n
-        real :: n_conc = 0.         !mg/kg      |nitrogen concentration in channel bank
-        real :: p_conc = 0.         !mg/kg      |phosphorus concentration in channel bank
-        real :: p_bio = 0.          !frac       |fraction of p in bank that is bioavailable
+        real :: n_conc = 0.         !mg/kg      |nitrogen concentration in channel bank |range: 0..300
+        real :: p_conc = 0.         !mg/kg      |phosphorus concentration in channel bank |range: 0..200
+        real :: p_bio = 0.          !frac       |fraction of p in bank that is bioavailable |range: 0..0.9
       end type swatdeg_hydsed_data
       type (swatdeg_hydsed_data), dimension (:), allocatable :: sd_chd
       
       type swatdeg_sednut_data
         character(len=25) :: name = ""
         character(len=16) :: order = ""
-        real :: pk_rto = 1.         !ratio      |ratio of peak to mean daily flow in channel
-        real :: fp_inun_days = 5.   !days       |number of days fllod plain is inundated after flood
+        real :: pk_rto = 1.         !ratio      |ratio of peak to mean daily flow in channel |range: 0..0.6
+        real :: fp_inun_days = 5.   !days       |number of days fllod plain is inundated after flood |range: 0..1
         real :: n_setl = 0.5        !ratio      |ratio of amount of N settling and sediment settling
         real :: p_setl = 0.5        !ratio      |ratio of amount of P settling and sediment settling
-        real :: n_sol_part = 0.01   !           |instream nitrogen soluble to particulate transformation coefficient
-        real :: p_sol_part = 0.01   !           |instream phosphorus soluble to particulate transformation coefficient
-        real :: n_dep_enr = 0.5     !           |enrichment of N in remaining water - deposition = 1/enrichment ratio
-        real :: p_dep_enr = 0.5     !           |enrichment of P in remaining water - deposition = 1/enrichment ratio
-        real :: arc_len_fr = 1.2    !frac       |fraction of arc length where bank erosion occurs
+        real :: n_sol_part = 0.01   !           |instream nitrogen soluble to particulate transformation coefficient |range: 1.1..1.9
+        real :: p_sol_part = 0.01   !           |instream phosphorus soluble to particulate transformation coefficient |range: 1.1..1.9
+        real :: n_dep_enr = 0.5     !           |enrichment of N in remaining water - deposition = 1/enrichment ratio |range: 1.1..1.9
+        real :: p_dep_enr = 0.5     !           |enrichment of P in remaining water - deposition = 1/enrichment ratio |range: 1.1..1.9
+        real :: arc_len_fr = 1.2    !frac       |fraction of arc length where bank erosion occurs |range: 1.1..1.9
         real :: bed_exp = 1.5       !           |bed erosion exponential coefficient
-        real :: wash_bed_fr = 0.1   !frac       |fraction of bank erosion that is washload
+        real :: wash_bed_fr = 0.1   !frac       |fraction of bank erosion that is washload |range: 1.1..1.9
       end type swatdeg_sednut_data
       type (swatdeg_sednut_data), dimension (:), allocatable :: sd_chd1
       

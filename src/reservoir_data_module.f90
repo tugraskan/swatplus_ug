@@ -63,16 +63,16 @@
             
       type reservoir_hyd_data
         character(len=25) :: name = "default"
-        integer :: iyres = 0      !none          |year of the sim that the res becomes operational
-        integer :: mores = 0      !none          |month the res becomes operational
-        real :: psa = 0.          !ha            |res surface area when res is filled to princ spillway
-        real :: pvol = 0.         !ha-m          |vol of water needed to fill the res to the princ spillway (read in as ha-m
+        integer :: iyres = 0      !none          |year of the sim that the res becomes operational |range: 0..9999
+        integer :: mores = 0      !none          |month the res becomes operational |range: 1..12
+        real :: psa = 0.          !ha            |res surface area when res is filled to princ spillway |range: 1..3000
+        real :: pvol = 0.         !ha-m          |vol of water needed to fill the res to the princ spillway (read in as ha-m |range: 15..3000
                                   !                and converted to m^3)
-        real :: esa = 0.          !ha            |res surface area when res is filled to emerg spillway 
-        real :: evol = 0.         !ha-m          |vol of water needed to fill the res to the emerg spillway (read in as ha-m
+        real :: esa = 0.          !ha            |res surface area when res is filled to emerg spillway |range: 1..1000
+        real :: evol = 0.         !ha-m          |vol of water needed to fill the res to the emerg spillway (read in as ha-m |range: 10..100
                                   !                and converted to m^3)
-        real :: k = .01           !mm/hr         |hydraulic conductivity of the res bottom
-        real :: evrsv = .7        !none          |lake evap coeff
+        real :: k = .01           !mm/hr         |hydraulic conductivity of the res bottom |range: 0..1
+        real :: evrsv = .7        !none          |lake evap coeff |range: 0..1
         real :: br1 = 0.          !none          |vol-surface area coefficient for reservoirs (model estimates if zero)
         real :: br2 = 0.          !none          |vol-surface area coefficient for reservoirs (model estimates if zero)
       end type reservoir_hyd_data
@@ -97,7 +97,7 @@
       
       type reservoir_sed_data
         character(len=25) :: name = ""
-        real :: nsed = 0.           !kg/L       |normal amt of sed in res (read in as mg/L and convert to kg/L)
+        real :: nsed = 0.           !kg/L       |normal amt of sed in res (read in as mg/L and convert to kg/L) |range: 1..5000
         real :: d50 = 0.            !um         |median particle size of suspended and benthic sediment
         real :: carbon = 0.         !%          |organic carbon in suspended and benthic sediment
         real :: bd = 0.             !t/m^3      |bulk density of benthic sediment
@@ -108,14 +108,14 @@
             
       type reservoir_nut_data
         character(len=25) :: name = ""
-        integer :: ires1 = 0        !none       |beg of mid-year nutrient settling "season"
-        integer :: ires2 = 0        !none       |end of mid-year nutrient settling "season"
-        real :: nsetlr1 = 0.        !frac       |nit mass loss rate for mid-year period 
-        real :: nsetlr2 = 0.        !frac       |nit mass loss rate for remainder of year
-        real :: psetlr1 = 0.        !frac       |phos mass loss rate for mid-year period
-        real :: psetlr2 = 0.        !frac       |phos mass loss rate for remainder of year
-        real :: nsolr = 1.          !none       |loss rate for souble n - no3, nh3, no2
-        real :: psolr = 1.          !none       |loss rate for soluble p
+        integer :: ires1 = 0        !none       |beg of mid-year nutrient settling "season" |range: 0..12
+        integer :: ires2 = 0        !none       |end of mid-year nutrient settling "season" |range: 0..12
+        real :: nsetlr1 = 0.        !frac       |nit mass loss rate for mid-year period |range: 1..15
+        real :: nsetlr2 = 0.        !frac       |nit mass loss rate for remainder of year |range: 1..15
+        real :: psetlr1 = 0.        !frac       |phos mass loss rate for mid-year period |range: 2..20
+        real :: psetlr2 = 0.        !frac       |phos mass loss rate for remainder of year |range: 2..20
+        real :: nsolr = 1.          !none       |loss rate for souble n - no3, nh3, no2 |range: 0..1
+        real :: psolr = 1.          !none       |loss rate for soluble p |range: 0.5..2
         real :: theta_n = 1.        !none       |temperature adjustment for nitrogen loss (settling)
         real :: theta_p = 1.        !none       |temperature adjustment for phosphorus loss (settling)
         real :: conc_nmin = .1      !ppm        |minimum nitrogen concentration for settling
@@ -137,7 +137,7 @@
       type reservoir_weir_outflow
         character(len=25) :: name = ""
         real :: c = 1.84              !none          |weir discharge linear coefficient 
-        real :: k = 2.6               !none          |weir discharge exponential coefficient
+        real :: k = 2.6               !none          |weir discharge exponential coefficient |range: 147000..153000
         real :: w = 2.5               !m             |width
         real :: h = 0.0               !m             |height of weir above bottoom of impoundment
       end type reservoir_weir_outflow

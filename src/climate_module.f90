@@ -22,24 +22,24 @@
       real, dimension(:), allocatable :: co2y
 
       type weather_generator_db      
-        real :: lat =  0.0                          !! degrees      |latitude of weather station used to compile data
-        real :: long = 0.0                          !! degrees      |longitude of weather station 
-        real :: elev = 0.0                          !!              |elevation of weather station used to compile weather generator data
-        real :: rain_yrs = 10.0                     !! none         |number of years of recorded maximum 0.5h rainfall used to calculate values for rainhhmx(:)
-        real, dimension (12) :: tmpmx = 0.          !! deg C        |avg monthly maximum air temperature
-        real, dimension (12) :: tmpmn = 0.          !! deg C        |avg monthly minimum air temperature
-        real, dimension (12) :: tmpstdmx = 0.       !! deg C        |standard deviation for avg monthly maximum air temperature 
-        real, dimension (12) :: tmpstdmn = 0.       !! deg C        |standard deviation for avg monthly minimum air temperature
-        real, dimension (12) :: pcpmm = 0.          !! mm           |amount of precipitation in month
-        real, dimension (12) :: pcpstd = 0.         !! mm/day       |standard deviation for the average daily
-        real, dimension (12) :: pcpskw = 0.         !! none         |skew coefficient for the average daily precipitation
-        real, dimension (12) :: pr_wd = 0.          !! none         |probability of wet day after dry day in month 
-        real, dimension (12) :: pr_ww = 0.          !! none         |probability of wet day after wet day in month
-        real, dimension (12) :: pcpd = 0.           !! days         |average number of days of precipitation in the month
-        real, dimension (12) :: rainhmx = 0.        !! mm           |maximum 0.5 hour rainfall in month
-        real, dimension (12) :: solarav = 0.        !! MJ/m^2/day   |average daily solar radiation for the month
-        real, dimension (12) :: dewpt = 0.          !! deg C        |average dew point temperature for the month
-        real, dimension (12) :: windav = 0.         !! m/s          |average wind speed for the month
+        real :: lat =  0.0                          !! degrees      |latitude of weather station used to compile data |range: -90..90
+        real :: long = 0.0                          !! degrees      |longitude of weather station |range: -180..180
+        real :: elev = 0.0                          !!              |elevation of weather station used to compile weather generator data |range: 0..5000
+        real :: rain_yrs = 10.0                     !! none         |number of years of recorded maximum 0.5h rainfall used to calculate values for rainhhmx(:) |range: 5..100
+        real, dimension (12) :: tmpmx = 0.          !! deg C        |avg monthly maximum air temperature |range: -30..50
+        real, dimension (12) :: tmpmn = 0.          !! deg C        |avg monthly minimum air temperature |range: -40..40
+        real, dimension (12) :: tmpstdmx = 0.       !! deg C        |standard deviation for avg monthly maximum air temperature |range: 0.1..100
+        real, dimension (12) :: tmpstdmn = 0.       !! deg C        |standard deviation for avg monthly minimum air temperature |range: 0.1..30
+        real, dimension (12) :: pcpmm = 0.          !! mm           |amount of precipitation in month |range: 0..600
+        real, dimension (12) :: pcpstd = 0.         !! mm/day       |standard deviation for the average daily |range: 0.1..50
+        real, dimension (12) :: pcpskw = 0.         !! none         |skew coefficient for the average daily precipitation |range: -50..20
+        real, dimension (12) :: pr_wd = 0.          !! none         |probability of wet day after dry day in month |range: 0..0.95
+        real, dimension (12) :: pr_ww = 0.          !! none         |probability of wet day after wet day in month |range: 0..0.95
+        real, dimension (12) :: pcpd = 0.           !! days         |average number of days of precipitation in the month |range: 0..31
+        real, dimension (12) :: rainhmx = 0.        !! mm           |maximum 0.5 hour rainfall in month |range: 0..125
+        real, dimension (12) :: solarav = 0.        !! MJ/m^2/day   |average daily solar radiation for the month |range: 0..750
+        real, dimension (12) :: dewpt = 0.          !! deg C        |average dew point temperature for the month |range: -50..25
+        real, dimension (12) :: windav = 0.         !! m/s          |average wind speed for the month |range: 0..100
       end type weather_generator_db
       type (weather_generator_db), dimension(:),allocatable :: wgn
       type (weather_generator_db), dimension(:),allocatable :: wgn_orig
