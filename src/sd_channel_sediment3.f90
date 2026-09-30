@@ -41,7 +41,6 @@
       real :: cohes_fac = 0.        !               |cohesion factor for critical velocity calculation
       real :: florate               !m^3/s          |flow rate below the triangle for flow lasting more than a day
       real :: vel = 0.
-      real :: h_rad = 0.            !m              |hydraulic radius
       real :: veg = 0.
       real :: vel_cr = 0.
       real :: rad_curv = 0.
@@ -92,14 +91,10 @@
       !! interpolate rating curve using peak rate
       call rcurv_interp_flo (ich, peakrate)
       
-      !! use peakrate as flow rate  ch_rcurv(ich)
-      h_rad = rcurv%xsec_area / rcurv%wet_perim
-      vel = h_rad ** .6666 * Sqrt(sd_ch(ich)%chs) / (sd_ch(ich)%chn + .001)
-      vel = peakrate / rcurv%xsec_area
-      vel = sd_ch(ich)%chl / (3.6 * rcurv%ttime)
+      !! channel velocity from the interpolated rating curve
+      !! (rating-curve vel avoids the unrealistically high velocities at low flow from continuity Q/A)
       vel = rcurv%vel
-      !vel = Qman(1., h_rad, sd_ch(i)%chn, sd_ch(i)%chs)
-      
+
       rttime = sd_ch(ich)%chl / (3.6 * vel)
       sd_ch_vel(ich)%vel = vel       !store for ch_temp
       sd_ch_vel(ich)%rttime = rttime !store for ch_temp
