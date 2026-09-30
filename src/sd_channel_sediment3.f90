@@ -41,6 +41,7 @@
       real :: cohes_fac = 0.        !               |cohesion factor for critical velocity calculation
       real :: florate               !m^3/s          |flow rate below the triangle for flow lasting more than a day
       real :: vel = 0.
+      real :: h_rad = 0.            !m              |hydraulic radius
       real :: veg = 0.
       real :: vel_cr = 0.
       real :: rad_curv = 0.
