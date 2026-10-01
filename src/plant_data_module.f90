@@ -6,6 +6,12 @@
       character(len=25), dimension(:), allocatable :: pl_class      !none      |plant class - row crop, tree, grass, etc
       real :: photo_degrade_factor = .01   ! none  |fraction to reduce surface residue due to photo degradation
 
+      type input_lignin_partition_fracs
+        real :: lig_frac_avg = 0.12   !none       |input avg fraction of biomass that is lignin    
+        real :: lig_frac_abg = 0.12   !none       |input fraction of above ground (abg) biomass that is lignin    
+        real :: lig_frac_blg = 0.12   !none       |input fraction of below ground (blg) biomass that is lignin    
+      end type input_lignin_partition_fracs
+
       type residue_partition_fracs
         real :: meta_frac_abg = 0.85  !none       |fraction of above ground (abg) biomass that is metabolic 
         real :: str_frac_abg = 0.15   !none       |fraction of above ground (abg) biomass that is structural
@@ -88,9 +94,6 @@
         real :: aeration = 0.2           !                  |aeration stress factor
         real :: ero_rsdfac = 0.75        !                  |residue cover factor (exponential equation) for USLE C factor equation
         real :: ero_biofac = 0.2         !                  |biomass cover factor (exponential equation) for USLE C factor equation
-        real :: meta_frac = 0.85          !none              |fraction of residue that is metabolic
-        real :: str_frac = 0.15           !none              |fraction of residue that is structural
-        real :: lig_frac = 0.12           !none              |fraction of residue that is lignin
         character(len=18) :: vclass = "" !none              |vegetation class - row crop, close grown, vegetable, grassland, forest, orchard
         character(len=45) :: desc = ""   !none              !description of plant
       end type plant_db

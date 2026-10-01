@@ -59,13 +59,13 @@
           if (eof < 0) exit
           pldb(ic)%mat_yrs = Max (1, pldb(ic)%mat_yrs)
           if (bsn_cc%cswat == 2) then
-            res_part_fracs(ic)%meta_frac_abg = pldb(ic)%meta_frac
-            res_part_fracs(ic)%str_frac_abg = pldb(ic)%str_frac
-            res_part_fracs(ic)%lig_frac_abg = pldb(ic)%lig_frac
-            res_part_fracs(ic)%meta_frac_blg = pldb(ic)%meta_frac
-            res_part_fracs(ic)%str_frac_blg = pldb(ic)%str_frac
-            res_part_fracs(ic)%lig_frac_blg = pldb(ic)%lig_frac
-          end if
+            !! plants.plt has no lignin columns yet - abg and blg lignin keep the 0.12 defaults
+            res_part_fracs(ic)%str_frac_abg = res_part_fracs(ic)%lig_frac_abg / .80 
+            res_part_fracs(ic)%str_frac_blg = res_part_fracs(ic)%lig_frac_blg / .80 
+            res_part_fracs(ic)%meta_frac_abg = 1.0 - res_part_fracs(ic)%str_frac_abg  
+            res_part_fracs(ic)%meta_frac_blg = 1.0 - res_part_fracs(ic)%str_frac_blg 
+          endif
+              
         end do
         
         exit
