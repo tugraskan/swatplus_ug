@@ -14,7 +14,7 @@
       use time_module
       use ch_salt_module !rtb salt
       use ch_cs_module !rtb cs
-      use gwflow_module, only: flood_freq !rtb gwflow
+      use gwflow_module, only: flood_freq, gw_heat_flag !rtb gwflow
       use ch_pesticide_module               !!!  nbs added 7-20-23
       use channel_velocity_module
       use water_allocation_module
@@ -110,8 +110,8 @@
       ht1%temp = 5.0 + 0.75 * wst(iwst)%weat%tave
       wtemp = 5.0 + 0.75 * wst(iwst)%weat%tave
 
-      !rtb: use stored water temperature (calculated in ch_temp) when gwflow is active
-      if (bsn_cc%gwflow == 1) then
+      !rtb: use stored water temperature (calculated in ch_temp) when gwflow heat transport is active
+      if (bsn_cc%gwflow == 1 .and. gw_heat_flag == 1) then
         ht1%temp = ch_stor(ich)%temp
         wtemp = ch_stor(ich)%temp
       end if

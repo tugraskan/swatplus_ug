@@ -27,7 +27,7 @@
       use calibration_data_module
       use time_module
       use channel_velocity_module
-      use gwflow_module, only : gw_rho, gw_cp
+      use gwflow_module, only : gw_rho, gw_cp, gw_heat_flag
 
       implicit none
       
@@ -334,7 +334,7 @@
       surf_contr = sur_lat_coef * (surf_lag_coef * t_surf) * q_ru_surf 
 
     !  mixing of components
-      if(bsn_cc%gwflow == 1) then !groundwater contribution handled in gwflow subroutines
+      if(bsn_cc%gwflow == 1 .and. gw_heat_flag == 1) then !groundwater heat handled in gwflow subroutines
           !rtb: mix snowmelt, lateral and surface heat into the channel water (heat balance)
           chan_temp = ht1%temp
           chan_heat = ht1%temp * gw_rho * gw_cp * ht1%flo
@@ -346,6 +346,8 @@
             ht1%temp = chan_heat / (gw_rho * gw_cp * ht1%flo)
           endif
           tw_local = ht1%temp
+      else if(bsn_cc%gwflow == 1) then !gwflow without heat transport: groundwater contribution handled in gwflow subroutines
+          tw_local = (sno_contr + lat_contr + surf_contr) / q_ru_wyld
       else
           tw_local = (sno_contr + gw_contr + lat_contr + surf_contr) / q_ru_wyld
       endif
