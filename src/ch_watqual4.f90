@@ -10,6 +10,7 @@
       use channel_data_module
       use sd_channel_module
       use water_body_module
+      use basin_module, only : bsn_cc
       
       implicit none
       
@@ -108,8 +109,11 @@
 
       !! calculate temperature in stream Stefan and Preudhomme. 1993.  Stream temperature estimation 
       !! from air temperature.  Water Res. Bull. p. 27-45 SWAT manual equation 2.3.13
-      !wtmp = 5.0 + 0.75 * wst(iwst)%weat%tave
-			wtmp = ht1%temp !rtb: use updated water temperature
+      if (bsn_cc%gwflow == 1) then
+        wtmp = ht1%temp !rtb: use updated water temperature
+      else
+        wtmp = 5.0 + 0.75 * wst(iwst)%weat%tave
+      end if
       if (wtmp <= 0.) wtmp = 0.1
       ht2%temp = wtmp
 

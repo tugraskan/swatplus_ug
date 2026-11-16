@@ -110,10 +110,12 @@
       ht1%temp = 5.0 + 0.75 * wst(iwst)%weat%tave
       wtemp = 5.0 + 0.75 * wst(iwst)%weat%tave
 
-			!rtb: use stored water temperature (calculated in ch_temp)
-			ht1%temp = ch_stor(ich)%temp
-			wtemp = ch_stor(ich)%temp
-			
+      !rtb: use stored water temperature (calculated in ch_temp) when gwflow is active
+      if (bsn_cc%gwflow == 1) then
+        ht1%temp = ch_stor(ich)%temp
+        wtemp = ch_stor(ich)%temp
+      end if
+
       if (sd_ch(ich)%msk%nsteps == 1) then
         ob(icmd)%tsin(1) = ht1%flo
 			end if
